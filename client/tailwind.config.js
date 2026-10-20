@@ -20,7 +20,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Poppins', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        heading: ['"Plus Jakarta Sans"', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
         subtle: '0 1px 3px 0 rgba(24, 50, 71, 0.05), 0 1px 2px 0 rgba(24, 50, 71, 0.03)',

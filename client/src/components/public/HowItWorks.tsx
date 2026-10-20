@@ -55,7 +55,7 @@ export const HowItWorks: React.FC = () => {
           {steps.map((step, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border shadow-subtle hover:shadow-card hover:border-brand-teal/40 transition-all duration-200 relative flex flex-col justify-between group"
+              className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border shadow-subtle card-hover hover:border-brand-teal/40 relative flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between mb-5">
@@ -92,7 +92,7 @@ export const HowItWorks: React.FC = () => {
         <div className="mt-12 text-center">
           <Link
             to="/enquire"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate shadow-sm transition-all"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate shadow-sm transition-all btn-primary-glow shimmer-effect"
           >
             <span>Start Your 3-Minute Digital Application</span>
             <ArrowRight className="w-4 h-4" />

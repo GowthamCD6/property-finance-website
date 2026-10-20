@@ -49,7 +49,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services, onSe
             return (
               <div
                 key={service.id}
-                className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle hover:shadow-card hover:border-brand-teal/50 transition-all duration-200 flex flex-col justify-between group"
+                className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle card-hover hover:border-brand-teal/50 flex flex-col justify-between group"
               >
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-brand-teal-light text-brand-teal group-hover:bg-brand-teal group-hover:text-white transition-colors flex items-center justify-center mb-5">

@@ -11,7 +11,7 @@ export const TestimonialsSection: React.FC = () => {
       product: 'Home Construction Loan',
       rating: 5,
       content:
-        'Constructing a home on our family plot was our dream for over 5 years. With multiple banks delaying over layout approvals, Vardhan Finance audited our document chain, aligned with the right lender, and expedited tranche sanction in just 10 days.',
+        'Constructing a home on our family plot was our dream for over 5 years. With multiple banks delaying over layout approvals, WealthAnchor audited our document chain, aligned with the right lender, and expedited tranche sanction in just 10 days.',
       amount: '₹65 Lakhs Sanctioned',
       highlight: 'Turned dream into reality without hassle',
     },
@@ -61,7 +61,7 @@ export const TestimonialsSection: React.FC = () => {
           {reviews.map((r, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border shadow-card hover:border-brand-teal/40 transition-all duration-200 flex flex-col justify-between"
+              className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border shadow-card card-hover hover:border-brand-teal/40 flex flex-col justify-between"
             >
               <div>
                 {/* Rating & Product Tag */}

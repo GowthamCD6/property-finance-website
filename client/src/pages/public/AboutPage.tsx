@@ -16,7 +16,7 @@ import { useOutletContext } from 'react-router-dom';
 export const AboutPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();
   const content = context?.content || null;
-  const businessName = content?.businessName || 'Vardhan Property Finance Advisory';
+  const businessName = content?.businessName || 'WealthAnchor Property Finance Advisory';
   const aboutHeading =
     content?.aboutHeading || 'Dedicated Property Loan Consultancy with Transparent Guidance';
   const aboutText =

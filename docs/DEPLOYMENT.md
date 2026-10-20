@@ -39,8 +39,8 @@ Ensure the following variables are configured in production:
 | `PORT` | Node server port | `5000` |
 | `DATABASE_URL` | Database connection string | `postgresql://user:pass@host:5432/db` |
 | `JWT_SECRET` | 64+ char random cryptographic secret | `b8e8f80456c...` |
-| `CLIENT_URL` | Domain where frontend is hosted | `https://www.vardhanfinance.in` |
-| `ADMIN_EMAIL` | Default administrator email | `operations@vardhanfinance.in` |
+| `CLIENT_URL` | Domain where frontend is hosted | `https://www.wealthanchor.in` |
+| `ADMIN_EMAIL` | Default administrator email | `operations@wealthanchor.in` |
 | `ADMIN_DEFAULT_PASSWORD` | Strong seed password | `ChangeMe@2026!` |
 | `TIMEZONE` | Business operations timezone | `Asia/Kolkata` |
 
@@ -70,16 +70,16 @@ Example Nginx server block:
 ```nginx
 server {
     listen 80;
-    server_name vardhanfinance.in www.vardhanfinance.in;
+    server_name wealthanchor.in www.wealthanchor.in;
     return 301 https://$host$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name vardhanfinance.in www.vardhanfinance.in;
+    server_name wealthanchor.in www.wealthanchor.in;
 
-    ssl_certificate /etc/letsencrypt/live/vardhanfinance.in/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/vardhanfinance.in/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/wealthanchor.in/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/wealthanchor.in/privkey.pem;
 
     # Frontend Single Page App
     root /var/www/property-finance-website/client/dist;

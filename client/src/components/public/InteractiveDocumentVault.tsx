@@ -107,7 +107,7 @@ export const InteractiveDocumentVault: React.FC = () => {
   const handleCopyChecklist = () => {
     const textToCopy = `${current.title}\n\n` +
       current.docs.map((d, i) => `${i + 1}. ${d.name} (${d.tag})\n   ${d.desc}`).join('\n\n') +
-      `\n\nAdvisory assistance provided by Vardhan Property Finance.`;
+      `\n\nAdvisory assistance provided by WealthAnchor Property Finance Advisory.`;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -203,7 +203,7 @@ export const InteractiveDocumentVault: React.FC = () => {
             {current.docs.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white p-4 sm:p-5 rounded-xl border border-brand-border hover:border-brand-teal/40 transition-colors flex items-start gap-3.5"
+                className="bg-white p-4 sm:p-5 rounded-xl border border-brand-border hover:border-brand-teal/40 card-hover flex items-start gap-3.5"
               >
                 <div className="w-6 h-6 rounded-full bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
                   <CheckCircle2 className="w-4 h-4" />

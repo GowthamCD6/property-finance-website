@@ -218,7 +218,7 @@ export const RateComparisonMatrix: React.FC = () => {
         <div className="mt-4 p-4 rounded-xl bg-brand-ivory border border-brand-border/80 flex items-start gap-3 text-xs text-brand-slate">
           <ShieldAlert className="w-4 h-4 text-brand-teal flex-shrink-0 mt-0.5" />
           <p className="leading-relaxed text-[11px] sm:text-xs">
-            <strong>Advisory Notice &amp; Compliance:</strong> vardhan Property Finance is an authorized loan advisor and corporate channel liaison. Rates presented are indicative published floating rates linked to EBLR / Repo Rate as of Q4 2024. Final interest rate, sanction amount, and legal eligibility depend strictly on lender underwriting policy, CIBIL score (&gt;750 preferred), title clearance, and property valuation. No guarantee of interest rate or approval is implied.
+            <strong>Advisory Notice &amp; Compliance:</strong> WealthAnchor Property Finance Advisory is an authorized loan advisor and corporate channel liaison. Rates presented are indicative published floating rates linked to EBLR / Repo Rate as of Q4 2024. Final interest rate, sanction amount, and legal eligibility depend strictly on lender underwriting policy, CIBIL score (&gt;750 preferred), title clearance, and property valuation. No guarantee of interest rate or approval is implied.
           </p>
         </div>
       </div>

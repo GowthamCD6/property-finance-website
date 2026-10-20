@@ -67,7 +67,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
               <Link
                 to="/enquire"
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 text-sm sm:text-base font-semibold text-white bg-brand-teal hover:bg-brand-teal-hover rounded-corporate transition-all duration-150 shadow-sm hover:shadow"
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 text-sm sm:text-base font-semibold text-white bg-brand-teal hover:bg-brand-teal-hover rounded-corporate transition-all duration-150 shadow-sm hover:shadow btn-primary-glow shimmer-effect"
               >
                 <span>Apply Online in 3 Minutes</span>
                 <ArrowRight className="w-4 h-4" />
@@ -220,7 +220,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
               <button
                 type="button"
                 onClick={handleApplyClick}
-                className="w-full py-3.5 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate shadow-sm flex items-center justify-center gap-2 transition-all duration-150 group"
+                className="w-full py-3.5 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate shadow-sm flex items-center justify-center gap-2 transition-all duration-150 group btn-primary-glow shimmer-effect"
               >
                 <span>Apply for this Loan in 3 Minutes</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

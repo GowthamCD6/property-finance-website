@@ -11,7 +11,7 @@ describe('Property Loan Consultancy System Tests', () => {
   beforeAll(async () => {
     // Ensure test database is primed
     const admin = await prisma.adminUser.findUnique({
-      where: { email: 'admin@vardhanfinance.in' },
+      where: { email: 'admin@wealthanchor.in' },
     });
     if (!admin) {
       throw new Error('Database not seeded. Run seed before tests.');
@@ -27,7 +27,7 @@ describe('Property Loan Consultancy System Tests', () => {
       const res = await request(app).get('/api/public/site-content');
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
-      expect(res.body.data.businessName).toBe('Vardhan Property Finance Advisory');
+      expect(res.body.data.businessName).toBe('WealthAnchor Property Finance Advisory');
       expect(res.body.data.cityState).toContain('Bengaluru');
     });
 
@@ -115,7 +115,7 @@ describe('Property Loan Consultancy System Tests', () => {
 
     it('POST /api/auth/login rejects incorrect password with generic message', async () => {
       const res = await request(app).post('/api/auth/login').send({
-        email: 'admin@vardhanfinance.in',
+        email: 'admin@wealthanchor.in',
         password: 'WrongPassword@123',
       });
       expect(res.status).toBe(401);
@@ -125,13 +125,13 @@ describe('Property Loan Consultancy System Tests', () => {
 
     it('POST /api/auth/login authenticates valid admin and returns JWT token', async () => {
       const res = await request(app).post('/api/auth/login').send({
-        email: 'admin@vardhanfinance.in',
+        email: 'admin@wealthanchor.in',
         password: 'Admin@123456',
       });
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.token).toBeDefined();
-      expect(res.body.data.admin.email).toBe('admin@vardhanfinance.in');
+      expect(res.body.data.admin.email).toBe('admin@wealthanchor.in');
 
       adminToken = res.body.data.token;
     });
@@ -141,7 +141,7 @@ describe('Property Loan Consultancy System Tests', () => {
         .get('/api/auth/me')
         .set('Authorization', `Bearer ${adminToken}`);
       expect(res.status).toBe(200);
-      expect(res.body.data.email).toBe('admin@vardhanfinance.in');
+      expect(res.body.data.email).toBe('admin@wealthanchor.in');
     });
   });
 

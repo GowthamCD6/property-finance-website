@@ -17,9 +17,9 @@ export const ContactPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null; services?: Service[] }>();
   const content = context?.content || null;
   const services = context?.services || [];
-  const businessName = content?.businessName || 'Vardhan Property Finance Advisory';
+  const businessName = content?.businessName || 'WealthAnchor Property Finance Advisory';
   const businessPhone = content?.businessPhone || '+91 98765 43210';
-  const businessEmail = content?.businessEmail || 'contact@vardhanfinance.in';
+  const businessEmail = content?.businessEmail || 'contact@wealthanchor.in';
   const officeAddress = content?.officeAddress || 'Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001';
   const businessHours = content?.businessHours || 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)';
   const disclaimerText = content?.disclaimerText || '';

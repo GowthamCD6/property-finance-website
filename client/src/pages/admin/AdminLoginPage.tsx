@@ -7,7 +7,7 @@ export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
-  const [email, setEmail] = useState('admin@vardhanfinance.in');
+  const [email, setEmail] = useState('admin@wealthanchor.in');
   const [password, setPassword] = useState('Admin@123456');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,7 +76,7 @@ export const AdminLoginPage: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@vardhanfinance.in"
+                  placeholder="admin@wealthanchor.in"
                   className="w-full pl-9 pr-3.5 py-2.5 bg-brand-ivory/40 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
                 />
               </div>
@@ -122,7 +122,7 @@ export const AdminLoginPage: React.FC = () => {
           {/* Seed hint box */}
           <div className="mt-6 pt-5 border-t border-brand-border/60 text-[11px] text-brand-slate bg-brand-teal-light/50 p-3 rounded-lg border border-brand-teal/20">
             <span className="font-semibold text-brand-navy block mb-0.5">Seeded Admin Account:</span>
-            <div>Email: <code className="font-mono text-brand-teal">admin@vardhanfinance.in</code></div>
+            <div>Email: <code className="font-mono text-brand-teal">admin@wealthanchor.in</code></div>
             <div>Password: <code className="font-mono text-brand-teal">Admin@123456</code></div>
           </div>
         </div>

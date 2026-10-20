@@ -16,14 +16,14 @@ Returns the published business configuration, hero copy, about text, contact det
 {
   "success": true,
   "data": {
-    "businessName": "Vardhan Property Finance Advisory",
+    "businessName": "WealthAnchor Property Finance Advisory",
     "businessPhone": "+91 98765 43210",
-    "businessEmail": "contact@vardhanfinance.in",
+    "businessEmail": "contact@wealthanchor.in",
     "officeAddress": "Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001",
     "cityState": "Bengaluru, Karnataka, India",
     "heroEyebrow": "PROPERTY FINANCE & LOAN ASSISTANCE",
     "heroHeadline": "Find the Right Funding Path for Your Property.",
-    "disclaimerText": "Vardhan Property Finance Advisory is an independent loan consultancy..."
+    "disclaimerText": "WealthAnchor Property Finance Advisory is an independent loan consultancy..."
   }
 }
 ```
@@ -119,7 +119,7 @@ Authenticates administrator with email & password. Issues JWT and sets HTTP-only
 **Request Body:**
 ```json
 {
-  "email": "admin@vardhanfinance.in",
+  "email": "admin@wealthanchor.in",
   "password": "Admin@123456"
 }
 ```
@@ -133,7 +133,7 @@ Authenticates administrator with email & password. Issues JWT and sets HTTP-only
     "admin": {
       "id": "cm2...",
       "name": "Advisory Operations Manager",
-      "email": "admin@vardhanfinance.in",
+      "email": "admin@wealthanchor.in",
       "role": "superadmin"
     }
   }

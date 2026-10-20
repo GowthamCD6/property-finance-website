@@ -12,7 +12,7 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
   const cleanPhone = phone.replace(/[^0-9]/g, '');
 
   const defaultMessage = encodeURIComponent(
-    'Hello Vardhan Finance, I would like to consult with an advisor regarding a Property Loan / LAP requirement.'
+    'Hello WealthAnchor, I would like to consult with an advisor regarding a Property Loan / LAP requirement.'
   );
 
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${defaultMessage}`;
@@ -25,7 +25,7 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-3">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                VF
+                WA
               </div>
               <div>
                 <div className="flex items-center gap-1">

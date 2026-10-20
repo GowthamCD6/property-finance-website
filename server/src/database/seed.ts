@@ -5,7 +5,7 @@ async function main() {
   console.log('🌱 Starting database seed...');
 
   // 1. Seed Admin User
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@vardhanfinance.in';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@wealthanchor.in';
   const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@123456';
   const passwordHash = await bcrypt.hash(defaultPassword, 10);
 
@@ -36,9 +36,9 @@ async function main() {
     await prisma.siteContent.create({
       data: {
         id: 'default_content',
-        businessName: 'Vardhan Property Finance Advisory',
+        businessName: 'WealthAnchor Property Finance Advisory',
         businessPhone: '+91 98765 43210',
-        businessEmail: 'contact@vardhanfinance.in',
+        businessEmail: 'contact@wealthanchor.in',
         officeAddress: 'Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001',
         cityState: 'Bengaluru, Karnataka, India',
         businessHours: 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)',
@@ -51,10 +51,10 @@ async function main() {
         aboutHeading: 'Dedicated Property Loan Consultancy with Transparent Guidance',
         aboutText: 'We assist property owners, buyers, and business professionals in navigating the loan evaluation process. Our focus is helping you understand eligibility guidelines, assemble required documentation, and connect with reputable lending institutions suited to your profile.',
         aboutImageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80',
-        disclaimerText: 'Vardhan Property Finance Advisory is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.',
+        disclaimerText: 'WealthAnchor Property Finance Advisory is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.',
         privacyPolicy: 'We respect your confidentiality. The personal, financial, and property details shared in this enquiry are solely used for eligibility assessment and arranging consultation. We do not sell or distribute your data to unauthorized third parties.',
         termsConditions: 'Information provided on this website is for informational and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.',
-        copyrightText: 'Vardhan Property Finance Advisory. All rights reserved.',
+        copyrightText: 'WealthAnchor Property Finance Advisory. All rights reserved.',
       },
     });
     console.log('✅ Default site content created');
@@ -120,7 +120,7 @@ async function main() {
     },
     {
       question: 'Are you a direct lender, bank, or NBFC?',
-      answer: 'No. Vardhan Property Finance Advisory is an independent financial consultancy firm. We do not disburse funds or grant loan approvals ourselves. We guide applicants, assess preliminary eligibility, streamline documentation, and facilitate discussions with regulated commercial banks and NBFCs.',
+      answer: 'No. WealthAnchor Property Finance Advisory is an independent financial consultancy firm. We do not disburse funds or grant loan approvals ourselves. We guide applicants, assess preliminary eligibility, streamline documentation, and facilitate discussions with regulated commercial banks and NBFCs.',
       category: 'About Us',
       displayOrder: 2,
       isPublished: true,

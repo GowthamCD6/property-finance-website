@@ -33,7 +33,7 @@ PORT=5000
 NODE_ENV=development
 DATABASE_URL="file:./dev.db"
 JWT_SECRET=super-secure-production-jwt-secret-key-replace-in-production-12345
-ADMIN_EMAIL=admin@vardhanfinance.in
+ADMIN_EMAIL=admin@wealthanchor.in
 ADMIN_DEFAULT_PASSWORD=Admin@123456
 CLIENT_URL=http://localhost:5173
 TIMEZONE=Asia/Kolkata
@@ -53,7 +53,7 @@ npx tsx src/database/seed.ts
 Output:
 ```
 🌱 Starting database seed...
-✅ Admin user created: admin@vardhanfinance.in (password: Admin@123456)
+✅ Admin user created: admin@wealthanchor.in (password: Admin@123456)
 ✅ Default site content created
 ✅ 4 Services seeded
 ✅ 7 FAQs seeded
@@ -81,7 +81,7 @@ Or run individually:
 | Detail | Value |
 |---|---|
 | **Portal URL** | `http://localhost:5173/admin/login` |
-| **Email** | `admin@vardhanfinance.in` |
+| **Email** | `admin@wealthanchor.in` |
 | **Password** | `Admin@123456` |
 | **Role** | Super Administrator |
 

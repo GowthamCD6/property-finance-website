@@ -1,4 +1,4 @@
-# Vardhan Property Finance Advisory — Production Website & Admin Portal
+# WealthAnchor Property Finance Advisory — Production Website & Admin Portal
 
 A full-stack, production-oriented property-backed loan assistance and advisory web application tailored for the Indian financial services landscape.
 
@@ -99,7 +99,7 @@ npm run dev
 | Key | Value |
 |---|---|
 | **Portal URL** | `http://localhost:5174/admin/login` |
-| **Email** | `admin@vardhanfinance.in` |
+| **Email** | `admin@wealthanchor.in` |
 | **Password** | `Admin@123456` |
 | **Role** | Super Administrator |
 
@@ -157,4 +157,4 @@ npm test
 ---
 
 ## 📄 License
-Commercial proprietary license for Vardhan Property Finance Advisory.
+Commercial proprietary license for WealthAnchor Property Finance Advisory.

@@ -55,9 +55,9 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const businessName = content?.businessName || 'Vardhan Property Finance';
+  const businessName = content?.businessName || 'WealthAnchor';
   const businessPhone = content?.businessPhone || '+91 98765 43210';
-  const businessEmail = content?.businessEmail || 'contact@vardhanfinance.in';
+  const businessEmail = content?.businessEmail || 'contact@wealthanchor.in';
   const officeAddress = content?.cityState || 'Bengaluru, Karnataka, India';
   const businessHours = content?.businessHours || 'Mon – Sat: 9:30 AM – 6:30 PM (IST)';
 
