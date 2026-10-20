@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Building2, Phone, Mail, MapPin, Clock, Lock, ArrowUp } from 'lucide-react';
 import { SiteContent } from '../../types';
 import { PrivacyModal } from './PrivacyModal';
+import { WealthAnchorLogo } from './WealthAnchorLogo';
 
 interface FooterProps {
   content?: SiteContent | null;
@@ -34,17 +35,10 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
           {/* Brand & Mission */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-brand-teal flex items-center justify-center text-white">
-                <Building2 className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="font-bold text-lg tracking-tight block text-white leading-tight">
-                  {businessName}
-                </span>
-                <span className="text-xs uppercase tracking-wider text-gray-300 block">
-                  Property Loan Advisory
-                </span>
-              </div>
+              <WealthAnchorLogo size={40} showWordmark={false} />
+              <span className="font-extrabold text-xl tracking-tight text-white font-heading">
+                WealthAnchor
+              </span>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed">
               Assisting property owners, homebuyers, and business professionals with transparent eligibility analysis and structured lender consultation.

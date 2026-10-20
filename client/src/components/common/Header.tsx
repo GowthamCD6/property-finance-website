@@ -19,6 +19,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { SiteContent } from '../../types';
+import { WealthAnchorLogo } from './WealthAnchorLogo';
 
 interface HeaderProps {
   content?: SiteContent | null;
@@ -101,10 +102,6 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-2 flex items-center justify-between flex-nowrap whitespace-nowrap overflow-x-auto">
           <div className="flex items-center space-x-6 flex-nowrap shrink-0">
             <span className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-              <MapPin className="w-3.5 h-3.5 text-brand-teal shrink-0" />
-              <span>{officeAddress}</span>
-            </span>
-            <span className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
               <Clock className="w-3.5 h-3.5 text-brand-teal shrink-0" />
               <span>{businessHours}</span>
             </span>
@@ -117,13 +114,6 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             >
               <Mail className="w-3.5 h-3.5 text-brand-teal shrink-0" />
               <span>{businessEmail}</span>
-            </a>
-            <a
-              href={`tel:${businessPhone.replace(/\s+/g, '')}`}
-              className="flex items-center gap-1.5 font-semibold text-white hover:text-brand-teal transition-colors shrink-0 whitespace-nowrap"
-            >
-              <Phone className="w-3.5 h-3.5 text-brand-teal shrink-0" />
-              <span>{businessPhone}</span>
             </a>
             <Link
               to="/admin/login"
@@ -145,19 +135,9 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
       >
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="flex items-center justify-between flex-nowrap gap-4">
-            {/* Brand Logo & Wordmark */}
-            <Link to="/" className="flex items-center gap-3 text-brand-navy flex-shrink-0 whitespace-nowrap group">
-              <div className="w-10 h-10 rounded-lg bg-brand-teal flex items-center justify-center text-white shadow-sm flex-shrink-0 transition-transform group-hover:scale-105">
-                <Building2 className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col shrink-0">
-                <span className="font-extrabold text-base sm:text-lg tracking-tight text-brand-navy leading-tight block whitespace-nowrap">
-                  {businessName}
-                </span>
-                <span className="text-[10px] uppercase tracking-wider font-semibold text-brand-slate block whitespace-nowrap">
-                  Property Loan Advisory
-                </span>
-              </div>
+            {/* Brand Logo & Wordmark (Clean Logo + Only WealthAnchor) */}
+            <Link to="/" className="flex items-center text-brand-navy flex-shrink-0 whitespace-nowrap group">
+              <WealthAnchorLogo size={40} showWordmark={true} />
             </Link>
 
             {/* Desktop Navigation Links */}
@@ -298,20 +278,12 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
 
             {/* Right Action CTA */}
             <div className="hidden lg:flex items-center gap-3 xl:gap-4 flex-shrink-0 whitespace-nowrap">
-              <a
-                href={`tel:${businessPhone.replace(/\s+/g, '')}`}
-                className="hidden xl:inline-flex items-center gap-2 text-xs font-semibold text-brand-navy hover:text-brand-teal transition-colors py-2 px-3 rounded-corporate hover:bg-brand-ivory border border-brand-border/60"
-              >
-                <Phone className="w-3.5 h-3.5 text-brand-teal" />
-                <span>{businessPhone}</span>
-              </a>
-
               <Link
                 to="/enquire"
-                className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 text-xs font-semibold text-white bg-brand-teal hover:bg-brand-teal-hover transition-all duration-150 rounded-corporate shadow-sm hover:shadow whitespace-nowrap flex-shrink-0"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-brand-teal hover:bg-brand-teal-hover transition-all duration-150 rounded-corporate shadow-sm hover:shadow btn-primary-glow shimmer-effect whitespace-nowrap flex-shrink-0"
               >
-                <span className="whitespace-nowrap">Book a Consultation</span>
-                <ArrowRight className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="whitespace-nowrap">Apply Now</span>
+                <ArrowRight className="w-4 h-4 flex-shrink-0" />
               </Link>
             </div>
 
@@ -420,21 +392,13 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
           </div>
 
           <div className="pt-2 border-t border-gray-100 flex flex-col space-y-2">
-            <a
-              href={`tel:${businessPhone.replace(/\s+/g, '')}`}
-              className="flex items-center justify-center gap-2 py-2.5 px-3 bg-brand-ivory text-brand-navy font-semibold text-xs rounded-corporate border border-brand-border"
-            >
-              <Phone className="w-4 h-4 text-brand-teal" />
-              <span>Call: {businessPhone}</span>
-            </a>
-
             <Link
               to="/enquire"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-brand-teal hover:bg-brand-teal-hover text-white font-semibold text-xs rounded-corporate text-center"
+              className="flex items-center justify-center gap-2 py-3 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm rounded-corporate text-center btn-primary-glow shimmer-effect shadow-sm"
             >
-              <span>Book a Consultation</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Apply Now</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
