@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { Hero } from '../../components/public/Hero';
+import { StatsBar } from '../../components/public/StatsBar';
 import { LenderPartners } from '../../components/public/LenderPartners';
 import { ServicesSection } from '../../components/public/ServicesSection';
 import { RateComparisonMatrix } from '../../components/public/RateComparisonMatrix';
-import { WhyWorkWithUs } from '../../components/public/WhyWorkWithUs';
-import { CaseStudiesSection } from '../../components/public/CaseStudiesSection';
 import { HowItWorks } from '../../components/public/HowItWorks';
+import { TestimonialsSection } from '../../components/public/TestimonialsSection';
+import { CaseStudiesSection } from '../../components/public/CaseStudiesSection';
 import { InteractiveDocumentVault } from '../../components/public/InteractiveDocumentVault';
+import { WhyWorkWithUs } from '../../components/public/WhyWorkWithUs';
 import { EnquiryForm } from '../../components/public/EnquiryForm';
 import { FaqSection } from '../../components/public/FaqSection';
 import { Service, Faq, SiteContent } from '../../types';
-import { Calculator, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Calculator, ArrowRight } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const { content, services, faqs } = useOutletContext<{
@@ -30,25 +32,28 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col">
-      {/* 1. Hero Section */}
+      {/* 1. Hero with Instant Loan Estimator Card */}
       <Hero content={content} />
 
-      {/* 2. Top Lender & Banking Network (SBI, HDFC, ICICI, etc.) */}
+      {/* 2. Live Key Stats Counter */}
+      <StatsBar />
+
+      {/* 3. Premier Lender Partners Network */}
       <LenderPartners />
 
-      {/* 3. Core Specialized Loan Services */}
+      {/* 4. Core Tailored Loan Offerings */}
       <ServicesSection
         services={services}
         onSelectService={handleSelectService}
       />
 
-      {/* 4. Live Multi-Lender Rate Comparison Matrix */}
+      {/* 5. Live Multi-Lender Rate Comparison Matrix */}
       <RateComparisonMatrix />
 
-      {/* 5. Interactive EMI & Eligibility Calculator Teaser */}
+      {/* 6. Dynamic EMI & FOIR Calculator Banner */}
       <section className="py-16 sm:py-20 bg-brand-ivory/50 border-b border-brand-border/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 sm:p-12 rounded-2xl bg-white border border-brand-border flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
+        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
+          <div className="max-w-7xl mx-auto p-8 sm:p-12 rounded-2xl bg-white border border-brand-border flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
                 <Calculator className="w-3.5 h-3.5" />
@@ -81,26 +86,29 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. Why Work With Us & Advisory Principles */}
-      <WhyWorkWithUs content={content} />
-
-      {/* 7. Real Client Advisory Case Studies */}
-      <CaseStudiesSection />
-
-      {/* 8. Step-by-Step Advisory Workflow */}
+      {/* 7. 4-Step Digital Application Journey */}
       <HowItWorks />
 
-      {/* 9. Interactive Pre-Application Document Vault */}
+      {/* 8. Customer Testimonials & Reviews */}
+      <TestimonialsSection />
+
+      {/* 9. Real Client Advisory Case Studies */}
+      <CaseStudiesSection />
+
+      {/* 10. Interactive Pre-Application Document Vault */}
       <InteractiveDocumentVault />
 
-      {/* 10. Direct Online Loan Consultation Form */}
+      {/* 11. Why Work With Us & Advisory Principles */}
+      <WhyWorkWithUs content={content} />
+
+      {/* 12. Direct Online Loan Consultation Form */}
       <EnquiryForm
         services={services}
         selectedService={selectedService}
         onClearSelectedService={() => setSelectedService(null)}
       />
 
-      {/* 11. Frequently Asked Questions */}
+      {/* 13. Frequently Asked Questions */}
       <FaqSection faqs={faqs} />
     </div>
   );
