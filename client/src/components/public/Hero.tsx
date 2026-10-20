@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircle2, ArrowRight, ShieldCheck, Zap, Calculator, Sparkles, Building2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  ArrowRight,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+  Building2,
+  Clock,
+  Landmark,
+} from 'lucide-react';
 import { SiteContent } from '../../types';
 
 interface HeroProps {
@@ -41,33 +50,59 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
     navigate('/enquire');
   };
 
+  // Real, authentic architectural property photograph (Unsplash real photography)
+  const heroRealImageUrl =
+    content?.heroImageUrl ||
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85';
+
   return (
-    <section id="hero" className="relative bg-white pt-8 pb-16 lg:pt-14 lg:pb-20 overflow-hidden border-b border-brand-border/60">
-      <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
+    <section id="hero" className="relative bg-[#0c1f30] overflow-hidden">
+      {/* 1. Real Property Photograph Layer with Deep Navy Gradient Overlay */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={heroRealImageUrl}
+          alt="Modern property architectural residence"
+          className="w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000"
+          loading="eager"
+        />
+        {/* Authoritative multi-stop gradient for razor-sharp typography readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1926]/95 via-[#0e2438]/90 to-[#0a1926]/75 lg:to-[#0a1926]/60 backdrop-blur-[1px]" />
+        {/* Subtle radial ambient teal lighting in top corner */}
+        <div className="absolute -top-24 right-0 w-[500px] h-[500px] bg-brand-teal/20 rounded-full blur-3xl pointer-events-none" />
+      </div>
+
+      {/* 2. Hero Content Container (Placed cleanly over the real image) */}
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-10 xl:px-12 pt-12 pb-16 lg:pt-16 lg:pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Column: Bold Value Proposition */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Top Eyebrow */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase border border-brand-teal/20">
-              <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse"></span>
-              <span>Fast-Track Property Loan Advisory</span>
+          
+          {/* Left Column: Value Proposition & Authoritative Copy */}
+          <div className="lg:col-span-7 space-y-6 text-white animate-fade-in-up">
+            {/* Top Eyebrow Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 text-xs font-bold tracking-wider uppercase backdrop-blur-md select-none">
+              <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+              <span>Fast-Track Property Loan Facilitation</span>
+              <span className="text-white/40 hidden sm:inline">•</span>
+              <span className="text-white/80 hidden sm:inline">Instant Pre-Check</span>
             </div>
 
-            {/* Headline inspired by easyhomefinance.in style */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-brand-navy tracking-tight leading-[1.12]">
-              Paperless Home Loans &amp; LAP In As Quick As <span className="text-brand-teal">24 Hours</span>
+            {/* Headline */}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight leading-[1.14] font-heading">
+              Paperless Home Loans &amp; LAP In As Quick As{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-200 to-emerald-400">
+                24 Hours
+              </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-brand-slate leading-relaxed max-w-2xl">
-              Get unbiased multi-lender assessments across 40+ leading public &amp; private banks in India. Lowest benchmark interest rates from <strong className="text-brand-navy">8.40%* p.a.</strong> with zero upfront sanction fees.
+            <p className="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl font-sans">
+              Get unbiased multi-lender assessments across 40+ leading public &amp; private banks in India. Lowest benchmark interest rates starting from <strong className="text-white font-semibold underline decoration-brand-teal decoration-2 underline-offset-4">8.40%* p.a.</strong> with zero upfront sanction fees.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
               <Link
                 to="/enquire"
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 text-sm sm:text-base font-semibold text-white bg-brand-teal hover:bg-brand-teal-hover rounded-corporate transition-all duration-150 shadow-sm hover:shadow btn-primary-glow shimmer-effect"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm sm:text-base font-bold text-white bg-brand-teal hover:bg-brand-teal-hover rounded-corporate transition-all duration-150 shadow-lg btn-primary-glow shimmer-effect text-center"
               >
                 <span>Apply Online in 3 Minutes</span>
                 <ArrowRight className="w-4 h-4" />
@@ -75,38 +110,57 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
 
               <Link
                 to="/calculator"
-                className="inline-flex items-center justify-center px-6 py-3.5 text-sm sm:text-base font-semibold text-brand-navy bg-brand-ivory hover:bg-gray-100 border border-brand-border rounded-corporate transition-colors text-center"
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm sm:text-base font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md rounded-corporate transition-colors text-center"
               >
                 Explore Full Calculator
               </Link>
             </div>
 
-            {/* 3 Core Trust Pillars */}
-            <div className="pt-6 border-t border-brand-border/80 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-brand-teal flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-brand-navy">
+            {/* 3 Core Trust Pillars (Frosted glass cards placed over real property visual) */}
+            <div className="pt-6 border-t border-white/15 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white">
                   Zero Upfront Advisory Fees
                 </span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-brand-teal flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-brand-navy">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <Landmark className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white">
                   40+ Bank &amp; NBFC Tie-ups
                 </span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-4 h-4 text-brand-teal flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-brand-navy">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <ShieldCheck className="w-5 h-5 text-teal-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white">
                   Pre-Login Title Scrutiny
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Embedded Quick-Quote & Instant Decision Card */}
-          <div className="lg:col-span-5 relative">
-            <div className="bg-white rounded-2xl border-2 border-brand-teal/30 p-6 sm:p-7 shadow-modal relative z-10 space-y-6">
+          {/* Right Column: Embedded Quick-Quote Calculator & Floating Badges */}
+          <div className="lg:col-span-5 relative animate-fade-in-up">
+            
+            {/* Top Floating Badge */}
+            <div className="absolute -top-4 -left-3 sm:-top-5 sm:-left-4 bg-white/95 backdrop-blur-md py-2 px-3.5 rounded-xl border border-white shadow-xl flex items-center gap-2.5 z-20 pulse-badge select-none">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Zap className="w-4 h-4 fill-emerald-600" />
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-slate-500 block leading-tight">Fast Decision</span>
+                <span className="text-xs font-extrabold text-brand-navy">24 – 48h In-Principle</span>
+              </div>
+            </div>
+
+            {/* Bottom Floating Badge */}
+            <div className="hidden sm:flex absolute -bottom-4 -right-3 bg-brand-navy/95 backdrop-blur-md py-2 px-3.5 rounded-xl border border-white/20 shadow-xl items-center gap-2 z-20 text-white select-none">
+              <div className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
+              <span className="text-xs font-semibold">40+ Partner Lenders Linked</span>
+            </div>
+
+            {/* Calculator Card */}
+            <div className="bg-white rounded-2xl border border-white/50 p-6 sm:p-7 shadow-2xl relative z-10 space-y-6">
               {/* Card Header & Switcher */}
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -116,7 +170,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
                       Instant Loan Estimator
                     </span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                     Digital Pre-Check
                   </span>
                 </div>
