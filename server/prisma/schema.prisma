@@ -1,0 +1,171 @@
+// Prisma schema for Property Loan Consultancy Website
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         String    @default("admin")
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model SiteContent {
+  id                   String   @id @default("default_content")
+  businessName         String   @default("Vardhan Property Finance Advisory")
+  businessPhone        String   @default("+91 98765 43210")
+  businessEmail        String   @default("contact@vardhanfinance.in")
+  officeAddress        String   @default("Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001")
+  cityState            String   @default("Bengaluru, Karnataka, India")
+  businessHours        String   @default("Monday – Saturday: 9:30 AM – 6:30 PM (IST)")
+  
+  heroEyebrow          String   @default("PROPERTY FINANCE & LOAN ASSISTANCE")
+  heroHeadline         String   @default("Find the Right Funding Path for Your Property.")
+  heroSubtitle         String   @default("Explore home loan and loan-against-property options with guidance tailored to your property, financial needs and repayment capacity.")
+  heroCtaText          String   @default("Discuss Your Loan")
+  heroSecondaryCtaText String   @default("Explore Our Services")
+  heroImageUrl         String   @default("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80")
+  
+  aboutHeading         String   @default("Dedicated Property Loan Consultancy with Transparent Guidance")
+  aboutText            String   @default("We assist property owners, buyers, and business professionals in navigating the loan evaluation process. Our focus is helping you understand eligibility guidelines, assemble required documentation, and connect with reputable lending institutions suited to your profile.")
+  aboutImageUrl        String   @default("https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80")
+  
+  disclaimerText       String   @default("Vardhan Property Finance Advisory is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.")
+  privacyPolicy        String   @default("We respect your confidentiality. The personal, financial, and property details shared in this enquiry are solely used for eligibility assessment and arranging consultation. We do not sell or distribute your data to unauthorized third parties.")
+  termsConditions      String   @default("Information provided on this website is for informational and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.")
+  copyrightText        String   @default("Vardhan Property Finance Advisory. All rights reserved.")
+  
+  updatedAt            DateTime @updatedAt
+  createdAt            DateTime @default(now())
+}
+
+model Service {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  title            String
+  shortDescription String
+  fullDescription  String
+  iconName         String   @default("Home")
+  displayOrder     Int      @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  enquiries        Enquiry[]
+}
+
+model Faq {
+  id           String   @id @default(cuid())
+  question     String
+  answer       String
+  category     String   @default("General")
+  displayOrder Int      @default(0)
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Enquiry {
+  id                     String          @id @default(cuid())
+  referenceNumber        String          @unique
+  fullName               String
+  mobileNumber           String
+  email                  String?
+  preferredContactMethod String          @default("phone") // phone, email, whatsapp
+  cityState              String
+  
+  loanType               String          // Home Loan, Loan Against Property, etc.
+  serviceId              String?
+  service                Service?        @relation(fields: [serviceId], references: [id])
+  
+  loanAmount             Float           // Stored as numeric amount in INR
+  propertyType           String          // residential, commercial, land, other
+  propertyLocation       String
+  propertyOwnershipStatus String         // owned, jointly_owned, purchasing, other
+  employmentType         String          // salaried, self_employed, business_owner, other
+  
+  preferredDate          String          // YYYY-MM-DD
+  preferredTimeSlot      String          // e.g. 10:00 AM - 11:00 AM
+  meetingMode            String          @default("phone") // phone, video, in_person
+  additionalNotes        String?
+  
+  status                 String          @default("New") 
+  // Statuses: New, Contacted, Follow-up Required, Appointment Requested, Appointment Confirmed, In Review, Converted, Closed
+  consentGiven           Boolean         @default(false)
+  
+  appointments           Appointment[]
+  notes                  EnquiryNote[]
+  statusHistory          StatusHistory[]
+  
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+}
+
+model Appointment {
+  id                 String    @id @default(cuid())
+  enquiryId          String
+  enquiry            Enquiry   @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  
+  date               String    // YYYY-MM-DD
+  timeSlot           String    // e.g. 10:00 AM - 11:00 AM
+  timezone           String    @default("Asia/Kolkata")
+  meetingMode        String    @default("phone")
+  status             String    @default("Requested") // Requested, Confirmed, Rescheduled, Cancelled, Completed
+  
+  rescheduleReason   String?
+  cancellationReason String?
+  adminNotes         String?
+  
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([date, timeSlot])
+}
+
+model EnquiryNote {
+  id         String   @id @default(cuid())
+  enquiryId  String
+  enquiry    Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  authorName String   @default("Consultant")
+  content    String
+  createdAt  DateTime @default(now())
+}
+
+model StatusHistory {
+  id         String   @id @default(cuid())
+  enquiryId  String
+  enquiry    Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  fromStatus String
+  toStatus   String
+  changedBy  String   @default("System")
+  note       String?
+  createdAt  DateTime @default(now())
+}
+
+model AvailabilityConfig {
+  id                  String   @id @default(cuid())
+  dayOfWeek           Int      // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+  dayName             String   // "Monday", "Tuesday", etc.
+  startTime           String   @default("10:00") // HH:mm
+  endTime             String   @default("18:00") // HH:mm
+  slotDurationMinutes Int      @default(60)
+  isAvailable         Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model BlockedDate {
+  id        String   @id @default(cuid())
+  date      String   @unique // YYYY-MM-DD
+  reason    String   @default("Holiday")
+  createdAt DateTime @default(now())
+}
