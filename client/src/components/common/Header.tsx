@@ -96,48 +96,24 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white font-sans w-full max-w-full transition-all duration-200">
-      {/* 1. TOP UTILITY BAR (Corporate Contact & Advisory Hours) */}
-      <div className="bg-brand-navy text-gray-300 text-[11px] border-b border-white/10 hidden md:block select-none w-full">
-        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-2 flex items-center justify-between flex-nowrap whitespace-nowrap overflow-x-auto">
-          <div className="flex items-center space-x-6 flex-nowrap shrink-0">
-            <span className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-              <Clock className="w-3.5 h-3.5 text-brand-teal shrink-0" />
-              <span>{businessHours}</span>
-            </span>
-          </div>
-
-          <div className="flex items-center space-x-6 flex-nowrap shrink-0">
-            <a
-              href={`mailto:${businessEmail}`}
-              className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0 whitespace-nowrap"
-            >
-              <Mail className="w-3.5 h-3.5 text-brand-teal shrink-0" />
-              <span>{businessEmail}</span>
-            </a>
-            <Link
-              to="/admin/login"
-              className="text-gray-400 hover:text-gray-200 text-[10px] uppercase tracking-wider transition-colors border-l border-white/15 pl-4 shrink-0 whitespace-nowrap"
-            >
-              Admin Access
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. MAIN NAVIGATION BAR */}
+    <header
+      className={`sticky top-0 z-50 font-sans w-full max-w-full transition-all duration-300 ease-out ${
+        isScrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-b border-brand-border/80'
+          : 'bg-[#f7f7f2] border-b border-brand-border/40'
+      }`}
+    >
+      {/* MAIN NAVIGATION BAR (Animated on scroll) */}
       <div
-        className={`border-b transition-all duration-200 w-full ${
-          isScrolled
-            ? 'border-brand-border shadow-subtle py-2.5 bg-white/95 backdrop-blur-md'
-            : 'border-brand-border/60 py-3.5 bg-white'
+        className={`transition-all duration-300 ease-out w-full ${
+          isScrolled ? 'py-2.5 sm:py-3' : 'py-3.5 sm:py-4'
         }`}
       >
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="flex items-center justify-between flex-nowrap gap-4">
             {/* Brand Logo & Wordmark (Clean Logo + Only WealthAnchor) */}
             <Link to="/" className="flex items-center text-brand-navy flex-shrink-0 whitespace-nowrap group">
-              <WealthAnchorLogo size={40} showWordmark={true} />
+              <WealthAnchorLogo size={isScrolled ? 36 : 40} showWordmark={true} />
             </Link>
 
             {/* Desktop Navigation Links */}

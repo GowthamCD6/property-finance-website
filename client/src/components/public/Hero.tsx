@@ -24,7 +24,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
     'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85';
 
   return (
-    <section id="hero" className="relative bg-gradient-to-b from-white via-brand-ivory/40 to-white pt-10 pb-16 lg:pt-16 lg:pb-24 border-b border-brand-border/60 overflow-hidden">
+    <section id="hero" className="relative bg-[#f7f7f2] pt-8 pb-16 lg:pt-14 lg:pb-24 border-b border-brand-border/60 overflow-hidden">
       <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           
