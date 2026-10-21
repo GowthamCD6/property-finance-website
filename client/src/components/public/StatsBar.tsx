@@ -30,7 +30,7 @@ export const StatsBar: React.FC = () => {
   ];
 
   return (
-    <section className="relative z-20 -mt-16 sm:-mt-20 lg:-mt-28 px-4 pb-6 sm:pb-8">
+    <section className="relative z-20 -mt-8 sm:-mt-10 lg:-mt-14 px-4 pb-6 sm:pb-8">
       <div className="w-[85%] max-w-7xl mx-auto p-6 sm:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {stats.map((s, idx) => (

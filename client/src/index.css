@@ -369,3 +369,133 @@ a:focus-visible, button:focus-visible {
 .mobile-service-link:hover {
   background-color: rgba(255,255,255,0.8);
 }
+
+/* ─── Animated Headline Shimmer ─── */
+.shimmer-headline-text {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 35%,
+    #bae6fd 50%,
+    #ffffff 65%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text-flow 5s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes shimmer-text-flow {
+  0%, 15% {
+    background-position: 200% center;
+  }
+  45%, 100% {
+    background-position: -200% center;
+  }
+}
+
+/* ─── Hero Button Professional Micro-Animations ─── */
+.hero-btn-primary {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, background 0.28s ease;
+}
+
+.hero-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.32),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.75s cubic-bezier(0.19, 1, 0.22, 1);
+  pointer-events: none;
+}
+
+.hero-btn-primary:hover::before {
+  left: 180%;
+}
+
+.hero-btn-primary:hover {
+  transform: translateY(-2.5px);
+  box-shadow: 0 14px 28px -4px rgba(24, 124, 120, 0.55), 0 0 16px rgba(45, 212, 191, 0.35);
+}
+
+.hero-btn-primary:active {
+  transform: translateY(-0.5px) scale(0.99);
+}
+
+.hero-btn-primary .hero-btn-arrow {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-btn-primary:hover .hero-btn-arrow {
+  transform: translateX(4px);
+}
+
+/* Secondary Button Hover Micro-Animation */
+.hero-btn-secondary {
+  position: relative;
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-btn-secondary:hover {
+  transform: translateY(-2.5px);
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.4), 0 0 14px rgba(255, 255, 255, 0.15);
+}
+
+.hero-btn-secondary:active {
+  transform: translateY(-0.5px) scale(0.99);
+}
+
+.hero-btn-secondary .hero-calc-icon {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+}
+
+.hero-btn-secondary:hover .hero-calc-icon {
+  transform: scale(1.18) rotate(-6deg);
+  color: #5eead4 !important;
+}
+
+/* Tertiary Link Hover Micro-Animation */
+.hero-btn-tertiary {
+  position: relative;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.hero-btn-tertiary::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 24px;
+  right: 42px;
+  height: 1.5px;
+  background: #38bdf8;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-btn-tertiary:hover::after {
+  transform: scaleX(1);
+}
+
+.hero-btn-tertiary .hero-explore-arrow {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-btn-tertiary:hover .hero-explore-arrow {
+  transform: translateX(5px);
+}
