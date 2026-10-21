@@ -4,12 +4,14 @@ interface LogoProps {
   className?: string;
   size?: number;
   showWordmark?: boolean;
+  variant?: 'dark' | 'light';
 }
 
 export const WealthAnchorLogo: React.FC<LogoProps> = ({
   className = '',
   size = 40,
   showWordmark = true,
+  variant = 'dark',
 }) => {
   return (
     <div className={`inline-flex items-center gap-3 select-none ${className}`}>
@@ -80,7 +82,11 @@ export const WealthAnchorLogo: React.FC<LogoProps> = ({
 
       {/* Brand Wordmark (Only "WealthAnchor") */}
       {showWordmark && (
-        <span className="font-extrabold text-lg sm:text-xl tracking-tight text-brand-navy leading-none font-heading whitespace-nowrap">
+        <span
+          className={`font-extrabold text-xl sm:text-2xl tracking-tight leading-none font-heading whitespace-nowrap transition-colors ${
+            variant === 'light' ? 'text-white' : 'text-brand-navy'
+          }`}
+        >
           WealthAnchor
         </span>
       )}

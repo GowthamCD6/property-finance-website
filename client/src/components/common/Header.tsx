@@ -1,22 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  Phone,
-  Mail,
-  Clock,
-  MapPin,
   ChevronDown,
-  Building2,
   Home,
   Building,
   Briefcase,
   FileCheck,
-  Calculator,
-  HelpCircle,
   Menu,
   X,
   ArrowRight,
-  Shield,
 } from 'lucide-react';
 import { SiteContent } from '../../types';
 import { WealthAnchorLogo } from './WealthAnchorLogo';
@@ -31,21 +23,26 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Scroll handler: always keep header visible, animate background & compact padding on scroll
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 15);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Check initial scroll position
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close dropdown on outside click or route change
+  // Close dropdown and mobile menu on route change
   useEffect(() => {
     setServicesDropdownOpen(false);
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -56,329 +53,434 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const businessName = content?.businessName || 'WealthAnchor';
-  const businessPhone = content?.businessPhone || '+91 98765 43210';
-  const businessEmail = content?.businessEmail || 'contact@wealthanchor.in';
-  const officeAddress = content?.cityState || 'Bengaluru, Karnataka, India';
-  const businessHours = content?.businessHours || 'Mon – Sat: 9:30 AM – 6:30 PM (IST)';
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
+  const handleDropdownEnter = useCallback(() => {
+    if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
+    setServicesDropdownOpen(true);
+  }, []);
+
+  const handleDropdownLeave = useCallback(() => {
+    dropdownTimeout.current = setTimeout(() => {
+      setServicesDropdownOpen(false);
+    }, 200);
+  }, []);
 
   const serviceItems = [
     {
       title: 'Home Loans',
-      desc: 'Purchase, resale, self-construction & balance transfer guidance',
+      desc: 'Purchase, resale, self-construction & balance transfer',
       path: '/services/home-loans',
-      icon: <Home className="w-4 h-4 text-brand-teal" />,
+      icon: <Home className="w-4 h-4" />,
     },
     {
-      title: 'Loans Against Property (LAP)',
-      desc: 'Secured funding against residential or commercial real estate',
+      title: 'Loan Against Property',
+      desc: 'Secured funding against residential or commercial assets',
       path: '/services/loan-against-property',
-      icon: <Building className="w-4 h-4 text-brand-teal" />,
+      icon: <Building className="w-4 h-4" />,
     },
     {
       title: 'Property-Backed Funding',
-      desc: 'Structured high-value capital & lease rental discounting (LRD)',
+      desc: 'Structured capital & lease rental discounting',
       path: '/services/property-backed-funding',
-      icon: <Briefcase className="w-4 h-4 text-brand-teal" />,
+      icon: <Briefcase className="w-4 h-4" />,
     },
     {
-      title: 'Loan Consultation & Advisory',
-      desc: 'In-depth eligibility review, CIBIL analysis & document audit',
+      title: 'Loan Consultation',
+      desc: 'Eligibility review, CIBIL analysis & document audit',
       path: '/services/loan-consultation',
-      icon: <FileCheck className="w-4 h-4 text-brand-teal" />,
+      icon: <FileCheck className="w-4 h-4" />,
     },
   ];
 
-  const isActive = (path: string) => {
-    if (path === '/' && location.pathname === '/') return true;
-    if (path !== '/' && location.pathname.startsWith(path)) return true;
-    return false;
+  const navLinks = [
+    { label: 'Home', path: '/', exact: true },
+    { label: 'About Us', path: '/about' },
+    { label: 'How It Works', path: '/how-it-works' },
+    { label: 'EMI Calculator', path: '/calculator' },
+    { label: 'FAQs', path: '/faqs' },
+    { label: 'Contact', path: '/contact' },
+  ];
+
+  const isActive = (path: string, exact?: boolean) => {
+    if (exact) return location.pathname === path;
+    return location.pathname.startsWith(path);
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 font-sans w-full max-w-full transition-all duration-300 ease-out ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-b border-brand-border/80'
-          : 'bg-[#f7f7f2] border-b border-brand-border/40'
-      }`}
-    >
-      {/* MAIN NAVIGATION BAR (Animated on scroll) */}
-      <div
-        className={`transition-all duration-300 ease-out w-full ${
-          isScrolled ? 'py-2.5 sm:py-3' : 'py-3.5 sm:py-4'
-        }`}
+    <>
+      <header
+        className="header-root"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          transition: 'background-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease',
+          backgroundColor: isScrolled ? 'rgba(20, 42, 60, 0.96)' : '#183247',
+          backdropFilter: 'blur(16px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+          boxShadow: isScrolled
+            ? '0 10px 30px -4px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0,0,0,0.3)'
+            : '0 4px 20px -2px rgba(0, 0, 0, 0.35)',
+          borderBottom: '1px solid rgba(45, 212, 191, 0.22)',
+        }}
       >
-        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
-          <div className="flex items-center justify-between flex-nowrap gap-4">
-            {/* Brand Logo & Wordmark (Clean Logo + Only WealthAnchor) */}
-            <Link to="/" className="flex items-center text-brand-navy flex-shrink-0 whitespace-nowrap group">
-              <WealthAnchorLogo size={isScrolled ? 36 : 40} showWordmark={true} />
+        <div
+          style={{
+            maxWidth: '1400px',
+            margin: '0 auto',
+            padding: isScrolled ? '14px 28px' : '22px 28px',
+            transition: 'padding 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            
+            {/* ─── Logo ─── */}
+            <Link
+              to="/"
+              style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}
+              className="group"
+            >
+              <WealthAnchorLogo size={isScrolled ? 38 : 44} showWordmark={true} variant="light" />
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-4 xl:gap-6 2xl:gap-7 text-xs xl:text-sm font-medium text-brand-navy flex-shrink-0 whitespace-nowrap">
-              <Link
-                to="/"
-                className={`py-1.5 transition-colors whitespace-nowrap flex-shrink-0 ${
-                  isActive('/') && location.pathname === '/'
-                    ? 'text-brand-teal font-semibold border-b-2 border-brand-teal'
-                    : 'hover:text-brand-teal'
-                }`}
-              >
-                Home
-              </Link>
+            {/* ─── Desktop Navigation ─── */}
+            <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`nav-link ${isActive(link.path, link.exact) ? 'nav-link--active' : ''}`}
+                >
+                  {link.label}
+                </Link>
+              ))}
 
               {/* Loan Solutions Dropdown */}
-              <div className="relative flex-shrink-0 whitespace-nowrap" ref={dropdownRef}>
+              <div
+                ref={dropdownRef}
+                className="nav-dropdown-wrapper"
+                onMouseEnter={handleDropdownEnter}
+                onMouseLeave={handleDropdownLeave}
+              >
                 <button
                   type="button"
                   onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
-                  onMouseEnter={() => setServicesDropdownOpen(true)}
-                  className={`inline-flex items-center gap-1 py-1.5 transition-colors focus:outline-none whitespace-nowrap flex-shrink-0 ${
-                    isActive('/services')
-                      ? 'text-brand-teal font-semibold border-b-2 border-brand-teal'
-                      : 'hover:text-brand-teal'
-                  }`}
+                  className={`nav-link nav-link--dropdown ${isActive('/services') ? 'nav-link--active' : ''}`}
                 >
-                  <span className="whitespace-nowrap">Loan Solutions</span>
+                  <span>Loan Solutions</span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-150 ${
-                      servicesDropdownOpen ? 'rotate-180 text-brand-teal' : 'text-brand-slate'
-                    }`}
+                    className="nav-chevron"
+                    style={{
+                      width: '14px',
+                      height: '14px',
+                      transition: 'transform 0.25s ease',
+                      transform: servicesDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    }}
                   />
                 </button>
 
-                {/* Dropdown Menu */}
-                {servicesDropdownOpen && (
-                  <div
-                    onMouseLeave={() => setServicesDropdownOpen(false)}
-                    className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-modal border border-brand-border p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
-                  >
-                    <div className="p-2 border-b border-gray-100 mb-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-brand-slate block">
-                        Our Specialized Loan Products
-                      </span>
-                    </div>
-
-                    <div className="space-y-1">
-                      {serviceItems.map((item) => (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-brand-teal-light/60 transition-colors group"
-                        >
-                          <div className="p-2 rounded-md bg-brand-ivory text-brand-teal group-hover:bg-brand-teal group-hover:text-white transition-colors flex-shrink-0 mt-0.5">
-                            {item.icon}
-                          </div>
-                          <div>
-                            <span className="font-semibold text-xs text-brand-navy group-hover:text-brand-teal block">
-                              {item.title}
-                            </span>
-                            <span className="text-[11px] text-brand-slate leading-tight block mt-0.5">
-                              {item.desc}
-                            </span>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-
-                    <div className="p-2 mt-1 pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-brand-slate">
-                      <span>Subject to lender criteria</span>
-                      <Link
-                        to="/services/home-loans"
-                        className="text-brand-teal font-semibold hover:underline"
-                      >
-                        Explore all &rarr;
-                      </Link>
-                    </div>
+                {/* Dropdown Panel */}
+                <div
+                  className="nav-dropdown-panel"
+                  style={{
+                    opacity: servicesDropdownOpen ? 1 : 0,
+                    visibility: servicesDropdownOpen ? 'visible' : 'hidden',
+                    transform: servicesDropdownOpen ? 'translateY(0)' : 'translateY(-8px)',
+                    transition: 'opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease',
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    marginLeft: '-180px',
+                    marginTop: '8px',
+                    width: '360px',
+                    backgroundColor: '#ffffff',
+                    borderRadius: '14px',
+                    boxShadow: '0 20px 60px -15px rgba(24,50,71,0.15), 0 4px 12px -2px rgba(24,50,71,0.08)',
+                    border: '1px solid rgba(229,231,235,0.8)',
+                    padding: '8px',
+                    zIndex: 100,
+                  }}
+                >
+                  <div style={{ padding: '8px 10px 6px', borderBottom: '1px solid #f1f5f4', marginBottom: '4px' }}>
+                    <span style={{
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      color: '#667085',
+                    }}>
+                      Specialized Loan Products
+                    </span>
                   </div>
-                )}
+
+                  {serviceItems.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className="dropdown-item"
+                    >
+                      <div className="dropdown-item-icon">
+                        {item.icon}
+                      </div>
+                      <div>
+                        <span className="dropdown-item-title">{item.title}</span>
+                        <span className="dropdown-item-desc">{item.desc}</span>
+                      </div>
+                    </Link>
+                  ))}
+
+                  <div style={{
+                    padding: '8px 10px 6px',
+                    marginTop: '4px',
+                    borderTop: '1px solid #f1f5f4',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    fontSize: '11px',
+                    color: '#667085',
+                  }}>
+                    <span>Subject to lender criteria</span>
+                    <Link
+                      to="/services/home-loans"
+                      style={{ color: '#187C78', fontWeight: 600, textDecoration: 'none' }}
+                      className="dropdown-explore-link"
+                    >
+                      Explore all →
+                    </Link>
+                  </div>
+                </div>
               </div>
-
-              <Link
-                to="/about"
-                className={`py-1.5 transition-colors whitespace-nowrap flex-shrink-0 ${
-                  isActive('/about')
-                    ? 'text-brand-teal font-semibold border-b-2 border-brand-teal'
-                    : 'hover:text-brand-teal'
-                }`}
-              >
-                About Us
-              </Link>
-
-              <Link
-                to="/how-it-works"
-                className={`py-1.5 transition-colors whitespace-nowrap flex-shrink-0 ${
-                  isActive('/how-it-works')
-                    ? 'text-brand-teal font-semibold border-b-2 border-brand-teal'
-                    : 'hover:text-brand-teal'
-                }`}
-              >
-                How It Works
-              </Link>
-
-              <Link
-                to="/calculator"
-                className={`py-1.5 transition-colors whitespace-nowrap flex-shrink-0 ${
-                  isActive('/calculator')
-                    ? 'text-brand-teal font-semibold border-b-2 border-brand-teal'
-                    : 'hover:text-brand-teal'
-                }`}
-              >
-                EMI Calculator
-              </Link>
-
-              <Link
-                to="/faqs"
-                className={`py-1.5 transition-colors whitespace-nowrap flex-shrink-0 ${
-                  isActive('/faqs')
-                    ? 'text-brand-teal font-semibold border-b-2 border-brand-teal'
-                    : 'hover:text-brand-teal'
-                }`}
-              >
-                FAQs
-              </Link>
-
-              <Link
-                to="/contact"
-                className={`py-1.5 transition-colors whitespace-nowrap flex-shrink-0 ${
-                  isActive('/contact')
-                    ? 'text-brand-teal font-semibold border-b-2 border-brand-teal'
-                    : 'hover:text-brand-teal'
-                }`}
-              >
-                Contact
-              </Link>
             </nav>
 
-            {/* Right Action CTA */}
-            <div className="hidden lg:flex items-center gap-3 xl:gap-4 flex-shrink-0 whitespace-nowrap">
+            {/* ─── CTA Button (Desktop) ─── */}
+            <div className="desktop-cta">
               <Link
                 to="/enquire"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-brand-teal hover:bg-brand-teal-hover transition-all duration-150 rounded-corporate shadow-sm hover:shadow btn-primary-glow shimmer-effect whitespace-nowrap flex-shrink-0"
+                className="cta-button"
               >
-                <span className="whitespace-nowrap">Apply Now</span>
-                <ArrowRight className="w-4 h-4 flex-shrink-0" />
+                <span>Apply Now</span>
+                <ArrowRight style={{ width: '15px', height: '15px' }} />
               </Link>
             </div>
 
-            {/* Mobile Hamburger Button */}
-            <div className="flex lg:hidden items-center">
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg text-brand-navy hover:bg-brand-teal-light focus:outline-none"
-                aria-label="Toggle navigation drawer"
-              >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
+            {/* ─── Mobile Menu Toggle ─── */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="mobile-toggle"
+              aria-label="Toggle navigation"
+              style={{ color: '#ffffff', background: 'none', border: 'none', cursor: 'pointer', padding: '8px' }}
+            >
+              {mobileMenuOpen ? <X style={{ width: '24px', height: '24px' }} /> : <Menu style={{ width: '24px', height: '24px' }} />}
+            </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* 3. MOBILE NAVIGATION DRAWER */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-brand-border bg-white px-4 pt-3 pb-6 space-y-4 shadow-xl animate-in slide-in-from-top-2 duration-150">
-          <div className="flex flex-col space-y-2 text-sm font-semibold text-brand-navy">
-            <Link
-              to="/"
-              className="py-2 px-3 rounded-lg hover:bg-brand-teal-light"
+      {/* Header spacer to prevent content jump under fixed header */}
+      <div style={{ height: '88px', backgroundColor: '#183247' }} />
+
+      {/* ─── Mobile Navigation Overlay ─── */}
+      <div
+        className="mobile-overlay"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 999,
+          opacity: mobileMenuOpen ? 1 : 0,
+          visibility: mobileMenuOpen ? 'visible' : 'hidden',
+          transition: 'opacity 0.3s ease, visibility 0.3s ease',
+          pointerEvents: mobileMenuOpen ? 'auto' : 'none',
+        }}
+      >
+        {/* Backdrop */}
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(24, 50, 71, 0.4)',
+            backdropFilter: 'blur(4px)',
+          }}
+        />
+
+        {/* Slide-in Panel */}
+        <div
+          className="mobile-panel"
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '100%',
+            maxWidth: '380px',
+            height: '100%',
+            backgroundColor: '#ffffff',
+            boxShadow: '-8px 0 30px rgba(0,0,0,0.1)',
+            transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(100%)',
+            transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Mobile Panel Header */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '16px 20px',
+            borderBottom: '1px solid #f1f5f4',
+          }}>
+            <WealthAnchorLogo size={32} showWordmark={true} />
+            <button
               onClick={() => setMobileMenuOpen(false)}
+              style={{
+                padding: '8px',
+                borderRadius: '8px',
+                border: 'none',
+                backgroundColor: '#f7f7f2',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#183247',
+              }}
+              aria-label="Close menu"
             >
-              Home
-            </Link>
-
-            <div className="py-2 px-3 border-y border-gray-100">
-              <span className="text-xs uppercase tracking-wider text-brand-slate font-bold block mb-2">
-                Loan Solutions
-              </span>
-              <div className="space-y-1.5 pl-2">
-                <Link
-                  to="/services/home-loans"
-                  className="block py-1 text-xs text-brand-navy hover:text-brand-teal"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  &bull; Home Loans (Purchase &amp; Construction)
-                </Link>
-                <Link
-                  to="/services/loan-against-property"
-                  className="block py-1 text-xs text-brand-navy hover:text-brand-teal"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  &bull; Loan Against Property (LAP)
-                </Link>
-                <Link
-                  to="/services/property-backed-funding"
-                  className="block py-1 text-xs text-brand-navy hover:text-brand-teal"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  &bull; Property-Backed &amp; Commercial Funding
-                </Link>
-                <Link
-                  to="/services/loan-consultation"
-                  className="block py-1 text-xs text-brand-navy hover:text-brand-teal"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  &bull; Loan Consultation &amp; Eligibility Audit
-                </Link>
-              </div>
-            </div>
-
-            <Link
-              to="/about"
-              className="py-2 px-3 rounded-lg hover:bg-brand-teal-light"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              About Us
-            </Link>
-
-            <Link
-              to="/how-it-works"
-              className="py-2 px-3 rounded-lg hover:bg-brand-teal-light"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              How It Works
-            </Link>
-
-            <Link
-              to="/calculator"
-              className="py-2 px-3 rounded-lg hover:bg-brand-teal-light"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              EMI Calculator
-            </Link>
-
-            <Link
-              to="/faqs"
-              className="py-2 px-3 rounded-lg hover:bg-brand-teal-light"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Frequently Asked Questions
-            </Link>
-
-            <Link
-              to="/contact"
-              className="py-2 px-3 rounded-lg hover:bg-brand-teal-light"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Contact Us
-            </Link>
+              <X style={{ width: '18px', height: '18px' }} />
+            </button>
           </div>
 
-          <div className="pt-2 border-t border-gray-100 flex flex-col space-y-2">
+          {/* Mobile Navigation Links */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mobile-nav-link"
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '10px',
+                    textDecoration: 'none',
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    color: isActive(link.path, link.exact) ? '#187C78' : '#183247',
+                    backgroundColor: isActive(link.path, link.exact) ? '#f1f5f4' : 'transparent',
+                    transition: 'all 0.2s ease',
+                    display: 'block',
+                  }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Mobile Services Section */}
+            <div style={{
+              marginTop: '12px',
+              padding: '14px',
+              borderRadius: '12px',
+              backgroundColor: '#f7f7f2',
+              border: '1px solid #E5E7EB',
+            }}>
+              <span style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: '#667085',
+                display: 'block',
+                marginBottom: '10px',
+              }}>
+                Loan Solutions
+              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                {serviceItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="mobile-service-link"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      transition: 'background-color 0.2s ease',
+                    }}
+                  >
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '8px',
+                      backgroundColor: '#ffffff',
+                      color: '#187C78',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      border: '1px solid #E5E7EB',
+                    }}>
+                      {item.icon}
+                    </div>
+                    <div>
+                      <span style={{
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        color: '#183247',
+                        display: 'block',
+                        lineHeight: 1.3,
+                      }}>
+                        {item.title}
+                      </span>
+                      <span style={{
+                        fontSize: '11px',
+                        color: '#667085',
+                        display: 'block',
+                        lineHeight: 1.3,
+                        marginTop: '1px',
+                      }}>
+                        {item.desc}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile CTA */}
+          <div style={{
+            padding: '16px 20px',
+            borderTop: '1px solid #f1f5f4',
+          }}>
             <Link
               to="/enquire"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm rounded-corporate text-center btn-primary-glow shimmer-effect shadow-sm"
+              className="cta-button"
+              style={{ width: '100%', justifyContent: 'center' }}
             >
               <span>Apply Now</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight style={{ width: '15px', height: '15px' }} />
             </Link>
           </div>
         </div>
-      )}
-    </header>
+      </div>
+    </>
   );
 };

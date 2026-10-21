@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, ShieldCheck, Award, Users, TrendingUp } from 'lucide-react';
+import { Clock, ShieldCheck, Award, TrendingUp } from 'lucide-react';
 
 export const StatsBar: React.FC = () => {
   const stats = [
@@ -30,25 +30,25 @@ export const StatsBar: React.FC = () => {
   ];
 
   return (
-    <section className="bg-brand-navy text-white py-10 sm:py-12 border-y border-white/10 relative z-10">
-      <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+    <section className="relative z-20 -mt-12 sm:-mt-16 lg:-mt-20 px-4 pb-6 sm:pb-8">
+      <div className="w-[85%] max-w-7xl mx-auto p-6 sm:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {stats.map((s, idx) => (
             <div
               key={idx}
-              className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              className="flex items-start gap-4 p-4 rounded-xl bg-brand-ivory/40 border border-brand-border/60 hover:bg-white hover:border-brand-teal/40 hover:shadow-subtle transition-all duration-200"
             >
-              <div className="w-10 h-10 rounded-lg bg-brand-teal/20 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-10 h-10 rounded-lg bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
                 {s.icon}
               </div>
               <div>
-                <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white block font-mono">
+                <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-navy block font-mono">
                   {s.value}
                 </span>
-                <span className="text-xs sm:text-sm font-bold text-gray-200 block mt-0.5">
+                <span className="text-xs sm:text-sm font-bold text-brand-navy block mt-0.5">
                   {s.label}
                 </span>
-                <span className="text-[11px] text-gray-400 block mt-0.5">
+                <span className="text-[11px] text-brand-slate block mt-0.5 leading-snug">
                   {s.sub}
                 </span>
               </div>
@@ -59,3 +59,4 @@ export const StatsBar: React.FC = () => {
     </section>
   );
 };
+
