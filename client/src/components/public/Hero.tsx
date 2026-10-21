@@ -14,7 +14,7 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ content }) => {
-  // Use high-resolution property finance architectural image (bundled via Vite)
+  // Use property finance architectural image
   const heroBgImage =
     content?.heroImageUrl && !content.heroImageUrl.includes('photo-1600585154340')
       ? content.heroImageUrl
@@ -23,62 +23,51 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
   return (
     <section
       id="hero"
-      className="relative min-h-[620px] lg:min-h-[700px] flex items-center justify-center bg-[#03060c] overflow-hidden border-b border-brand-border/40"
+      className="relative min-h-[580px] lg:min-h-[640px] flex items-center justify-center bg-slate-950 overflow-hidden"
     >
       {/* ─── 1. Full-Bleed Property Finance Background Visual ─── */}
       <div className="absolute inset-0 z-0">
         <img
           src={heroBgImage}
           alt="Institutional Property Finance Architecture"
-          className="w-full h-full object-cover object-center scale-105 transform motion-safe:transition-transform motion-safe:duration-1000"
+          className="w-full h-full object-cover object-center scale-[1.01] brightness-[0.95] transform motion-safe:transition-transform motion-safe:duration-1000"
           loading="eager"
         />
 
-        {/* Balanced cinematic scrim: crisp midnight base that lets photograph lighting breathe */}
-        <div className="absolute inset-0 bg-[#03060c]/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#03060c] via-transparent to-[#040912]/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#03060c]/60 via-transparent to-[#03060c]/60" />
-
-        {/* ── Dynamic Multi-Hue Ambient Glows (Distinct from Navbar) ── */}
-        {/* Radiant Emerald-Cyan Luminous Blur (Left-Center) */}
-        <div className="absolute top-1/5 left-1/3 -translate-x-1/2 w-[720px] h-[380px] bg-cyan-500/22 rounded-full blur-[110px] pointer-events-none" />
-        
-        {/* Warm Architectural Amber Glow (Echoing the illuminated luxury property glazing) */}
-        <div className="absolute top-1/4 right-1/4 w-[520px] h-[350px] bg-amber-500/20 rounded-full blur-[100px] pointer-events-none" />
-
-        {/* Vibrant Teal Core Halo (Directly framing the headline) */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[580px] h-[280px] bg-teal-400/22 rounded-full blur-[90px] pointer-events-none" />
+        {/* ── Balanced Scrim: Image is clearly visible, while text maintains contrast ── */}
+        <div className="absolute inset-0 bg-black/28" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/70" />
       </div>
 
       {/* ─── 2. Expansive Hero Content Filling the Page ─── */}
-      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-10 xl:px-12 pt-12 pb-20 sm:pt-16 sm:pb-24 lg:pt-18 lg:pb-28">
-        <div className="max-w-6xl mx-auto text-center space-y-6 sm:space-y-8 animate-fade-in-up">
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-10 xl:px-12 pt-10 pb-16 sm:pt-12 sm:pb-20 lg:pt-14 lg:pb-24">
+        <div className="max-w-5xl mx-auto text-center space-y-4 sm:space-y-5 animate-fade-in-up">
           
           {/* Top Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-950/80 border border-teal-400/50 text-teal-300 text-xs sm:text-sm font-bold uppercase tracking-wider backdrop-blur-md shadow-sm">
-            <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-950/70 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#20B2AA]"></span>
             <span>{content?.heroEyebrow || 'Institutional Property Finance Advisory • 40+ Partner Lenders'}</span>
           </div>
 
-          {/* Grand Headline Spanning the Page */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.12] font-heading drop-shadow-md max-w-5xl mx-auto">
+          {/* Headline (Refined Proportionate Font Size) */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-extrabold text-white tracking-tight leading-[1.12] font-heading drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)] max-w-4xl mx-auto">
             Strategic Property Loans, <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-200 to-cyan-200">
+            <span className="text-[#38bdf8] drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)]">
               Anchored in Trust.
             </span>
           </h1>
 
-          {/* Subtitle / Value Proposition Filling the Space */}
-          <p className="text-base sm:text-lg lg:text-xl text-gray-100 font-normal leading-relaxed max-w-3xl mx-auto drop-shadow-sm">
+          {/* Subtitle / Value Proposition */}
+          <p className="text-sm sm:text-base lg:text-[17px] text-white/95 font-medium leading-relaxed max-w-2xl mx-auto drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
             {content?.heroSubtitle ||
               'Unlock institutional funding for high-value residential, commercial, and industrial properties. We partner with 40+ leading PSU & private banks and NBFCs across India to secure lowest benchmark interest rates, maximized borrowing eligibility, and zero advance fees.'}
           </p>
 
           {/* Prominent Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
             <Link
               to="/enquire"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 rounded-corporate transition-all duration-200 shadow-xl shadow-teal-950/70 hover:shadow-teal-700/50 btn-primary-glow shimmer-effect text-center"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-[#187C78] to-[#126763] hover:from-[#1a8a86] hover:to-[#187C78] rounded-corporate transition-all duration-200 shadow-lg shadow-slate-950/50 hover:shadow-xl text-center border border-white/10"
             >
               <span>{content?.heroCtaText || 'Apply for Loan Advisory'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -86,7 +75,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
 
             <Link
               to="/calculator"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 text-sm sm:text-base font-bold text-white bg-white/15 hover:bg-white/25 border-2 border-white/30 hover:border-white/60 rounded-corporate transition-all backdrop-blur-md text-center shadow-md"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm sm:text-base font-bold text-white bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/40 rounded-corporate transition-all duration-200 backdrop-blur-md text-center shadow-md"
             >
               <Calculator className="w-4 h-4 text-teal-300" />
               <span>Simulate EMI &amp; FOIR</span>
@@ -94,31 +83,32 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
 
             <Link
               to="/services/home-loans"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-semibold text-slate-200 hover:text-white transition-colors text-center"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 text-sm sm:text-base font-semibold text-slate-200 hover:text-white transition-colors text-center group"
             >
-              <span>Explore All Solutions →</span>
+              <span>Explore All Solutions</span>
+              <span className="transform transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>
 
-          {/* ─── 4. Trust Badges & Partner Network Strip ─── */}
-          <div className="pt-6 border-t border-white/15 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm text-slate-200">
+          {/* ─── 4. Trust Badges & Partner Network Strip (Clean Glass Card) ─── */}
+          <div className="mt-6 pt-3.5 pb-3.5 px-5 sm:px-7 rounded-xl bg-slate-950/65 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm text-slate-200">
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
                 <span className="font-semibold text-white">Zero Advance Fees</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
                 <span className="font-semibold text-white">40+ Partner Lenders</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
                 <span className="font-semibold text-white">24–48h Rapid Sanction</span>
               </div>
             </div>
 
             <div className="flex items-center gap-2 text-slate-300 text-xs justify-center mx-auto sm:mx-0">
-              <ShieldCheck className="w-4 h-4 text-teal-300" />
+              <ShieldCheck className="w-4 h-4 text-[#20B2AA]" />
               <span>Institutional Banking Partners: <strong className="text-white">SBI • HDFC • ICICI • AXIS • KOTAK</strong></span>
             </div>
           </div>

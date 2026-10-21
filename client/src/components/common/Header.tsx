@@ -110,6 +110,8 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
     { label: 'Contact', path: '/contact' },
   ];
 
+  const isHomePage = location.pathname === '/';
+
   const isActive = (path: string, exact?: boolean) => {
     if (exact) return location.pathname === path;
     return location.pathname.startsWith(path);
@@ -125,21 +127,23 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
           left: 0,
           right: 0,
           zIndex: 1000,
-          transition: 'background-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease',
-          backgroundColor: isScrolled ? 'rgba(20, 42, 60, 0.96)' : '#183247',
+          transition: 'background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease',
+          backgroundColor: isScrolled
+            ? 'rgba(255, 255, 255, 0.98)'
+            : 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(16px) saturate(180%)',
           WebkitBackdropFilter: 'blur(16px) saturate(180%)',
           boxShadow: isScrolled
-            ? '0 10px 30px -4px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0,0,0,0.3)'
-            : '0 4px 20px -2px rgba(0, 0, 0, 0.35)',
-          borderBottom: '1px solid rgba(45, 212, 191, 0.22)',
+            ? '0 4px 20px -2px rgba(24, 50, 71, 0.08), 0 1px 3px rgba(0,0,0,0.04)'
+            : '0 1px 3px rgba(0, 0, 0, 0.04)',
+          borderBottom: '1px solid rgba(229, 231, 235, 0.85)',
         }}
       >
         <div
           style={{
             maxWidth: '1400px',
             margin: '0 auto',
-            padding: isScrolled ? '14px 28px' : '22px 28px',
+            padding: isScrolled ? '14px 28px' : '20px 28px',
             transition: 'padding 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
@@ -151,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
               style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}
               className="group"
             >
-              <WealthAnchorLogo size={isScrolled ? 38 : 44} showWordmark={true} variant="light" />
+              <WealthAnchorLogo size={isScrolled ? 38 : 44} showWordmark={true} variant="dark" />
             </Link>
 
             {/* ─── Desktop Navigation ─── */}
@@ -280,7 +284,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="mobile-toggle"
               aria-label="Toggle navigation"
-              style={{ color: '#ffffff', background: 'none', border: 'none', cursor: 'pointer', padding: '8px' }}
+              style={{ color: '#183247', background: 'none', border: 'none', cursor: 'pointer', padding: '8px' }}
             >
               {mobileMenuOpen ? <X style={{ width: '24px', height: '24px' }} /> : <Menu style={{ width: '24px', height: '24px' }} />}
             </button>
@@ -289,7 +293,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
       </header>
 
       {/* Header spacer to prevent content jump under fixed header */}
-      <div style={{ height: '88px', backgroundColor: '#183247' }} />
+      <div style={{ height: isScrolled ? '72px' : '84px', backgroundColor: '#ffffff' }} />
 
       {/* ─── Mobile Navigation Overlay ─── */}
       <div
