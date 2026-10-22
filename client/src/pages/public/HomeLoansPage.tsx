@@ -63,7 +63,7 @@ export const HomeLoansPage: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white">
+    <div>
       {/* 1. Page Hero Banner */}
       <section className="bg-brand-ivory border-b border-brand-border py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

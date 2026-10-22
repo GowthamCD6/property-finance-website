@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         brand: {
-          bg: '#FFFFFF',
+          bg: '#f8f8f4',
           ivory: '#F7F7F2',
           navy: '#183247',
           teal: '#187C78',

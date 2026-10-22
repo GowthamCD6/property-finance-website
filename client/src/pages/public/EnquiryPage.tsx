@@ -8,7 +8,7 @@ export const EnquiryPage: React.FC = () => {
   const context = useOutletContext<{ services?: Service[] }>();
   const services = context?.services || [];
   return (
-    <div className="bg-white">
+    <div>
       {/* 1. Header Banner */}
       <section className="bg-brand-ivory border-b border-brand-border py-14 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

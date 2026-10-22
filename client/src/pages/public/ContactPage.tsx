@@ -25,7 +25,7 @@ export const ContactPage: React.FC = () => {
   const disclaimerText = content?.disclaimerText || '';
 
   return (
-    <div className="bg-white">
+    <div>
       {/* 1. Header Banner */}
       <section className="bg-brand-ivory border-b border-brand-border py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
