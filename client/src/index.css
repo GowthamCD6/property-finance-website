@@ -397,11 +397,19 @@ a:focus-visible, button:focus-visible {
   }
 }
 
-/* ─── Hero Button Professional Micro-Animations ─── */
+/* ─── Hero Button Professional Micro-Animations & Premium Rounded Styling ─── */
 .hero-btn-primary {
   position: relative;
   overflow: hidden;
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, background 0.28s ease;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #187C78 0%, #126763 50%, #0e524f 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-top-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 
+    0 10px 25px -4px rgba(24, 124, 120, 0.55),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, background 0.28s ease, border-color 0.28s ease;
 }
 
 .hero-btn-primary::before {
@@ -414,7 +422,7 @@ a:focus-visible, button:focus-visible {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.32),
+    rgba(255, 255, 255, 0.4),
     transparent
   );
   transform: skewX(-20deg);
@@ -427,8 +435,14 @@ a:focus-visible, button:focus-visible {
 }
 
 .hero-btn-primary:hover {
-  transform: translateY(-2.5px);
-  box-shadow: 0 14px 28px -4px rgba(24, 124, 120, 0.55), 0 0 16px rgba(45, 212, 191, 0.35);
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(135deg, #1ea39e 0%, #187C78 50%, #126763 100%);
+  border-color: rgba(255, 255, 255, 0.4);
+  border-top-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 
+    0 16px 38px -4px rgba(24, 124, 120, 0.75),
+    0 0 24px rgba(45, 212, 191, 0.45),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.6);
 }
 
 .hero-btn-primary:active {
@@ -443,17 +457,31 @@ a:focus-visible, button:focus-visible {
   transform: translateX(4px);
 }
 
-/* Secondary Button Hover Micro-Animation */
+/* Secondary Button Premium Frosted Glassmorphism */
 .hero-btn-secondary {
   position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-top-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 
+    0 10px 25px -4px rgba(0, 0, 0, 0.45),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.35);
   transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hero-btn-secondary:hover {
-  transform: translateY(-2.5px);
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.4), 0 0 14px rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px) scale(1.02);
+  background: rgba(15, 23, 42, 0.88);
+  border-color: rgba(45, 212, 191, 0.65);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 16px 36px -4px rgba(24, 124, 120, 0.45),
+    0 0 20px rgba(56, 189, 248, 0.3),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
 }
 
 .hero-btn-secondary:active {
@@ -465,8 +493,8 @@ a:focus-visible, button:focus-visible {
 }
 
 .hero-btn-secondary:hover .hero-calc-icon {
-  transform: scale(1.18) rotate(-6deg);
-  color: #5eead4 !important;
+  transform: scale(1.15) rotate(-6deg);
+  color: #38bdf8 !important;
 }
 
 /* Tertiary Link Hover Micro-Animation */
@@ -531,4 +559,56 @@ a:focus-visible, button:focus-visible {
 .animate-continuous-scroll:focus-within {
   animation-play-state: paused !important;
 }
+
+/* Staggered Letter Breaking & Assembling Kinetic Typography */
+@keyframes letterBreakOut {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    filter: blur(0px);
+  }
+  35% {
+    opacity: 0.85;
+    transform: translate3d(var(--scatter-x, 0px), -12px, 0) rotate(var(--scatter-rot, 0deg)) scale(1.06);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--scatter-x, 0px) * 2.2), -34px, 0) rotate(calc(var(--scatter-rot, 0deg) * 2)) scale(0.65);
+    filter: blur(10px);
+  }
+}
+
+@keyframes letterAssembleIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--enter-x, 0px), 30px, 0) rotate(var(--enter-rot, 0deg)) scale(0.72);
+    filter: blur(10px);
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(0, -3px, 0) rotate(0deg) scale(1.05);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-letter-break {
+  display: inline-block;
+  animation: letterBreakOut 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: calc(var(--char-index, 0) * 26ms);
+  will-change: transform, opacity, filter;
+}
+
+.animate-letter-assemble {
+  display: inline-block;
+  animation: letterAssembleIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(100ms + var(--char-index, 0) * 32ms);
+  will-change: transform, opacity, filter;
+}
+
 

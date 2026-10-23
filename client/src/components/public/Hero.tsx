@@ -91,23 +91,23 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
           >
             <Link
               to="/enquire"
-              className="hero-btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-[#187C78] to-[#126763] hover:from-[#1a8a86] hover:to-[#187C78] rounded-corporate transition-all duration-200 shadow-lg shadow-slate-950/50 hover:shadow-xl text-center border border-white/10"
+              className="hero-btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-9 py-4 text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide"
             >
-              <span>{content?.heroCtaText || 'Apply for Loan Advisory'}</span>
-              <ArrowRight className="w-4 h-4 hero-btn-arrow" />
+              <span>{content?.heroCtaText || 'Discuss Your Loan'}</span>
+              <ArrowRight className="w-4.5 h-4.5 hero-btn-arrow" />
             </Link>
 
             <Link
               to="/calculator"
-              className="hero-btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 text-sm sm:text-base font-bold text-white bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/40 rounded-corporate transition-all duration-200 backdrop-blur-md text-center shadow-md"
+              className="hero-btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-8.5 py-4 text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide"
             >
-              <Calculator className="w-4 h-4 text-teal-300 hero-calc-icon" />
+              <Calculator className="w-4.5 h-4.5 text-teal-300 hero-calc-icon" />
               <span>Simulate EMI &amp; FOIR</span>
             </Link>
 
             <Link
               to="/services/home-loans"
-              className="hero-btn-tertiary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-semibold text-slate-200 hover:text-white transition-colors text-center group"
+              className="hero-btn-tertiary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-semibold text-slate-200 hover:text-white transition-all text-center group cursor-pointer hover:-translate-y-0.5"
             >
               <span>Explore All Solutions</span>
               <span className="hero-explore-arrow">→</span>
