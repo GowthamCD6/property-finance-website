@@ -1,11 +1,146 @@
-import React, { useState } from 'react';
-import { Award, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Award, CheckCircle2, ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+interface Partner {
+  id: string;
+  name: string;
+  short: string;
+  category: string;
+  type: string;
+  ratesFrom: string;
+  badge: string;
+  accentColor: string;
+  logoUrl: string;
+}
+
+const LenderCard: React.FC<{
+  partner: Partner;
+  ariaHidden?: boolean;
+  onHoverChange: (isHovered: boolean) => void;
+}> = ({ partner: p, ariaHidden, onHoverChange }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Link
+      to={`/enquire?lender=${encodeURIComponent(p.name)}`}
+      aria-hidden={ariaHidden}
+      tabIndex={ariaHidden ? -1 : undefined}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        onHoverChange(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        onHoverChange(false);
+      }}
+      onMouseDown={() => onHoverChange(true)}
+      onMouseUp={() => onHoverChange(false)}
+      onTouchStart={() => onHoverChange(true)}
+      onTouchEnd={() => onHoverChange(false)}
+      className="group relative bg-white p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 shrink-0 w-[320px] sm:w-[360px] lg:w-[380px] overflow-hidden no-underline cursor-pointer block"
+      style={{
+        border: isHovered
+          ? `2px solid ${p.accentColor}`
+          : '2px solid rgba(229, 231, 235, 0.85)',
+        boxShadow: isHovered
+          ? `0 18px 38px -6px ${p.accentColor}35, 0 8px 18px rgba(24, 50, 71, 0.08)`
+          : '0 3px 14px rgba(24, 50, 71, 0.05)',
+      }}
+    >
+      {/* Subtle Radial Gradient Glow on Hover Matching Bank Color */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
+        style={{
+          background: `radial-gradient(circle at top right, ${p.accentColor}14, transparent 65%)`,
+        }}
+      />
+
+      <div>
+        {/* Top Bar: Official Bank Logo Image (Clear & High Visibility, No Constrained Box) + Code Badge */}
+        <div className="flex items-center justify-between gap-3 mb-4.5 h-12 relative z-10">
+          <div className="flex items-center h-full max-w-[170px]">
+            <img
+              src={p.logoUrl}
+              alt={`${p.name} official logo`}
+              className="h-8.5 max-h-10 w-auto max-w-[160px] object-contain object-left transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span
+              className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full transition-colors"
+              style={{
+                backgroundColor: isHovered ? `${p.accentColor}15` : '#f1f5f9',
+                color: isHovered ? p.accentColor : '#475569',
+              }}
+            >
+              {p.short}
+            </span>
+            <div
+              className="w-6.5 h-6.5 rounded-full flex items-center justify-center transition-all"
+              style={{
+                backgroundColor: isHovered ? `${p.accentColor}15` : 'transparent',
+                color: isHovered ? p.accentColor : '#94a3b8',
+              }}
+            >
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </div>
+          </div>
+        </div>
+
+        {/* Bank Name & Category Subtitle */}
+        <div className="relative z-10">
+          <h3
+            className="font-bold text-[15px] sm:text-base tracking-tight leading-snug transition-colors font-heading truncate"
+            style={{ color: isHovered ? p.accentColor : '#183247' }}
+          >
+            {p.name}
+          </h3>
+          <span className="text-xs text-brand-slate block mt-0.5 font-medium truncate">
+            {p.type}
+          </span>
+        </div>
+
+        {/* Highlighted Benchmark Rate Chip (Bank Card Specification Style) */}
+        <div
+          className="mt-4 rounded-xl px-3.5 py-2.5 border flex items-center justify-between relative z-10 transition-colors"
+          style={{
+            backgroundColor: isHovered ? '#ffffff' : '#f8f8f4',
+            borderColor: isHovered ? `${p.accentColor}40` : '#e5e7eb',
+          }}
+        >
+          <span className="text-xs text-brand-slate font-medium">
+            Home Loan
+          </span>
+          <span
+            className="text-sm font-extrabold font-heading transition-colors"
+            style={{ color: isHovered ? p.accentColor : '#183247' }}
+          >
+            {p.ratesFrom}*
+          </span>
+        </div>
+      </div>
+
+      {/* Key Advantage / Perk Pill Badge */}
+      <div className="mt-4.5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs relative z-10">
+        <span className="inline-flex items-center gap-1.5 text-emerald-800 font-semibold bg-emerald-50 px-3 py-1.5 rounded-lg text-[11px] border border-emerald-100/80 tracking-tight truncate">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+          <span className="truncate">{p.badge}</span>
+        </span>
+      </div>
+    </Link>
+  );
+};
 
 export const LenderPartners: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'psu' | 'private' | 'nbfc'>('all');
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+  const [isAnyCardHovered, setIsAnyCardHovered] = useState(false);
+  const [manualOffset, setManualOffset] = useState(0);
 
-  const partners = [
+  const partners: Partner[] = [
     {
       id: 'sbi',
       name: 'State Bank of India',
@@ -118,17 +253,51 @@ export const LenderPartners: React.FC = () => {
     },
   ];
 
-  const filteredPartners = selectedCategory === 'all'
-    ? partners
-    : partners.filter((p) => p.category === selectedCategory);
+  const filteredPartners = useMemo(() => {
+    return selectedCategory === 'all'
+      ? partners
+      : partners.filter((p) => p.category === selectedCategory);
+  }, [selectedCategory]);
+
+  // Create an extended duplicate list for seamless, infinite looping
+  const singleSet = useMemo(() => {
+    if (filteredPartners.length === 0) return [];
+    let list = [...filteredPartners];
+    // Ensure we have enough items so the track width comfortably exceeds ultra-wide screen widths
+    while (list.length < 8) {
+      list = [...list, ...filteredPartners];
+    }
+    return list;
+  }, [filteredPartners]);
+
+  // Handle manual steps
+  const handleStep = useCallback((direction: 'prev' | 'next') => {
+    const cardStep = 380;
+    if (direction === 'next') {
+      setManualOffset((prev) => prev - cardStep);
+    } else {
+      setManualOffset((prev) => prev + cardStep);
+    }
+  }, []);
+
+  const toggleAutoPlay = () => {
+    setIsAutoPlay((prev) => !prev);
+  };
+
+  const handleCategorySelect = (categoryId: 'all' | 'psu' | 'private' | 'nbfc') => {
+    setSelectedCategory(categoryId);
+    setManualOffset(0);
+  };
+
+  const isPaused = !isAutoPlay || isAnyCardHovered;
 
   return (
-    <section className="pt-2 sm:pt-3 pb-14 sm:pb-16 bg-transparent border-b border-brand-border/60">
+    <section className="pt-16 sm:pt-20 lg:pt-24 pb-14 sm:pb-16 bg-transparent border-b border-brand-border/60 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3 shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3.5 shadow-xs">
             <Award className="w-3.5 h-3.5" />
             <span>Multi-Lender Access</span>
           </div>
@@ -138,9 +307,13 @@ export const LenderPartners: React.FC = () => {
           <p className="mt-3 text-sm sm:text-base text-brand-slate leading-relaxed">
             We partner with 40+ leading public sector banks, private financial institutions, and housing finance companies (HFCs) to evaluate and secure the most cost-effective loan terms for your specific property.
           </p>
+        </div>
 
-          {/* Interactive Category Filter Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
+        {/* Controls Bar: Category Filter Pills + Slider Navigation in a STRICT SINGLE ROW */}
+        <div className="flex items-center justify-between gap-3 w-full mb-6 flex-nowrap overflow-x-auto scrollbar-none py-1">
+          
+          {/* Interactive Category Filter Pills (Single Row, No Wrap) */}
+          <div className="flex items-center gap-2 shrink-0">
             {[
               { id: 'all', label: 'All Lenders (10)' },
               { id: 'psu', label: 'Public Sector Banks' },
@@ -150,8 +323,8 @@ export const LenderPartners: React.FC = () => {
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setSelectedCategory(tab.id as any)}
-                className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+                onClick={() => handleCategorySelect(tab.id as any)}
+                className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 ${
                   selectedCategory === tab.id
                     ? 'bg-brand-navy text-white shadow-sm'
                     : 'bg-white text-brand-slate hover:text-brand-navy hover:bg-slate-100 border border-brand-border/70'
@@ -161,85 +334,95 @@ export const LenderPartners: React.FC = () => {
               </button>
             ))}
           </div>
+
+          {/* Slider Controls: Auto-Slide Status, Play/Pause & Left/Right Arrows (Single Row, No Wrap, aligned right) */}
+          <div className="flex items-center gap-2 shrink-0 ml-auto">
+            <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 text-[11px] text-brand-slate font-medium whitespace-nowrap">
+              <span
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  isPaused ? 'bg-amber-400' : 'bg-emerald-500 animate-pulse'
+                }`}
+              />
+              <span>
+                {isAnyCardHovered ? 'Paused on Card' : isAutoPlay ? 'Continuous Sliding' : 'Paused'}
+              </span>
+            </div>
+
+            {/* Play / Pause Toggle Button */}
+            <button
+              type="button"
+              onClick={toggleAutoPlay}
+              aria-label={isAutoPlay ? 'Pause sliding animation' : 'Start sliding animation'}
+              title={isAutoPlay ? 'Pause sliding animation' : 'Start sliding animation'}
+              className="w-8 h-8 rounded-full bg-white border border-brand-border hover:border-brand-teal/50 text-brand-navy hover:text-brand-teal flex items-center justify-center transition-all shadow-xs cursor-pointer shrink-0"
+            >
+              {isAutoPlay ? (
+                <Pause className="w-3.5 h-3.5 text-brand-slate hover:text-brand-navy" />
+              ) : (
+                <Play className="w-3.5 h-3.5 text-brand-teal ml-0.5" />
+              )}
+            </button>
+
+            {/* Previous Slide Button */}
+            <button
+              type="button"
+              onClick={() => handleStep('prev')}
+              aria-label="Previous lender"
+              title="Slide left"
+              className="w-8 h-8 rounded-full bg-white border border-brand-border hover:border-brand-teal/50 text-brand-navy hover:text-brand-teal flex items-center justify-center transition-all shadow-xs cursor-pointer shrink-0"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Next Slide Button */}
+            <button
+              type="button"
+              onClick={() => handleStep('next')}
+              aria-label="Next lender"
+              title="Slide right"
+              className="w-8 h-8 rounded-full bg-white border border-brand-border hover:border-brand-teal/50 text-brand-navy hover:text-brand-teal flex items-center justify-center transition-all shadow-xs cursor-pointer shrink-0"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Dynamic & Premium Partners Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4.5">
-          {filteredPartners.map((p) => (
-            <Link
-              key={p.id}
-              to={`/enquire?lender=${encodeURIComponent(p.name)}`}
-              className="group relative bg-white p-4 sm:p-5 rounded-2xl border border-brand-border/80 hover:border-transparent flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl overflow-hidden cursor-pointer no-underline block"
+        {/* Dynamic & Premium Continuous Sliding Carousel (Wider Content & Full-Bleed Panoramic Slide) */}
+        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-3">
+          {/* Left & Right Gradient Fade Overlays for seamless edge transition */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
+
+          {/* Interactive Sliding Track with Expanded Width and Continuous CSS Hardware Acceleration */}
+          <div
+            className="transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(${manualOffset}px)` }}
+          >
+            <div
+              className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-5 px-6 sm:px-12 select-none"
               style={{
-                boxShadow: '0 2px 10px rgba(24, 50, 71, 0.04)',
+                animationPlayState: isPaused ? 'paused' : 'running',
               }}
             >
-              {/* Top Accent Stripe on Hover with Brand Color */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ backgroundColor: p.accentColor }}
-              />
-
-              {/* Subtle Radial Gradient Glow on Hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
-                style={{
-                  background: `radial-gradient(circle at top right, ${p.accentColor}12, transparent 65%)`,
-                }}
-              />
-
-              <div>
-                {/* Top Bar: Official Bank Logo Image + Category + Action Icon */}
-                <div className="flex items-start justify-between gap-2.5 mb-3.5 relative z-10">
-                  <div className="w-12 h-12 rounded-xl p-2 bg-white border border-slate-100 shadow-xs flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:shadow-md transition-all duration-300">
-                    <img
-                      src={p.logoUrl}
-                      alt={`${p.name} official logo`}
-                      className="max-w-full max-h-full object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-100/90 text-slate-600 group-hover:bg-slate-200/80 transition-colors">
-                      {p.short}
-                    </span>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-slate-300 group-hover:text-brand-teal group-hover:bg-brand-teal-light transition-all">
-                      <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bank Name & Category Subtitle */}
-                <div className="relative z-10">
-                  <h3 className="font-bold text-sm sm:text-[15px] text-brand-navy tracking-tight leading-snug group-hover:text-brand-teal transition-colors font-heading">
-                    {p.name}
-                  </h3>
-                  <span className="text-[11px] text-brand-slate block mt-0.5 font-medium">
-                    {p.type}
-                  </span>
-                </div>
-
-                {/* Highlighted Benchmark Rate Chip */}
-                <div className="mt-3 bg-brand-ivory/60 rounded-xl px-2.5 py-1.5 border border-brand-border/60 flex items-center justify-between relative z-10 group-hover:bg-white group-hover:border-brand-teal/30 transition-colors">
-                  <span className="text-[11px] text-brand-slate font-medium">
-                    Home Loan
-                  </span>
-                  <span className="text-xs sm:text-[13px] font-extrabold text-brand-navy font-heading group-hover:text-brand-teal transition-colors">
-                    {p.ratesFrom}*
-                  </span>
-                </div>
-              </div>
-
-              {/* Key Advantage / Perk Pill Badge */}
-              <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] relative z-10">
-                <span className="inline-flex items-center gap-1.5 text-emerald-800 font-semibold bg-emerald-50 px-2.5 py-1 rounded-lg text-[10.5px] border border-emerald-100/80 tracking-tight">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-                  <span className="truncate">{p.badge}</span>
-                </span>
-              </div>
-            </Link>
-          ))}
+              {/* Set 1 */}
+              {singleSet.map((p, idx) => (
+                <LenderCard
+                  key={`p1-${p.id}-${idx}`}
+                  partner={p}
+                  onHoverChange={setIsAnyCardHovered}
+                />
+              ))}
+              {/* Set 2 (Exact Duplicate for Seamless Continuous Loop) */}
+              {singleSet.map((p, idx) => (
+                <LenderCard
+                  key={`p2-${p.id}-${idx}`}
+                  partner={p}
+                  ariaHidden
+                  onHoverChange={setIsAnyCardHovered}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Four Core Ethical Commitments */}

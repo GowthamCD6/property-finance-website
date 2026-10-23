@@ -23,33 +23,43 @@ function getAuthHeaders(): HeadersInit {
   return headers;
 }
 
+async function handleResponse<T = any>(res: Response, defaultErrorMsg: string): Promise<T> {
+  if (!res.ok) {
+    let errMsg = `${defaultErrorMsg} (HTTP ${res.status})`;
+    try {
+      const errJson = await res.json();
+      if (errJson?.message) errMsg = errJson.message;
+    } catch {
+      // response was not json (e.g. proxy 500 error)
+    }
+    throw new Error(errMsg);
+  }
+  return res.json();
+}
+
 // 1. PUBLIC API
 export async function getPublicSiteContent(): Promise<SiteContent> {
   const res = await fetch(`${API_BASE}/public/site-content`);
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Failed to load site content');
+  const json = await handleResponse(res, 'Failed to load site content');
   return json.data;
 }
 
 export async function getPublicServices(): Promise<Service[]> {
   const res = await fetch(`${API_BASE}/public/services`);
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Failed to load services');
+  const json = await handleResponse(res, 'Failed to load services');
   return json.data;
 }
 
 export async function getPublicFaqs(): Promise<Faq[]> {
   const res = await fetch(`${API_BASE}/public/faqs`);
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Failed to load FAQs');
+  const json = await handleResponse(res, 'Failed to load FAQs');
   return json.data;
 }
 
 export async function getPublicAvailability(date?: string): Promise<any> {
   const url = date ? `${API_BASE}/public/availability?date=${date}` : `${API_BASE}/public/availability`;
   const res = await fetch(url);
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Failed to check slot availability');
+  const json = await handleResponse(res, 'Failed to check slot availability');
   return json.data;
 }
 
