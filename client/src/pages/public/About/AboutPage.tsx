@@ -162,68 +162,167 @@ export const AboutPage: React.FC = () => {
   return (
     <div className="bg-brand-bg min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
-          1. HERO HEADER SECTION
+          1. ABOUT PAGE HERO — Split Asymmetric Narrative Layout
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#0c1b29] via-[#102538] to-[#0c1b29] text-white pt-24 pb-20 lg:pt-32 lg:pb-28 border-b border-brand-teal/20">
-        {/* Subtle Ambient Glows */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-teal/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0f2236] to-[#091620] text-white pt-24 pb-20 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
+        
+        {/* Geometric Accent Shapes — distinctly different from home hero */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] border border-teal-500/10 rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute top-20 right-20 w-[350px] h-[350px] border border-teal-400/8 rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-teal-600/10 via-transparent to-transparent rounded-full translate-y-1/3 -translate-x-1/4 blur-2xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-sky-500/[0.03] rounded-full blur-3xl pointer-events-none" />
+
+        {/* Diagonal Line Accents */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+          <div className="absolute top-[15%] -left-20 w-[120%] h-px bg-gradient-to-r from-transparent via-teal-500/15 to-transparent rotate-[3deg]" />
+          <div className="absolute bottom-[20%] -left-20 w-[120%] h-px bg-gradient-to-r from-transparent via-sky-400/10 to-transparent -rotate-[2deg]" />
+        </div>
 
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
-            {/* Executive Eyebrow Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 backdrop-blur-md shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-[0.08em] text-teal-300">
-                Institutional Property Loan Advisory
-              </span>
-            </div>
-
-            {/* Display Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-bold text-white tracking-tight leading-[1.14]">
-              Anchoring High-Value Property Financing in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-sky-300">Absolute Transparency.</span>
-            </h1>
-
-            {/* Lead Narrative */}
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 font-normal leading-relaxed max-w-3xl mx-auto">
-              {businessName} bridges the gap between discerning property owners and India's premier lending institutions. We provide unvarnished borrowing appraisals, forensic legal pre-scrutiny, and direct credit desk syndication.
-            </p>
-
-            {/* CTA Group */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-              <Link
-                to="/enquire"
-                className="cta-button group !py-3.5 !px-8 text-base shadow-lg hover:shadow-teal-900/40"
-              >
-                <span>Initiate Advisory Consultation</span>
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                to="/calculator"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm transition-all duration-200 backdrop-blur-sm"
-              >
-                <span>Simulate EMI & FOIR</span>
-                <ChevronRight className="w-4 h-4 text-teal-300" />
-              </Link>
-            </div>
-          </div>
-
-          {/* KPI Proof Strip */}
-          <div className="mt-16 pt-12 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {kpis.map((kpi, idx) => (
-              <div key={idx} className="text-center group">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-100 to-teal-300 tracking-tight transition-transform duration-300 group-hover:scale-105">
-                  {kpi.value}
+            {/* ── LEFT: Company Story & Origin Narrative ── */}
+            <div className="lg:col-span-7 space-y-7">
+              
+              {/* Breadcrumb & Page Identifier */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/[0.06] border border-white/10 backdrop-blur-md">
+                  <Building2 className="w-4 h-4 text-teal-400" />
+                  <span className="text-xs font-bold uppercase tracking-[0.1em] text-teal-300">About Our Practice</span>
                 </div>
-                <div className="text-xs sm:text-sm font-semibold text-white mt-1">
-                  {kpi.label}
+                <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
+              </div>
+
+              {/* Founding Year Badge — Unique to About Hero */}
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-teal-500/20 to-sky-500/20 border border-teal-400/30 flex items-center justify-center backdrop-blur-sm">
+                    <span className="text-2xl font-extrabold text-teal-300 tracking-tight">11</span>
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 bg-teal-500 rounded text-[9px] font-bold text-white">EST</div>
                 </div>
-                <div className="text-[11px] text-slate-400 mt-0.5">
-                  {kpi.subtext}
+                <div>
+                  <p className="text-sm font-bold text-white/90">Founded in 2011</p>
+                  <p className="text-xs text-slate-400">Bengaluru, Karnataka • Independent Practice</p>
                 </div>
               </div>
-            ))}
+
+              {/* Display Headline — About-specific messaging */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-bold text-white tracking-tight leading-[1.12]">
+                The People & Principles Behind{' '}
+                <span className="relative inline-block">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-sky-300">
+                    India's Trusted
+                  </span>
+                  <span className="absolute -bottom-1 left-0 w-full h-[3px] bg-gradient-to-r from-teal-400 via-emerald-400 to-sky-400 rounded-full opacity-60" />
+                </span>{' '}
+                Property Finance Advisory.
+              </h1>
+
+              {/* Origin Story Paragraph — tells the company story */}
+              <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl">
+                {businessName} was born from a singular conviction: property owners deserve fiduciary-grade financial counsel — not commissioned salesmanship. Over 15 years, we've built an advisory desk trusted by HNW families, institutional developers, and NRI investors across India's prime metros.
+              </p>
+
+              {/* CTA Group — About-specific actions */}
+              <div className="pt-2 flex flex-wrap items-start gap-4">
+                <Link
+                  to="/enquire"
+                  className="cta-button group !py-3.5 !px-8 text-base shadow-lg hover:shadow-teal-900/40"
+                >
+                  <span>Meet Our Advisory Desk</span>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  to="/how-it-works"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/8 hover:bg-white/12 border border-white/15 text-white font-semibold text-sm transition-all duration-200 backdrop-blur-sm"
+                >
+                  <span>Our Advisory Process</span>
+                  <ChevronRight className="w-4 h-4 text-teal-300" />
+                </Link>
+              </div>
+
+              {/* Trust Indicators Row — Unique to About */}
+              <div className="pt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
+                  <ShieldCheck className="w-4 h-4 text-teal-400" />
+                  <span>RBI Fair Practice Compliant</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
+                  <Lock className="w-4 h-4 text-teal-400" />
+                  <span>Zero Cash Collection Policy</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
+                  <Scale className="w-4 h-4 text-teal-400" />
+                  <span>Independent & Unbiased</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── RIGHT: Stacked Glassmorphic Credential Cards ── */}
+            <div className="lg:col-span-5 space-y-4">
+              
+              {/* KPI Cards — displayed as a 2×2 grid of glass cards */}
+              <div className="grid grid-cols-2 gap-3">
+                {kpis.map((kpi, idx) => (
+                  <div
+                    key={idx}
+                    className="group relative bg-white/[0.05] hover:bg-white/[0.09] border border-white/10 hover:border-teal-400/30 rounded-xl p-5 backdrop-blur-md transition-all duration-300 cursor-default"
+                  >
+                    <div className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-100 to-teal-300 tracking-tight transition-transform duration-300 group-hover:scale-105">
+                      {kpi.value}
+                    </div>
+                    <div className="text-xs font-semibold text-white/90 mt-1.5">
+                      {kpi.label}
+                    </div>
+                    <div className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                      {kpi.subtext}
+                    </div>
+                    {/* Hover glow */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-teal-500/0 to-sky-500/0 group-hover:from-teal-500/[0.06] group-hover:to-sky-500/[0.04] transition-all duration-300 pointer-events-none" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Institutional Quality Banner Card */}
+              <div className="relative bg-gradient-to-br from-teal-500/15 via-white/[0.05] to-sky-500/10 border border-teal-400/25 rounded-xl p-5 backdrop-blur-md">
+                <div className="flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-lg bg-teal-500/20 border border-teal-400/30 flex items-center justify-center shrink-0">
+                    <Award className="w-5 h-5 text-teal-300" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <h3 className="text-sm font-bold text-white">Institutional-Grade Practice</h3>
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      Our advisory desk operates with the same compliance, documentation, and ethical framework expected of RBI-regulated entities — ensuring your credit profile and legal interests are safeguarded at every step.
+                    </p>
+                  </div>
+                </div>
+                {/* Corner accent */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-teal-400/10 to-transparent rounded-tr-xl pointer-events-none" />
+              </div>
+
+              {/* Timeline Mini-Strip — founding to present */}
+              <div className="relative bg-white/[0.04] border border-white/8 rounded-xl px-5 py-4 backdrop-blur-md">
+                <div className="flex items-center justify-between text-center">
+                  <div>
+                    <div className="text-lg font-extrabold text-teal-300">2011</div>
+                    <div className="text-[10px] text-slate-400 mt-0.5">Founded</div>
+                  </div>
+                  <div className="flex-1 mx-3 relative">
+                    <div className="h-px bg-white/10 w-full" />
+                    <div className="h-px bg-gradient-to-r from-teal-400/60 to-teal-400/20 w-3/4 absolute top-0 left-0" />
+                    <div className="absolute top-1/2 left-[25%] -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-teal-400/60" />
+                    <div className="absolute top-1/2 left-[50%] -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-teal-400/40" />
+                    <div className="absolute top-1/2 left-[75%] -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-teal-400/20" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-extrabold text-white">Today</div>
+                    <div className="text-[10px] text-slate-400 mt-0.5">₹1,200+ Cr</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
