@@ -20,7 +20,7 @@ import {
   HelpCircle,
   ExternalLink,
 } from 'lucide-react';
-import { SiteContent } from '../../types';
+import { SiteContent } from '../../../types';
 
 export const AboutPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();

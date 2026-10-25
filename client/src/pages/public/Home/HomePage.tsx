@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
-import { Hero } from '../../components/public/Hero';
-import { StatsBar } from '../../components/public/StatsBar';
-import { LenderPartners } from '../../components/public/LenderPartners';
-import { RateComparisonMatrix } from '../../components/public/RateComparisonMatrix';
-import { HowItWorks } from '../../components/public/HowItWorks';
-import { TestimonialsSection } from '../../components/public/TestimonialsSection';
-import { CaseStudiesSection } from '../../components/public/CaseStudiesSection';
-import { InteractiveDocumentVault } from '../../components/public/InteractiveDocumentVault';
-import { WhyWorkWithUs } from '../../components/public/WhyWorkWithUs';
-import { EnquiryForm } from '../../components/public/EnquiryForm';
-import { FaqSection } from '../../components/public/FaqSection';
-import { Service, Faq, SiteContent } from '../../types';
+import { Hero } from '../../../components/public/Hero';
+import { StatsBar } from '../../../components/public/StatsBar';
+import { LenderPartners } from '../../../components/public/LenderPartners';
+import { RateComparisonMatrix } from '../../../components/public/RateComparisonMatrix';
+import { HowItWorks } from '../../../components/public/HowItWorks';
+import { TestimonialsSection } from '../../../components/public/TestimonialsSection';
+import { CaseStudiesSection } from '../../../components/public/CaseStudiesSection';
+import { InteractiveDocumentVault } from '../../../components/public/InteractiveDocumentVault';
+import { WhyWorkWithUs } from '../../../components/public/WhyWorkWithUs';
+import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { FaqSection } from '../../../components/public/FaqSection';
+import { Service, Faq, SiteContent } from '../../../types';
 import { Calculator, ArrowRight } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -43,7 +43,7 @@ export const HomePage: React.FC = () => {
       {/* 4. Live Multi-Lender Rate Comparison Matrix */}
       <RateComparisonMatrix />
 
-      {/* 6. Dynamic EMI & FOIR Calculator Banner */}
+      {/* 5. Dynamic EMI & FOIR Calculator Banner */}
       <section className="py-12 sm:py-14 bg-brand-ivory/50 border-b border-brand-border/60">
         <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
           <div className="max-w-7xl mx-auto p-8 sm:p-12 rounded-2xl bg-white border border-brand-border flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
@@ -79,29 +79,29 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. 4-Step Digital Application Journey */}
+      {/* 6. 4-Step Digital Application Journey */}
       <HowItWorks />
 
-      {/* 8. Customer Testimonials & Reviews */}
+      {/* 7. Customer Testimonials & Reviews */}
       <TestimonialsSection />
 
-      {/* 9. Real Client Advisory Case Studies */}
+      {/* 8. Real Client Advisory Case Studies */}
       <CaseStudiesSection />
 
-      {/* 10. Interactive Pre-Application Document Vault */}
+      {/* 9. Interactive Pre-Application Document Vault */}
       <InteractiveDocumentVault />
 
-      {/* 11. Why Work With Us & Advisory Principles */}
+      {/* 10. Why Work With Us & Advisory Principles */}
       <WhyWorkWithUs content={content} />
 
-      {/* 12. Direct Online Loan Consultation Form */}
+      {/* 11. Direct Online Loan Consultation Form */}
       <EnquiryForm
         services={services}
         selectedService={selectedService}
         onClearSelectedService={() => setSelectedService(null)}
       />
 
-      {/* 13. Frequently Asked Questions */}
+      {/* 12. Frequently Asked Questions */}
       <FaqSection faqs={faqs} />
     </div>
   );
