@@ -30,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
 
   return (
     <footer id="contact" className="bg-[#183247] text-white pt-16 pb-12 border-t border-brand-navy">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
           {/* Brand & Mission */}
           <div className="space-y-4">
@@ -41,39 +41,36 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
               </span>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed">
-              Assisting property owners, homebuyers, and business professionals with transparent eligibility analysis and structured lender consultation.
+              Empowering property buyers, land investors, and homeowners with transparent FOIR underwriting, title due diligence, and institutional lender syndication across 40+ premier banks.
             </p>
           </div>
 
           {/* Quick Navigation */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-brand-teal-light mb-4">
-              Navigation
+              Advisory Solutions
             </h4>
             <ul className="space-y-2.5 text-sm text-gray-300">
               <li>
-                <Link to="/" className="hover:text-white transition-colors">Home</Link>
+                <Link to="/services/home-loans" className="hover:text-white transition-colors">Home &amp; Plot Loans</Link>
               </li>
               <li>
-                <Link to="/services/home-loans" className="hover:text-white transition-colors">Home Loans</Link>
+                <Link to="/services/loan-against-property" className="hover:text-white transition-colors">Loan Against Property (LAP)</Link>
               </li>
               <li>
-                <Link to="/services/loan-against-property" className="hover:text-white transition-colors">Loan Against Property</Link>
+                <Link to="/services/property-backed-funding" className="hover:text-white transition-colors">Commercial &amp; LRD Desk</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
+                <Link to="/services/loan-consultation" className="hover:text-white transition-colors">Loan Consultation &amp; Audit</Link>
+              </li>
+              <li>
+                <Link to="/calculator" className="hover:text-white transition-colors">EMI &amp; FOIR Calculator</Link>
               </li>
               <li>
                 <Link to="/how-it-works" className="hover:text-white transition-colors">How It Works</Link>
               </li>
               <li>
-                <Link to="/calculator" className="hover:text-white transition-colors">EMI Calculator</Link>
-              </li>
-              <li>
-                <Link to="/faqs" className="hover:text-white transition-colors">FAQs</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link>
+                <Link to="/faqs" className="hover:text-white transition-colors">Knowledge Base &amp; FAQs</Link>
               </li>
             </ul>
           </div>
