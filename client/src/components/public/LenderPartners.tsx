@@ -302,47 +302,61 @@ export const LenderPartners: React.FC = () => {
         </div>
 
         {/* Four Core Ethical Commitments */}
-        <div className="mt-12 bg-white rounded-2xl border border-brand-border p-6 sm:p-8 shadow-sm">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center md:text-left">
-            <div className="flex flex-col items-center md:items-start space-y-1.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm mb-1 font-heading">
+        <div className="mt-12 bg-white rounded-2xl border border-brand-border p-4 sm:p-6 shadow-subtle hover:shadow-card hover:border-brand-teal/25 transition-all duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4 text-center md:text-left">
+            
+            {/* Item 1: Zero Upfront Fees */}
+            <div className="group p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-brand-ivory/80 hover:shadow-sm cursor-default flex flex-col items-center md:items-start space-y-2">
+              <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100/80 flex items-center justify-center font-bold text-sm font-heading transition-all duration-300 ease-out group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white group-hover:shadow-md group-hover:shadow-emerald-200">
                 ₹0
               </div>
-              <h4 className="font-bold text-sm text-brand-navy font-heading">Zero Upfront Fees</h4>
-              <p className="text-xs text-brand-slate leading-relaxed">
+              <h4 className="font-bold text-sm text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200">
+                Zero Upfront Fees
+              </h4>
+              <p className="text-xs text-brand-slate leading-relaxed group-hover:text-brand-navy/90 transition-colors duration-200">
                 We never charge advance advisory fees. All processing fees are paid directly to the lending institution.
               </p>
             </div>
 
-            <div className="flex flex-col items-center md:items-start space-y-1.5 border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-sm mb-1 font-heading">
+            {/* Item 2: Single Application */}
+            <div className="group p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-brand-ivory/80 hover:shadow-sm cursor-default flex flex-col items-center md:items-start space-y-2 relative border-t md:border-t-0 md:before:absolute md:before:left-0 md:before:top-4 md:before:bottom-4 md:before:w-[1px] md:before:bg-gray-100 pt-4 md:pt-4">
+              <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 border border-blue-100/80 flex items-center justify-center font-bold text-sm font-heading transition-all duration-300 ease-out group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-md group-hover:shadow-blue-200">
                 40+
               </div>
-              <h4 className="font-bold text-sm text-brand-navy font-heading">Single Application</h4>
-              <p className="text-xs text-brand-slate leading-relaxed">
+              <h4 className="font-bold text-sm text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200">
+                Single Application
+              </h4>
+              <p className="text-xs text-brand-slate leading-relaxed group-hover:text-brand-navy/90 transition-colors duration-200">
                 One complete document dossier evaluated across multiple banks without repeated CIBIL bureau damage.
               </p>
             </div>
 
-            <div className="flex flex-col items-center md:items-start space-y-1.5 border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
-              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-sm mb-1 font-heading">
+            {/* Item 3: Legal & Technical Audit */}
+            <div className="group p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-brand-ivory/80 hover:shadow-sm cursor-default flex flex-col items-center md:items-start space-y-2 relative border-t md:border-t-0 md:before:absolute md:before:left-0 md:before:top-4 md:before:bottom-4 md:before:w-[1px] md:before:bg-gray-100 pt-4 md:pt-4">
+              <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-700 border border-amber-100/80 flex items-center justify-center font-bold text-sm font-heading transition-all duration-300 ease-out group-hover:scale-110 group-hover:bg-amber-600 group-hover:text-white group-hover:shadow-md group-hover:shadow-amber-200">
                 100%
               </div>
-              <h4 className="font-bold text-sm text-brand-navy font-heading">Legal &amp; Technical Audit</h4>
-              <p className="text-xs text-brand-slate leading-relaxed">
+              <h4 className="font-bold text-sm text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200">
+                Legal &amp; Technical Audit
+              </h4>
+              <p className="text-xs text-brand-slate leading-relaxed group-hover:text-brand-navy/90 transition-colors duration-200">
                 Pre-login title search and plan compliance verification to prevent rejection during legal clearance.
               </p>
             </div>
 
-            <div className="flex flex-col items-center md:items-start space-y-1.5 border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
-              <div className="w-8 h-8 rounded-lg bg-teal-50 text-brand-teal flex items-center justify-center font-bold text-sm mb-1 font-heading">
+            {/* Item 4: Dedicated Case Officer */}
+            <div className="group p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-brand-ivory/80 hover:shadow-sm cursor-default flex flex-col items-center md:items-start space-y-2 relative border-t md:border-t-0 md:before:absolute md:before:left-0 md:before:top-4 md:before:bottom-4 md:before:w-[1px] md:before:bg-gray-100 pt-4 md:pt-4">
+              <div className="w-9 h-9 rounded-lg bg-teal-50 text-brand-teal border border-teal-100/80 flex items-center justify-center font-bold text-sm font-heading transition-all duration-300 ease-out group-hover:scale-110 group-hover:bg-brand-teal group-hover:text-white group-hover:shadow-md group-hover:shadow-teal-200">
                 1:1
               </div>
-              <h4 className="font-bold text-sm text-brand-navy font-heading">Dedicated Case Officer</h4>
-              <p className="text-xs text-brand-slate leading-relaxed">
+              <h4 className="font-bold text-sm text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200">
+                Dedicated Case Officer
+              </h4>
+              <p className="text-xs text-brand-slate leading-relaxed group-hover:text-brand-navy/90 transition-colors duration-200">
                 Direct phone &amp; in-person coordination from application login until loan agreement execution.
               </p>
             </div>
+
           </div>
         </div>
 
