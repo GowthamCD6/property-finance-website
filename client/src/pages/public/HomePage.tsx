@@ -3,7 +3,6 @@ import { useOutletContext, Link } from 'react-router-dom';
 import { Hero } from '../../components/public/Hero';
 import { StatsBar } from '../../components/public/StatsBar';
 import { LenderPartners } from '../../components/public/LenderPartners';
-import { ServicesSection } from '../../components/public/ServicesSection';
 import { RateComparisonMatrix } from '../../components/public/RateComparisonMatrix';
 import { HowItWorks } from '../../components/public/HowItWorks';
 import { TestimonialsSection } from '../../components/public/TestimonialsSection';
@@ -41,13 +40,7 @@ export const HomePage: React.FC = () => {
       {/* 3. Premier Lender Partners Network */}
       <LenderPartners />
 
-      {/* 4. Core Tailored Loan Offerings */}
-      <ServicesSection
-        services={services}
-        onSelectService={handleSelectService}
-      />
-
-      {/* 5. Live Multi-Lender Rate Comparison Matrix */}
+      {/* 4. Live Multi-Lender Rate Comparison Matrix */}
       <RateComparisonMatrix />
 
       {/* 6. Dynamic EMI & FOIR Calculator Banner */}
