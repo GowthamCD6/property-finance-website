@@ -1,12 +1,12 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { PublicLayout } from './layouts/PublicLayout';
-import { HomePage } from './pages/public/Home';
+import { HomePage } from './pages/public/Home/HomePage';
 import { HomeLoansPage } from './pages/public/HomeLoansPage';
 import { LoanAgainstPropertyPage } from './pages/public/LoanAgainstPropertyPage';
 import { PropertyFundingPage } from './pages/public/PropertyFundingPage';
 import { ConsultationPage } from './pages/public/ConsultationPage';
-import { AboutPage } from './pages/public/About';
+import { AboutPage } from './pages/public/About/AboutPage';
 import { HowItWorksPage } from './pages/public/HowItWorksPage';
 import { CalculatorPage } from './pages/public/CalculatorPage';
 import { FaqsPage } from './pages/public/FaqsPage';
