@@ -35,18 +35,18 @@ export const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-20 bg-brand-ivory/60 border-t border-brand-border/60">
+    <section id="how-it-works" className="py-12 sm:py-16 bg-brand-ivory/60 border-t border-brand-border/60">
       <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             <Zap className="w-3.5 h-3.5" />
             <span>Digital-First Processing</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
             How Your Loan Gets Approved in 4 Simple Steps
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-brand-slate leading-relaxed">
-            Eliminate endless bank branch visits. Our streamlined digital workflow fast-tracks your loan from initial eligibility check to direct fund disbursement.
+          <p className="mt-2.5 text-sm sm:text-base text-brand-slate leading-relaxed">
+            A structured advisory workflow that fast-tracks your loan from initial eligibility check to direct fund disbursement.
           </p>
         </div>
 

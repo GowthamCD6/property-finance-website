@@ -238,18 +238,18 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const minDateString = tomorrow.toISOString().split('T')[0];
 
   return (
-    <section id="enquiry-form" className="py-20 bg-brand-teal-light/40 border-t border-brand-border">
+    <section id="enquiry-form" className="py-12 sm:py-16 bg-brand-teal-light/40 border-t border-brand-border">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
           <div className="inline-block px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             Confidential Consultation
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight">
-            Let's Understand Your Property Funding Needs
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
+            Schedule a Confidential Consultation
           </h2>
-          <p className="mt-3 text-brand-slate text-sm sm:text-base leading-relaxed">
-            Share preliminary details and our advisory team will arrange a scheduled discussion tailored to your requirements.
+          <p className="mt-2.5 text-brand-slate text-sm sm:text-base leading-relaxed">
+            Share your loan requirements to connect directly with a dedicated property finance advisory specialist.
           </p>
         </div>
 

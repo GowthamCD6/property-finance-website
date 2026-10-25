@@ -51,7 +51,7 @@ export const HomePage: React.FC = () => {
       <RateComparisonMatrix />
 
       {/* 6. Dynamic EMI & FOIR Calculator Banner */}
-      <section className="py-16 sm:py-20 bg-brand-ivory/50 border-b border-brand-border/60">
+      <section className="py-12 sm:py-14 bg-brand-ivory/50 border-b border-brand-border/60">
         <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
           <div className="max-w-7xl mx-auto p-8 sm:p-12 rounded-2xl bg-white border border-brand-border flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
             <div className="space-y-3 max-w-2xl">

@@ -114,19 +114,19 @@ export const InteractiveDocumentVault: React.FC = () => {
   };
 
   return (
-    <section className="py-16 sm:py-20 bg-white border-b border-brand-border/60">
+    <section className="py-12 sm:py-16 bg-white border-b border-brand-border/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <FileCheck className="w-3.5 h-3.5" />
-            <span>Pre-Application Transparency</span>
+            <span>Document Checklist</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight">
-            Comprehensive Document Audit Checklist
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
+            Pre-Application Documentation Checklist
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-brand-slate leading-relaxed">
-            Incomplete documentation is the primary reason for bank loan rejection. Select your profile below to review the precise document dossier required for seamless legal and credit clearance.
+          <p className="mt-2.5 text-sm sm:text-base text-brand-slate leading-relaxed">
+            Review the exact documents required for your profile to ensure prompt credit and legal clearance.
           </p>
         </div>
 

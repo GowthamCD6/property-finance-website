@@ -19,33 +19,33 @@ export const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
   const benefits = [
     {
       icon: <Target className="w-5 h-5 text-brand-teal" />,
-      title: 'Guidance Tailored to Individual Requirements',
-      desc: 'We analyse your specific property characteristics, cash flow profile, and tenure expectations before recommending possible loan structures.',
+      title: 'Customized Loan Structuring',
+      desc: 'We analyze property characteristics, debt service capacity, and cash flow profile to recommend the optimal borrowing structure.',
     },
     {
       icon: <Layers className="w-5 h-5 text-brand-teal" />,
-      title: 'Help Understanding Lender Eligibility Criteria',
-      desc: 'Lenders apply distinct loan-to-value (LTV) and debt-service ratios. We clarify what each institution looks for to avoid unnecessary rejections.',
+      title: 'Institutional Lender Evaluation',
+      desc: 'Direct alignment with bank-specific LTV and FOIR thresholds to prevent unvetted credit rejections.',
     },
     {
       icon: <FileSpreadsheet className="w-5 h-5 text-brand-teal" />,
-      title: 'Assistance Organising Application Documents',
-      desc: 'Proper document collation reduces processing turnaround. We provide an exact checklist for KYC, title deeds, and income statements.',
+      title: 'Pre-Submission Dossier Audit',
+      desc: 'Thorough verification of KYC, 30-year parent title deeds, and income statements before bank login.',
     },
     {
       icon: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
-      title: 'Transparent & Confidential Process',
-      desc: 'Your data is handled with strict discretion. We do not engage in unauthorized sharing or unvetted multiple bureau inquiries.',
+      title: 'Direct Bank Submissions & Confidentiality',
+      desc: 'Strict data privacy. Your file is submitted directly to designated bank officers without third-party bureau queries.',
     },
     {
       icon: <HelpCircle className="w-5 h-5 text-brand-teal" />,
-      title: 'Consultation to Discuss Potential Funding Options',
-      desc: 'Scheduled one-on-one sessions via phone, video, or in-person at our office to address your queries directly with a loan consultant.',
+      title: 'Dedicated Senior Advisory',
+      desc: 'One-on-one consultation via phone, video, or in-person to navigate sanction and disbursement milestones.',
     },
   ];
 
   return (
-    <section id="why-us" className="py-20 bg-white">
+    <section id="why-us" className="py-12 sm:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Image with authentic property consultation atmosphere */}

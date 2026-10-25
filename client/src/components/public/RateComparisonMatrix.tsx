@@ -105,10 +105,10 @@ export const RateComparisonMatrix: React.FC = () => {
     : rateData.filter((r) => r.category === filterCategory);
 
   return (
-    <section className="py-16 sm:py-20 bg-white border-b border-brand-border/60">
+    <section className="py-12 sm:py-16 bg-white border-b border-brand-border/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
               <Percent className="w-3.5 h-3.5" />

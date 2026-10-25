@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { Award, CheckCircle2, ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import React, { useState } from 'react';
+import { Award, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Partner {
@@ -135,10 +135,7 @@ const LenderCard: React.FC<{
 };
 
 export const LenderPartners: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'psu' | 'private' | 'nbfc'>('all');
-  const [isAutoPlay, setIsAutoPlay] = useState(true);
-  const [isAnyCardHovered, setIsAnyCardHovered] = useState(false);
-  const [manualOffset, setManualOffset] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   const partners: Partner[] = [
     {
@@ -253,175 +250,54 @@ export const LenderPartners: React.FC = () => {
     },
   ];
 
-  const filteredPartners = useMemo(() => {
-    return selectedCategory === 'all'
-      ? partners
-      : partners.filter((p) => p.category === selectedCategory);
-  }, [selectedCategory]);
-
-  // Create an extended duplicate list for seamless, infinite looping
-  const singleSet = useMemo(() => {
-    if (filteredPartners.length === 0) return [];
-    let list = [...filteredPartners];
-    // Ensure we have enough items so the track width comfortably exceeds ultra-wide screen widths
-    while (list.length < 8) {
-      list = [...list, ...filteredPartners];
-    }
-    return list;
-  }, [filteredPartners]);
-
-  // Handle manual steps
-  const handleStep = useCallback((direction: 'prev' | 'next') => {
-    const cardStep = 380;
-    if (direction === 'next') {
-      setManualOffset((prev) => prev - cardStep);
-    } else {
-      setManualOffset((prev) => prev + cardStep);
-    }
-  }, []);
-
-  const toggleAutoPlay = () => {
-    setIsAutoPlay((prev) => !prev);
-  };
-
-  const handleCategorySelect = (categoryId: 'all' | 'psu' | 'private' | 'nbfc') => {
-    setSelectedCategory(categoryId);
-    setManualOffset(0);
-  };
-
-  const isPaused = !isAutoPlay || isAnyCardHovered;
-
   return (
-    <section className="pt-16 sm:pt-20 lg:pt-24 pb-14 sm:pb-16 bg-transparent border-b border-brand-border/60 overflow-hidden">
+    <section className="py-12 sm:py-16 bg-transparent border-b border-brand-border/60 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3.5 shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Award className="w-3.5 h-3.5" />
             <span>Multi-Lender Access</span>
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
             Direct Channel Advisory with India’s Leading Lenders
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-brand-slate leading-relaxed">
-            We partner with 40+ leading public sector banks, private financial institutions, and housing finance companies (HFCs) to evaluate and secure the most cost-effective loan terms for your specific property.
+          <p className="mt-2.5 text-sm sm:text-base text-brand-slate leading-relaxed">
+            Direct channel access to 40+ premier banks and housing finance institutions to secure optimal borrowing terms.
           </p>
         </div>
 
-        {/* Controls Bar: Category Filter Pills + Slider Navigation in a STRICT SINGLE ROW */}
-        <div className="flex items-center justify-between gap-3 w-full mb-6 flex-nowrap overflow-x-auto scrollbar-none py-1">
-          
-          {/* Interactive Category Filter Pills (Single Row, No Wrap) */}
-          <div className="flex items-center gap-2 shrink-0">
-            {[
-              { id: 'all', label: 'All Lenders (10)' },
-              { id: 'psu', label: 'Public Sector Banks' },
-              { id: 'private', label: 'Premier Private Banks' },
-              { id: 'nbfc', label: 'NBFCs & Housing Finance' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleCategorySelect(tab.id as any)}
-                className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 ${
-                  selectedCategory === tab.id
-                    ? 'bg-brand-navy text-white shadow-sm'
-                    : 'bg-white text-brand-slate hover:text-brand-navy hover:bg-slate-100 border border-brand-border/70'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Slider Controls: Auto-Slide Status, Play/Pause & Left/Right Arrows (Single Row, No Wrap, aligned right) */}
-          <div className="flex items-center gap-2 shrink-0 ml-auto">
-            <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 text-[11px] text-brand-slate font-medium whitespace-nowrap">
-              <span
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  isPaused ? 'bg-amber-400' : 'bg-emerald-500 animate-pulse'
-                }`}
-              />
-              <span>
-                {isAnyCardHovered ? 'Paused on Card' : isAutoPlay ? 'Continuous Sliding' : 'Paused'}
-              </span>
-            </div>
-
-            {/* Play / Pause Toggle Button */}
-            <button
-              type="button"
-              onClick={toggleAutoPlay}
-              aria-label={isAutoPlay ? 'Pause sliding animation' : 'Start sliding animation'}
-              title={isAutoPlay ? 'Pause sliding animation' : 'Start sliding animation'}
-              className="w-8 h-8 rounded-full bg-white border border-brand-border hover:border-brand-teal/50 text-brand-navy hover:text-brand-teal flex items-center justify-center transition-all shadow-xs cursor-pointer shrink-0"
-            >
-              {isAutoPlay ? (
-                <Pause className="w-3.5 h-3.5 text-brand-slate hover:text-brand-navy" />
-              ) : (
-                <Play className="w-3.5 h-3.5 text-brand-teal ml-0.5" />
-              )}
-            </button>
-
-            {/* Previous Slide Button */}
-            <button
-              type="button"
-              onClick={() => handleStep('prev')}
-              aria-label="Previous lender"
-              title="Slide left"
-              className="w-8 h-8 rounded-full bg-white border border-brand-border hover:border-brand-teal/50 text-brand-navy hover:text-brand-teal flex items-center justify-center transition-all shadow-xs cursor-pointer shrink-0"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            {/* Next Slide Button */}
-            <button
-              type="button"
-              onClick={() => handleStep('next')}
-              aria-label="Next lender"
-              title="Slide right"
-              className="w-8 h-8 rounded-full bg-white border border-brand-border hover:border-brand-teal/50 text-brand-navy hover:text-brand-teal flex items-center justify-center transition-all shadow-xs cursor-pointer shrink-0"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Dynamic & Premium Continuous Sliding Carousel (Wider Content & Full-Bleed Panoramic Slide) */}
+        {/* Dynamic Continuous Sliding Carousel */}
         <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-3">
           {/* Left & Right Gradient Fade Overlays for seamless edge transition */}
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
 
-          {/* Interactive Sliding Track with Expanded Width and Continuous CSS Hardware Acceleration */}
+          {/* Continuous CSS Hardware Acceleration Track */}
           <div
-            className="transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(${manualOffset}px)` }}
+            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-4 px-6 sm:px-12 select-none"
+            style={{
+              animationPlayState: isHovered ? 'paused' : 'running',
+            }}
           >
-            <div
-              className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-5 px-6 sm:px-12 select-none"
-              style={{
-                animationPlayState: isPaused ? 'paused' : 'running',
-              }}
-            >
-              {/* Set 1 */}
-              {singleSet.map((p, idx) => (
-                <LenderCard
-                  key={`p1-${p.id}-${idx}`}
-                  partner={p}
-                  onHoverChange={setIsAnyCardHovered}
-                />
-              ))}
-              {/* Set 2 (Exact Duplicate for Seamless Continuous Loop) */}
-              {singleSet.map((p, idx) => (
-                <LenderCard
-                  key={`p2-${p.id}-${idx}`}
-                  partner={p}
-                  ariaHidden
-                  onHoverChange={setIsAnyCardHovered}
-                />
-              ))}
-            </div>
+            {/* Set 1 */}
+            {partners.map((p, idx) => (
+              <LenderCard
+                key={`p1-${p.id}-${idx}`}
+                partner={p}
+                onHoverChange={setIsHovered}
+              />
+            ))}
+            {/* Set 2 (Exact Duplicate for Seamless Continuous Loop) */}
+            {partners.map((p, idx) => (
+              <LenderCard
+                key={`p2-${p.id}-${idx}`}
+                partner={p}
+                ariaHidden
+                onHoverChange={setIsHovered}
+              />
+            ))}
           </div>
         </div>
 

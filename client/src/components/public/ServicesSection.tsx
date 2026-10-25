@@ -18,18 +18,18 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ services, onSelectService }) => {
   return (
-    <section id="services" className="py-20 bg-brand-ivory border-t border-b border-brand-border/60">
+    <section id="services" className="py-12 sm:py-16 bg-brand-ivory border-t border-b border-brand-border/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-block px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             Core Service Offerings
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
             Tailored Property Loan Assistance
           </h2>
-          <p className="mt-4 text-brand-slate text-base sm:text-lg leading-relaxed">
-            We guide you through the property financing landscape with objective evaluation of institutional lender criteria and structured eligibility support.
+          <p className="mt-2.5 text-brand-slate text-sm sm:text-base leading-relaxed">
+            Independent evaluation of institutional lender eligibility criteria to structure your application for optimal interest rates and swift approval.
           </p>
         </div>
 

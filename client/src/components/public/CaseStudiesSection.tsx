@@ -52,19 +52,19 @@ export const CaseStudiesSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-20 bg-brand-ivory/50 border-b border-brand-border/60">
+    <section className="py-12 sm:py-16 bg-brand-ivory/50 border-b border-brand-border/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Briefcase className="w-3.5 h-3.5" />
-            <span>Proven Advisory Track Record</span>
+            <span>Advisory Track Record</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight">
-            Real Client Scenarios &amp; Complex Approvals Resolved
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
+            Recent Advisory Sanctions
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-brand-slate leading-relaxed">
-            Every property loan file is unique. Here is how our personalized documentation audits and multi-lender network successfully navigated non-standard eligibility and high-ticket funding hurdles.
+          <p className="mt-2.5 text-sm sm:text-base text-brand-slate leading-relaxed">
+            Real case summaries illustrating how structured multi-lender evaluation resolves complex eligibility and high-ticket funding hurdles.
           </p>
         </div>
 

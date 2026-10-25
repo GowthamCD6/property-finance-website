@@ -22,16 +22,16 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ faqs }) => {
   };
 
   return (
-    <section id="faqs" className="py-20 bg-white">
+    <section id="faqs" className="py-12 sm:py-16 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
           <div className="inline-block px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             Common Inquiries
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-brand-slate text-sm sm:text-base leading-relaxed">
+          <p className="mt-2.5 text-brand-slate text-sm sm:text-base leading-relaxed">
             Essential facts on property loan evaluation, eligibility parameters, documentation, and advisory appointments.
           </p>
 

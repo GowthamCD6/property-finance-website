@@ -179,12 +179,12 @@ a:focus-visible, button:focus-visible {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 7px;
+  padding: 8px 15px;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: #183247;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #112536;
   text-decoration: none;
   border-radius: 9999px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -195,45 +195,65 @@ a:focus-visible, button:focus-visible {
   letter-spacing: -0.015em;
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  width: 16px;
-  margin-left: -8px;
-  height: 2px;
-  border-radius: 9999px;
-  background: #187C78;
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .nav-link:hover {
   color: #187C78;
   background-color: rgba(24, 124, 120, 0.08);
   border-color: transparent;
 }
 
-.nav-link:hover::after {
-  transform: scaleX(1);
-}
-
 .nav-link--active {
   color: #187C78;
-  font-weight: 600;
-  background-color: rgba(24, 124, 120, 0.08);
-  border-color: rgba(24, 124, 120, 0.15);
-}
-
-.nav-link--active::after {
-  transform: scaleX(1);
-  background: #187C78;
+  font-weight: 650;
+  background-color: rgba(24, 124, 120, 0.09);
+  border-color: rgba(24, 124, 120, 0.16);
 }
 
 .nav-link--dropdown {
-  font-size: 15px;
+  font-size: 14.5px;
+}
+
+/* ─── Creative Nav Icon Morph Animation ─── */
+.nav-icon-morph {
+  position: relative;
+  width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-icon-default,
+.nav-icon-hover {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #187C78;
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-icon-default {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.nav-icon-hover {
+  opacity: 0;
+  transform: scale(0.3) rotate(-45deg);
+  pointer-events: none;
+}
+
+/* On nav link hover, morph default icon out and spring alternate icon in */
+.nav-link:hover .nav-icon-default {
+  opacity: 0;
+  transform: scale(0.2) rotate(45deg);
+}
+
+.nav-link:hover .nav-icon-hover {
+  opacity: 1;
+  transform: scale(1.15) rotate(0deg);
 }
 
 .nav-chevron {
@@ -537,7 +557,7 @@ a:focus-visible, button:focus-visible {
   scrollbar-width: none;
 }
 
-/* Continuous Infinite Hardware-Accelerated Sliding Animation */
+/* Continuous Infinite Hardware-Accelerated Sliding Animation (Right to Left) */
 @keyframes continuousScroll {
   0% {
     transform: translate3d(0, 0, 0);
@@ -550,13 +570,36 @@ a:focus-visible, button:focus-visible {
 .animate-continuous-scroll {
   display: flex;
   width: max-content;
-  animation: continuousScroll 48s linear infinite;
+  animation: continuousScroll 90s linear infinite;
   will-change: transform;
 }
 
 .animate-continuous-scroll:hover,
 .animate-continuous-scroll:active,
 .animate-continuous-scroll:focus-within {
+  animation-play-state: paused !important;
+}
+
+/* Continuous Infinite Sliding Animation (Left to Right / Reverse) */
+@keyframes continuousScrollReverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-continuous-scroll-reverse {
+  display: flex;
+  width: max-content;
+  animation: continuousScrollReverse 95s linear infinite;
+  will-change: transform;
+}
+
+.animate-continuous-scroll-reverse:hover,
+.animate-continuous-scroll-reverse:active,
+.animate-continuous-scroll-reverse:focus-within {
   animation-play-state: paused !important;
 }
 
