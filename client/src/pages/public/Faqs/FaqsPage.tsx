@@ -13,8 +13,9 @@ import {
   CheckCircle2,
   Sparkles,
   PhoneCall,
+  Tag,
 } from 'lucide-react';
-import { Faq } from '../../types';
+import { Faq } from '../../../types';
 
 export const FaqsPage: React.FC = () => {
   const context = useOutletContext<{ faqs?: Faq[] }>();
@@ -162,6 +163,16 @@ export const FaqsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
+  const trendingTopics = [
+    'A-Khata vs B-Khata',
+    'Plot Loan',
+    'EC Form 15',
+    'Pre-EMI',
+    'Section 24(b)',
+    'MODT',
+    'LRD Escrow',
+  ];
+
   const categories = ['ALL', ...Array.from(new Set(allFaqs.map((f) => f.category)))];
 
   const filteredFaqs = allFaqs.filter((f) => {
@@ -174,47 +185,63 @@ export const FaqsPage: React.FC = () => {
   });
 
   return (
-    <div className="bg-white">
-      {/* 1. Header Hero Banner */}
-      <section className="relative bg-gradient-to-br from-brand-navy via-[#102434] to-[#0A1824] text-white pt-20 pb-20 lg:pt-24 lg:pb-24 border-b border-white/10 overflow-hidden">
-        {/* Ambient Glows */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-80 h-80 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="bg-brand-bg min-h-screen text-brand-navy">
+      {/* ────────────────────────────────────────────────────────────
+          1. CONTENT-SPECIFIC HERO: SEARCHABLE KNOWLEDGE REPOSITORY
+          ──────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-[#0A1624] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
-          <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/20 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider mb-5">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 backdrop-blur-md">
               <HelpCircle className="w-4 h-4 text-brand-teal" />
-              <span>Property Finance Knowledge Base</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light">
+                Property Finance &amp; Title Diligence Encyclopedia
+              </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight sm:leading-tight">
-              Frequently Asked Questions on <br className="hidden sm:inline" />
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight">
+              Instant Answers on Land, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-brand-gold">
-                Land, Home Loans &amp; Title Verification
+                Home Loans &amp; Title Verification.
               </span>
             </h1>
 
-            <p className="mt-5 text-gray-300 text-base sm:text-lg lg:text-xl font-normal leading-relaxed max-w-3xl">
-              Factual, authoritative answers regarding layout sanctions (BDA/DTCP), Khata classifications, composite loan rules, banking FOIR formulas, and legal due diligence.
+            <p className="text-base sm:text-lg text-gray-300 font-normal leading-relaxed max-w-2xl mx-auto">
+              Find factual answers regarding municipal layout approvals (BDA/DTCP), Khata classifications, composite plot loan rules, banking FOIR formulas, and legal documentation.
             </p>
 
-            {/* Quick Search Input */}
-            <div className="mt-8 max-w-2xl relative">
-              <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            {/* Prominent Knowledge Search Bar inside Hero */}
+            <div className="pt-2 max-w-2xl mx-auto relative">
+              <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-brand-teal" />
               <input
                 type="text"
-                placeholder="Search topics (e.g., A-Khata, CIBIL, Pre-EMI, Plot Loan, MODT, LRD)..."
+                placeholder="Search topics (e.g. A-Khata, CIBIL, Pre-EMI, Plot Loan, MODT, LRD)..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal focus:bg-white/15 transition-all shadow-lg"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal focus:bg-white/15 transition-all shadow-xl"
               />
+            </div>
+
+            {/* Trending Topic Quick Pills */}
+            <div className="pt-2 flex flex-wrap justify-center items-center gap-2 text-xs text-gray-300">
+              <span className="text-gray-400 font-medium">Trending Queries:</span>
+              {trendingTopics.map((topic) => (
+                <button
+                  key={topic}
+                  onClick={() => setSearchTerm(topic)}
+                  className="px-3 py-1 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 transition-colors text-brand-teal-light"
+                >
+                  #{topic}
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Category Filter Pills */}
+      {/* ────────────────────────────────────────────────────────────
+          2. CATEGORY FILTER TABS
+          ──────────────────────────────────────────────────────────── */}
       <section className="py-6 border-b border-brand-border bg-brand-ivory/60 sticky top-16 sm:top-20 z-20 backdrop-blur-md">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="flex flex-wrap gap-2 items-center">
@@ -241,7 +268,9 @@ export const FaqsPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. Accordion List Section */}
+      {/* ────────────────────────────────────────────────────────────
+          3. ACCORDION Q&A LIST
+          ──────────────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 bg-white">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="max-w-4xl mx-auto">
@@ -302,29 +331,6 @@ export const FaqsPage: React.FC = () => {
                 })}
               </div>
             )}
-
-            {/* Direct Advisor Assistance Card */}
-            <div className="mt-14 p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-brand-navy to-[#183247] text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
-              <div className="text-center sm:text-left space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal/20 text-brand-teal-light text-xs font-bold uppercase tracking-wider">
-                  <PhoneCall className="w-3.5 h-3.5" />
-                  <span>Unsure About Your Specific Property?</span>
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold font-heading">
-                  Have a specific question regarding your deed chain or loan?
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed max-w-xl">
-                  Our senior advisory desk reviews title paperwork, municipal permissions, and bank rejection cases free of upfront charges.
-                </p>
-              </div>
-              <Link
-                to="/enquire"
-                className="px-7 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate shadow-lg shadow-brand-teal/20 transition-all flex-shrink-0 flex items-center gap-2"
-              >
-                <span>Book 1-on-1 Consultation</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
           </div>
         </div>
       </section>

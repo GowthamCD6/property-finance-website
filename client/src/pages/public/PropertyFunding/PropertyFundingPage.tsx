@@ -19,8 +19,8 @@ import {
   HelpCircle,
   FileSpreadsheet,
 } from 'lucide-react';
-import { EnquiryForm } from '../../components/public/EnquiryForm';
-import { Service } from '../../types';
+import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { Service } from '../../../types';
 
 export const PropertyFundingPage: React.FC = () => {
   const context = useOutletContext<{ services?: Service[] }>();
@@ -138,77 +138,126 @@ export const PropertyFundingPage: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white">
-      {/* 1. Executive Commercial Hero */}
-      <section className="relative bg-gradient-to-br from-brand-navy via-[#102434] to-[#0A1824] text-white pt-20 pb-20 lg:pt-24 lg:pb-24 border-b border-white/10 overflow-hidden">
-        {/* Ambient Decorative Accents */}
+    <div className="bg-brand-bg min-h-screen text-brand-navy">
+      {/* ────────────────────────────────────────────────────────────
+          1. CONTENT-SPECIFIC HERO: COMMERCIAL REAL ESTATE & LRD DESK
+          ──────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-[#0A1926] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-80 h-80 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
-          <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/20 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider mb-5">
-              <Building2 className="w-4 h-4 text-brand-teal" />
-              <span>Commercial Debt &amp; Real Estate Syndication Desk</span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Column: Commercial Mandate */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 backdrop-blur-md">
+                <Building2 className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                  Institutional Commercial Real Estate &amp; LRD Desk
+                </span>
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight font-heading leading-tight">
+                High-Ticket Commercial Debt, <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-brand-gold">
+                  Plotted Layouts &amp; LRD Syndication.
+                </span>
+              </h1>
+
+              <p className="text-base sm:text-lg text-gray-300 font-normal leading-relaxed max-w-2xl">
+                Structured capital syndication from ₹5 Crore to ₹250+ Crore for commercial property developers, Grade-A IT office parks, logistics warehousing hubs, and approved plotted layout infrastructure.
+              </p>
+
+              {/* CTAs */}
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <a
+                  href="#enquiry-form"
+                  className="px-7 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-sm font-bold rounded-corporate shadow-lg shadow-brand-teal/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
+                >
+                  <span>Request Term Sheet Feasibility</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+                <Link
+                  to="/calculator"
+                  className="px-6 py-3.5 bg-white/10 hover:bg-white/15 text-white border border-white/20 rounded-corporate text-sm font-semibold transition-all backdrop-blur-sm flex items-center gap-2"
+                >
+                  <FileSpreadsheet className="w-4 h-4 text-brand-teal" />
+                  <span>Model Debt Cash Flows</span>
+                </Link>
+              </div>
+
+              {/* Key Institutional Benchmarks */}
+              <div className="pt-4 flex flex-wrap gap-2 text-[11px] font-semibold text-gray-400">
+                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                  Ticket Size: ₹5 Cr – ₹250+ Cr
+                </span>
+                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                  LRD Discounting: Up to 75% Net Rent
+                </span>
+                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                  Target DSCR: 1.25x – 1.40x
+                </span>
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight sm:leading-tight">
-              Commercial Property Funding, <br className="hidden sm:inline" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-brand-gold">
-                LRD &amp; Land Layout Syndication
-              </span>
-            </h1>
+            {/* Right Column: Institutional Term Sheet Matrix Card */}
+            <div className="lg:col-span-5 bg-gradient-to-br from-[#112334] to-[#0c1b29] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs uppercase font-bold tracking-wider text-emerald-300">
+                    Institutional Debt Parameters
+                  </span>
+                </div>
+                <span className="text-[11px] text-gray-400 font-mono">Wholesale Desk</span>
+              </div>
 
-            <p className="mt-5 text-gray-300 text-base sm:text-lg lg:text-xl font-normal leading-relaxed max-w-3xl">
-              From monetizing multi-crore corporate lease rentals to securing capital for DTCP/BDA approved plotted layout developments and commercial real estate acquisitions, our advisory desk structures institutional debt from ₹5 Crore to ₹250+ Crore.
-            </p>
+              <div className="mt-5 grid grid-cols-2 gap-4">
+                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-gray-400 block font-medium">Starting Interest Rate</span>
+                  <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">From 9.15%*</span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">Corporate AAA lessees</span>
+                </div>
+                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-gray-400 block font-medium">Loan Quantum</span>
+                  <span className="text-xl sm:text-2xl font-black text-white font-mono">₹5 Cr – ₹250 Cr</span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">Multi-bank consortium</span>
+                </div>
+                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-gray-400 block font-medium">Facility Tenor</span>
+                  <span className="text-xl sm:text-2xl font-black text-brand-gold font-mono">Up to 15 Yrs</span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">Aligned to lease lock-in</span>
+                </div>
+                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-gray-400 block font-medium">Escrow Security</span>
+                  <span className="text-xl sm:text-2xl font-black text-brand-teal-light font-mono">Tripartite</span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">Automated surplus sweep</span>
+                </div>
+              </div>
 
-            {/* Quick Metrics Bar */}
-            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
-              <div>
-                <span className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase block">Ticket Size</span>
-                <span className="text-xl sm:text-2xl font-black text-white font-mono">₹5 Cr – ₹250+ Cr</span>
-                <span className="text-[11px] text-gray-400 block mt-0.5">Flexible structuring</span>
+              <div className="mt-5 p-4 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-300 leading-relaxed">
+                <span><strong>LRD Escrow Mechanics:</strong> Lessee pays monthly rent directly to a designated no-lien bank escrow account. Bank debits EMI and automatically sweeps net balance to owner.</span>
               </div>
-              <div>
-                <span className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase block">Starting ROI</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">9.15%* p.a.</span>
-                <span className="text-[11px] text-gray-400 block mt-0.5">Corporate benchmarks</span>
-              </div>
-              <div>
-                <span className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase block">Max LRD Discounting</span>
-                <span className="text-xl sm:text-2xl font-black text-brand-gold font-mono">Up to 75%</span>
-                <span className="text-[11px] text-gray-400 block mt-0.5">Of net monthly rentals</span>
-              </div>
-              <div>
-                <span className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase block">Target DSCR</span>
-                <span className="text-xl sm:text-2xl font-black text-brand-teal font-mono">1.25x – 1.40x</span>
-                <span className="text-[11px] text-gray-400 block mt-0.5">Coverage buffer</span>
-              </div>
-            </div>
 
-            {/* CTAs */}
-            <div className="mt-8 flex flex-wrap gap-4 items-center">
-              <a
-                href="#enquiry-form"
-                className="px-7 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-sm font-bold rounded-corporate shadow-lg shadow-brand-teal/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
-              >
-                <span>Request High-Ticket Advisory</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              <Link
-                to="/calculator"
-                className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-corporate text-sm font-semibold transition-all backdrop-blur-sm flex items-center gap-2"
-              >
-                <FileSpreadsheet className="w-4 h-4 text-brand-teal" />
-                <span>Simulate Debt &amp; EMI</span>
-              </Link>
+              <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
+                <span className="text-xs text-gray-400">Strict Non-Disclosure Protocol</span>
+                <a
+                  href="#enquiry-form"
+                  className="text-xs font-bold text-brand-teal-light hover:text-white flex items-center gap-1 transition-colors"
+                >
+                  <span>Initiate Commercial Review</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Four Commercial Funding Solutions (Interactive Tabs) */}
+      {/* ────────────────────────────────────────────────────────────
+          2. FOUR COMMERCIAL FUNDING SOLUTIONS (Interactive Tabs)
+          ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-brand-ivory/60 border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="text-center max-w-3xl mx-auto mb-14">
@@ -244,7 +293,6 @@ export const PropertyFundingPage: React.FC = () => {
           {/* Active Solution Display Card */}
           <div className="bg-white rounded-3xl border border-brand-border shadow-subtle p-6 sm:p-10 lg:p-12 transition-all">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-              {/* Left Column: Solution Detail */}
               <div className="lg:col-span-7 space-y-6">
                 <div className="space-y-2">
                   <span className="inline-block px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
@@ -258,7 +306,6 @@ export const PropertyFundingPage: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Key Underwriting Highlights */}
                 <div className="space-y-3 pt-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-brand-navy">
                     Key Underwriting &amp; Structuring Parameters:
@@ -273,7 +320,6 @@ export const PropertyFundingPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Ideal Fit & Escrow Flow Box */}
                 <div className="p-4 bg-brand-ivory rounded-xl border border-brand-border/80 space-y-2 text-xs">
                   <div>
                     <span className="font-bold text-brand-navy">Target Borrower Profile: </span>
@@ -286,7 +332,6 @@ export const PropertyFundingPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Right Column: Facility Metrics Dashboard */}
               <div className="lg:col-span-5 bg-gradient-to-br from-brand-navy to-[#183247] text-white p-6 sm:p-8 rounded-2xl shadow-xl space-y-6">
                 <div className="flex items-center justify-between pb-4 border-b border-white/10">
                   <span className="text-xs uppercase font-bold tracking-wider text-brand-teal-light">Facility Metrics</span>
@@ -333,131 +378,9 @@ export const PropertyFundingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. The Tripartite Escrow Workflow (Visual Architecture) */}
-      <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="max-w-3xl mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
-              Escrow Governance
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-navy font-heading tracking-tight">
-              How LRD Escrow Tripartite Mechanics Function
-            </h2>
-            <p className="mt-3 text-brand-slate text-sm sm:text-base leading-relaxed">
-              Institutional lenders mandate a strictly controlled cash-flow routing mechanism to ensure risk-free debt servicing while preserving property owner cash surpluses.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="p-6 bg-brand-ivory/50 rounded-2xl border border-brand-border relative hover:border-brand-teal/50 transition-all flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-brand-navy text-white flex items-center justify-center font-bold text-sm mb-4">
-                  01
-                </div>
-                <h3 className="font-bold text-base text-brand-navy mb-2">Corporate Lease Execution</h3>
-                <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
-                  Landlord enters into a registered multi-year lease deed with an institutional or MNC corporate tenant with verified lock-in period.
-                </p>
-              </div>
-              <div className="pt-4 mt-4 border-t border-brand-border/60 flex items-center text-[11px] font-semibold text-brand-teal">
-                <span>Tripartite Agreement</span>
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </div>
-            </div>
-
-            <div className="p-6 bg-brand-ivory/50 rounded-2xl border border-brand-border relative hover:border-brand-teal/50 transition-all flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-brand-teal text-white flex items-center justify-center font-bold text-sm mb-4">
-                  02
-                </div>
-                <h3 className="font-bold text-base text-brand-navy mb-2">Designated Escrow Account</h3>
-                <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
-                  Lender creates a dedicated no-lien escrow account. Tenant irrevocably instructs payroll/finance to credit gross rental directly to this escrow.
-                </p>
-              </div>
-              <div className="pt-4 mt-4 border-t border-brand-border/60 flex items-center text-[11px] font-semibold text-brand-teal">
-                <span>Direct Inflow Routing</span>
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </div>
-            </div>
-
-            <div className="p-6 bg-brand-ivory/50 rounded-2xl border border-brand-border relative hover:border-brand-teal/50 transition-all flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-brand-navy text-white flex items-center justify-center font-bold text-sm mb-4">
-                  03
-                </div>
-                <h3 className="font-bold text-base text-brand-navy mb-2">Automated Debt Servicing</h3>
-                <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
-                  On the scheduled billing day, the lender automatically debits the contractual EMI (Principal + Interest) from the escrow cash pool.
-                </p>
-              </div>
-              <div className="pt-4 mt-4 border-t border-brand-border/60 flex items-center text-[11px] font-semibold text-brand-teal">
-                <span>Zero Default Risk</span>
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </div>
-            </div>
-
-            <div className="p-6 bg-brand-ivory/50 rounded-2xl border border-brand-border relative hover:border-brand-teal/50 transition-all flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm mb-4">
-                  04
-                </div>
-                <h3 className="font-bold text-base text-brand-navy mb-2">Automatic Surplus Sweep</h3>
-                <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
-                  All residual surplus rental cash flow over and above the monthly EMI automatically sweeps directly into the property owner’s operational current account.
-                </p>
-              </div>
-              <div className="pt-4 mt-4 border-t border-brand-border/60 flex items-center text-[11px] font-semibold text-emerald-600">
-                <span>Liquid Cash Yield</span>
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Commercial Underwriting & Technical Checklist */}
-      <section className="py-20 lg:py-24 bg-brand-ivory/40 border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
-              Rigorous Diligence
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-navy font-heading tracking-tight">
-              Institutional Technical &amp; Legal Audit Checklist
-            </h2>
-            <p className="mt-3 text-brand-slate text-sm sm:text-base leading-relaxed">
-              Before submitting loan proposals to scheduled commercial banks, our debt advisory team audits each document to preempt institutional committee objections.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {technicalChecklist.map((item, idx) => (
-              <div
-                key={idx}
-                className="p-6 bg-white rounded-2xl border border-brand-border shadow-subtle hover:border-brand-teal/40 transition-all space-y-3"
-              >
-                <div className="w-9 h-9 rounded-lg bg-brand-teal-light text-brand-teal flex items-center justify-center font-bold text-sm">
-                  0{idx + 1}
-                </div>
-                <h3 className="text-base font-bold text-brand-navy font-heading">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Underwriting Regulatory Notice */}
-          <div className="mt-10 p-5 bg-white rounded-xl border border-brand-border text-xs text-brand-slate leading-relaxed flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-brand-teal flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold text-brand-navy">Statutory &amp; Underwriting Notice: </span>
-              All high-ticket debt proposals, commercial sanctions, valuations, and term sheet releases are governed by RBI credit exposure limits and individual lender underwriting mandates. WealthAnchor acts as an independent debt advisor, structuring applications, negotiating term sheet spreads, and facilitating documentation.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Preloaded High-Ticket Consultation Form */}
+      {/* ────────────────────────────────────────────────────────────
+          3. PRELOADED CONSULTATION FORM
+          ──────────────────────────────────────────────────────────── */}
       <div id="enquiry-form">
         <EnquiryForm
           services={services}
