@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Service } from '../../types';
 import { submitLoanEnquiry, getPublicAvailability } from '../../services/api';
+import { InteractiveDocumentVault } from './InteractiveDocumentVault';
 
 interface EnquiryFormProps {
   services: Service[];
@@ -237,6 +238,16 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDateString = tomorrow.toISOString().split('T')[0];
 
+  const getMappedLoanType = (type?: string): 'home-loans' | 'loan-against-property' | 'property-backed-funding' | 'loan-consultation' => {
+    if (!type) return 'home-loans';
+    const lower = type.toLowerCase();
+    if (lower.includes('home') || lower.includes('construction')) return 'home-loans';
+    if (lower.includes('lap') || lower.includes('against property') || lower.includes('mortgage')) return 'loan-against-property';
+    if (lower.includes('purchase') || lower.includes('takeover') || lower.includes('commercial') || lower.includes('funding')) return 'property-backed-funding';
+    if (lower.includes('vehicle') || lower.includes('consultation')) return 'loan-consultation';
+    return 'home-loans';
+  };
+
   return (
     <section id="enquiry-form" className="py-12 sm:py-16 bg-brand-teal-light/40 border-t border-brand-border">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -304,7 +315,27 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
               </div>
             </div>
 
-            <div className="pt-4 flex flex-col sm:flex-row justify-center gap-3">
+            {/* Document Checklist for the OK Confirmation Screen */}
+            <div className="pt-6 border-t border-brand-border/80 text-left">
+              <div className="p-4 bg-brand-teal-light/40 border border-brand-teal/20 rounded-2xl mb-2 flex items-start gap-3">
+                <ShieldCheck className="w-5 h-5 text-brand-teal shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-sm font-bold text-brand-navy">
+                    Document Checklist for Your Scheduled Meeting:
+                  </h4>
+                  <p className="text-xs text-brand-slate mt-0.5 leading-relaxed">
+                    Having these documents ready during your consultation enables our specialists to evaluate your sanction limit and secure lowest interest rates across partner banks.
+                  </p>
+                </div>
+              </div>
+
+              <InteractiveDocumentVault
+                loanType={getMappedLoanType(submissionSuccess.loanType)}
+                embedded={true}
+              />
+            </div>
+
+            <div className="pt-6 flex flex-col sm:flex-row justify-center gap-3">
               <button
                 onClick={handleReset}
                 className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-teal hover:bg-brand-teal-hover rounded-corporate transition-colors"

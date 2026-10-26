@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 
 export interface InteractiveDocumentVaultProps {
   loanType?: 'home-loans' | 'loan-against-property' | 'property-backed-funding' | 'loan-consultation' | 'all';
+  embedded?: boolean;
 }
 
 interface DocItem {
@@ -36,6 +37,7 @@ interface ProfileGroup {
 
 export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> = ({
   loanType = 'all',
+  embedded = false,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -627,118 +629,128 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
     setTimeout(() => setCopied(false), 2500);
   };
 
-  return (
-    <section className="py-16 sm:py-20 bg-white border-b border-brand-border">
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase">
-            <FileCheck className="w-3.5 h-3.5" />
-            <span>{config.sectionBadge}</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
-            {config.sectionTitle}
-          </h2>
-          <p className="text-sm sm:text-base text-brand-slate leading-relaxed">
-            {config.sectionSubtitle}
-          </p>
+  const contentBody = (
+    <div className={embedded ? 'w-full' : 'max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10'}>
+      {/* Header */}
+      <div className={`text-center max-w-3xl mx-auto ${embedded ? 'mb-6 space-y-2' : 'mb-10 sm:mb-12 space-y-3'}`}>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase">
+          <FileCheck className="w-3.5 h-3.5" />
+          <span>{config.sectionBadge}</span>
         </div>
+        <h2 className={embedded ? 'text-xl sm:text-2xl font-extrabold text-brand-navy tracking-tight font-heading' : 'text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading'}>
+          {config.sectionTitle}
+        </h2>
+        <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
+          {config.sectionSubtitle}
+        </p>
+      </div>
 
-        {/* Profile Switcher Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 mb-10">
-          {config.profiles.map((p) => {
-            const isSelected = p.id === current.id;
-            return (
-              <button
-                key={p.id}
-                onClick={() => setSelectedId(p.id)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 ${
-                  isSelected
-                    ? 'bg-brand-navy text-white border-brand-navy shadow-sm'
-                    : 'bg-brand-ivory text-brand-navy border-brand-border hover:border-brand-teal hover:bg-white'
-                }`}
-              >
-                {p.icon}
-                <span>{p.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Checklist Container */}
-        <div className="bg-brand-ivory/60 rounded-3xl border border-brand-border p-6 sm:p-10 shadow-sm max-w-4xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-brand-border gap-4">
-            <div>
-              <h3 className="text-lg sm:text-xl font-extrabold text-brand-navy tracking-tight font-heading">
-                {current.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-brand-slate mt-1 leading-relaxed">
-                {current.subtitle}
-              </p>
-            </div>
-
+      {/* Profile Switcher Tabs */}
+      <div className={`flex flex-wrap items-center justify-center gap-2 ${embedded ? 'mb-6' : 'mb-10 gap-2.5'}`}>
+        {config.profiles.map((p) => {
+          const isSelected = p.id === current.id;
+          return (
             <button
-              onClick={handleCopyChecklist}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white hover:bg-gray-50 border border-brand-border text-brand-navy text-xs font-bold rounded-corporate shadow-2xs transition-colors self-start sm:self-auto shrink-0"
-              title="Copy checklist to clipboard"
+              key={p.id}
+              onClick={() => setSelectedId(p.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                isSelected
+                  ? 'bg-brand-navy text-white border-brand-navy shadow-sm'
+                  : 'bg-brand-ivory text-brand-navy border-brand-border hover:border-brand-teal hover:bg-white'
+              }`}
             >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-700">Checklist Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5 text-brand-slate" />
-                  <span>Copy Checklist</span>
-                </>
-              )}
+              {p.icon}
+              <span>{p.label}</span>
             </button>
+          );
+        })}
+      </div>
+
+      {/* Checklist Container */}
+      <div className={`bg-brand-ivory/60 rounded-3xl border border-brand-border ${embedded ? 'p-5 sm:p-7' : 'p-6 sm:p-10'} shadow-sm max-w-4xl mx-auto`}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 mb-5 border-b border-brand-border gap-4">
+          <div>
+            <h3 className="text-base sm:text-lg font-extrabold text-brand-navy tracking-tight font-heading">
+              {current.title}
+            </h3>
+            <p className="text-xs text-brand-slate mt-0.5 leading-relaxed">
+              {current.subtitle}
+            </p>
           </div>
 
-          <div className="space-y-3.5">
-            {current.docs.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white p-4 sm:p-5 rounded-2xl border border-brand-border hover:border-brand-teal/40 transition-all shadow-subtle flex items-start gap-3.5"
-              >
-                <div className="w-6 h-6 rounded-full bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-                <div className="flex-grow">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-sm sm:text-base font-bold text-brand-navy">
-                      {item.name}
-                    </h4>
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-brand-ivory text-brand-teal border border-brand-teal/20">
-                      {item.tag}
-                    </span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-brand-slate mt-1.5 leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
+          <button
+            onClick={handleCopyChecklist}
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-50 border border-brand-border text-brand-navy text-xs font-bold rounded-corporate shadow-2xs transition-colors self-start sm:self-auto shrink-0"
+            title="Copy checklist to clipboard"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-emerald-700">Checklist Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5 text-brand-slate" />
+                <span>Copy Checklist</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {current.docs.map((item, idx) => (
+            <div
+              key={idx}
+              className="bg-white p-3.5 sm:p-4 rounded-2xl border border-brand-border hover:border-brand-teal/40 transition-all shadow-subtle flex items-start gap-3"
+            >
+              <div className="w-5 h-5 rounded-full bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
               </div>
-            ))}
-          </div>
-
-          {/* Advisory Assistance Box */}
-          <div className="mt-8 pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 bg-brand-teal-light/40 p-5 rounded-2xl border border-brand-teal/20">
-            <div className="flex items-center gap-3">
-              <Info className="w-5 h-5 text-brand-teal shrink-0" />
-              <p className="text-xs text-brand-navy font-medium leading-relaxed">
-                Missing a specific parent title deed or having non-standard income records? Our advisory team conducts surrogate banking programs and pre-submission title verification.
-              </p>
+              <div className="flex-grow">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-brand-navy">
+                    {item.name}
+                  </h4>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand-ivory text-brand-teal border border-brand-teal/20">
+                    {item.tag}
+                  </span>
+                </div>
+                <p className="text-xs text-brand-slate mt-1 leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
             </div>
+          ))}
+        </div>
+
+        {/* Advisory Assistance Box */}
+        <div className="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 bg-brand-teal-light/40 p-4 rounded-2xl border border-brand-teal/20">
+          <div className="flex items-center gap-2.5">
+            <Info className="w-4 h-4 text-brand-teal shrink-0" />
+            <p className="text-xs text-brand-navy font-medium leading-relaxed">
+              Missing a specific parent title deed or having non-standard income records? Our advisory team conducts surrogate banking programs and pre-submission title verification.
+            </p>
+          </div>
+          {!embedded && (
             <a
               href="#enquiry-form"
               className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-corporate shadow-sm whitespace-nowrap transition-colors shrink-0"
             >
               Get Pre-Verification
             </a>
-          </div>
+          )}
         </div>
       </div>
+    </div>
+  );
+
+  if (embedded) {
+    return <div className="w-full mt-6">{contentBody}</div>;
+  }
+
+  return (
+    <section className="py-16 sm:py-20 bg-white border-b border-brand-border">
+      {contentBody}
     </section>
   );
 };

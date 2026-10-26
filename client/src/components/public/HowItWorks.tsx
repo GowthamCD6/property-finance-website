@@ -35,8 +35,8 @@ export const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-12 sm:py-16 bg-brand-ivory/60 border-t border-brand-border/60">
-      <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
+    <section id="how-it-works" className="py-12 sm:py-16 bg-[#f8f8f4]">
+      <div className="w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             <Zap className="w-3.5 h-3.5" />
@@ -51,7 +51,7 @@ export const HowItWorks: React.FC = () => {
         </div>
 
         {/* 4 Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {steps.map((step, idx) => (
             <div
               key={idx}

@@ -22,8 +22,8 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ faqs }) => {
   };
 
   return (
-    <section id="faqs" className="py-12 sm:py-16 bg-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="faqs" className="py-12 sm:py-16 bg-[#f8f8f4]">
+      <div className="w-[85%] max-w-4xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
           <div className="inline-block px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             Common Inquiries
@@ -103,7 +103,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ faqs }) => {
             </p>
           </div>
           <a
-            href="#enquiry-form"
+            href="/enquire"
             className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-semibold rounded-corporate transition-colors flex-shrink-0 shadow-sm"
           >
             Submit an Inquiry

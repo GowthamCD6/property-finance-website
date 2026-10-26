@@ -125,11 +125,11 @@ export const RateComparisonMatrix: React.FC = () => {
     : rateData.filter((r) => r.category === filterCategory);
 
   return (
-    <section className="py-12 sm:py-16 bg-white border-b border-brand-border/60">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Title */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-          <div className="max-w-2xl">
+    <section className="py-12 sm:py-16 bg-[#f8f8f4]">
+      <div className="w-[85%] max-w-7xl mx-auto">
+        {/* Header & Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
+          <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
               <Percent className="w-3.5 h-3.5" />
               <span>Multi-Lender Comparison</span>
@@ -142,53 +142,56 @@ export const RateComparisonMatrix: React.FC = () => {
             </p>
           </div>
 
-          {/* Product Switcher */}
-          <div className="flex items-center p-1 bg-brand-ivory border border-brand-border rounded-xl self-start md:self-auto">
-            <button
-              onClick={() => setActiveTab('home')}
-              className={`px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors ${
-                activeTab === 'home'
-                  ? 'bg-brand-teal text-white shadow-sm'
-                  : 'text-brand-navy hover:text-brand-teal'
-              }`}
-            >
-              Home Loans
-            </button>
-            <button
-              onClick={() => setActiveTab('lap')}
-              className={`px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors ${
-                activeTab === 'lap'
-                  ? 'bg-brand-teal text-white shadow-sm'
-                  : 'text-brand-navy hover:text-brand-teal'
-              }`}
-            >
-              Loan Against Property (LAP)
-            </button>
+          {/* Controls: Product Switcher on top, Category Filters below it */}
+          <div className="flex flex-col items-start lg:items-end gap-3 self-start lg:self-auto">
+            {/* Product Switcher */}
+            <div className="flex items-center p-1 bg-white border border-brand-border rounded-xl shadow-xs">
+              <button
+                onClick={() => setActiveTab('home')}
+                className={`px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors ${
+                  activeTab === 'home'
+                    ? 'bg-brand-teal text-white shadow-sm'
+                    : 'text-brand-navy hover:text-brand-teal'
+                }`}
+              >
+                Home Loans
+              </button>
+              <button
+                onClick={() => setActiveTab('lap')}
+                className={`px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors ${
+                  activeTab === 'lap'
+                    ? 'bg-brand-teal text-white shadow-sm'
+                    : 'text-brand-navy hover:text-brand-teal'
+                }`}
+              >
+                Loan Against Property (LAP)
+              </button>
+            </div>
+
+            {/* Category Filters below the tab switcher */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs select-none">
+              <span className="text-brand-slate font-semibold flex items-center gap-1 mr-1">
+                <SlidersHorizontal className="w-3.5 h-3.5" /> Filter:
+              </span>
+              {(['All', 'Public Bank', 'Private Bank', 'HFC / NBFC'] as const).map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(cat)}
+                  className={`px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap text-xs ${
+                    filterCategory === cat
+                      ? 'bg-brand-navy text-white border-brand-navy font-semibold shadow-xs'
+                      : 'bg-white text-brand-slate border-gray-200 hover:border-brand-teal'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 text-xs select-none">
-          <span className="text-brand-slate font-semibold flex items-center gap-1 mr-2">
-            <SlidersHorizontal className="w-3.5 h-3.5" /> Filter:
-          </span>
-          {(['All', 'Public Bank', 'Private Bank', 'HFC / NBFC'] as const).map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilterCategory(cat)}
-              className={`px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap ${
-                filterCategory === cat
-                  ? 'bg-brand-navy text-white border-brand-navy font-semibold'
-                  : 'bg-white text-brand-slate border-gray-200 hover:border-brand-teal'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
         {/* Comparison Table */}
-        <div className="overflow-x-auto rounded-xl border border-brand-border shadow-sm">
+        <div className="overflow-x-auto rounded-2xl border border-brand-border/80 shadow-md bg-white">
           <table className="w-full text-left text-xs sm:text-sm border-collapse">
             <thead>
               <tr className="bg-brand-navy text-white text-xs uppercase tracking-wider font-semibold">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { Hero } from '../../../components/public/Hero';
 import { StatsBar } from '../../../components/public/StatsBar';
@@ -7,10 +7,9 @@ import { RateComparisonMatrix } from '../../../components/public/RateComparisonM
 import { HowItWorks } from '../../../components/public/HowItWorks';
 import { TestimonialsSection } from '../../../components/public/TestimonialsSection';
 import { WhyWorkWithUs } from '../../../components/public/WhyWorkWithUs';
-import { EnquiryForm } from '../../../components/public/EnquiryForm';
 import { FaqSection } from '../../../components/public/FaqSection';
 import { Service, Faq, SiteContent } from '../../../types';
-import { Calculator, ArrowRight } from 'lucide-react';
+import { Calculator, ArrowRight, Calendar, PhoneCall, ShieldCheck } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const { content, services, faqs } = useOutletContext<{
@@ -18,14 +17,6 @@ export const HomePage: React.FC = () => {
     services: Service[];
     faqs: Faq[];
   }>();
-
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-
-  const handleSelectService = (service: Service) => {
-    setSelectedService(service);
-    const formEl = document.getElementById('enquiry-form');
-    if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <div className="flex flex-col">
@@ -42,9 +33,9 @@ export const HomePage: React.FC = () => {
       <RateComparisonMatrix />
 
       {/* 5. Dynamic EMI & FOIR Calculator Banner */}
-      <section className="py-12 sm:py-14 bg-brand-ivory/50 border-b border-brand-border/60">
-        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
-          <div className="max-w-7xl mx-auto p-8 sm:p-12 rounded-2xl bg-white border border-brand-border flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
+      <section className="py-12 sm:py-16 bg-transparent">
+        <div className="w-[85%] max-w-7xl mx-auto">
+          <div className="p-8 sm:p-12 rounded-3xl bg-white border border-brand-border/80 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
                 <Calculator className="w-3.5 h-3.5" />
@@ -86,12 +77,54 @@ export const HomePage: React.FC = () => {
       {/* 8. Why Work With Us & Advisory Principles */}
       <WhyWorkWithUs content={content} />
 
-      {/* 11. Direct Online Loan Consultation Form */}
-      <EnquiryForm
-        services={services}
-        selectedService={selectedService}
-        onClearSelectedService={() => setSelectedService(null)}
-      />
+      {/* 9. Consultation Invitation CTA */}
+      <section className="py-12 sm:py-16 bg-transparent">
+        <div className="w-[85%] max-w-7xl mx-auto">
+          <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-xl">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="max-w-2xl space-y-4 text-center lg:text-left z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal/20 text-brand-teal-light text-xs font-bold uppercase tracking-wider">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Schedule Confidential Consultation</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-heading leading-tight">
+                Ready to Discuss Your Loan Requirements?
+              </h2>
+              <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                Connect directly with our senior financial advisors for customized loan structuring, document audits, and bank rate comparison across government and leading private banks.
+              </p>
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs text-gray-300">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-brand-teal" /> 100% Confidential
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-brand-teal" /> Lowest Bank ROI
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-brand-teal" /> Zero Upfront Sanction Fees
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3.5 w-full sm:w-auto z-10 shrink-0">
+              <Link
+                to="/enquire"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm rounded-corporate shadow-md transition-all hover:scale-[1.02] text-center"
+              >
+                <span>Schedule an Advisory Meeting</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/services/home-loans"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-corporate border border-white/15 transition-colors text-center"
+              >
+                <span>Explore Loan Solutions</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* 12. Frequently Asked Questions */}
       <FaqSection faqs={faqs} />

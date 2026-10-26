@@ -45,12 +45,12 @@ export const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
   ];
 
   return (
-    <section id="why-us" className="py-12 sm:py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <section id="why-us" className="py-12 sm:py-16 bg-[#f8f8f4]">
+      <div className="w-[85%] max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Image with authentic property consultation atmosphere */}
           <div className="lg:col-span-5 order-2 lg:order-1">
-            <div className="relative rounded-2xl overflow-hidden border border-brand-border shadow-card aspect-[4/3] lg:aspect-[4/5] bg-brand-ivory">
+            <div className="relative rounded-3xl overflow-hidden border border-brand-border/80 shadow-card aspect-[4/3] lg:aspect-[4/5] bg-white">
               <img
                 src={aboutImg}
                 alt="Property document review and consultation"
@@ -64,7 +64,7 @@ export const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/30 via-transparent to-transparent pointer-events-none"></div>
 
               {/* Verified ethics tag */}
-              <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-sm text-xs text-brand-navy">
+              <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-2xl border border-white/60 shadow-sm text-xs text-brand-navy">
                 <span className="font-bold block text-sm mb-0.5">Objective Advisory</span>
                 <p className="text-brand-slate text-[11px] leading-relaxed">
                   We clarify lender expectations without making unsupported sanction promises.
@@ -74,27 +74,30 @@ export const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
           </div>
 
           {/* Right Column: Editorial points */}
-          <div className="lg:col-span-7 order-1 lg:order-2 space-y-6">
-            <div className="inline-block px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
+          <div className="lg:col-span-7 order-1 lg:order-2 space-y-5">
+            <div className="inline-block px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
               Why Consult With Us
             </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading leading-tight">
               {aboutHeading}
             </h2>
 
-            <p className="text-brand-slate text-base leading-relaxed">
+            <p className="text-brand-slate text-sm sm:text-base leading-relaxed">
               {aboutText}
             </p>
 
-            <div className="space-y-4 pt-2">
+            <div className="space-y-3 pt-2">
               {benefits.map((b, idx) => (
-                <div key={idx} className="flex items-start gap-3.5 p-3 rounded-lg hover:bg-brand-ivory/80 transition-colors">
-                  <div className="p-2 rounded-md bg-brand-teal-light flex-shrink-0 mt-0.5">
+                <div
+                  key={idx}
+                  className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white border border-brand-border/70 hover:border-brand-teal/40 transition-all shadow-2xs"
+                >
+                  <div className="p-2 rounded-xl bg-brand-teal-light text-brand-teal flex-shrink-0 mt-0.5">
                     {b.icon}
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-brand-navy mb-1">{b.title}</h4>
+                    <h4 className="text-sm font-bold text-brand-navy mb-0.5 font-heading">{b.title}</h4>
                     <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">{b.desc}</p>
                   </div>
                 </div>

@@ -251,8 +251,8 @@ export const LenderPartners: React.FC = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-16 bg-transparent border-b border-brand-border/60 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 sm:py-16 bg-transparent overflow-hidden">
+      <div className="w-[85%] max-w-7xl mx-auto">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
@@ -432,10 +432,6 @@ export const LenderPartners: React.FC = () => {
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <p className="mt-6 text-center text-[11px] text-brand-slate max-w-4xl mx-auto">
-          *Note: Interest rates indicated are indicative starting benchmark rates linked to RBI Repo Rate (EBLR/RLLR) and lender internal risk policies. Final sanctioned interest rate, processing fee, and LTV depend strictly on applicant credit assessment, ITR history, and property legal/valuation clearance by the respective lender.
-        </p>
       </div>
     </section>
   );
