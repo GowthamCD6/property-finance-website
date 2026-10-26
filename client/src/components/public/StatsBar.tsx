@@ -4,27 +4,27 @@ import { Clock, ShieldCheck, Award, TrendingUp } from 'lucide-react';
 export const StatsBar: React.FC = () => {
   const stats = [
     {
-      value: '₹500+ Cr',
-      label: 'Loan Inquiries Guided',
-      sub: 'Across residential & commercial properties',
+      value: 'From 7.25%*',
+      label: 'Home Loans & Subsidy',
+      sub: 'Self-construction, plots & tiled houses',
       icon: <TrendingUp className="w-5 h-5 text-brand-teal" />,
     },
     {
-      value: '24–48 Hrs',
-      label: 'Fast-Track Underwriting',
-      sub: 'Accelerated preliminary lender sanctions',
-      icon: <Clock className="w-5 h-5 text-brand-teal" />,
-    },
-    {
-      value: '40+ Lenders',
-      label: 'Partner Banking Network',
-      sub: 'Top PSU banks, private banks & HFCs',
+      value: 'From 8.50%*',
+      label: 'Mortgage Loans (LAP)',
+      sub: 'Concrete, tiled house, empty land & commercial',
       icon: <Award className="w-5 h-5 text-brand-teal" />,
     },
     {
-      value: '98.8%',
-      label: 'Clean File Approval Rate',
-      sub: 'Thorough pre-login legal & title audit',
+      value: 'Govt. & Private',
+      label: 'Banking Network',
+      sub: 'Leading PSU & commercial private banks',
+      icon: <Clock className="w-5 h-5 text-brand-teal" />,
+    },
+    {
+      value: 'Low ROI Switch',
+      label: 'Bank Takeover Desk',
+      sub: 'Private to Govt. bank lowest rate transfer',
       icon: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
     },
   ];

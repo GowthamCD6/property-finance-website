@@ -22,6 +22,7 @@ import {
   Check,
 } from 'lucide-react';
 import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { InteractiveDocumentVault } from '../../../components/public/InteractiveDocumentVault';
 import { Service } from '../../../types';
 
 export const HomeLoansPage: React.FC = () => {
@@ -34,37 +35,37 @@ export const HomeLoansPage: React.FC = () => {
 
   // Key Financial Benchmarks for Land & Home Loans
   const metrics = [
-    { value: '8.40%*', label: 'Starting Benchmark ROI', sub: 'RBI Repo-Linked EBLR' },
-    { value: 'Up to 85%', label: 'Loan-to-Value (LTV)', sub: '70%–75% for Plot Loans' },
+    { value: '7.25%*', label: 'Starting Benchmark ROI', sub: 'With Government Subsidy' },
+    { value: 'Up to 85%', label: 'Loan-to-Value (LTV)', sub: '75%–80% for Plot Loans' },
     { value: 'Up to 30 Yrs', label: 'Repayment Tenure', sub: 'Extended Amortization' },
-    { value: '₹25L – ₹20Cr+', label: 'Ticket Flexibility', sub: 'Affordable to Ultra-Luxury' },
+    { value: 'Govt. Subsidy', label: 'PMAY & State Schemes', sub: 'Government & Private Banks' },
   ];
 
-  // 6 Specialized Financing Categories for Land & Homes
+  // Specialized Financing Categories for Land & Homes
   const fundingPathways = [
     {
-      title: 'Residential Plot / Land Purchase Loan',
-      badge: 'Land Acquisition',
-      desc: 'Securing bank financing to purchase residential plots in approved layouts (BDA, BMRDA, DTCP, HMDA, PMRDA, CIDCO) with verified freehold titles.',
+      title: 'Self-Construction Loan on Owned Site',
+      badge: 'Core Speciality',
+      desc: 'Financing for landowners constructing independent houses, villas, duplexes, or multi-floor residential properties against approved civil estimates.',
       highlights: [
-        'Financing for non-agricultural converted land',
-        'LTV typically 70%–75% of agreement value',
-        '30-Year encumbrance certificate (Form 15) verification',
+        'Disbursements against stage-wise architect completion certificates',
+        'Starting interest rates from 7.25% p.a. with government subsidy',
+        'Interest-only pre-EMI option during active construction phase',
       ],
       icon: (
         <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
-          <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v1.168l7.854 3.142A1.5 1.5 0 0121.5 8.65v.6a.75.75 0 01-.75.75H3.25a.75.75 0 01-.75-.75v-.6c0-.62.38-1.18.966-1.39L11.25 4.168V3a.75.75 0 01.75-.75zM4.5 12a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v6a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75v-6zm5.25 0a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v6a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75v-6zm5.25 0a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v6a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75v-6zm-12.75 8.25a.75.75 0 000 1.5h19.5a.75.75 0 000-1.5H2.25z" clipRule="evenodd" />
+          <path fillRule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clipRule="evenodd" />
         </svg>
       ),
     },
     {
-      title: 'Composite Loan (Plot Purchase + Construction)',
-      badge: 'Single Integrated Sanction',
-      desc: 'A seamless composite package combining funds for land acquisition followed by progressive construction tranches as your home building progresses.',
+      title: 'Plot Purchase with Construction (Composite)',
+      badge: 'Single Sanction',
+      desc: 'A seamless composite package combining funding for vacant plot acquisition followed by progressive construction tranches as your home building progresses.',
       highlights: [
-        'Single processing fee & unified sanction letter',
+        'Unified processing and single sanction letter across partner banks',
         'Phased disbursement linked to civil milestones',
-        'Tax advantages under Section 24b upon completion',
+        'Government subsidy eligibility assistance under housing schemes',
       ],
       icon: (
         <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
@@ -74,28 +75,13 @@ export const HomeLoansPage: React.FC = () => {
       ),
     },
     {
-      title: 'Self-Construction Loan on Owned Site',
-      badge: 'Home Building',
-      desc: 'Funding for landowners building an independent villa, duplex, or multi-floor residential property against approved municipal building plans.',
+      title: 'New Home Purchase Loan',
+      badge: 'New Property',
+      desc: 'Competitive bank financing for newly constructed independent bungalows, villas, and residential apartments with maximum tenure up to 30 years.',
       highlights: [
-        'Disbursements against architect stage completion certificates',
-        'Up to 80% funding of estimated construction cost',
-        'Interest-only pre-EMI during construction phase',
-      ],
-      icon: (
-        <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
-          <path fillRule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clipRule="evenodd" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Ready-to-Move-In & Resale Mortgages',
-      badge: 'Immediate Possession',
-      desc: 'Complete title diligence, society NOC verification, and prior deed examination for smooth resale acquisitions across apartments and luxury gated villas.',
-      highlights: [
-        'Scrutiny of Occupancy Certificate (OC) & Khata A extract',
-        'Fast turnaround with direct zonal valuation desks',
-        'Guidance on stamp duty and registration financing',
+        'Tie-ups across government PSU and leading private banks',
+        'Speedy valuation and sanction letter within 48 hours',
+        'Subsidy support for eligible first-time homebuyers',
       ],
       icon: (
         <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
@@ -104,13 +90,13 @@ export const HomeLoansPage: React.FC = () => {
       ),
     },
     {
-      title: 'Under-Construction Builder Purchases (RERA)',
-      badge: 'RERA Compliant',
-      desc: 'Guiding buyers through developer tripartite agreements, Approved Project Financials (APF), and construction-linked payment schedule compliance.',
+      title: 'Old Home Purchase Loan',
+      badge: 'Resale Property',
+      desc: 'Purchase financing for existing pre-owned residential homes and resale properties with thorough title deed chain scrutiny and technical valuation.',
       highlights: [
-        'Cross-verifying builder APF code across 40+ lenders',
-        'Pre-EMI and full-EMI disbursement options',
-        'Escrow account validation under RERA norms',
+        'Complete mother deed verification (30-year search report)',
+        'Realistic age-of-building residual life assessments',
+        'Smooth settlement with seller’s existing banker if encumbered',
       ],
       icon: (
         <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
@@ -119,13 +105,28 @@ export const HomeLoansPage: React.FC = () => {
       ),
     },
     {
-      title: 'Balance Transfer + Home Improvement Top-Up',
-      badge: 'Rate Optimization',
-      desc: 'Refinancing an existing high-cost home loan to current benchmark lows (8.40%–8.65%) while unlocking a low-cost top-up for interiors or personal equity.',
+      title: 'Tiled House Purchase & Renovation Loan',
+      badge: 'Traditional Homes',
+      desc: 'Specialized loan assistance for acquiring or restoring heritage and traditional tiled houses across municipal, town, and rural jurisdictions.',
       highlights: [
-        'Slashing 50 to 125 bps from your current interest rate',
-        'Top-up sanctions up to 100% of original home loan',
-        'End-to-end list of documents (LOD) retrieval assistance',
+        'Acceptable with leading PSU & private banks with legal clearance',
+        'Financing available for purchase as well as structural renovation',
+        'Government subsidy guidance for eligible applicants',
+      ],
+      icon: (
+        <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
+          <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v1.168l7.854 3.142A1.5 1.5 0 0121.5 8.65v.6a.75.75 0 01-.75.75H3.25a.75.75 0 01-.75-.75v-.6c0-.62.38-1.18.966-1.39L11.25 4.168V3a.75.75 0 01.75-.75z" clipRule="evenodd" />
+        </svg>
+      ),
+    },
+    {
+      title: 'Loan Takeover from Private to Govt. Banks',
+      badge: 'Lowest Interest Rates',
+      desc: 'Transfer high-interest loans from private banks and NBFCs to low-rate Government (PSU) banks to permanently reduce your monthly EMI burden.',
+      highlights: [
+        'Switch to lowest starting interest rates from 7.25% p.a.',
+        'Zero advance fees and end-to-end documentation takeover',
+        'Top-up facility available for additional personal/business funding',
       ],
       icon: (
         <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
@@ -267,7 +268,7 @@ export const HomeLoansPage: React.FC = () => {
                 <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
                   <span className="text-[11px] text-gray-400 block font-medium">Starting Interest Rate</span>
                   <span className="text-2xl font-black text-emerald-400 font-mono">
-                    {selectedCollateralType === 'plot' ? '8.65%*' : selectedCollateralType === 'composite' ? '8.55%*' : '8.40%*'}
+                    {selectedCollateralType === 'plot' ? '7.45%*' : selectedCollateralType === 'composite' ? '7.30%*' : '7.25%*'}
                   </span>
                   <span className="text-[10px] text-gray-400 block mt-0.5">Repo-Linked EBLR</span>
                 </div>
@@ -401,7 +402,12 @@ export const HomeLoansPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          4. PRELOADED CONSULTATION FORM
+          4. DOCUMENTATION CHECKLIST
+          ──────────────────────────────────────────────────────────── */}
+      <InteractiveDocumentVault loanType="home-loans" />
+
+      {/* ────────────────────────────────────────────────────────────
+          5. PRELOADED CONSULTATION FORM
           ──────────────────────────────────────────────────────────── */}
       <div id="enquiry-form">
         <EnquiryForm

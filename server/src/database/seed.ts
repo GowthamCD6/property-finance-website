@@ -27,75 +27,94 @@ async function main() {
     console.log(`ℹ️ Admin user already exists: ${adminEmail}`);
   }
 
-  // 2. Seed Site Content
+  // 2. Seed SiteContent
   const existingContent = await prisma.siteContent.findUnique({
     where: { id: 'default_content' },
   });
+
+  const updatedContentData = {
+    businessName: 'Prime Associates — Loans & Constructions',
+    businessPhone: '+91 96555 66613, +91 95144 66600',
+    businessEmail: 'primeassociates2008@gmail.com',
+    officeAddress: 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601',
+    cityState: 'Tirupur, Tamil Nadu, India',
+    businessHours: 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)',
+    heroEyebrow: 'PRIME ASSOCIATES • LOANS & CONSTRUCTIONS',
+    heroHeadline: 'Get Your Home & Mortgage Loans at Lowest Rates with Government Subsidy.',
+    heroSubtitle: 'Expert loan facilitation across Government and Private Banks. Home Loans from 7.25% p.a., Mortgage Loans (LAP) from 8.50% p.a., Purchase Loans, Vehicle Loans, and Private-to-Government Bank Takeovers.',
+    heroCtaText: 'Discuss Your Loan',
+    heroSecondaryCtaText: 'Explore Loan Options',
+    heroImageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    aboutHeading: 'Prime Associates — Loans & Constructions',
+    aboutText: 'Get your home loans and mortgage loans at the lowest interest rates with government subsidy across government and private banks. We provide complete advisory and syndication for self-construction, new/old home purchase, tiled houses, empty plots, commercial buildings, vehicle loans, and low-interest bank takeovers.',
+    aboutImageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80',
+    disclaimerText: 'Prime Associates (Prime Associate Loans) is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.',
+    privacyPolicy: 'We respect your confidentiality. The personal, financial, and property details shared in this enquiry are solely used for eligibility assessment and arranging consultation. We do not sell or distribute your data to unauthorized third parties.',
+    termsConditions: 'Information provided on this website is for informational and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.',
+    copyrightText: 'Prime Associates — Loans & Constructions. All rights reserved.',
+  };
 
   if (!existingContent) {
     await prisma.siteContent.create({
       data: {
         id: 'default_content',
-        businessName: 'Prime Associate Loans',
-        businessPhone: '+91 98765 43210',
-        businessEmail: 'contact@primeassociateloans.in',
-        officeAddress: 'Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001',
-        cityState: 'Bengaluru, Karnataka, India',
-        businessHours: 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)',
-        heroEyebrow: 'PROPERTY FINANCE & LOAN ASSISTANCE',
-        heroHeadline: 'Find the Right Funding Path for Your Property.',
-        heroSubtitle: 'Explore home loan and loan-against-property options with guidance tailored to your property, financial needs and repayment capacity.',
-        heroCtaText: 'Discuss Your Loan',
-        heroSecondaryCtaText: 'Explore Our Services',
-        heroImageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-        aboutHeading: 'Dedicated Property Loan Consultancy with Transparent Guidance',
-        aboutText: 'We assist property owners, buyers, and business professionals in navigating the loan evaluation process. Our focus is helping you understand eligibility guidelines, assemble required documentation, and connect with reputable lending institutions suited to your profile.',
-        aboutImageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80',
-        disclaimerText: 'Prime Associate Loans is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.',
-        privacyPolicy: 'We respect your confidentiality. The personal, financial, and property details shared in this enquiry are solely used for eligibility assessment and arranging consultation. We do not sell or distribute your data to unauthorized third parties.',
-        termsConditions: 'Information provided on this website is for informational and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.',
-        copyrightText: 'Prime Associate Loans. All rights reserved.',
+        ...updatedContentData,
       },
     });
     console.log('✅ Default site content created');
+  } else {
+    await prisma.siteContent.update({
+      where: { id: 'default_content' },
+      data: updatedContentData,
+    });
+    console.log('✅ Default site content updated with real Prime Associates details');
   }
 
   // 3. Seed Services
   const servicesData = [
     {
       slug: 'home-loans',
-      title: 'Home Loans',
-      shortDescription: 'Guidance and application assistance for residential property purchase, self-construction, and balance transfers.',
-      fullDescription: 'Comprehensive guidance on home financing alternatives based on applicant income, credit profile, property title scrutiny, and lender eligibility criteria. We assist in preparing documents for ready-to-move homes, under-construction apartments, and plot purchases.',
+      title: 'Home Loans & Self Construction',
+      shortDescription: 'Self-construction, plot purchase with construction, new/old home purchase, and tiled house loans from 7.25% p.a. with government subsidy.',
+      fullDescription: 'Comprehensive guidance across Government and Private Banks for residential home financing. We specialize in self-construction on owned land, plot purchase with construction, new and old home purchases, and tiled house financing with government subsidy assistance.',
       iconName: 'Home',
       displayOrder: 1,
       isActive: true,
     },
     {
       slug: 'loan-against-property',
-      title: 'Loans Against Property (LAP)',
-      shortDescription: 'Unlocking liquidity against eligible residential or commercial freehold property for business or personal requirements.',
-      fullDescription: 'Evaluation of mortgage loan options against registered commercial or residential assets. Subject to title clearance, property valuation, and borrower repayment capacity according to institutional lender norms.',
+      title: 'Mortgage Loans (LAP)',
+      shortDescription: 'Secured loans against concrete buildings, tiled houses, empty land/plots, and commercial buildings starting from 8.50% p.a.',
+      fullDescription: 'Evaluation and syndication of mortgage loans against registered concrete buildings, tiled houses, empty land/plots, and commercial buildings. We also take over existing high-interest loans from other banks to lock in the lowest interest rates.',
       iconName: 'Building',
       displayOrder: 2,
       isActive: true,
     },
     {
-      slug: 'property-backed-funding',
-      title: 'Property-Backed Funding',
-      shortDescription: 'Structured financing assessments for high-value business expansion collateralized by commercial real estate.',
-      fullDescription: 'Bespoke advisory for mid-to-large business entities seeking structured debt backed by industrial or commercial real estate assets. We facilitate lender documentation clarity and cash flow evaluations.',
-      iconName: 'Briefcase',
+      slug: 'purchase-loans',
+      title: 'Purchase Loans & Bank Takeover',
+      shortDescription: 'Plot purchase, new/old homes, tiled houses, commercial buildings, and loan takeover from private banks to government banks at lowest rates.',
+      fullDescription: 'Bespoke financing for plot purchases, plot with construction, ready-to-move/old homes, tiled house purchases, and commercial building purchases. Plus our specialized loan takeover desk transferring loans from private banks to government banks at lowest interest rates.',
+      iconName: 'Building2',
       displayOrder: 3,
+      isActive: true,
+    },
+    {
+      slug: 'vehicle-loans',
+      title: 'Vehicle Loans & Refinance',
+      shortDescription: 'Competitive loans for new cars, used cars, used car refinancing, and commercial vehicles with rapid processing.',
+      fullDescription: 'Complete automotive finance solutions covering new cars, used cars, used car refinance, and commercial vehicles across leading government and private banking partners with swift turnaround.',
+      iconName: 'Briefcase',
+      displayOrder: 4,
       isActive: true,
     },
     {
       slug: 'loan-consultation',
       title: 'Loan Consultation & Eligibility Review',
-      shortDescription: 'One-on-one consultation regarding debt-to-income ratios, required documentation, and lender selection.',
-      fullDescription: 'Personalised consultation with an experienced property loan specialist to assess eligibility guidelines, calculate feasible loan-to-value (LTV) ranges, and streamline the dossier submission before submitting to lenders.',
+      shortDescription: 'One-on-one consultation regarding debt-to-income ratios, government subsidy eligibility, and bank selection.',
+      fullDescription: 'Personalised consultation with our loan specialists in Tirupur or virtually. We evaluate eligibility guidelines, calculate feasible loan-to-value (LTV) limits, examine parent deeds, and streamline the dossier for lowest rate approvals.',
       iconName: 'FileCheck',
-      displayOrder: 4,
+      displayOrder: 5,
       isActive: true,
     },
   ];
@@ -148,7 +167,7 @@ async function main() {
     },
     {
       question: 'How do I schedule a consultation and what modes are available?',
-      answer: 'You can select your preferred meeting date, time slot, and mode (Phone Call, Video Meeting, or In-Person at our Bengaluru office) directly through our website enquiry form. Our team will verify slot availability and confirm your appointment.',
+      answer: 'You can select your preferred meeting date, time slot, and mode (Phone Call, Video Meeting, or In-Person at our Tirupur office) directly through our website enquiry form. Our team will verify slot availability and confirm your appointment.',
       category: 'Appointments',
       displayOrder: 6,
       isPublished: true,

@@ -26,20 +26,20 @@ export const CalculatorPage: React.FC = () => {
 
   // Mode 1: Standard EMI States
   const [loanAmount, setLoanAmount] = useState<number>(5000000); // ₹50 Lakhs
-  const [interestRate, setInterestRate] = useState<number>(8.65); // 8.65%
+  const [interestRate, setInterestRate] = useState<number>(7.25); // Starts from 7.25% p.a.
   const [tenureYears, setTenureYears] = useState<number>(20); // 20 years
 
   // Mode 2: Eligibility & FOIR States
   const [monthlyIncome, setMonthlyIncome] = useState<number>(150000); // ₹1.5 Lakhs net
   const [existingEmis, setExistingEmis] = useState<number>(20000); // ₹20k existing EMIs
   const [eligibilityTenure, setEligibilityTenure] = useState<number>(20); // 20 yrs
-  const [eligibilityRate, setEligibilityRate] = useState<number>(8.60); // 8.60%
+  const [eligibilityRate, setEligibilityRate] = useState<number>(7.25); // 7.25%
   const [foirPercentage, setFoirPercentage] = useState<number>(55); // 55% FOIR norm standard in Indian banks
 
   // Mode 3: Composite Plot + Construction Loan States
   const [plotCost, setPlotCost] = useState<number>(4000000); // ₹40 Lakhs plot
   const [constructionCost, setConstructionCost] = useState<number>(5000000); // ₹50 Lakhs construction
-  const [compositeRate, setCompositeRate] = useState<number>(8.75); // 8.75%
+  const [compositeRate, setCompositeRate] = useState<number>(7.35); // 7.35%
   const [compositeTenure, setCompositeTenure] = useState<number>(20); // 20 yrs
   const [disbursedTranchePercent, setDisbursedTranchePercent] = useState<number>(50); // 50% construction done
 
@@ -194,8 +194,8 @@ export const CalculatorPage: React.FC = () => {
                   <span className="font-mono text-white text-base font-bold">6.50%</span>
                 </div>
                 <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span className="text-gray-400 block text-[11px]">Starting EBLR Spread:</span>
-                  <span className="font-mono text-emerald-400 text-base font-bold">8.40%*</span>
+                  <span className="text-gray-400 block text-[11px]">Starting Home Loan ROI:</span>
+                  <span className="font-mono text-emerald-400 text-base font-bold">7.25%*</span>
                 </div>
                 <div className="bg-white/5 p-3 rounded-xl border border-white/10">
                   <span className="text-gray-400 block text-[11px]">Standard Bank FOIR:</span>

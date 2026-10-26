@@ -19,6 +19,7 @@ import {
   Compass,
 } from 'lucide-react';
 import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { InteractiveDocumentVault } from '../../../components/public/InteractiveDocumentVault';
 import { Service } from '../../../types';
 
 export const LoanAgainstPropertyPage: React.FC = () => {
@@ -31,31 +32,45 @@ export const LoanAgainstPropertyPage: React.FC = () => {
   const [propertyClass, setPropertyClass] = useState<'residential' | 'commercial' | 'industrial'>('residential');
 
   // LTV and Max Loan calculation for Hero Card
-  const ltvPercent = propertyClass === 'residential' ? 75 : propertyClass === 'commercial' ? 65 : 50;
+  const ltvPercent = propertyClass === 'residential' ? 75 : propertyClass === 'commercial' ? 65 : 55;
   const maxLiquidity = Math.round((estimatedPropertyVal * ltvPercent) / 100);
-  const startingRate = propertyClass === 'residential' ? '9.25%*' : propertyClass === 'commercial' ? '9.65%*' : '10.25%*';
+  const startingRate = propertyClass === 'residential' ? '8.50%*' : propertyClass === 'commercial' ? '8.75%*' : '9.10%*';
 
   const collateralTypes = [
     {
-      title: 'Residential Real Estate Collateral',
-      badge: 'Up to 75% LTV',
-      desc: 'Self-occupied, vacant, or rented residential apartments, builder floors, standalone bungalows, and gated community villas with clear 30-year mother deed chains.',
-      features: ['Lowest interest rates (from 9.25%*)', 'Tenure up to 15–20 years', 'Option for Drop-line OD limit'],
+      title: 'Concrete Building (Residential & Commercial)',
+      badge: 'Starts from 8.50% p.a.',
+      desc: 'Self-occupied, vacant, or rented concrete residential and commercial buildings, independent houses, and multi-floor RCC properties with clear title records.',
+      features: ['Lowest interest rates (from 8.50%*)', 'Tenure up to 15–20 years', 'Option for Term Loan or Dropline OD'],
       icon: <Home className="w-5 h-5 text-brand-teal" />,
     },
     {
-      title: 'Commercial Office & Retail Assets',
+      title: 'Tiled House (Traditional / Heritage Property)',
+      badge: 'Starts from 8.50% p.a.',
+      desc: 'Unlock substantial liquidity against unencumbered traditional tiled houses and residential properties with dedicated legal opinion assistance.',
+      features: ['Specialized valuation support', 'Flexible business or personal utilization', 'Fast file appraisal across PSU/private banks'],
+      icon: <Building className="w-5 h-5 text-brand-teal" />,
+    },
+    {
+      title: 'Plots (Empty Land / Vacant Sites)',
       badge: 'Up to 65% LTV',
-      desc: 'Standalone commercial plots, Grade-A office units, shopping arcade showrooms, and commercial IT complexes with valid Occupancy Certificates (OC).',
-      features: ['Multi-crore high ticket syndication', 'Debt Service Coverage Ratio (DSCR) underwriting', 'Flexible principal moratoriums'],
+      desc: 'Securing funding against approved vacant plots, layout sites, and empty land parcels without mandatory construction timelines.',
+      features: ['Monetize idle land assets into liquid cash', 'No compulsory immediate building clause', 'Clean legal scrutiny and search report'],
+      icon: <Layers className="w-5 h-5 text-brand-teal" />,
+    },
+    {
+      title: 'Commercial Building & Office Complexes',
+      badge: 'High-Value Liquidity',
+      desc: 'Commercial shopping arcades, Grade-A office units, industrial textile complexes, and standalone commercial showrooms with valid municipal approvals.',
+      features: ['High-ticket syndication up to ₹50 Crore+', 'Debt Service Coverage Ratio (DSCR) underwriting', 'Competitive rates from 8.75%*'],
       icon: <Building2 className="w-5 h-5 text-brand-teal" />,
     },
     {
-      title: 'Industrial Sheds & Warehousing Units',
-      badge: 'Up to 55% LTV',
-      desc: 'Industrial land parcels, manufacturing factory units, and logistic warehousing hubs with statutory industrial clearances and pollution board consents.',
-      features: ['Working capital augmentation', 'Capex and plant modernization funding', 'Takeout financing of existing debts'],
-      icon: <Factory className="w-5 h-5 text-brand-teal" />,
+      title: 'Takeover from Other Banks at Lowest Rates',
+      badge: 'Rate Optimization Desk',
+      desc: 'Take over existing high-interest loans from private banks, NBFCs, or cooperative lenders to government and leading commercial banks at rock-bottom rates.',
+      features: ['Substantial reduction in monthly EMI', 'Top-up loan facility for capital expansion', 'Complete documentation and foreclosure assistance'],
+      icon: <TrendingUp className="w-5 h-5 text-brand-teal" />,
     },
   ];
 
@@ -269,7 +284,12 @@ export const LoanAgainstPropertyPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          3. PRELOADED CONSULTATION FORM
+          3. DOCUMENTATION CHECKLIST
+          ──────────────────────────────────────────────────────────── */}
+      <InteractiveDocumentVault loanType="loan-against-property" />
+
+      {/* ────────────────────────────────────────────────────────────
+          4. PRELOADED CONSULTATION FORM
           ──────────────────────────────────────────────────────────── */}
       <div id="enquiry-form">
         <EnquiryForm

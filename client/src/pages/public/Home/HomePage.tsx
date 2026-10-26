@@ -6,8 +6,6 @@ import { LenderPartners } from '../../../components/public/LenderPartners';
 import { RateComparisonMatrix } from '../../../components/public/RateComparisonMatrix';
 import { HowItWorks } from '../../../components/public/HowItWorks';
 import { TestimonialsSection } from '../../../components/public/TestimonialsSection';
-import { CaseStudiesSection } from '../../../components/public/CaseStudiesSection';
-import { InteractiveDocumentVault } from '../../../components/public/InteractiveDocumentVault';
 import { WhyWorkWithUs } from '../../../components/public/WhyWorkWithUs';
 import { EnquiryForm } from '../../../components/public/EnquiryForm';
 import { FaqSection } from '../../../components/public/FaqSection';
@@ -85,13 +83,7 @@ export const HomePage: React.FC = () => {
       {/* 7. Customer Testimonials & Reviews */}
       <TestimonialsSection />
 
-      {/* 8. Real Client Advisory Case Studies */}
-      <CaseStudiesSection />
-
-      {/* 9. Interactive Pre-Application Document Vault */}
-      <InteractiveDocumentVault />
-
-      {/* 10. Why Work With Us & Advisory Principles */}
+      {/* 8. Why Work With Us & Advisory Principles */}
       <WhyWorkWithUs content={content} />
 
       {/* 11. Direct Online Loan Consultation Form */}

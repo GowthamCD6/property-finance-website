@@ -25,8 +25,8 @@ import { SiteContent } from '../../../types';
 export const AboutPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();
   const content = context?.content || null;
-  const businessName = content?.businessName || 'Prime Associate Loans';
-  const businessPhone = content?.businessPhone || '+91 98765 43210';
+  const businessName = content?.businessName || 'Prime Associates — Loans & Constructions';
+  const businessPhone = content?.businessPhone || '+91 96555 66613, +91 95144 66600';
 
   const [activeTab, setActiveTab] = useState<'mission' | 'vision' | 'governance'>('mission');
 
@@ -202,8 +202,8 @@ export const AboutPage: React.FC = () => {
                   <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 bg-teal-500 rounded text-[9px] font-bold text-white">EST</div>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white/90">Founded in 2011</p>
-                  <p className="text-xs text-slate-400">Bengaluru, Karnataka • Independent Practice</p>
+                  <p className="text-sm font-bold text-white/90">Established Advisory Practice</p>
+                  <p className="text-xs text-slate-400">Kumaran Road, Tirupur, Tamil Nadu • Independent Practice</p>
                 </div>
               </div>
 
@@ -449,7 +449,7 @@ export const AboutPage: React.FC = () => {
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                         <span className="text-xs font-bold text-brand-navy">Institutional Quality Standard</span>
                       </div>
-                      <span className="text-xs font-bold text-brand-teal">8.40% Benchmark ROI</span>
+                      <span className="text-xs font-bold text-brand-teal">Home Loans from 7.25%* • LAP from 8.50%*</span>
                     </div>
                     <p className="text-xs text-brand-slate leading-normal">
                       Every application is structured according to internal risk metrics accepted by State Bank of India, HDFC Bank, ICICI Bank, Axis, and Kotak Mahindra.

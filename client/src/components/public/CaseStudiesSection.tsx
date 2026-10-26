@@ -6,47 +6,47 @@ export const CaseStudiesSection: React.FC = () => {
   const caseStudies = [
     {
       badge: 'MSME Working Capital',
-      title: '₹1.65 Cr Loan Against Property (LAP)',
-      client: 'Precision CNC Engineering Firm, Bengaluru',
+      title: '₹1.65 Cr Mortgage Loan on Concrete Commercial Building',
+      client: 'Export Textile Manufacturing Unit, Tirupur',
       challenge:
-        'Client needed urgent liquidity to procure raw materials for an export order. Earlier direct bank approach was stalled due to multi-partner firm structure and 3 distinct revenue streams across 2 GST accounts.',
+        'Client needed urgent liquidity to procure raw cotton and machinery for an export cycle. Earlier direct bank approach was delayed due to multi-partner firm structure and multiple GST accounts.',
       solution:
-        'Our advisory team conducted a comprehensive cash flow audit, prepared a consolidated banking surrogate assessment, and matched the file with an institutional bank offering 65% LTV on self-occupied industrial property.',
+        'Our advisory team conducted a comprehensive cash flow audit, structured a mortgage loan against self-occupied concrete commercial property, and matched the file with a public sector bank at 8.50% p.a.',
       metrics: [
         { label: 'Sanctioned Amount', value: '₹1.65 Crore' },
-        { label: 'Interest Rate', value: '9.45% p.a. (Floating)' },
-        { label: 'Turnaround Time', value: '11 Business Days' },
-        { label: 'Collateral Type', value: 'Industrial Unit' },
+        { label: 'Interest Rate', value: '8.50% p.a. (Floating)' },
+        { label: 'Turnaround Time', value: '7 Business Days' },
+        { label: 'Collateral Type', value: 'Commercial Building' },
       ],
     },
     {
-      badge: 'Complex Salaried + Freelance',
-      title: '₹92 Lakh Home Loan with Top-Up',
-      client: 'Senior IT Consultant, Bengaluru',
+      badge: 'Self-Construction + Subsidy',
+      title: '₹85 Lakh Self Construction Loan with Subsidy',
+      client: 'Senior Technology Professional, Tirupur / Coimbatore',
       challenge:
-        'Borrower had a base salary plus quarterly offshore consultancy payments into a separate foreign currency account. Standard online bank algorithms rejected the application citing inconsistent net monthly inflows.',
+        'Borrower had clear land title but required stage-wise civil engineering tranche disbursements and assistance to claim central government housing subsidy (PMAY).',
       solution:
-        'We audited 24 months of Form 16, 26AS, foreign remittance certificates (FIRC), and tax filings to establish verifiable average earnings, securing approval from a leading private bank.',
+        'We audited the structural estimation certificates, submitted the file to a leading government bank, and successfully locked in a 7.25% interest rate along with direct subsidy credit.',
       metrics: [
-        { label: 'Sanctioned Amount', value: '₹92 Lakhs' },
+        { label: 'Sanctioned Amount', value: '₹85 Lakhs' },
         { label: 'Tenure', value: '25 Years' },
-        { label: 'Benchmark Rate', value: '8.55% p.a.' },
+        { label: 'Benchmark Rate', value: '7.25% p.a. (Subsidy Linked)' },
         { label: 'Sanction Speed', value: '6 Working Days' },
       ],
     },
     {
-      badge: 'Commercial Real Estate',
-      title: '₹4.80 Cr Lease Rental Discounting (LRD)',
-      client: 'Commercial Property Investor, Karnataka',
+      badge: 'Private to Govt. Bank Takeover',
+      title: '₹2.80 Cr High-Interest Loan Takeover',
+      client: 'Commercial Property Investor, Tirupur, Tamil Nadu',
       challenge:
-        'Asset owner sought to monetize future lease receivables of an 18,000 sq.ft tenanted commercial floor to acquire another residential land parcel, requiring clean tripartite escrow structuring.',
+        'Client was servicing an existing private NBFC mortgage loan at 10.75% interest, resulting in excessive monthly debt servicing burdens on cash flow.',
       solution:
-        'We structured a compliant LRD facility with a scheduled commercial bank, establishing a rent escrow mechanism and securing favorable pre-payment terms without early foreclosure penalties.',
+        'We structured a complete balance takeover to a government bank at 8.50% p.a., slashing 225 bps and securing an additional ₹50 Lakh low-cost top-up facility.',
       metrics: [
-        { label: 'Sanctioned Amount', value: '₹4.80 Crore' },
-        { label: 'Discounting Period', value: '9 Years' },
-        { label: 'Interest Rate', value: '9.20% p.a.' },
-        { label: 'Tenanted Tenant', value: 'MNC Software Co.' },
+        { label: 'Sanctioned Amount', value: '₹2.80 Crore' },
+        { label: 'Rate Reduction', value: 'Slashed 225 bps' },
+        { label: 'New Rate', value: '8.50% p.a.' },
+        { label: 'Top-Up Facility', value: '₹50 Lakhs Sanctioned' },
       ],
     },
   ];

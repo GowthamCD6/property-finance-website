@@ -20,6 +20,7 @@ import {
   Award,
 } from 'lucide-react';
 import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { InteractiveDocumentVault } from '../../../components/public/InteractiveDocumentVault';
 import { Service } from '../../../types';
 
 export const ConsultationPage: React.FC = () => {
@@ -186,7 +187,7 @@ export const ConsultationPage: React.FC = () => {
                   <span><strong>Direct Advisor Line:</strong> Fast 20-minute eligibility review. We compute your FOIR limits and provide an immediate bank sanction feasibility report.</span>
                 )}
                 {activeMode === 'in-person' && (
-                  <span><strong>Bengaluru Corporate Office:</strong> Suite 402, Prestige Meridian, M.G. Road. In-person inspection of original deed binders and parent title documents.</span>
+                  <span><strong>Tirupur Head Office:</strong> No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601. In-person inspection of parent title documents, deed binders, and subsidy eligibility.</span>
                 )}
               </div>
 
@@ -255,7 +256,12 @@ export const ConsultationPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          3. PRELOADED CONSULTATION FORM
+          3. DOCUMENTATION CHECKLIST
+          ──────────────────────────────────────────────────────────── */}
+      <InteractiveDocumentVault loanType="loan-consultation" />
+
+      {/* ────────────────────────────────────────────────────────────
+          4. PRELOADED CONSULTATION FORM
           ──────────────────────────────────────────────────────────── */}
       <div id="enquiry-form">
         <EnquiryForm

@@ -20,6 +20,7 @@ import {
   FileSpreadsheet,
 } from 'lucide-react';
 import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { InteractiveDocumentVault } from '../../../components/public/InteractiveDocumentVault';
 import { Service } from '../../../types';
 
 export const PropertyFundingPage: React.FC = () => {
@@ -27,84 +28,84 @@ export const PropertyFundingPage: React.FC = () => {
   const services = context?.services || [];
   const fundingService = services.find((s) => s.slug === 'property-backed-funding') || null;
 
-  const [activeTab, setActiveTab] = useState<'lrd' | 'land-layout' | 'cre-purchase' | 'project-finance'>('lrd');
+  const [activeTab, setActiveTab] = useState<'bank-takeover' | 'plot-purchase' | 'home-purchase' | 'commercial-purchase'>('bank-takeover');
 
   const fundingSolutions = [
     {
-      id: 'lrd',
-      title: 'Lease Rental Discounting (LRD)',
-      tagline: 'Monetize predictable long-term corporate rental yields',
-      roi: 'From 9.15%*',
-      ltv: 'Up to 75% Discounting',
-      tenor: 'Up to 15 Years (Aligned to Lease)',
-      ticket: '₹5 Cr to ₹200+ Cr',
+      id: 'bank-takeover',
+      title: 'Loan Takeover: Private to Govt. Bank',
+      tagline: 'Transfer high-interest loans to lowest PSU government bank rates',
+      roi: 'From 7.25%* (HL) / 8.50%* (LAP)',
+      ltv: 'Up to 85% of Current Valuation',
+      tenor: 'Extended Amortization up to 30 Yrs',
+      ticket: '₹10 Lakhs to ₹25+ Crore',
       overview:
-        'Lease Rental Discounting (LRD) unlocks immediate liquidity by pledging future rent receivables from Grade-A commercial, IT park, or industrial warehousing tenants into an automated tripartite escrow account.',
+        'Our signature loan takeover desk transfers existing high-interest loans from private banks, NBFCs, or housing finance companies to low-interest Government (PSU) banks like SBI, PNB, and Bank of Baroda at the lowest interest rates.',
       keyFeatures: [
-        'Tripartite escrow mechanism between Landlord, Corporate Tenant, and Financing Institution',
-        'Discounting up to 75% - 80% of net discounted monthly rental receivables',
-        'Tenure structured to match residual lease period and lock-in milestones',
-        'Competitive interest spreads starting at 9.15% for AAA/AA rated corporate lessees',
+        'Drastically slash your interest rates down to benchmark lows starting from 7.25% p.a.',
+        'Zero advance fees with end-to-end List of Documents (LOD) and foreclosure retrieval',
+        'Significant monthly EMI reduction that frees up critical household & business cash flow',
+        'Top-up facility available at matching low home/mortgage loan interest rates',
       ],
-      idealFor: 'Owners of Grade-A office buildings, multi-brand retail malls, logistics hubs, and pre-leased tech parks.',
-      escrowImpact: 'Low operational friction: Tenant pays rent directly to escrow, bank retains EMI, balance sweeps to owner.',
+      idealFor: 'Borrowers currently paying high interest rates with private banks/NBFCs seeking government bank stability and lowest EMIs.',
+      escrowImpact: 'Seamless transfer: The government bank directly takes over original title deeds from your current private lender.',
     },
     {
-      id: 'land-layout',
-      title: 'Land & Plotted Layout Development Finance',
-      tagline: 'Capital syndication for residential & commercial layout infrastructure',
-      roi: 'From 10.25%*',
-      ltv: 'Up to 60% of Project Cost',
-      tenor: '3 to 7 Years (Phased Drawdown)',
-      ticket: '₹10 Cr to ₹150 Cr',
+      id: 'plot-purchase',
+      title: 'Plot Purchase & Plot + Construction Loans',
+      tagline: 'Financing for vacant plot acquisition and composite house construction',
+      roi: 'From 7.25%*',
+      ltv: 'Up to 80% of Agreement Value',
+      tenor: 'Up to 30 Years',
+      ticket: '₹15 Lakhs to ₹10+ Crore',
       overview:
-        'Tailored project loans for plotted land developers holding clear title lands with DTCP, BDA, HMDA, or PMRDA master approvals. Capital is disbursed phase-wise to fund site civil grading, road formation, storm drains, and utility grids.',
+        'Specialized financing for purchasing vacant residential plots, layout plots, and combined composite packages where plot purchase and progressive house construction are sanctioned together under one unified approval.',
       keyFeatures: [
-        'Financing mapped against sanctioned layout development costs and civil infrastructure milestones',
-        'Quarterly interest servicing with principal amortization tied to plot sales deed registrations',
-        'Escrow account management aligned with local town planning and RERA development mandates',
-        'Comprehensive 30-year mother deed and agricultural-to-non-agricultural DC conversion vetting',
+        'Financing for Plot Purchase in approved layout developments',
+        'Integrated composite sanction for Plot Purchase + Phased House Construction',
+        'Disbursements linked to civil engineering construction milestones',
+        'Assistance with government subsidy under applicable housing schemes',
       ],
-      idealFor: 'Established land developers creating gated community plotted townships and villa enclave layouts.',
-      escrowImpact: 'Disbursement tranches released against independent Chartered Engineer site progress certificates.',
+      idealFor: 'Families and land buyers acquiring plots or building custom independent homes and villas.',
+      escrowImpact: 'Phased fund releases ensure construction progresses smoothly without funding shortages.',
     },
     {
-      id: 'cre-purchase',
-      title: 'Commercial Real Estate (CRE) Acquisition',
-      tagline: 'High-ticket acquisition debt for commercial expansion',
-      roi: 'From 9.45%*',
-      ltv: 'Up to 65% of Agreement Value',
-      tenor: 'Up to 12 Years',
-      ticket: '₹3 Cr to ₹100 Cr',
+      id: 'home-purchase',
+      title: 'New & Old Home Purchase & Tiled House Loans',
+      tagline: 'Ready homes, resale properties, and traditional tiled house purchase',
+      roi: 'From 7.25%*',
+      ltv: 'Up to 85% of Property Value',
+      tenor: 'Up to 30 Years',
+      ticket: '₹15 Lakhs to ₹15+ Crore',
       overview:
-        'Term financing designed for corporate enterprises, medical chains, and private family offices seeking to purchase pre-built commercial office spaces, industrial factories, or standalone retail commercial plots.',
+        'Comprehensive purchase loan syndication covering brand-new ready-to-move homes, pre-owned resale homes, and traditional tiled houses across leading government and private banks.',
       keyFeatures: [
-        'Mortgage against the commercial property being purchased with initial equity down-payment',
-        'Cash-flow underwriting evaluated on existing corporate EBITDA or anticipated business expansion',
-        'Doorstep legal title evaluation including Occupancy Certificate (OC), fire NOC, and building bylaws',
-        'Dual valuation methodology: Cost approach and Income capitalization method for fair market pricing',
+        'New Home Purchase with expedited valuation and bank sanction within 48 hours',
+        'Old Home Purchase with thorough 30-year mother deed audit and structural life assessment',
+        'Tiled House Purchase financing with specialized regional title clearances',
+        'Government subsidy guidance for eligible applicants under PMAY guidelines',
       ],
-      idealFor: 'Mid-market companies expanding their corporate headquarters, distribution hubs, or medical clinics.',
-      escrowImpact: 'Direct payment to seller via banker cheque upon flawless execution of registered sale deed.',
+      idealFor: 'Homebuyers acquiring ready villas, apartments, resale houses, or heritage tiled homes.',
+      escrowImpact: 'Banker cheque issued directly to seller upon flawless execution of the registered sale deed.',
     },
     {
-      id: 'project-finance',
-      title: 'Developer Construction Debt & Project Funding',
-      tagline: 'Structured debt for RERA registered residential & commercial towers',
-      roi: 'From 11.00%*',
-      ltv: 'Up to 55% of Project Valuation',
-      tenor: '4 to 7 Years (Construction Linked)',
-      ticket: '₹15 Cr to ₹250+ Cr',
+      id: 'commercial-purchase',
+      title: 'Commercial Building Purchase & LRD',
+      tagline: 'Capital for commercial complexes, retail units & rental discounting',
+      roi: 'From 8.50%*',
+      ltv: 'Up to 70% of Valuation',
+      tenor: 'Up to 15 Years',
+      ticket: '₹50 Lakhs to ₹50+ Crore',
       overview:
-        'Institutional construction debt packaging for residential apartment complexes and commercial business parks with complete RERA registration, sanctioned building plans, and environmental clearances.',
+        'Long-term term debt tailored for business entities and commercial investors purchasing standalone commercial buildings, shopping complexes, textile units, and retail showrooms.',
       keyFeatures: [
-        'Stage-wise construction milestone releases verified by bank-empanelled Quantity Surveyors (QS)',
-        'RERA 70:30 designated escrow structure safeguarding homeowner deposits and project continuity',
-        'Moratorium on principal repayment during active civil construction phase',
-        'Refinancing and takeout finance options for high-cost NBFC debt into scheduled commercial banks',
+        'Financing against commercial building purchases with customized business amortization',
+        'Lease Rental Discounting (LRD) against future corporate tenant lease receivables',
+        'Starting interest rates from 8.50% p.a. across PSU and commercial bank networks',
+        'Debt Service Coverage Ratio (DSCR) underwriting tailored to business cash flows',
       ],
-      idealFor: 'Tier-1 and Tier-2 developers with proven track record of timely delivery and title transparency.',
-      escrowImpact: 'Full RERA regulatory compliance with designated project collection and retention accounts.',
+      idealFor: 'Textile manufacturers, business owners, retail showroom promoters, and commercial investors.',
+      escrowImpact: 'Dual valuation methodology ensures maximum permissible borrowing eligibility.',
     },
   ];
 
@@ -154,19 +155,19 @@ export const PropertyFundingPage: React.FC = () => {
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 backdrop-blur-md">
                 <Building2 className="w-4 h-4 text-emerald-400" />
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
-                  Institutional Commercial Real Estate &amp; LRD Desk
+                  Purchase Loans &amp; Private to Govt. Bank Takeover Desk
                 </span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight font-heading leading-tight">
-                High-Ticket Commercial Debt, <br />
+                Purchase Loans &amp; Takeovers, <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-brand-gold">
-                  Plotted Layouts &amp; LRD Syndication.
+                  Engineered for Lowest Interest Rates.
                 </span>
               </h1>
 
               <p className="text-base sm:text-lg text-gray-300 font-normal leading-relaxed max-w-2xl">
-                Structured capital syndication from ₹5 Crore to ₹250+ Crore for commercial property developers, Grade-A IT office parks, logistics warehousing hubs, and approved plotted layout infrastructure.
+                Specialized purchase loans for plot acquisition, plot with construction, new/old homes, tiled houses, and commercial buildings. Plus our high-impact loan takeover desk transferring loans from private banks to government banks at lowest interest rates.
               </p>
 
               {/* CTAs */}
@@ -379,7 +380,12 @@ export const PropertyFundingPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          3. PRELOADED CONSULTATION FORM
+          3. DOCUMENTATION CHECKLIST
+          ──────────────────────────────────────────────────────────── */}
+      <InteractiveDocumentVault loanType="property-backed-funding" />
+
+      {/* ────────────────────────────────────────────────────────────
+          4. PRELOADED CONSULTATION FORM
           ──────────────────────────────────────────────────────────── */}
       <div id="enquiry-form">
         <EnquiryForm

@@ -23,36 +23,36 @@ export const ContactPage: React.FC = () => {
   const content = context?.content || null;
   const services = context?.services || [];
 
-  const businessName = content?.businessName || 'Prime Associate Loans';
-  const businessPhone = content?.businessPhone || '+91 98765 43210';
-  const businessEmail = content?.businessEmail || 'contact@primeassociateloans.in';
-  const officeAddress = content?.officeAddress || 'Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001';
+  const businessName = content?.businessName || 'Prime Associates — Loans & Constructions';
+  const businessPhone = content?.businessPhone || '+91 96555 66613, +91 95144 66600';
+  const businessEmail = content?.businessEmail || 'primeassociates2008@gmail.com';
+  const officeAddress = content?.officeAddress || 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
   const businessHours = content?.businessHours || 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)';
 
   const regionalDesks = [
     {
-      region: 'Bengaluru Central & East',
-      focus: 'Home Loans, Whitefield Tech Corridor, Sarjapur Villa Projects',
-      desk: 'M.G. Road Headquarters',
-      phone: businessPhone,
+      region: 'Tirupur Central & Head Office',
+      focus: 'Home Loans, Self-Construction, Plot Purchase & Government Subsidies',
+      desk: 'P.R. Complex Headquarters',
+      phone: '+91 96555 66613',
     },
     {
-      region: 'Bengaluru North & Devanahalli',
-      focus: 'Airport Plotted Land Layouts, BIAAPA Approvals & Commercial Parks',
-      desk: 'North Bengaluru Advisory Desk',
-      phone: businessPhone,
+      region: 'Commercial & Industrial LAP Desk',
+      focus: 'Concrete Building, Tiled House, Plots (Empty Land), Commercial Buildings',
+      desk: 'Mortgage & LAP Syndicate',
+      phone: '+91 95144 66600',
     },
     {
-      region: 'Bengaluru South & Electronic City',
-      focus: 'High-Value LAP, Industrial Warehousing & Resale Apartments',
-      desk: 'South Corridor Cell',
-      phone: businessPhone,
+      region: 'Coimbatore & Regional Corridor',
+      focus: 'New & Old Home Purchase, Plot Purchase with Construction, Tiled Houses',
+      desk: 'Regional Purchase Desk',
+      phone: '+91 96555 66613',
     },
     {
-      region: 'NRI & International Borrowers Desk',
-      focus: 'Power of Attorney (POA), NRE/NRO Mortgage & Video Consultations',
-      desk: 'Cross-Border Advisory Desk',
-      phone: businessPhone,
+      region: 'Bank Takeover & Vehicle Desk',
+      focus: 'Private Bank to Govt Bank Takeover at Lowest Rates, Car & Commercial Vehicle Loans',
+      desk: 'Takeover & Vehicle Syndicate',
+      phone: '+91 95144 66600',
     },
   ];
 
@@ -113,7 +113,7 @@ export const ContactPage: React.FC = () => {
                     Corporate Headquarters
                   </span>
                 </div>
-                <span className="text-[11px] text-gray-400 font-mono">Bengaluru Central</span>
+                <span className="text-[11px] text-gray-400 font-mono">Tirupur Central</span>
               </div>
 
               <div className="space-y-2">
@@ -122,7 +122,7 @@ export const ContactPage: React.FC = () => {
                   {officeAddress}
                 </p>
                 <div className="text-[11px] text-brand-teal font-medium pt-1">
-                  Landmark: Opposite Trinity Metro Station, M.G. Road Corridor
+                  Landmark: Binny Compound Main Street, Kumaran Road, Tirupur
                 </div>
               </div>
 

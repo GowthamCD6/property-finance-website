@@ -61,7 +61,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
             className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm"
           >
             <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
-            <span>{content?.heroEyebrow || 'Institutional Property Finance Advisory • 40+ Partner Lenders'}</span>
+            <span>{content?.heroEyebrow || 'PRIME ASSOCIATES • LOANS & CONSTRUCTIONS • GOVT. SUBSIDY'}</span>
           </div>
 
           {/* Animated 3D Headline with Dynamic Word Rotation & Mouse Parallax Tilt */}
@@ -77,7 +77,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
             className="text-[17px] sm:text-[19px] lg:text-[20px] text-white/95 font-medium leading-relaxed max-w-3xl mx-auto drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
           >
             {content?.heroSubtitle ||
-              'Unlock institutional funding for high-value residential, commercial, and industrial properties. We partner with 40+ leading PSU & private banks and NBFCs across India to secure lowest benchmark interest rates, maximized borrowing eligibility, and zero advance fees.'}
+              'Get your home loans and mortgage loans at the lowest interest rates with government subsidy across government and private banks. Home loans from 7.25% p.a., Mortgage loans (LAP) from 8.50% p.a., Purchase Loans, Vehicle Loans, and Private-to-Government Bank Takeovers.'}
           </p>
 
           {/* Prominent Action CTAs with Professional Micro-Animations - Staggered Entrance */}
@@ -102,7 +102,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
               className="hero-btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-8.5 py-4 text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide"
             >
               <Calculator className="w-4.5 h-4.5 text-teal-300 hero-calc-icon" />
-              <span>Simulate EMI &amp; FOIR</span>
+              <span>Simulate EMI &amp; ROI</span>
             </Link>
 
             <Link
@@ -126,21 +126,21 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
-                <span className="font-semibold text-white">Zero Advance Fees</span>
+                <span className="font-semibold text-white">Government Subsidy Assistance</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
-                <span className="font-semibold text-white">40+ Partner Lenders</span>
+                <span className="font-semibold text-white">Home Loans from 7.25%*</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
-                <span className="font-semibold text-white">24–48h Rapid Sanction</span>
+                <span className="font-semibold text-white">Mortgage (LAP) from 8.50%*</span>
               </div>
             </div>
 
             <div className="flex items-center gap-2 text-slate-300 text-xs justify-center mx-auto sm:mx-0">
               <ShieldCheck className="w-4 h-4 text-[#20B2AA]" />
-              <span>Institutional Banking Partners: <strong className="text-white">SBI • HDFC • ICICI • AXIS • KOTAK</strong></span>
+              <span>Network: <strong className="text-white">Government (PSU) &amp; Private Commercial Banks</strong></span>
             </div>
           </div>
 

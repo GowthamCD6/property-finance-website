@@ -391,7 +391,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Bengaluru, Karnataka"
+                      placeholder="e.g. Tirupur, Tamil Nadu"
                       value={cityState}
                       onChange={(e) => setCityState(e.target.value)}
                       className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
@@ -443,19 +443,22 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                     <select
                       value={loanType}
                       onChange={(e) => setLoanType(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
+                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
                     >
                       {services.map((s) => (
                         <option key={s.id} value={s.title}>
                           {s.title}
                         </option>
                       ))}
-                      {!services.some((s) => s.title === 'Home Loan') && (
-                        <option value="Home Loan">Home Loan</option>
+                      {!services.some((s) => s.title.includes('Home Loan')) && (
+                        <option value="Home Loans & Self Construction">Home Loans &amp; Self Construction (from 7.25%)</option>
                       )}
-                      {!services.some((s) => s.title === 'Loan Against Property') && (
-                        <option value="Loan Against Property">Loan Against Property</option>
+                      {!services.some((s) => s.title.includes('Mortgage')) && (
+                        <option value="Mortgage Loans (LAP)">Mortgage Loans / LAP (from 8.50%)</option>
                       )}
+                      <option value="Purchase Loans (Plot / Home / Commercial)">Purchase Loans (Plot / Home / Commercial)</option>
+                      <option value="Vehicle Loans & Refinance">Vehicle Loans (New / Used / Commercial)</option>
+                      <option value="Private to Govt Bank Takeover">Private Bank to Govt Bank Takeover</option>
                     </select>
                   </div>
 
@@ -485,28 +488,28 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
                   <div>
                     <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Property Type <span className="text-red-500">*</span>
+                      Property / Collateral Type <span className="text-red-500">*</span>
                     </label>
                     <select
                       value={propertyType}
                       onChange={(e) => setPropertyType(e.target.value as any)}
                       className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
                     >
-                      <option value="residential">Residential (Apartment / Independent House)</option>
-                      <option value="commercial">Commercial (Office / Retail / Warehouse)</option>
-                      <option value="land">Plot / Freehold Land</option>
-                      <option value="other">Industrial / Mixed Use</option>
+                      <option value="residential">Concrete Building / Tiled House / Independent Home</option>
+                      <option value="land">Plots (Empty Land / Vacant Site / Layout Plot)</option>
+                      <option value="commercial">Commercial Building (Showroom / Complex / Unit)</option>
+                      <option value="other">Vehicle (New / Used Car / Commercial Vehicle) / Other</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Property Location (City / Locality) <span className="text-red-500">*</span>
+                      Property / Asset Location (City / Locality) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Indiranagar, Bengaluru"
+                      placeholder="e.g. Kumaran Road, Tirupur"
                       value={propertyLocation}
                       onChange={(e) => setPropertyLocation(e.target.value)}
                       className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
@@ -610,7 +613,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                     >
                       <option value="phone">Phone Discussion</option>
                       <option value="video">Google Meet / Video Call</option>
-                      <option value="in_person">In-Person (Bengaluru Office)</option>
+                      <option value="in_person">In-Person (Tirupur Office)</option>
                     </select>
                   </div>
 

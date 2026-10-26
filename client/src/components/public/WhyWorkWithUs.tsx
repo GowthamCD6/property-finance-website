@@ -8,10 +8,10 @@ interface WhyWorkWithUsProps {
 
 export const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
   const aboutHeading =
-    content?.aboutHeading || 'Dedicated Property Loan Consultancy with Transparent Guidance';
+    content?.aboutHeading || 'Prime Associates — Loans & Constructions';
   const aboutText =
     content?.aboutText ||
-    'We assist property owners, buyers, and business professionals in navigating the loan evaluation process. Our focus is helping you understand eligibility guidelines, assemble required documentation, and connect with reputable lending institutions suited to your profile.';
+    'Get your home loans and mortgage loans at the lowest interest rates with government subsidy across government and private banks. We provide complete advisory and syndication for self-construction, new/old home purchase, tiled houses, empty plots, commercial buildings, vehicle loans, and low-interest bank takeovers.';
   const aboutImg =
     content?.aboutImageUrl ||
     'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80';
@@ -19,28 +19,28 @@ export const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
   const benefits = [
     {
       icon: <Target className="w-5 h-5 text-brand-teal" />,
-      title: 'Customized Loan Structuring',
-      desc: 'We analyze property characteristics, debt service capacity, and cash flow profile to recommend the optimal borrowing structure.',
+      title: 'Government Subsidy (PMAY) Guidance',
+      desc: 'Expert assistance in securing maximum central and state government housing subsidy benefits across eligible PSU and private banks.',
     },
     {
       icon: <Layers className="w-5 h-5 text-brand-teal" />,
-      title: 'Institutional Lender Evaluation',
-      desc: 'Direct alignment with bank-specific LTV and FOIR thresholds to prevent unvetted credit rejections.',
+      title: 'Private to Govt. Bank Loan Takeovers',
+      desc: 'Transfer high-interest loans from private lenders to lowest government bank rates starting from 7.25% p.a. with zero hassle.',
     },
     {
       icon: <FileSpreadsheet className="w-5 h-5 text-brand-teal" />,
-      title: 'Pre-Submission Dossier Audit',
-      desc: 'Thorough verification of KYC, 30-year parent title deeds, and income statements before bank login.',
+      title: 'Self-Construction & Composite Packages',
+      desc: 'Specialized phased funding for building custom homes on owned sites or combined plot purchase with construction.',
     },
     {
       icon: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
-      title: 'Direct Bank Submissions & Confidentiality',
-      desc: 'Strict data privacy. Your file is submitted directly to designated bank officers without third-party bureau queries.',
+      title: 'Concrete Buildings, Tiled Houses & Empty Land',
+      desc: 'Unlocking liquidity against owned concrete structures, traditional tiled houses, empty plots, and commercial properties from 8.50% p.a.',
     },
     {
       icon: <HelpCircle className="w-5 h-5 text-brand-teal" />,
-      title: 'Dedicated Senior Advisory',
-      desc: 'One-on-one consultation via phone, video, or in-person to navigate sanction and disbursement milestones.',
+      title: 'Vehicle Loans & Commercial Fleet Refinance',
+      desc: 'Quick sanction for new cars, used cars, used car refinancing, and commercial transport vehicles with minimum paperwork.',
     },
   ];
 

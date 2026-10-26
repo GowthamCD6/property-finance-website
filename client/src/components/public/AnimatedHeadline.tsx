@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const ROTATING_WORDS = [
-  'Trust.',
-  'Precision.',
   'Lowest Rates.',
-  'Fast Sanctions.',
-  'Prime Properties.',
+  'Govt. Subsidy.',
+  '7.25% Home Loans.',
+  '8.50% LAP.',
+  'Bank Takeover.',
 ];
 
 export const AnimatedHeadline: React.FC = () => {

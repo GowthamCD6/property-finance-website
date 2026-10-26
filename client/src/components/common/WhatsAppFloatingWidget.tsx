@@ -8,11 +8,11 @@ interface WhatsAppFloatingWidgetProps {
 
 export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ content }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const phone = content?.businessPhone || '+91 98765 43210';
-  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  const phone = content?.businessPhone || '+91 96555 66613';
+  const cleanPhone = phone.split(',')[0].replace(/[^0-9]/g, '') || '919655566613';
 
   const defaultMessage = encodeURIComponent(
-    'Hello Prime Associate Loans, I would like to consult with an advisor regarding a Property Loan / LAP requirement.'
+    'Hello Prime Associates, I would like to consult with an advisor regarding a Home Loan / Mortgage Loan / Subsidy requirement.'
   );
 
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${defaultMessage}`;

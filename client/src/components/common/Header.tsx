@@ -81,28 +81,28 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
 
   const serviceItems = [
     {
-      title: 'Home Loans',
-      desc: 'Purchase, resale, self-construction & balance transfer',
+      title: 'Home Loans & Construction',
+      desc: 'Self construction, plot + building, new/old homes & tiled house',
       path: '/services/home-loans',
       icon: <Home className="w-4 h-4" />,
     },
     {
-      title: 'Loan Against Property',
-      desc: 'Secured funding against residential or commercial assets',
+      title: 'Mortgage Loans (LAP)',
+      desc: 'Concrete building, tiled house, empty land plots & commercial',
       path: '/services/loan-against-property',
       icon: <Building className="w-4 h-4" />,
     },
     {
-      title: 'Property-Backed Funding',
-      desc: 'Structured capital & lease rental discounting',
+      title: 'Purchase Loans & Takeover',
+      desc: 'Plot/building purchase & private to govt bank loan takeover',
       path: '/services/property-backed-funding',
-      icon: <Briefcase className="w-4 h-4" />,
+      icon: <Building2 className="w-4 h-4" />,
     },
     {
-      title: 'Loan Consultation',
-      desc: 'Eligibility review, CIBIL analysis & document audit',
+      title: 'Vehicle Loans & Refinance',
+      desc: 'New/used cars, used car refinance & commercial vehicles',
       path: '/services/loan-consultation',
-      icon: <FileCheck className="w-4 h-4" />,
+      icon: <Briefcase className="w-4 h-4" />,
     },
   ];
 
