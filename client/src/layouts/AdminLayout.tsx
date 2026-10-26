@@ -64,15 +64,17 @@ export const AdminLayout: React.FC = () => {
     <div className="min-h-screen bg-brand-ivory flex">
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0">
-        <div className="p-5 border-b border-brand-border flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-brand-teal flex items-center justify-center text-white flex-shrink-0">
-            <Building2 className="w-5 h-5" />
-          </div>
+        <div className="p-4 border-b border-brand-border flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="Prime Associate Loans"
+            className="h-9 w-auto object-contain flex-shrink-0"
+          />
           <div className="overflow-hidden">
-            <span className="font-bold text-sm text-brand-navy truncate block">
-              Advisory Operations
+            <span className="font-bold text-xs text-brand-navy truncate block">
+              Prime Associate Loans
             </span>
-            <span className="text-[11px] uppercase tracking-wider text-brand-slate font-medium block">
+            <span className="text-[10px] uppercase tracking-wider text-brand-slate font-medium block">
               Management Portal
             </span>
           </div>
@@ -130,10 +132,12 @@ export const AdminLayout: React.FC = () => {
           <div className="w-72 bg-white h-full flex flex-col p-5 border-r border-brand-border shadow-xl animate-in slide-in-from-left duration-150">
             <div className="flex items-center justify-between pb-4 border-b border-brand-border">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-brand-teal flex items-center justify-center text-white">
-                  <Building2 className="w-4 h-4" />
-                </div>
-                <span className="font-bold text-sm text-brand-navy">Advisory Portal</span>
+                <img
+                  src="/logo.png"
+                  alt="Prime Associate Loans"
+                  className="h-8 w-auto object-contain flex-shrink-0"
+                />
+                <span className="font-bold text-xs text-brand-navy">Prime Associate Loans</span>
               </div>
               <button
                 onClick={() => setMobileSidebarOpen(false)}

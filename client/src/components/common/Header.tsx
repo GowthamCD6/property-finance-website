@@ -226,21 +226,27 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
       >
         <div
           style={{
-            maxWidth: '1640px',
+            maxWidth: '1580px',
             margin: '0 auto',
-            padding: isScrolled ? '12px 32px' : '16px 36px',
+            padding: isScrolled ? '6px 36px' : '8px 48px',
             transition: 'padding 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             
-            {/* ─── Logo (Moved left with wider container) ─── */}
+            {/* ─── Logo (Moved little bit right) ─── */}
             <Link
               to="/"
-              style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                textDecoration: 'none',
+                flexShrink: 0,
+                marginLeft: '16px',
+              }}
               className="group"
             >
-              <WealthAnchorLogo size={isScrolled ? 38 : 44} showWordmark={true} variant="dark" />
+              <WealthAnchorLogo size={isScrolled ? 48 : 56} showWordmark={true} variant="dark" />
             </Link>
 
             {/* ─── Desktop Navigation ─── */}
@@ -372,8 +378,8 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
               </div>
             </nav>
 
-            {/* ─── CTA Button (Desktop) ─── */}
-            <div className="desktop-cta">
+            {/* ─── CTA Button (Desktop - moved little bit left) ─── */}
+            <div className="desktop-cta" style={{ marginRight: '16px' }}>
               <Link
                 to="/enquire"
                 className="cta-button"
@@ -389,7 +395,14 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="mobile-toggle"
               aria-label="Toggle navigation"
-              style={{ color: '#183247', background: 'none', border: 'none', cursor: 'pointer', padding: '8px' }}
+              style={{
+                color: '#183247',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                marginRight: '8px',
+              }}
             >
               {mobileMenuOpen ? <X style={{ width: '24px', height: '24px' }} /> : <Menu style={{ width: '24px', height: '24px' }} />}
             </button>
@@ -398,7 +411,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
       </header>
 
       {/* Header spacer to prevent content jump under fixed header */}
-      <div style={{ height: isScrolled ? '72px' : '84px', backgroundColor: '#ffffff' }} />
+      <div style={{ height: isScrolled ? '66px' : '74px', backgroundColor: '#ffffff' }} />
 
       {/* ─── Mobile Navigation Overlay ─── */}
       <div
@@ -451,7 +464,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             padding: '16px 20px',
             borderBottom: '1px solid #f1f5f4',
           }}>
-            <WealthAnchorLogo size={32} showWordmark={true} />
+            <WealthAnchorLogo size={48} showWordmark={true} />
             <button
               onClick={() => setMobileMenuOpen(false)}
               style={{

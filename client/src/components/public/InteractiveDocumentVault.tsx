@@ -107,7 +107,7 @@ export const InteractiveDocumentVault: React.FC = () => {
   const handleCopyChecklist = () => {
     const textToCopy = `${current.title}\n\n` +
       current.docs.map((d, i) => `${i + 1}. ${d.name} (${d.tag})\n   ${d.desc}`).join('\n\n') +
-      `\n\nAdvisory assistance provided by WealthAnchor Property Finance Advisory.`;
+      `\n\nAdvisory assistance provided by Prime Associate Loans.`;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);

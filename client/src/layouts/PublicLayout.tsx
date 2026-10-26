@@ -22,7 +22,7 @@ export const PublicLayout: React.FC = () => {
       .then((data) => {
         setContent(data);
         if (data.businessName) {
-          document.title = `${data.businessName} | Property Loan Assistance & Advisory`;
+          document.title = `${data.businessName} — Your Loan Advisory Partner`;
         }
       })
       .catch((err) => console.error('Notice: Loading default content', err));

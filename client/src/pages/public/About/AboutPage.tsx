@@ -25,7 +25,7 @@ import { SiteContent } from '../../../types';
 export const AboutPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();
   const content = context?.content || null;
-  const businessName = content?.businessName || 'WealthAnchor Property Finance Advisory';
+  const businessName = content?.businessName || 'Prime Associate Loans';
   const businessPhone = content?.businessPhone || '+91 98765 43210';
 
   const [activeTab, setActiveTab] = useState<'mission' | 'vision' | 'governance'>('mission');
@@ -80,7 +80,7 @@ export const AboutPage: React.FC = () => {
       title: 'Sovereign Bureau & Data Confidentiality',
       badge: 'Zero Multi-Pinging',
       description:
-        'Traditional brokers blast documents to dozens of banks, tanking CIBIL scores. WealthAnchor executes targeted, pre-screened filings with strict institutional privacy.',
+        'Traditional brokers blast documents to dozens of banks, tanking CIBIL scores. Prime Associate Loans executes targeted, pre-screened filings with strict institutional privacy.',
       icon: (
         <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
           <path fillRule="evenodd" d="M15.75 1.5a6.75 6.75 0 00-6.651 7.906c-.067.39-.099.79-.099 1.194 0 .804.129 1.578.368 2.302l-7.79 7.791a2.25 2.25 0 00-.659 1.591v1.966a.75.75 0 00.75.75h2.25a.75.75 0 00.75-.75v-1.5h1.5a.75.75 0 00.75-.75v-1.5h1.5a.75.75 0 00.75-.75v-1.5h1.5a.75.75 0 00.75-.75l1.09-1.09a6.744 6.744 0 003.141.786 6.75 6.75 0 100-13.5zm3.75 5.25a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" clipRule="evenodd" />
@@ -518,7 +518,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          4. COMPARATIVE MATRIX: TRADITIONAL BROKER VS. WEALTHANCHOR
+          4. COMPARATIVE MATRIX: TRADITIONAL BROKER VS. PRIME ASSOCIATE LOANS
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -528,7 +528,7 @@ export const AboutPage: React.FC = () => {
               Market Differentiation
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy tracking-tight">
-              The WealthAnchor Institutional Advantage
+              The Prime Associate Loans Institutional Advantage
             </h2>
             <p className="text-brand-slate text-base leading-relaxed">
               Compare our structured, client-first advisory model against traditional unregulated mortgage brokers.
@@ -539,7 +539,7 @@ export const AboutPage: React.FC = () => {
             <div className="grid grid-cols-12 bg-brand-ivory border-b border-brand-border p-4 text-xs font-bold uppercase tracking-wider text-brand-navy">
               <div className="col-span-5 sm:col-span-4">Evaluation Dimension</div>
               <div className="col-span-3 sm:col-span-4 text-center text-slate-500">Traditional Broker</div>
-              <div className="col-span-4 sm:col-span-4 text-center text-brand-teal">WealthAnchor Practice</div>
+              <div className="col-span-4 sm:col-span-4 text-center text-brand-teal">Prime Associate Loans Practice</div>
             </div>
 
             <div className="divide-y divide-brand-border/80 text-sm">

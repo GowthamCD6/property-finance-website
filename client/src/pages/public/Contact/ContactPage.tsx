@@ -23,9 +23,9 @@ export const ContactPage: React.FC = () => {
   const content = context?.content || null;
   const services = context?.services || [];
 
-  const businessName = content?.businessName || 'WealthAnchor Property Finance Advisory';
+  const businessName = content?.businessName || 'Prime Associate Loans';
   const businessPhone = content?.businessPhone || '+91 98765 43210';
-  const businessEmail = content?.businessEmail || 'contact@wealthanchor.in';
+  const businessEmail = content?.businessEmail || 'contact@primeassociateloans.in';
   const officeAddress = content?.officeAddress || 'Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001';
   const businessHours = content?.businessHours || 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)';
 
@@ -117,7 +117,7 @@ export const ContactPage: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-lg font-bold text-white font-heading">WealthAnchor Property Finance</h3>
+                <h3 className="text-lg font-bold text-white font-heading">{businessName}</h3>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
                   {officeAddress}
                 </p>

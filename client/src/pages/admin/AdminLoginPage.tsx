@@ -7,7 +7,7 @@ export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
-  const [email, setEmail] = useState('admin@wealthanchor.in');
+  const [email, setEmail] = useState('admin@primeassociateloans.in');
   const [password, setPassword] = useState('Admin@123456');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,14 +42,18 @@ export const AdminLoginPage: React.FC = () => {
           <span className="text-xs font-semibold">Back to Public Website</span>
         </a>
 
-        <div className="w-12 h-12 rounded-xl bg-brand-teal flex items-center justify-center text-white mx-auto shadow-sm mb-3">
-          <Building2 className="w-6 h-6" />
+        <div className="flex justify-center mb-4">
+          <img
+            src="/logo.png"
+            alt="Prime Associate Loans"
+            className="h-14 w-auto object-contain drop-shadow-xs"
+          />
         </div>
         <h2 className="text-2xl font-extrabold text-brand-navy tracking-tight">
           Advisory Portal Login
         </h2>
         <p className="mt-1.5 text-xs text-brand-slate">
-          Authorized operations and consultancy management access only
+          Prime Associate Loans &mdash; Operations and consultancy management access
         </p>
       </div>
 
@@ -76,7 +80,7 @@ export const AdminLoginPage: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@wealthanchor.in"
+                  placeholder="admin@primeassociateloans.in"
                   className="w-full pl-9 pr-3.5 py-2.5 bg-brand-ivory/40 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
                 />
               </div>
@@ -122,7 +126,7 @@ export const AdminLoginPage: React.FC = () => {
           {/* Seed hint box */}
           <div className="mt-6 pt-5 border-t border-brand-border/60 text-[11px] text-brand-slate bg-brand-teal-light/50 p-3 rounded-lg border border-brand-teal/20">
             <span className="font-semibold text-brand-navy block mb-0.5">Seeded Admin Account:</span>
-            <div>Email: <code className="font-mono text-brand-teal">admin@wealthanchor.in</code></div>
+            <div>Email: <code className="font-mono text-brand-teal">admin@primeassociateloans.in</code> (or <code className="font-mono text-brand-teal">admin@wealthanchor.in</code>)</div>
             <div>Password: <code className="font-mono text-brand-teal">Admin@123456</code></div>
           </div>
         </div>

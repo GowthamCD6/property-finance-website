@@ -12,7 +12,7 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
   const cleanPhone = phone.replace(/[^0-9]/g, '');
 
   const defaultMessage = encodeURIComponent(
-    'Hello WealthAnchor, I would like to consult with an advisor regarding a Property Loan / LAP requirement.'
+    'Hello Prime Associate Loans, I would like to consult with an advisor regarding a Property Loan / LAP requirement.'
   );
 
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${defaultMessage}`;

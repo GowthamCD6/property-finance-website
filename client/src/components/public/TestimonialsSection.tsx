@@ -23,7 +23,7 @@ const REVIEWS: Review[] = [
     product: 'Home Construction Loan',
     rating: 5,
     content:
-      'Constructing a home on our family plot was delayed over 5 years due to bank layout queries. WealthAnchor audited our document chain, aligned with the right lender, and expedited tranche sanction in 10 days.',
+      'Constructing a home on our family plot was delayed over 5 years due to bank layout queries. Prime Associate Loans audited our document chain, aligned with the right lender, and expedited tranche sanction in 10 days.',
     amount: '₹65 Lakhs Sanctioned',
     highlight: 'Turned dream into reality without hassle',
     lenderTag: 'SBI Home Loan',
@@ -75,7 +75,7 @@ const REVIEWS: Review[] = [
     product: 'Balance Transfer + Top-Up',
     rating: 5,
     content:
-      'Our existing private bank loan was stuck at 9.60%. WealthAnchor audited our schedule, executed a clean balance transfer to BOB at 8.45%, and secured a ₹15 Lakh home renovation top-up.',
+      'Our existing private bank loan was stuck at 9.60%. Prime Associate Loans audited our schedule, executed a clean balance transfer to BOB at 8.45%, and secured a ₹15 Lakh home renovation top-up.',
     amount: '₹82 Lakhs Sanctioned',
     highlight: 'Slashed rate by 115 bps & saved ₹18 Lakhs',
     lenderTag: 'Bank of Baroda',

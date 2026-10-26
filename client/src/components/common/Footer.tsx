@@ -12,15 +12,15 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ content }) => {
   const [modalType, setModalType] = useState<'privacy' | 'terms' | null>(null);
 
-  const businessName = content?.businessName || 'WealthAnchor';
+  const businessName = content?.businessName || 'Prime Associate Loans';
   const businessPhone = content?.businessPhone || '+91 98765 43210';
-  const businessEmail = content?.businessEmail || 'contact@wealthanchor.in';
+  const businessEmail = content?.businessEmail || 'contact@primeassociateloans.in';
   const officeAddress = content?.officeAddress || 'Suite 402, Prestige Meridian, M.G. Road, Bengaluru, Karnataka 560001';
   const businessHours = content?.businessHours || 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)';
-  const disclaimerText = content?.disclaimerText || 'WealthAnchor is an independent property finance consultancy firm. We do not disburse funds or grant loan approvals ourselves. Loan sanctions and terms are subject to lender underwriting criteria.';
+  const disclaimerText = content?.disclaimerText || 'Prime Associate Loans is an independent property finance consultancy firm. We do not disburse funds or grant loan approvals ourselves. Loan sanctions and terms are subject to lender underwriting criteria.';
   const privacyPolicy = content?.privacyPolicy || 'We respect your confidentiality. Personal and financial details shared are solely used for eligibility assessment and arranging consultations.';
   const termsConditions = content?.termsConditions || 'Information provided on this website is for advisory and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.';
-  const copyrightText = content?.copyrightText || 'WealthAnchor. All rights reserved.';
+  const copyrightText = content?.copyrightText || 'Prime Associate Loans. All rights reserved.';
 
   const currentYear = new Date().getFullYear();
 
@@ -34,12 +34,9 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
           {/* Brand & Mission */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <WealthAnchorLogo size={40} showWordmark={false} />
-              <span className="font-extrabold text-xl tracking-tight text-white font-heading">
-                WealthAnchor
-              </span>
-            </div>
+            <Link to="/" className="inline-block group">
+              <WealthAnchorLogo size={56} variant="light" alt={businessName} />
+            </Link>
             <p className="text-sm text-gray-300 leading-relaxed">
               Empowering property buyers, land investors, and homeowners with transparent FOIR underwriting, title due diligence, and institutional lender syndication across 40+ premier banks.
             </p>
