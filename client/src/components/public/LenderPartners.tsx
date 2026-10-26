@@ -313,8 +313,6 @@ export const LenderPartners: React.FC = () => {
             
             {/* Card 1: Zero Upfront Fees */}
             <div className="group relative bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-emerald-300 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_20px_35px_-8px_rgba(16,185,129,0.22)] flex flex-col justify-between overflow-hidden cursor-default">
-              {/* Card top radiant glow edge */}
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               {/* Card ambient corner glow */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-100/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
@@ -344,7 +342,6 @@ export const LenderPartners: React.FC = () => {
 
             {/* Card 2: Single Application */}
             <div className="group relative bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-blue-300 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_20px_35px_-8px_rgba(37,99,235,0.22)] flex flex-col justify-between overflow-hidden cursor-default">
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-blue-600 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-100/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
               <div>
@@ -373,7 +370,6 @@ export const LenderPartners: React.FC = () => {
 
             {/* Card 3: Legal & Technical Audit */}
             <div className="group relative bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-amber-300 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_20px_35px_-8px_rgba(245,158,11,0.22)] flex flex-col justify-between overflow-hidden cursor-default">
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-100/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
               <div>
@@ -402,7 +398,6 @@ export const LenderPartners: React.FC = () => {
 
             {/* Card 4: Dedicated Case Officer */}
             <div className="group relative bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-teal-300 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_20px_35px_-8px_rgba(24,124,120,0.22)] flex flex-col justify-between overflow-hidden cursor-default">
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-brand-teal to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-teal-100/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
               <div>
