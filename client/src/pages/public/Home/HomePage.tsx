@@ -1288,7 +1288,7 @@ const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-12 sm:py-16 bg-[#f8f8f4]">
+    <section id="how-it-works" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
       <div className="w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
@@ -1550,7 +1550,7 @@ const TestimonialsSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-12 sm:py-16 bg-transparent overflow-hidden">
+    <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
       <div className="w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
@@ -1702,7 +1702,7 @@ const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
   ];
 
   return (
-    <section id="why-us" className="py-12 sm:py-16 bg-[#f8f8f4]">
+    <section id="why-us" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
       <div className="w-[85%] max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 order-2 lg:order-1">
@@ -1901,7 +1901,7 @@ export const HomePage: React.FC = () => {
       <RateComparisonMatrix />
 
       {/* 5. Dynamic EMI & FOIR Calculator Banner */}
-      <section className="py-12 sm:py-16 bg-transparent">
+      <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
         <div className="w-[85%] max-w-7xl mx-auto">
           <div className="p-8 sm:p-12 rounded-3xl bg-white border border-brand-border/80 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
             <div className="space-y-3 max-w-2xl">
