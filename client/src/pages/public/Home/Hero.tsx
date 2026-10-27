@@ -146,6 +146,138 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
 
         </div>
       </div>
+      <style>{`
+        /* Hero Button Professional Micro-Animations & Premium Rounded Styling */
+        .hero-btn-primary {
+          position: relative;
+          overflow: hidden;
+          border-radius: 9999px;
+          background: linear-gradient(135deg, #187C78 0%, #126763 50%, #0e524f 100%);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          border-top-color: rgba(255, 255, 255, 0.55);
+          box-shadow: 
+            0 10px 25px -4px rgba(24, 124, 120, 0.55),
+            0 4px 10px rgba(0, 0, 0, 0.35),
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.45);
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, background 0.28s ease, border-color 0.28s ease;
+        }
+
+        .hero-btn-primary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -120%;
+          width: 60%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent
+          );
+          transform: skewX(-20deg);
+          transition: left 0.75s cubic-bezier(0.19, 1, 0.22, 1);
+          pointer-events: none;
+        }
+
+        .hero-btn-primary:hover::before {
+          left: 180%;
+        }
+
+        .hero-btn-primary:hover {
+          transform: translateY(-3px) scale(1.02);
+          background: linear-gradient(135deg, #1ea39e 0%, #187C78 50%, #126763 100%);
+          border-color: rgba(255, 255, 255, 0.4);
+          border-top-color: rgba(255, 255, 255, 0.75);
+          box-shadow: 
+            0 16px 38px -4px rgba(24, 124, 120, 0.75),
+            0 0 24px rgba(45, 212, 191, 0.45),
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .hero-btn-primary:active {
+          transform: translateY(-0.5px) scale(0.99);
+        }
+
+        .hero-btn-primary .hero-btn-arrow {
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hero-btn-primary:hover .hero-btn-arrow {
+          transform: translateX(4px);
+        }
+
+        /* Secondary Button Premium Frosted Glassmorphism */
+        .hero-btn-secondary {
+          position: relative;
+          overflow: hidden;
+          border-radius: 9999px;
+          background: rgba(15, 23, 42, 0.65);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.24);
+          border-top-color: rgba(255, 255, 255, 0.55);
+          box-shadow: 
+            0 10px 25px -4px rgba(0, 0, 0, 0.45),
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.35);
+          transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hero-btn-secondary:hover {
+          transform: translateY(-3px) scale(1.02);
+          background: rgba(15, 23, 42, 0.88);
+          border-color: rgba(45, 212, 191, 0.65);
+          border-top-color: rgba(255, 255, 255, 0.8);
+          box-shadow: 
+            0 16px 36px -4px rgba(24, 124, 120, 0.45),
+            0 0 20px rgba(56, 189, 248, 0.3),
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+        }
+
+        .hero-btn-secondary:active {
+          transform: translateY(-0.5px) scale(0.99);
+        }
+
+        .hero-btn-secondary .hero-calc-icon {
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+        }
+
+        .hero-btn-secondary:hover .hero-calc-icon {
+          transform: scale(1.15) rotate(-6deg);
+          color: #38bdf8 !important;
+        }
+
+        /* Tertiary Link Hover Micro-Animation */
+        .hero-btn-tertiary {
+          position: relative;
+          transition: color 0.25s ease, transform 0.25s ease;
+        }
+
+        .hero-btn-tertiary::after {
+          content: '';
+          position: absolute;
+          bottom: 8px;
+          left: 24px;
+          right: 42px;
+          height: 1.5px;
+          background: #38bdf8;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hero-btn-tertiary:hover::after {
+          transform: scaleX(1);
+        }
+
+        .hero-btn-tertiary .hero-explore-arrow {
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hero-btn-tertiary:hover .hero-explore-arrow {
+          transform: translateX(5px);
+        }
+      `}</style>
     </section>
   );
 };

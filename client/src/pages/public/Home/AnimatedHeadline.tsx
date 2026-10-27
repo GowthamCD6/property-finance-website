@@ -150,6 +150,83 @@ export const AnimatedHeadline: React.FC = () => {
           </span>
         </span>
       </h1>
+      <style>{`
+        .shimmer-headline-text {
+          background: linear-gradient(
+            90deg,
+            #ffffff 0%,
+            #ffffff 35%,
+            #bae6fd 50%,
+            #ffffff 65%,
+            #ffffff 100%
+          );
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shimmer-text-flow 5s ease-in-out infinite;
+          display: inline-block;
+        }
+
+        @keyframes shimmer-text-flow {
+          0%, 15% {
+            background-position: 200% center;
+          }
+          45%, 100% {
+            background-position: -200% center;
+          }
+        }
+
+        @keyframes letterBreakOut {
+          0% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+            filter: blur(0px);
+          }
+          35% {
+            opacity: 0.85;
+            transform: translate3d(var(--scatter-x, 0px), -12px, 0) rotate(var(--scatter-rot, 0deg)) scale(1.06);
+            filter: blur(2px);
+          }
+          100% {
+            opacity: 0;
+            transform: translate3d(calc(var(--scatter-x, 0px) * 2.2), -34px, 0) rotate(calc(var(--scatter-rot, 0deg) * 2)) scale(0.65);
+            filter: blur(10px);
+          }
+        }
+
+        @keyframes letterAssembleIn {
+          0% {
+            opacity: 0;
+            transform: translate3d(var(--enter-x, 0px), 30px, 0) rotate(var(--enter-rot, 0deg)) scale(0.72);
+            filter: blur(10px);
+          }
+          65% {
+            opacity: 1;
+            transform: translate3d(0, -3px, 0) rotate(0deg) scale(1.05);
+            filter: blur(0px);
+          }
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+            filter: blur(0px);
+          }
+        }
+
+        .animate-letter-break {
+          display: inline-block;
+          animation: letterBreakOut 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          animation-delay: calc(var(--char-index, 0) * 26ms);
+          will-change: transform, opacity, filter;
+        }
+
+        .animate-letter-assemble {
+          display: inline-block;
+          animation: letterAssembleIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation-delay: calc(100ms + var(--char-index, 0) * 32ms);
+          will-change: transform, opacity, filter;
+        }
+      `}</style>
     </div>
   );
 };

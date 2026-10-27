@@ -99,6 +99,36 @@ export const HowItWorks: React.FC = () => {
           </Link>
         </div>
       </div>
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+
+        .shimmer-effect {
+          position: relative;
+          overflow: hidden;
+        }
+        .shimmer-effect::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+          transform: skewX(-20deg);
+          animation: shimmer 4s infinite;
+        }
+
+        .btn-primary-glow {
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-primary-glow:hover {
+          transform: translateY(-1.5px);
+          box-shadow: 0 8px 20px -4px rgba(24, 124, 120, 0.35);
+        }
+      `}</style>
     </section>
   );
 };

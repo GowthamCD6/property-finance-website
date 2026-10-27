@@ -265,6 +265,29 @@ export const TestimonialsSection: React.FC = () => {
         </div>
 
       </div>
+      <style>{`
+        @keyframes continuousScrollReverse {
+          0% {
+            transform: translate3d(-50%, 0, 0);
+          }
+          100% {
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .animate-continuous-scroll-reverse {
+          display: flex;
+          width: max-content;
+          animation: continuousScrollReverse 95s linear infinite;
+          will-change: transform;
+        }
+
+        .animate-continuous-scroll-reverse:hover,
+        .animate-continuous-scroll-reverse:active,
+        .animate-continuous-scroll-reverse:focus-within {
+          animation-play-state: paused !important;
+        }
+      `}</style>
     </section>
   );
 };

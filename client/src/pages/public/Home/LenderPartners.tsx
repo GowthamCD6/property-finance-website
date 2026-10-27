@@ -439,6 +439,29 @@ export const LenderPartners: React.FC = () => {
         </div>
 
       </div>
+      <style>{`
+        @keyframes continuousScroll {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          100% {
+            transform: translate3d(-50%, 0, 0);
+          }
+        }
+
+        .animate-continuous-scroll {
+          display: flex;
+          width: max-content;
+          animation: continuousScroll 90s linear infinite;
+          will-change: transform;
+        }
+
+        .animate-continuous-scroll:hover,
+        .animate-continuous-scroll:active,
+        .animate-continuous-scroll:focus-within {
+          animation-play-state: paused !important;
+        }
+      `}</style>
     </section>
   );
 };

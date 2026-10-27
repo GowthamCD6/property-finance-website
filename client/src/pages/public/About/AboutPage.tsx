@@ -784,7 +784,16 @@ export const AboutPage: React.FC = () => {
           </div>
         </div>
       </section>
-
+      <style>{`
+        .card-hover {
+          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+          will-change: transform, box-shadow;
+        }
+        .card-hover:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 16px 32px -8px rgba(24, 50, 71, 0.10), 0 6px 12px -3px rgba(24, 50, 71, 0.05);
+        }
+      `}</style>
     </div>
   );
 };
