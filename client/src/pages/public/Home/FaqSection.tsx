@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
-import { Faq } from '../../types';
+import { Faq } from '../../../types';
 
 interface FaqSectionProps {
   faqs: Faq[];

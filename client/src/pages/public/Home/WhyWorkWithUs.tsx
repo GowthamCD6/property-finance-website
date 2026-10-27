@@ -1,6 +1,6 @@
 import React from 'react';
 import { Target, FileSpreadsheet, ShieldCheck, HelpCircle, Layers } from 'lucide-react';
-import { SiteContent } from '../../types';
+import { SiteContent } from '../../../types';
 
 interface WhyWorkWithUsProps {
   content?: SiteContent | null;

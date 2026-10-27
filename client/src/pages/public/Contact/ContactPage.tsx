@@ -15,7 +15,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { SiteContent, Service } from '../../../types';
-import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { EnquiryForm } from '../../../components/common/EnquiryForm';
 import { useOutletContext } from 'react-router-dom';
 
 export const ContactPage: React.FC = () => {

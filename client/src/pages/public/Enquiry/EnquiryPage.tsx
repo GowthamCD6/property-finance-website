@@ -10,7 +10,7 @@ import {
   Sparkles,
   ArrowRight,
 } from 'lucide-react';
-import { EnquiryForm } from '../../../components/public/EnquiryForm';
+import { EnquiryForm } from '../../../components/common/EnquiryForm';
 import { Service } from '../../../types';
 import { useOutletContext } from 'react-router-dom';
 

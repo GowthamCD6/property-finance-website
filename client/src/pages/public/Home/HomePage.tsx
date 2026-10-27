@@ -1,13 +1,13 @@
 import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
-import { Hero } from '../../../components/public/Hero';
-import { StatsBar } from '../../../components/public/StatsBar';
-import { LenderPartners } from '../../../components/public/LenderPartners';
-import { RateComparisonMatrix } from '../../../components/public/RateComparisonMatrix';
-import { HowItWorks } from '../../../components/public/HowItWorks';
-import { TestimonialsSection } from '../../../components/public/TestimonialsSection';
-import { WhyWorkWithUs } from '../../../components/public/WhyWorkWithUs';
-import { FaqSection } from '../../../components/public/FaqSection';
+import { Hero } from './Hero';
+import { StatsBar } from './StatsBar';
+import { LenderPartners } from './LenderPartners';
+import { RateComparisonMatrix } from './RateComparisonMatrix';
+import { HowItWorks } from './HowItWorks';
+import { TestimonialsSection } from './TestimonialsSection';
+import { WhyWorkWithUs } from './WhyWorkWithUs';
+import { FaqSection } from './FaqSection';
 import { Service, Faq, SiteContent } from '../../../types';
 import { Calculator, ArrowRight, Calendar, PhoneCall, ShieldCheck } from 'lucide-react';
 

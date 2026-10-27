@@ -6,8 +6,8 @@ import {
   ShieldCheck,
   Calculator,
 } from 'lucide-react';
-import { SiteContent } from '../../types';
-import defaultHeroImage from '../../assets/images/hero-property-finance.jpg';
+import { SiteContent } from '../../../types';
+import defaultHeroImage from '../../../assets/images/hero-property-finance.jpg';
 import { AnimatedHeadline } from './AnimatedHeadline';
 
 interface HeroProps {

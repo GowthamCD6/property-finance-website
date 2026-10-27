@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Award, CheckCircle2, ArrowUpRight, ShieldCheck, Layers, FileSearch, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import sbiLogo from '../../assets/images/lenders/sbi.svg';
-import hdfcLogo from '../../assets/images/lenders/hdfc.svg';
-import iciciLogo from '../../assets/images/lenders/icici.svg';
-import axisLogo from '../../assets/images/lenders/axis.svg';
-import kotakLogo from '../../assets/images/lenders/kotak.svg';
-import bobLogo from '../../assets/images/lenders/bob.svg';
-import bajajLogo from '../../assets/images/lenders/bajaj.svg';
-import tataLogo from '../../assets/images/lenders/tata.svg';
-import pnbLogo from '../../assets/images/lenders/pnb.svg';
-import licLogo from '../../assets/images/lenders/lic.png';
+import sbiLogo from '../../../assets/images/lenders/sbi.svg';
+import hdfcLogo from '../../../assets/images/lenders/hdfc.svg';
+import iciciLogo from '../../../assets/images/lenders/icici.svg';
+import axisLogo from '../../../assets/images/lenders/axis.svg';
+import kotakLogo from '../../../assets/images/lenders/kotak.svg';
+import bobLogo from '../../../assets/images/lenders/bob.svg';
+import bajajLogo from '../../../assets/images/lenders/bajaj.svg';
+import tataLogo from '../../../assets/images/lenders/tata.svg';
+import pnbLogo from '../../../assets/images/lenders/pnb.svg';
+import licLogo from '../../../assets/images/lenders/lic.png';
 
 interface Partner {
   id: string;

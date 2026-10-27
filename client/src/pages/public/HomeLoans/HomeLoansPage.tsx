@@ -21,8 +21,8 @@ import {
   MapPin,
   Check,
 } from 'lucide-react';
-import { EnquiryForm } from '../../../components/public/EnquiryForm';
-import { InteractiveDocumentVault } from '../../../components/public/InteractiveDocumentVault';
+import { EnquiryForm } from '../../../components/common/EnquiryForm';
+import { InteractiveDocumentVault } from '../../../components/common/InteractiveDocumentVault';
 import { Service } from '../../../types';
 
 export const HomeLoansPage: React.FC = () => {
