@@ -852,109 +852,11 @@ const LenderPartners: React.FC = () => {
           </p>
         </div>
 
-        {/* 4-Card Pillar Features Box (Zero Upfront Fees, Single App, etc.) */}
-        <div className="bg-white rounded-3xl border border-brand-border/80 p-8 sm:p-10 shadow-card">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-teal-500/40 hover:shadow-md transition-all duration-300">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-100/70 text-brand-teal border border-teal-200/70 flex items-center justify-center font-extrabold text-base font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-1 group-hover:bg-gradient-to-br group-hover:from-brand-teal group-hover:to-teal-800 group-hover:text-white group-hover:border-brand-teal group-hover:shadow-lg group-hover:shadow-teal-500/30">
-                    0%
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-brand-teal group-hover:bg-teal-50 group-hover:border-teal-200 group-hover:scale-110 transition-all duration-300">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                </div>
-                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200 mb-2">
-                  Zero Upfront Fees
-                </h4>
-                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
-                  We never charge advance advisory fees. All processing fees are paid directly to the lending institution.
-                </p>
-              </div>
-              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-brand-teal">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse" />
-                <span>100% Direct Bank Billing</span>
-              </div>
-            </div>
-
-            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-blue-500/40 hover:shadow-md transition-all duration-300">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100/70 text-blue-700 border border-blue-200/70 flex items-center justify-center font-extrabold text-base font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-110 group-hover:-rotate-1 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-800 group-hover:text-white group-hover:border-blue-600 group-hover:shadow-lg group-hover:shadow-blue-500/30">
-                    1-App
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-blue-600 group-hover:bg-blue-50 group-hover:border-blue-200 group-hover:scale-110 transition-all duration-300">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                </div>
-                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-blue-700 transition-colors duration-200 mb-2">
-                  Single Application
-                </h4>
-                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
-                  One complete document dossier evaluated across multiple banks without repeated CIBIL bureau damage.
-                </p>
-              </div>
-              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-blue-600">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-                <span>CIBIL Score Shielded</span>
-              </div>
-            </div>
-
-            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-amber-500/40 hover:shadow-md transition-all duration-300">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100/70 text-amber-700 border border-amber-200/70 flex items-center justify-center font-extrabold text-base font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-1 group-hover:bg-gradient-to-br group-hover:from-amber-600 group-hover:to-orange-700 group-hover:text-white group-hover:border-amber-600 group-hover:shadow-lg group-hover:shadow-amber-500/30">
-                    30-Yr
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-amber-600 group-hover:bg-amber-50 group-hover:border-amber-200 group-hover:scale-110 transition-all duration-300">
-                    <FileSearch className="w-4 h-4" />
-                  </div>
-                </div>
-                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-amber-700 transition-colors duration-200 mb-2">
-                  Legal &amp; Technical Audit
-                </h4>
-                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
-                  Pre-login title search and plan compliance verification to prevent rejection during legal clearance.
-                </p>
-              </div>
-              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-amber-600">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
-                <span>Pre-Login Title Search</span>
-              </div>
-            </div>
-
-            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-teal-500/40 hover:shadow-md transition-all duration-300">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-100/70 text-brand-teal border border-teal-200/70 flex items-center justify-center font-extrabold text-base font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-1 group-hover:bg-gradient-to-br group-hover:from-brand-teal group-hover:to-teal-800 group-hover:text-white group-hover:border-brand-teal group-hover:shadow-lg group-hover:shadow-teal-500/30">
-                    1:1
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-brand-teal group-hover:bg-teal-50 group-hover:border-teal-200 group-hover:scale-110 transition-all duration-300">
-                    <UserCheck className="w-4 h-4" />
-                  </div>
-                </div>
-                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200 mb-2">
-                  Dedicated Case Officer
-                </h4>
-                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
-                  Direct phone &amp; in-person coordination from application login until loan agreement execution.
-                </p>
-              </div>
-              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-brand-teal">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse" />
-                <span>Single Point of Contact</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Sliding Bank Cards Marquee placed below the Zero Upfront Fees card */}
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-8 sm:mt-12 space-y-3.5">
+        {/* ─── 1. TOP SLIDING BANK CARDS MARQUEE (Above the Card - Forward Stream) ─── */}
+        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mb-8 sm:mb-10">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
 
-          {/* Row 1: Forward Direction */}
           <div
             className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
             style={{
@@ -977,8 +879,110 @@ const LenderPartners: React.FC = () => {
               />
             ))}
           </div>
+        </div>
 
-          {/* Row 2: Reverse Direction */}
+        {/* ─── 2. MIDDLE 4-PILLAR FEATURES CARD (Properly Fitted Content) ─── */}
+        <div className="bg-white rounded-3xl border border-brand-border/80 p-6 sm:p-8 lg:p-10 shadow-card">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-teal-500/40 hover:shadow-md transition-all duration-300">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="min-w-[48px] px-3 h-10 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-100/70 text-brand-teal border border-teal-200/70 inline-flex items-center justify-center font-extrabold text-sm font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-105 group-hover:bg-gradient-to-br group-hover:from-brand-teal group-hover:to-teal-800 group-hover:text-white group-hover:border-brand-teal group-hover:shadow-md group-hover:shadow-teal-500/30 whitespace-nowrap">
+                    0%
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-brand-teal group-hover:bg-teal-50 group-hover:border-teal-200 group-hover:scale-110 transition-all duration-300">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                </div>
+                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200 mb-2">
+                  Zero Upfront Fees
+                </h4>
+                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
+                  We never charge advance advisory fees. All processing fees are paid directly to the lending institution.
+                </p>
+              </div>
+              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-brand-teal">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse shrink-0" />
+                <span className="whitespace-nowrap">100% Direct Bank Billing</span>
+              </div>
+            </div>
+
+            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-blue-500/40 hover:shadow-md transition-all duration-300">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="min-w-[56px] px-3 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100/70 text-blue-700 border border-blue-200/70 inline-flex items-center justify-center font-extrabold text-sm font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-105 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-800 group-hover:text-white group-hover:border-blue-600 group-hover:shadow-md group-hover:shadow-blue-500/30 whitespace-nowrap">
+                    1-App
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-blue-600 group-hover:bg-blue-50 group-hover:border-blue-200 group-hover:scale-110 transition-all duration-300">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                </div>
+                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-blue-700 transition-colors duration-200 mb-2">
+                  Single Application
+                </h4>
+                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
+                  One complete document dossier evaluated across multiple banks without repeated CIBIL bureau damage.
+                </p>
+              </div>
+              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-blue-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse shrink-0" />
+                <span className="whitespace-nowrap">CIBIL Score Shielded</span>
+              </div>
+            </div>
+
+            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-amber-500/40 hover:shadow-md transition-all duration-300">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="min-w-[56px] px-3 h-10 rounded-xl bg-gradient-to-br from-amber-50 to-orange-100/70 text-amber-700 border border-amber-200/70 inline-flex items-center justify-center font-extrabold text-sm font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-105 group-hover:bg-gradient-to-br group-hover:from-amber-600 group-hover:to-orange-700 group-hover:text-white group-hover:border-amber-600 group-hover:shadow-md group-hover:shadow-amber-500/30 whitespace-nowrap">
+                    30-Yr
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-amber-600 group-hover:bg-amber-50 group-hover:border-amber-200 group-hover:scale-110 transition-all duration-300">
+                    <FileSearch className="w-4 h-4" />
+                  </div>
+                </div>
+                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-amber-700 transition-colors duration-200 mb-2">
+                  Legal &amp; Technical Audit
+                </h4>
+                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
+                  Pre-login title search and plan compliance verification to prevent rejection during legal clearance.
+                </p>
+              </div>
+              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-amber-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse shrink-0" />
+                <span className="whitespace-nowrap">Pre-Login Title Search</span>
+              </div>
+            </div>
+
+            <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-teal-500/40 hover:shadow-md transition-all duration-300">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="min-w-[48px] px-3 h-10 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-100/70 text-brand-teal border border-teal-200/70 inline-flex items-center justify-center font-extrabold text-sm font-heading shadow-xs transition-all duration-300 ease-out group-hover:scale-105 group-hover:bg-gradient-to-br group-hover:from-brand-teal group-hover:to-teal-800 group-hover:text-white group-hover:border-brand-teal group-hover:shadow-md group-hover:shadow-teal-500/30 whitespace-nowrap">
+                    1:1
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-brand-teal group-hover:bg-teal-50 group-hover:border-teal-200 group-hover:scale-110 transition-all duration-300">
+                    <UserCheck className="w-4 h-4" />
+                  </div>
+                </div>
+                <h4 className="font-bold text-base text-brand-navy font-heading group-hover:text-brand-teal transition-colors duration-200 mb-2">
+                  Dedicated Case Officer
+                </h4>
+                <p className="text-xs text-brand-slate leading-relaxed group-hover:text-slate-700 transition-colors duration-200">
+                  Direct phone &amp; in-person coordination from application login until loan agreement execution.
+                </p>
+              </div>
+              <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-brand-teal">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-teal animate-pulse shrink-0" />
+                <span className="whitespace-nowrap">Single Point of Contact</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── 3. BOTTOM SLIDING BANK CARDS MARQUEE (Below the Card - Reverse Stream) ─── */}
+        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-8 sm:mt-10">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
+
           <div
             className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
             style={{
