@@ -32,18 +32,28 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
 
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Scroll handler: track scroll progress & compact header style
+  // Scroll handler: track scroll progress with requestAnimationFrame for smooth rolling
   useEffect(() => {
-    const handleScroll = () => {
-      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    let ticking = false;
+
+    const updateScroll = () => {
+      const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
       const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
       setScrollProgress(Math.min(100, Math.max(0, scrolled)));
       setIsScrolled(winScroll > 15);
+      ticking = false;
     };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // Check initial scroll position
-    handleScroll();
+    updateScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -415,7 +425,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
           </div>
         </div>
 
-        {/* Dynamic Scroll Progress Bar below header */}
+        {/* Clean Smooth Single-Color Scroll Progress Bar below header */}
         <div
           className="header-scroll-progress-container"
           style={{
@@ -423,9 +433,8 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             bottom: 0,
             left: 0,
             width: '100%',
-            height: '3.5px',
+            height: '2.5px',
             backgroundColor: isScrolled ? 'rgba(24, 124, 120, 0.08)' : 'transparent',
-            overflow: 'visible',
             pointerEvents: 'none',
           }}
         >
@@ -434,29 +443,11 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             style={{
               height: '100%',
               width: `${scrollProgress}%`,
-              background: 'linear-gradient(90deg, #187C78 0%, #22c55e 35%, #0ea5e9 70%, #38bdf8 100%)',
-              transition: 'width 0.08s ease-out',
-              boxShadow: scrollProgress > 0 ? '0 0 10px rgba(56, 189, 248, 0.8), 0 0 4px rgba(24, 124, 120, 0.7)' : 'none',
-              borderRadius: '0 4px 4px 0',
-              position: 'relative',
+              backgroundColor: '#187C78',
+              transition: 'width 0.1s linear',
+              willChange: 'width',
             }}
-          >
-            {scrollProgress > 0 && scrollProgress < 100 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  right: '-3px',
-                  top: '-2px',
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#ffffff',
-                  boxShadow: '0 0 10px 2px #38bdf8, 0 0 4px 1px #187C78',
-                  display: 'inline-block',
-                }}
-              />
-            )}
-          </div>
+          />
         </div>
       </header>
 
