@@ -17,6 +17,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import logoImg from '../assets/images/logo.png';
 
 export const AdminLayout: React.FC = () => {
   const { admin, isAuthenticated, isLoading, logout } = useAuth();
@@ -66,7 +67,7 @@ export const AdminLayout: React.FC = () => {
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0">
         <div className="p-4 border-b border-brand-border flex items-center gap-3">
           <img
-            src="/logo.png"
+            src={logoImg}
             alt="Prime Associate Loans"
             className="h-9 w-auto object-contain flex-shrink-0"
           />
@@ -133,7 +134,7 @@ export const AdminLayout: React.FC = () => {
             <div className="flex items-center justify-between pb-4 border-b border-brand-border">
               <div className="flex items-center gap-2.5">
                 <img
-                  src="/logo.png"
+                  src={logoImg}
                   alt="Prime Associate Loans"
                   className="h-8 w-auto object-contain flex-shrink-0"
                 />

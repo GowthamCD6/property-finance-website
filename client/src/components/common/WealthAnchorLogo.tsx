@@ -1,4 +1,5 @@
 import React from 'react';
+import logoImg from '../../assets/images/logo.png';
 
 export interface LogoProps {
   className?: string;
@@ -34,7 +35,7 @@ export const PrimeAssociateLogo: React.FC<LogoProps> = ({
         className={`inline-flex items-center bg-white px-4 py-2.5 rounded-2xl shadow-sm border border-white/20 select-none transition-transform hover:shadow-md ${className}`}
       >
         <img
-          src="/logo.png"
+          src={logoImg}
           alt={alt}
           style={{ height: resolvedHeight, width: resolvedWidth }}
           className="object-contain block transition-transform group-hover:scale-105"
@@ -47,7 +48,7 @@ export const PrimeAssociateLogo: React.FC<LogoProps> = ({
   return (
     <div className={`inline-flex items-center select-none ${className}`}>
       <img
-        src="/logo.png"
+        src={logoImg}
         alt={alt}
         style={{ height: resolvedHeight, width: resolvedWidth }}
         className="object-contain block transition-transform group-hover:scale-105"

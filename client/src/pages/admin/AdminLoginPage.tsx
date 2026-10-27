@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle, Loader2, Building2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import logoImg from '../../assets/images/logo.png';
 
 export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export const AdminLoginPage: React.FC = () => {
 
         <div className="flex justify-center mb-4">
           <img
-            src="/logo.png"
+            src={logoImg}
             alt="Prime Associate Loans"
             className="h-14 w-auto object-contain drop-shadow-xs"
           />

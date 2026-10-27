@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { Award, CheckCircle2, ArrowUpRight, ShieldCheck, Layers, FileSearch, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import sbiLogo from '../../assets/images/lenders/sbi.svg';
+import hdfcLogo from '../../assets/images/lenders/hdfc.svg';
+import iciciLogo from '../../assets/images/lenders/icici.svg';
+import axisLogo from '../../assets/images/lenders/axis.svg';
+import kotakLogo from '../../assets/images/lenders/kotak.svg';
+import bobLogo from '../../assets/images/lenders/bob.svg';
+import bajajLogo from '../../assets/images/lenders/bajaj.svg';
+import tataLogo from '../../assets/images/lenders/tata.svg';
+import pnbLogo from '../../assets/images/lenders/pnb.svg';
+import licLogo from '../../assets/images/lenders/lic.png';
+
 interface Partner {
   id: string;
   name: string;
@@ -147,7 +158,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '7.25%',
       badge: 'Lowest Rate with Subsidy',
       accentColor: '#0072BB',
-      logoUrl: '/images/lenders/sbi.svg',
+      logoUrl: sbiLogo,
     },
     {
       id: 'hdfc',
@@ -158,7 +169,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '8.55%',
       badge: 'Fast Digital Sanction',
       accentColor: '#004C8F',
-      logoUrl: '/images/lenders/hdfc.svg',
+      logoUrl: hdfcLogo,
     },
     {
       id: 'icici',
@@ -169,7 +180,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '8.60%',
       badge: 'High LTV Flexibility',
       accentColor: '#F37021',
-      logoUrl: '/images/lenders/icici.svg',
+      logoUrl: iciciLogo,
     },
     {
       id: 'axis',
@@ -180,7 +191,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '8.65%',
       badge: 'Balance Transfer Perks',
       accentColor: '#97144D',
-      logoUrl: '/images/lenders/axis.svg',
+      logoUrl: axisLogo,
     },
     {
       id: 'kotak',
@@ -191,7 +202,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '8.60%',
       badge: 'Custom LAP Structuring',
       accentColor: '#ED1C24',
-      logoUrl: '/images/lenders/kotak.svg',
+      logoUrl: kotakLogo,
     },
     {
       id: 'bob',
@@ -202,7 +213,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '8.45%',
       badge: 'Low Processing Fees',
       accentColor: '#F26522',
-      logoUrl: '/images/lenders/bob.svg',
+      logoUrl: bobLogo,
     },
     {
       id: 'bajaj',
@@ -213,7 +224,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '9.25%',
       badge: 'High-Ticket Flexibility',
       accentColor: '#004B8D',
-      logoUrl: '/images/lenders/bajaj.svg',
+      logoUrl: bajajLogo,
     },
     {
       id: 'tata',
@@ -224,7 +235,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '9.30%',
       badge: 'MSME Working Capital',
       accentColor: '#1A5BA8',
-      logoUrl: '/images/lenders/tata.svg',
+      logoUrl: tataLogo,
     },
     {
       id: 'pnb',
@@ -235,7 +246,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '8.65%',
       badge: 'Self-Construction Expert',
       accentColor: '#A20032',
-      logoUrl: '/images/lenders/pnb.svg',
+      logoUrl: pnbLogo,
     },
     {
       id: 'lic',
@@ -246,7 +257,7 @@ export const LenderPartners: React.FC = () => {
       ratesFrom: '8.50%',
       badge: 'Long 30-Yr Tenures',
       accentColor: '#00488F',
-      logoUrl: '/images/lenders/lic.png',
+      logoUrl: licLogo,
     },
   ];
 
