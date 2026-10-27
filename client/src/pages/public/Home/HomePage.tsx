@@ -852,60 +852,8 @@ const LenderPartners: React.FC = () => {
           </p>
         </div>
 
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-3 space-y-3.5">
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
-
-          {/* Row 1: Forward Direction */}
-          <div
-            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
-            style={{
-              animationPlayState: isHovered ? 'paused' : 'running',
-            }}
-          >
-            {row1Partners.map((p, idx) => (
-              <LenderCard
-                key={`p1-${p.id}-${idx}`}
-                partner={p}
-                onHoverChange={setIsHovered}
-              />
-            ))}
-            {row1Partners.map((p, idx) => (
-              <LenderCard
-                key={`p1-dup-${p.id}-${idx}`}
-                partner={p}
-                ariaHidden
-                onHoverChange={setIsHovered}
-              />
-            ))}
-          </div>
-
-          {/* Row 2: Reverse Direction */}
-          <div
-            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
-            style={{
-              animationPlayState: isHovered ? 'paused' : 'running',
-            }}
-          >
-            {row2Partners.map((p, idx) => (
-              <LenderCard
-                key={`p2-${p.id}-${idx}`}
-                partner={p}
-                onHoverChange={setIsHovered}
-              />
-            ))}
-            {row2Partners.map((p, idx) => (
-              <LenderCard
-                key={`p2-dup-${p.id}-${idx}`}
-                partner={p}
-                ariaHidden
-                onHoverChange={setIsHovered}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-12 sm:mt-16 bg-white rounded-3xl border border-brand-border/80 p-8 sm:p-10 shadow-card">
+        {/* 4-Card Pillar Features Box (Zero Upfront Fees, Single App, etc.) */}
+        <div className="bg-white rounded-3xl border border-brand-border/80 p-8 sm:p-10 shadow-card">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             <div className="group flex flex-col justify-between p-6 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-teal-500/40 hover:shadow-md transition-all duration-300">
               <div>
@@ -998,6 +946,60 @@ const LenderPartners: React.FC = () => {
                 <span>Single Point of Contact</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Sliding Bank Cards Marquee placed below the Zero Upfront Fees card */}
+        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-8 sm:mt-12 space-y-3.5">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
+
+          {/* Row 1: Forward Direction */}
+          <div
+            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
+            style={{
+              animationPlayState: isHovered ? 'paused' : 'running',
+            }}
+          >
+            {row1Partners.map((p, idx) => (
+              <LenderCard
+                key={`p1-${p.id}-${idx}`}
+                partner={p}
+                onHoverChange={setIsHovered}
+              />
+            ))}
+            {row1Partners.map((p, idx) => (
+              <LenderCard
+                key={`p1-dup-${p.id}-${idx}`}
+                partner={p}
+                ariaHidden
+                onHoverChange={setIsHovered}
+              />
+            ))}
+          </div>
+
+          {/* Row 2: Reverse Direction */}
+          <div
+            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
+            style={{
+              animationPlayState: isHovered ? 'paused' : 'running',
+            }}
+          >
+            {row2Partners.map((p, idx) => (
+              <LenderCard
+                key={`p2-${p.id}-${idx}`}
+                partner={p}
+                onHoverChange={setIsHovered}
+              />
+            ))}
+            {row2Partners.map((p, idx) => (
+              <LenderCard
+                key={`p2-dup-${p.id}-${idx}`}
+                partner={p}
+                ariaHidden
+                onHoverChange={setIsHovered}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -1588,8 +1590,9 @@ const ReviewCard: React.FC<{
 const TestimonialsSection: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const row1Reviews = useMemo(() => REVIEWS.slice(0, 3), []);
-  const row2Reviews = useMemo(() => REVIEWS.slice(3, 6), []);
+  const repeatedReviews = useMemo(() => {
+    return [...REVIEWS, ...REVIEWS];
+  }, []);
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
@@ -1607,51 +1610,27 @@ const TestimonialsSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-2 space-y-3">
+        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-2">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
 
-          {/* Row 1: Forward Stream */}
+          {/* Single Sliding Stream */}
           <div
-            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
+            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-4 px-6 sm:px-12 select-none"
             style={{
               animationPlayState: isHovered ? 'paused' : 'running',
             }}
           >
-            {row1Reviews.map((r, idx) => (
+            {repeatedReviews.map((r, idx) => (
               <ReviewCard
                 key={`r1-${r.id}-${idx}`}
                 review={r}
                 onHoverChange={setIsHovered}
               />
             ))}
-            {row1Reviews.map((r, idx) => (
-              <ReviewCard
-                key={`r1-dup-${r.id}-${idx}`}
-                review={r}
-                ariaHidden
-                onHoverChange={setIsHovered}
-              />
-            ))}
-          </div>
-
-          {/* Row 2: Reverse Stream */}
-          <div
-            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
-            style={{
-              animationPlayState: isHovered ? 'paused' : 'running',
-            }}
-          >
-            {row2Reviews.map((r, idx) => (
+            {repeatedReviews.map((r, idx) => (
               <ReviewCard
                 key={`r2-${r.id}-${idx}`}
-                review={r}
-                onHoverChange={setIsHovered}
-              />
-            ))}
-            {row2Reviews.map((r, idx) => (
-              <ReviewCard
-                key={`r2-dup-${r.id}-${idx}`}
                 review={r}
                 ariaHidden
                 onHoverChange={setIsHovered}
