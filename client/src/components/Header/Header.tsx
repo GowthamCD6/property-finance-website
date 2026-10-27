@@ -30,10 +30,16 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Scroll handler: always keep header visible, animate background & compact padding on scroll
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Scroll handler: track scroll progress & compact header style
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, scrolled)));
+      setIsScrolled(winScroll > 15);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     // Check initial scroll position
@@ -406,6 +412,50 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             >
               {mobileMenuOpen ? <X style={{ width: '24px', height: '24px' }} /> : <Menu style={{ width: '24px', height: '24px' }} />}
             </button>
+          </div>
+        </div>
+
+        {/* Dynamic Scroll Progress Bar below header */}
+        <div
+          className="header-scroll-progress-container"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: '3.5px',
+            backgroundColor: isScrolled ? 'rgba(24, 124, 120, 0.08)' : 'transparent',
+            overflow: 'visible',
+            pointerEvents: 'none',
+          }}
+        >
+          <div
+            className="header-scroll-progress-bar"
+            style={{
+              height: '100%',
+              width: `${scrollProgress}%`,
+              background: 'linear-gradient(90deg, #187C78 0%, #22c55e 35%, #0ea5e9 70%, #38bdf8 100%)',
+              transition: 'width 0.08s ease-out',
+              boxShadow: scrollProgress > 0 ? '0 0 10px rgba(56, 189, 248, 0.8), 0 0 4px rgba(24, 124, 120, 0.7)' : 'none',
+              borderRadius: '0 4px 4px 0',
+              position: 'relative',
+            }}
+          >
+            {scrollProgress > 0 && scrollProgress < 100 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  right: '-3px',
+                  top: '-2px',
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 0 10px 2px #38bdf8, 0 0 4px 1px #187C78',
+                  display: 'inline-block',
+                }}
+              />
+            )}
           </div>
         </div>
       </header>

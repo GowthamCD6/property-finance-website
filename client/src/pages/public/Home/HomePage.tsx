@@ -833,6 +833,9 @@ const LenderPartners: React.FC = () => {
     },
   ];
 
+  const row1Partners = partners.slice(0, 5);
+  const row2Partners = partners.slice(5);
+
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
       <div className="w-[85%] max-w-7xl mx-auto">
@@ -849,26 +852,51 @@ const LenderPartners: React.FC = () => {
           </p>
         </div>
 
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-3">
+        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-3 space-y-3.5">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
 
+          {/* Row 1: Forward Direction */}
           <div
-            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-4 px-6 sm:px-12 select-none"
+            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
             style={{
               animationPlayState: isHovered ? 'paused' : 'running',
             }}
           >
-            {partners.map((p, idx) => (
+            {row1Partners.map((p, idx) => (
               <LenderCard
                 key={`p1-${p.id}-${idx}`}
                 partner={p}
                 onHoverChange={setIsHovered}
               />
             ))}
-            {partners.map((p, idx) => (
+            {row1Partners.map((p, idx) => (
+              <LenderCard
+                key={`p1-dup-${p.id}-${idx}`}
+                partner={p}
+                ariaHidden
+                onHoverChange={setIsHovered}
+              />
+            ))}
+          </div>
+
+          {/* Row 2: Reverse Direction */}
+          <div
+            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
+            style={{
+              animationPlayState: isHovered ? 'paused' : 'running',
+            }}
+          >
+            {row2Partners.map((p, idx) => (
               <LenderCard
                 key={`p2-${p.id}-${idx}`}
+                partner={p}
+                onHoverChange={setIsHovered}
+              />
+            ))}
+            {row2Partners.map((p, idx) => (
+              <LenderCard
+                key={`p2-dup-${p.id}-${idx}`}
                 partner={p}
                 ariaHidden
                 onHoverChange={setIsHovered}
@@ -979,16 +1007,31 @@ const LenderPartners: React.FC = () => {
           100% { transform: translate3d(-50%, 0, 0); }
         }
 
+        @keyframes continuousScrollReverse {
+          0% { transform: translate3d(-50%, 0, 0); }
+          100% { transform: translate3d(0, 0, 0); }
+        }
+
         .animate-continuous-scroll {
           display: flex;
           width: max-content;
-          animation: continuousScroll 90s linear infinite;
+          animation: continuousScroll 48s linear infinite;
+          will-change: transform;
+        }
+
+        .animate-continuous-scroll-reverse {
+          display: flex;
+          width: max-content;
+          animation: continuousScrollReverse 48s linear infinite;
           will-change: transform;
         }
 
         .animate-continuous-scroll:hover,
         .animate-continuous-scroll:active,
-        .animate-continuous-scroll:focus-within {
+        .animate-continuous-scroll:focus-within,
+        .animate-continuous-scroll-reverse:hover,
+        .animate-continuous-scroll-reverse:active,
+        .animate-continuous-scroll-reverse:focus-within {
           animation-play-state: paused !important;
         }
       `}</style>
@@ -1545,9 +1588,8 @@ const ReviewCard: React.FC<{
 const TestimonialsSection: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const repeatedReviews = useMemo(() => {
-    return [...REVIEWS, ...REVIEWS];
-  }, []);
+  const row1Reviews = useMemo(() => REVIEWS.slice(0, 3), []);
+  const row2Reviews = useMemo(() => REVIEWS.slice(3, 6), []);
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
@@ -1565,26 +1607,51 @@ const TestimonialsSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-2">
+        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-2 space-y-3">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
 
+          {/* Row 1: Forward Stream */}
           <div
-            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-4 px-6 sm:px-12 select-none"
+            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
             style={{
               animationPlayState: isHovered ? 'paused' : 'running',
             }}
           >
-            {repeatedReviews.map((r, idx) => (
+            {row1Reviews.map((r, idx) => (
               <ReviewCard
                 key={`r1-${r.id}-${idx}`}
                 review={r}
                 onHoverChange={setIsHovered}
               />
             ))}
-            {repeatedReviews.map((r, idx) => (
+            {row1Reviews.map((r, idx) => (
+              <ReviewCard
+                key={`r1-dup-${r.id}-${idx}`}
+                review={r}
+                ariaHidden
+                onHoverChange={setIsHovered}
+              />
+            ))}
+          </div>
+
+          {/* Row 2: Reverse Stream */}
+          <div
+            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
+            style={{
+              animationPlayState: isHovered ? 'paused' : 'running',
+            }}
+          >
+            {row2Reviews.map((r, idx) => (
               <ReviewCard
                 key={`r2-${r.id}-${idx}`}
+                review={r}
+                onHoverChange={setIsHovered}
+              />
+            ))}
+            {row2Reviews.map((r, idx) => (
+              <ReviewCard
+                key={`r2-dup-${r.id}-${idx}`}
                 review={r}
                 ariaHidden
                 onHoverChange={setIsHovered}
@@ -1634,18 +1701,33 @@ const TestimonialsSection: React.FC = () => {
         </div>
       </div>
       <style>{`
+        @keyframes continuousScroll {
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
+        }
+
         @keyframes continuousScrollReverse {
           0% { transform: translate3d(-50%, 0, 0); }
           100% { transform: translate3d(0, 0, 0); }
         }
 
-        .animate-continuous-scroll-reverse {
+        .animate-continuous-scroll {
           display: flex;
           width: max-content;
-          animation: continuousScrollReverse 95s linear infinite;
+          animation: continuousScroll 50s linear infinite;
           will-change: transform;
         }
 
+        .animate-continuous-scroll-reverse {
+          display: flex;
+          width: max-content;
+          animation: continuousScrollReverse 50s linear infinite;
+          will-change: transform;
+        }
+
+        .animate-continuous-scroll:hover,
+        .animate-continuous-scroll:active,
+        .animate-continuous-scroll:focus-within,
         .animate-continuous-scroll-reverse:hover,
         .animate-continuous-scroll-reverse:active,
         .animate-continuous-scroll-reverse:focus-within {
