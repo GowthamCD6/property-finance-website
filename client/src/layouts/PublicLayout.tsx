@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Header } from '../components/common/Header';
-import { Footer } from '../components/common/Footer';
+import { Header } from '../components/Header/Header';
+import { Footer } from '../components/Footer/Footer';
 import { WhatsAppFloatingWidget } from '../components/common/WhatsAppFloatingWidget';
 import { SiteContent, Service, Faq } from '../types';
 import { getPublicSiteContent, getPublicServices, getPublicFaqs } from '../services/api';

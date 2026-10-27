@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, Phone, Mail, MapPin, Clock, Lock, ArrowUp } from 'lucide-react';
 import { SiteContent } from '../../types';
-import { PrivacyModal } from './PrivacyModal';
-import { WealthAnchorLogo } from './WealthAnchorLogo';
+import { PrivacyModal } from '../common/PrivacyModal';
+import { WealthAnchorLogo } from '../common/WealthAnchorLogo';
 
 interface FooterProps {
   content?: SiteContent | null;

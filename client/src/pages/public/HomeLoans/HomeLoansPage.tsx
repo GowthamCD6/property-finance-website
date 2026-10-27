@@ -21,7 +21,7 @@ import {
   MapPin,
   Check,
 } from 'lucide-react';
-import { EnquiryForm } from '../../../components/common/EnquiryForm';
+import { EnquiryForm } from '../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../components/common/InteractiveDocumentVault';
 import { Service } from '../../../types';
 

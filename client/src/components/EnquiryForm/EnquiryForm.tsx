@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Service } from '../../types';
 import { submitLoanEnquiry, getPublicAvailability } from '../../services/api';
-import { InteractiveDocumentVault } from './InteractiveDocumentVault';
+import { InteractiveDocumentVault } from '../common/InteractiveDocumentVault';
 
 interface EnquiryFormProps {
   services: Service[];

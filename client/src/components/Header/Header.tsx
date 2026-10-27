@@ -16,7 +16,7 @@ import {
   Phone,
 } from 'lucide-react';
 import { SiteContent } from '../../types';
-import { WealthAnchorLogo } from './WealthAnchorLogo';
+import { WealthAnchorLogo } from '../common/WealthAnchorLogo';
 
 interface HeaderProps {
   content?: SiteContent | null;
