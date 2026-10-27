@@ -129,13 +129,6 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
         </div>
       </div>
 
-      {/* Regulatory Disclaimer Box */}
-      <div className="py-6 border-b border-white/10 text-xs text-gray-400 leading-relaxed">
-        <p className="mb-2">
-          <span className="font-semibold text-gray-200">Legal &amp; Regulatory Notice: </span>
-          {disclaimerText}
-        </p>
-      </div>
 
       {/* Copyright, Policy Links, Admin Portal Access & Back to Top */}
       <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-4">
