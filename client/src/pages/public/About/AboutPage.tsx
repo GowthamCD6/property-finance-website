@@ -327,17 +327,17 @@ export const AboutPage: React.FC = () => {
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
-          1. 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Unified bg-[#f8f8f4], No dividing line, Standard Home Spacing)
+          1. 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Executive Professional Navy Theme)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#f8f8f4] text-brand-navy pt-8 sm:pt-12 pb-0">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0B1E2E] via-[#0D2437] to-[#081521] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
         
         {/* Subtle Ambient Background Grids & Soft Atmospheric Aura */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(24,124,120,0.06),rgba(248,248,244,0))] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-100/30 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-sky-100/25 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(20,184,166,0.12),transparent)] pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
 
         {/* Subtle Architectural Blueprint grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0284c708_1px,transparent_1px),linear-gradient(to_bottom,#0284c708_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(56,189,248,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(56,189,248,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
@@ -354,17 +354,17 @@ export const AboutPage: React.FC = () => {
                 }}
                 className="flex flex-wrap items-center gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/80 text-teal-800 shadow-2xs backdrop-blur-md">
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 shadow-sm backdrop-blur-md">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-500 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-600"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
                   </span>
                   <span className="text-xs font-bold uppercase tracking-[0.14em]">
                     Institutional Property Advisory Desk
                   </span>
                 </div>
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-white px-3 py-1 rounded-full border border-brand-border/80 shadow-2xs">
-                  <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/10 px-3 py-1 rounded-full border border-white/15 backdrop-blur-sm">
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
                   <span>Est. 2011 • Regulated Bank Syndication</span>
                 </div>
               </div>
@@ -378,16 +378,16 @@ export const AboutPage: React.FC = () => {
                 }}
                 className="space-y-3"
               >
-                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-extrabold text-[#0f273d] tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
                   The Architecture of{' '}
-                  <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-700 via-teal-600 to-sky-700">
+                  <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-200 to-sky-300">
                     Institutional Capital
                   </span>{' '}
                   &amp; Collateral Precision.
                 </h1>
 
-                <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed max-w-2xl pt-1">
-                  <strong className="text-brand-navy">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
+                <p className="text-xs sm:text-sm md:text-base text-slate-300 font-normal leading-relaxed max-w-2xl pt-1">
+                  <strong className="text-white font-bold">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
                 </p>
               </div>
 
@@ -403,20 +403,20 @@ export const AboutPage: React.FC = () => {
                 {kpis.map((kpi, idx) => (
                   <div
                     key={idx}
-                    className="relative group p-3 sm:p-4 rounded-2xl bg-white border border-brand-border/80 hover:border-teal-500/50 shadow-2xs hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-default"
+                    className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-default"
                   >
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
                         {kpi.badge}
                       </span>
                     </div>
-                    <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight font-heading">
+                    <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
                       {kpi.value}
                     </div>
-                    <div className="text-xs font-bold text-slate-800 mt-1">
+                    <div className="text-xs font-bold text-slate-200 mt-1">
                       {kpi.label}
                     </div>
-                    <div className="text-[10px] text-slate-500 mt-0.5 leading-snug line-clamp-1">
+                    <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
                       {kpi.subtext}
                     </div>
                   </div>
@@ -434,7 +434,7 @@ export const AboutPage: React.FC = () => {
               >
                 <Link
                   to="/enquire"
-                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group text-center"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-lg shadow-teal-900/40 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group text-center"
                 >
                   <Sparkles className="w-4 h-4 text-teal-100" />
                   <span>Initiate Confidential Advisory</span>
@@ -443,34 +443,34 @@ export const AboutPage: React.FC = () => {
 
                 <a
                   href="#diligence-matrix"
-                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-corporate bg-white hover:bg-slate-50 border border-brand-border/80 text-brand-navy font-semibold text-xs sm:text-sm shadow-2xs hover:shadow-sm transition-all duration-200 text-center"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-corporate bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-xs sm:text-sm shadow-sm backdrop-blur-sm transition-all duration-200 text-center"
                 >
-                  <FileSearch className="w-4 h-4 text-teal-600" />
+                  <FileSearch className="w-4 h-4 text-teal-300" />
                   <span>Explore Diligence Protocol</span>
                   <ChevronRight className="w-4 h-4 text-slate-400" />
                 </a>
 
                 <a
                   href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-corporate bg-teal-50 hover:bg-teal-100/70 text-teal-800 border border-teal-200 text-xs font-semibold transition-colors shadow-2xs text-center"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-corporate bg-teal-500/15 hover:bg-teal-500/25 text-teal-200 border border-teal-400/30 text-xs font-semibold backdrop-blur-sm transition-colors shadow-sm text-center"
                 >
-                  <PhoneCall className="w-3.5 h-3.5 text-teal-600" />
+                  <PhoneCall className="w-3.5 h-3.5 text-teal-300" />
                   <span>Direct Hotline: {businessPhone.split(',')[0]}</span>
                 </a>
               </div>
 
               {/* Institutional Safety Pillars Strip */}
-              <div className="pt-2 border-t border-slate-200/80 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-600 font-medium">
+              <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-medium">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-teal-600" />
+                  <ShieldCheck className="w-4 h-4 text-teal-400" />
                   <span>RBI Fair Practice Code Compliant</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-teal-600" />
+                  <Lock className="w-4 h-4 text-teal-400" />
                   <span>Zero Unauthorized Bureau Enquiries</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Scale className="w-4 h-4 text-teal-600" />
+                  <Scale className="w-4 h-4 text-teal-400" />
                   <span>Zero Cash Collection Policy</span>
                 </div>
               </div>
@@ -486,7 +486,7 @@ export const AboutPage: React.FC = () => {
               }}
               className="lg:col-span-5 relative"
             >
-              <div className="relative rounded-3xl overflow-hidden border border-brand-border/80 bg-white shadow-card">
+              <div className="relative rounded-3xl overflow-hidden border border-white/20 bg-slate-900/60 shadow-2xl backdrop-blur-sm ring-1 ring-white/10">
                 {/* 3D Canvas Area */}
                 <div className="w-full h-[340px] xs:h-[400px] sm:h-[480px] lg:h-[600px] relative">
                   <AboutHero3D onModeChange={(mode) => setHeroSceneMode(mode)} />
