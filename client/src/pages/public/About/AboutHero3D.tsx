@@ -48,9 +48,11 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
   const isDraggingRef = useRef(false);
   const previousMousePosition = useRef({ x: 0, y: 0 });
+  const currentModeRef = useRef<SceneMode>('skyline');
 
   const handleModeSwitch = (mode: SceneMode) => {
     setActiveMode(mode);
+    currentModeRef.current = mode;
     if (onModeChange) onModeChange(mode);
 
     if (skylineGroupRef.current) skylineGroupRef.current.visible = mode === 'skyline';
@@ -779,207 +781,539 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     scene.add(networkGroup);
 
     // ─────────────────────────────────────────────────────────────
-    // MODE 3: HIGH-SECURITY COLLATERAL VAULT & DYNAMIC ANIMATION
+    // MODE 3: HIGH-SECURITY INSTITUTIONAL COLLATERAL VAULT & AUDIT
     // ─────────────────────────────────────────────────────────────
     const vaultGroup = vaultGroupRef.current;
     vaultGroup.clear();
     vaultGroup.visible = false;
 
-    // Heavy Polished Granite Vault Floor
-    const vaultFloor = new THREE.Mesh(
-      new THREE.CylinderGeometry(9.0, 9.0, 0.3, 48),
-      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.25, metalness: 0.85 })
-    );
-    vaultFloor.position.y = -1.9;
+    // Dedicated Vault Atmospheric Lights
+    const vaultSpot = new THREE.SpotLight(0xfff7ed, 2.8, 26, Math.PI / 4, 0.4, 1.2);
+    vaultSpot.position.set(0, 7.8, 3.5);
+    vaultSpot.target.position.set(0, 0, -0.5);
+    vaultGroup.add(vaultSpot);
+    vaultGroup.add(vaultSpot.target);
+
+    const vaultGreenGlow = new THREE.PointLight(0x10b981, 2.0, 10);
+    vaultGreenGlow.position.set(1.4, 0.5, 0.6);
+    vaultGroup.add(vaultGreenGlow);
+
+    const vaultGoldGlow = new THREE.PointLight(0xf59e0b, 1.8, 8);
+    vaultGoldGlow.position.set(-0.2, 0.2, 0.3);
+    vaultGroup.add(vaultGoldGlow);
+
+    // 1. Architectural Chamber Floor Foundation
+    const vaultFloorGeo = new THREE.BoxGeometry(17.5, 0.24, 13.5);
+    const vaultFloorMat = new THREE.MeshStandardMaterial({
+      color: 0x1e2638,
+      roughness: 0.22,
+      metalness: 0.85,
+    });
+    const vaultFloor = new THREE.Mesh(vaultFloorGeo, vaultFloorMat);
+    vaultFloor.position.set(0, -1.88, -0.2);
     vaultFloor.receiveShadow = true;
     vaultGroup.add(vaultFloor);
 
-    // Radial Safety Ring Inlays on Vault Floor
-    [3.2, 5.8, 8.2].forEach((r, idx) => {
+    // Champagne Gold Perimeter Curb Trim
+    const vaultFloorTrim = new THREE.Mesh(
+      new THREE.BoxGeometry(17.9, 0.08, 13.9),
+      brushedChampagneMat
+    );
+    vaultFloorTrim.position.set(0, -1.82, -0.2);
+    vaultGroup.add(vaultFloorTrim);
+
+    // High-Security Floor Track Perimeter Inlays (Chrome & Emerald Inlay Bands)
+    [3.6, 6.2].forEach((r, idx) => {
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(r, r + 0.12, 64),
         new THREE.MeshStandardMaterial({
-          color: idx === 1 ? 0x10b981 : 0xd97706,
-          roughness: 0.2,
-          metalness: 0.9,
+          color: idx === 0 ? 0x10b981 : 0xd97706,
+          roughness: 0.15,
+          metalness: 0.92,
           side: THREE.DoubleSide,
         })
       );
       ring.rotation.x = -Math.PI / 2;
-      ring.position.y = -1.74;
+      ring.position.set(0, -1.74, -0.2);
       vaultGroup.add(ring);
     });
 
-    // Stainless Steel Safety Deposit Locker Wall
-    const lockerWall = new THREE.Group();
-    const lockerMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.2, metalness: 0.88 });
-    const lockerHandleMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.9 });
+    // 2. Heavy Architectural Vault Rear & Side Wall Bulkhead
+    const vaultWallGroup = new THREE.Group();
 
-    for (let r = 0; r < 5; r++) {
-      for (let c = 0; c < 7; c++) {
-        const box = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.65, 0.3), lockerMat);
-        box.position.set(-2.7 + c * 0.9, -0.8 + r * 0.72, -4.8);
-        lockerWall.add(box);
+    // Solid Armored Steel Back Wall
+    const backWall = new THREE.Mesh(
+      new THREE.BoxGeometry(17.5, 7.2, 0.45),
+      new THREE.MeshStandardMaterial({ color: 0x242e3f, roughness: 0.35, metalness: 0.75 })
+    );
+    backWall.position.set(0, 1.7, -4.6);
+    vaultWallGroup.add(backWall);
 
-        const handle = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.08, 0.08), lockerHandleMat);
-        handle.position.set(-2.7 + c * 0.9 + 0.25, -0.8 + r * 0.72, -4.62);
-        lockerWall.add(handle);
+    // Top Architectural Lintel Beam
+    const lintelBeam = new THREE.Mesh(
+      new THREE.BoxGeometry(17.9, 0.6, 0.9),
+      new THREE.MeshStandardMaterial({ color: 0x18202d, roughness: 0.25, metalness: 0.85 })
+    );
+    lintelBeam.position.set(0, 5.3, -4.4);
+    vaultWallGroup.add(lintelBeam);
+
+    // Heavy Security Pilasters (Left & Right) with Emerald Status Light Strips
+    [-8.4, 8.4].forEach((px) => {
+      const pilaster = new THREE.Mesh(
+        new THREE.BoxGeometry(0.7, 7.2, 0.7),
+        new THREE.MeshStandardMaterial({ color: 0x18202d, roughness: 0.25, metalness: 0.85 })
+      );
+      pilaster.position.set(px, 1.7, -4.45);
+      vaultWallGroup.add(pilaster);
+
+      // Embedded Vertical LED Safety Light Strip
+      const lightStrip = new THREE.Mesh(
+        new THREE.BoxGeometry(0.12, 6.8, 0.08),
+        new THREE.MeshBasicMaterial({ color: 0x10b981 })
+      );
+      lightStrip.position.set(px > 0 ? px - 0.36 : px + 0.36, 1.7, -4.08);
+      vaultWallGroup.add(lightStrip);
+    });
+
+    // 3. Integrated Precision Safety Deposit Locker Matrix (Built onto Back Wall)
+    const lockerBank = new THREE.Group();
+    const lockerFaceMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.2, metalness: 0.92 });
+    const lockerBrassMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.95 });
+    const lockerChromeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.98 });
+    const lockerLedMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+
+    const rows = 5;
+    const cols = 7;
+    const boxW = 0.84;
+    const boxH = 0.62;
+    const startX = 0.4;
+    const startY = -0.5;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const bx = startX + c * (boxW + 0.05);
+        const by = startY + r * (boxH + 0.06);
+
+        // Locker Door Face
+        const box = new THREE.Mesh(new THREE.BoxGeometry(boxW, boxH, 0.12), lockerFaceMat);
+        box.position.set(bx, by, -4.34);
+        lockerBank.add(box);
+
+        // Dual Keyholes
+        const k1 = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.04, 12), lockerBrassMat);
+        k1.rotation.x = Math.PI / 2;
+        k1.position.set(bx - 0.22, by, -4.26);
+        lockerBank.add(k1);
+
+        const k2 = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.04, 12), lockerBrassMat);
+        k2.rotation.x = Math.PI / 2;
+        k2.position.set(bx - 0.1, by, -4.26);
+        lockerBank.add(k2);
+
+        // Chrome Pull Handle
+        const handle = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.04, 0.04), lockerChromeMat);
+        handle.position.set(bx + 0.24, by, -4.26);
+        lockerBank.add(handle);
+
+        // Serial Number Plate
+        const plate = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.06, 0.02), lockerBrassMat);
+        plate.position.set(bx, by + 0.18, -4.27);
+        lockerBank.add(plate);
+
+        // Status LED Indicator
+        const led = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.02), lockerLedMat);
+        led.position.set(bx + 0.32, by + 0.22, -4.27);
+        lockerBank.add(led);
       }
     }
-    vaultGroup.add(lockerWall);
+    vaultWallGroup.add(lockerBank);
+    vaultGroup.add(vaultWallGroup);
 
-    // Massive Heavy Bank Vault Portal & Open Circular Vault Door
-    const portalGroup = new THREE.Group();
+    // 4. Massive 3D Bank Vault Doorway & Articulated Open Vault Door
+    const doorwayGroup = new THREE.Group();
+    doorwayGroup.position.set(-2.8, 1.4, -0.6);
 
-    const portalFrame = new THREE.Mesh(
-      new THREE.RingGeometry(3.2, 4.4, 48),
-      new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.25, metalness: 0.9, side: THREE.DoubleSide })
+    // Deep 3D Outer Portal Frame Collar (Solid 3D Steel Collar with Bevel)
+    const portalCollar = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.7, 2.7, 0.7, 48, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.25, metalness: 0.9 })
     );
-    portalFrame.position.set(0, 1.2, 0);
-    portalGroup.add(portalFrame);
+    portalCollar.rotation.x = Math.PI / 2;
+    doorwayGroup.add(portalCollar);
 
-    // Door Pivot Group (Animates door swinging open & closed!)
-    const doorPivot = new THREE.Group();
-    doorPivot.position.set(-3.2, 1.2, 0); // Hinge pivot axis
-    vaultDoorGroupRef.current = doorPivot;
-
-    const vaultDoor = new THREE.Mesh(
-      new THREE.CylinderGeometry(3.0, 3.0, 0.65, 48),
-      new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.18, metalness: 0.88 })
+    // Chamfered Chrome Front Portal Ring
+    const portalFrontRing = new THREE.Mesh(
+      new THREE.TorusGeometry(2.7, 0.24, 16, 64),
+      new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.15, metalness: 0.95 })
     );
-    vaultDoor.rotation.x = Math.PI / 2;
-    vaultDoor.position.set(3.0, 0, 0);
+    portalFrontRing.position.z = 0.35;
+    doorwayGroup.add(portalFrontRing);
 
-    // 16 Chrome Radial Locking Bolts (Animate sliding in and out!)
+    // Inner Bolt Locking Strike Sockets (Recessed into the doorway jamb)
+    for (let s = 0; s < 16; s++) {
+      const sAngle = (s / 16) * Math.PI * 2;
+      const strikeSocket = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.14, 0.14, 0.16, 16),
+        new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4, metalness: 0.9 })
+      );
+      strikeSocket.position.set(Math.cos(sAngle) * 2.66, Math.sin(sAngle) * 2.66, 0);
+      strikeSocket.rotation.z = sAngle - Math.PI / 2;
+      doorwayGroup.add(strikeSocket);
+    }
+
+    // Heavy Industrial Hinge Pivot (Mounted on the left side of the doorway)
+    const hingePivot = new THREE.Group();
+    hingePivot.position.set(-2.6, 0, 0.35); // Left edge of the door frame
+    vaultDoorGroupRef.current = hingePivot;
+
+    // Hinge Wall Brackets (Top & Bottom)
+    [-1.2, 1.2].forEach((hy) => {
+      const bracket = new THREE.Mesh(
+        new THREE.BoxGeometry(0.65, 0.45, 0.8),
+        new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.85 })
+      );
+      bracket.position.set(-0.35, hy, -0.2);
+      hingePivot.add(bracket);
+    });
+
+    // Massive Chrome Vertical Hinge Pin
+    const hingePin = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.16, 0.16, 3.2, 24),
+      new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.98 })
+    );
+    hingePivot.add(hingePin);
+
+    // Heavy Articulated Hinge Crane Arm
+    const hingeArm = new THREE.Mesh(
+      new THREE.BoxGeometry(2.6, 0.38, 0.4),
+      new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.25, metalness: 0.9 })
+    );
+    hingeArm.position.set(1.3, 0, 0.15);
+    hingePivot.add(hingeArm);
+
+    // ── The Vault Door Assembly Group (Centered on the door face) ──
+    const doorAssembly = new THREE.Group();
+    doorAssembly.position.set(2.6, 0, 0.2); // Sits at the end of the hinge arm
+
+    // Main Cylindrical Steel Door Body
+    const doorDisc = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.45, 2.45, 0.55, 64),
+      new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.18, metalness: 0.9 })
+    );
+    doorDisc.rotation.x = Math.PI / 2;
+    doorAssembly.add(doorDisc);
+
+    // Front Stepped Faceplate (Titanium & Champagne Gold)
+    const doorFace = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.18, 2.18, 0.14, 64),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.85 })
+    );
+    doorFace.rotation.x = Math.PI / 2;
+    doorFace.position.z = 0.32;
+    doorAssembly.add(doorFace);
+
+    // Outer Chrome Bezel Trim
+    const doorBezel = new THREE.Mesh(
+      new THREE.TorusGeometry(2.45, 0.08, 16, 64),
+      new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.98 })
+    );
+    doorBezel.position.z = 0.27;
+    doorAssembly.add(doorBezel);
+
+    // 16 Radial Chrome Locking Bolts (Seated precisely in the door rim!)
     const bolts: THREE.Mesh[] = [];
+    const boltBaseRadius = 2.38;
     for (let b = 0; b < 16; b++) {
       const bAngle = (b / 16) * Math.PI * 2;
-      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.5, 16), chromeMat);
-      bolt.position.set(Math.cos(bAngle) * 3.1, Math.sin(bAngle) * 3.1, 0);
-      bolt.rotation.z = bAngle;
-      vaultDoor.add(bolt);
-      bolts.push(bolt);
+      const boltMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.1, 0.1, 0.5, 16),
+        chromeMat
+      );
+      boltMesh.position.set(Math.cos(bAngle) * boltBaseRadius, Math.sin(bAngle) * boltBaseRadius, 0);
+      boltMesh.rotation.z = bAngle - Math.PI / 2; // Radially pointing outward from door rim!
+      doorAssembly.add(boltMesh);
+      bolts.push(boltMesh);
     }
     vaultBoltsRef.current = bolts;
 
-    // Central Precision Gear / Dial Hub
-    const gearHub = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.05, 1.05, 0.2, 36),
+    // Central Mechanical Gear Movement Housing
+    const gearBox = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.95, 0.95, 0.18, 36),
       new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.3, metalness: 0.9 })
     );
-    gearHub.position.z = 0.36;
-    vaultDoor.add(gearHub);
+    gearBox.rotation.x = Math.PI / 2;
+    gearBox.position.z = 0.42;
+    doorAssembly.add(gearBox);
 
-    // Combination Steering Wheel Group (Animates rotating / entering code!)
-    const wheelGroup = new THREE.Group();
-    wheelGroup.position.z = 0.48;
-
-    const wheelHub = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.2, 32), brushedChampagneMat);
-    wheelGroup.add(wheelHub);
-
-    for (let sp = 0; sp < 4; sp++) {
-      const spoke = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.9, 12), chromeMat);
-      spoke.rotation.z = (sp / 4) * Math.PI;
-      spoke.position.y = 0;
-      wheelGroup.add(spoke);
+    // Exposed Interlocking Brass Planetary Gears
+    for (let g = 0; g < 3; g++) {
+      const gAngle = (g / 3) * Math.PI * 2;
+      const gear = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.24, 0.24, 0.12, 16),
+        brushedChampagneMat
+      );
+      gear.rotation.x = Math.PI / 2;
+      gear.position.set(Math.cos(gAngle) * 0.52, Math.sin(gAngle) * 0.52, 0.5);
+      doorAssembly.add(gear);
     }
 
-    vaultDoor.add(wheelGroup);
+    // Helmsman Combination Steering Wheel (Rotates dynamically!)
+    const wheelGroup = new THREE.Group();
+    wheelGroup.position.z = 0.58;
+
+    const wheelHub = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.38, 0.38, 0.16, 24),
+      chromeMat
+    );
+    wheelHub.rotation.x = Math.PI / 2;
+    wheelGroup.add(wheelHub);
+
+    const wheelRim = new THREE.Mesh(
+      new THREE.TorusGeometry(0.82, 0.05, 16, 36),
+      chromeMat
+    );
+    wheelGroup.add(wheelRim);
+
+    // 4 Chrome Spokes with Brass Grips
+    for (let sp = 0; sp < 4; sp++) {
+      const spokeAngle = (sp / 4) * Math.PI;
+      const spoke = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.045, 0.045, 1.64, 12),
+        chromeMat
+      );
+      spoke.rotation.z = spokeAngle;
+      wheelGroup.add(spoke);
+
+      const grip1 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.16, 12), brushedChampagneMat);
+      grip1.rotation.x = Math.PI / 2;
+      grip1.position.set(Math.cos(spokeAngle) * 0.82, Math.sin(spokeAngle) * 0.82, 0.08);
+      wheelGroup.add(grip1);
+
+      const grip2 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.16, 12), brushedChampagneMat);
+      grip2.rotation.x = Math.PI / 2;
+      grip2.position.set(-Math.cos(spokeAngle) * 0.82, -Math.sin(spokeAngle) * 0.82, 0.08);
+      wheelGroup.add(grip2);
+    }
+
+    doorAssembly.add(wheelGroup);
     vaultWheelRef.current = wheelGroup as unknown as THREE.Mesh;
 
-    doorPivot.add(vaultDoor);
-    doorPivot.rotation.y = -Math.PI / 3.4; // Initial open angle
-    portalGroup.add(doorPivot);
-    vaultGroup.add(portalGroup);
+    // Dual High-Precision Key Dials
+    [-1.15, 1.15].forEach((dx) => {
+      const dialBase = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.26, 0.26, 0.08, 24),
+        chromeMat
+      );
+      dialBase.rotation.x = Math.PI / 2;
+      dialBase.position.set(dx, 0.5, 0.44);
+      doorAssembly.add(dialBase);
 
-    // Center Title Scrutiny Pedestal (Inspection Table)
-    const inspectionTableGroup = new THREE.Group();
+      const dialKnob = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.14, 0.14, 0.12, 16),
+        brushedChampagneMat
+      );
+      dialKnob.rotation.x = Math.PI / 2;
+      dialKnob.position.set(dx, 0.5, 0.5);
+      doorAssembly.add(dialKnob);
+    });
 
-    const tableBase = new THREE.Mesh(
-      new THREE.CylinderGeometry(2.3, 2.5, 1.1, 36),
-      new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.25, metalness: 0.2 })
+    // Biometric Security Pad with Emerald Status Glow
+    const bioPad = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.55, 0.08),
+      new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3 })
     );
-    tableBase.position.y = -1.35;
-    tableBase.castShadow = true;
-    inspectionTableGroup.add(tableBase);
+    bioPad.position.set(-1.15, -0.6, 0.42);
+    doorAssembly.add(bioPad);
 
-    // 24K Gold Bullion Ingot Pyramid Stack
-    const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.96, roughness: 0.1 });
-    const goldBarGeo = new THREE.BoxGeometry(0.65, 0.2, 1.1);
+    const bioGlass = new THREE.Mesh(
+      new THREE.BoxGeometry(0.3, 0.35, 0.02),
+      new THREE.MeshBasicMaterial({ color: 0x10b981 })
+    );
+    bioGlass.position.set(-1.15, -0.58, 0.47);
+    doorAssembly.add(bioGlass);
+
+    hingePivot.add(doorAssembly);
+    hingePivot.rotation.y = -Math.PI / 3.4; // Initial open swing angle
+    doorwayGroup.add(hingePivot);
+    vaultGroup.add(doorwayGroup);
+
+    // 5. Executive Collateral Scrutiny Desk (Due Diligence Lab)
+    const inspectionTableGroup = new THREE.Group();
+    inspectionTableGroup.position.set(1.4, -0.9, 0.6);
+
+    // Luxury Modern Executive Desk Surface
+    const tableTop = new THREE.Mesh(
+      new THREE.BoxGeometry(4.2, 0.16, 2.3),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2, metalness: 0.85 })
+    );
+    tableTop.position.y = 0;
+    tableTop.castShadow = true;
+    inspectionTableGroup.add(tableTop);
+
+    // Polished Champagne Gold Perimeter Bezel
+    const tableBezel = new THREE.Mesh(
+      new THREE.BoxGeometry(4.28, 0.05, 2.38),
+      brushedChampagneMat
+    );
+    tableBezel.position.y = -0.06;
+    inspectionTableGroup.add(tableBezel);
+
+    // 4 Modern Architectural Chrome Legs
+    [
+      [-1.9, -0.5, -0.95],
+      [1.9, -0.5, -0.95],
+      [-1.9, -0.5, 0.95],
+      [1.9, -0.5, 0.95],
+    ].forEach(([lx, ly, lz]) => {
+      const leg = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.08, 0.08, 0.9, 16),
+        chromeMat
+      );
+      leg.position.set(lx, ly, lz);
+      inspectionTableGroup.add(leg);
+
+      const foot = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.12, 0.12, 0.08, 16),
+        brushedChampagneMat
+      );
+      foot.position.set(lx, ly - 0.42, lz);
+      inspectionTableGroup.add(foot);
+    });
+
+    // ── Asset 1: Pyramid Stack of 24K Gold Bullion Bars ──
+    const goldMat = new THREE.MeshStandardMaterial({
+      color: 0xf59e0b,
+      metalness: 0.98,
+      roughness: 0.08,
+    });
+    const goldBarGeo = new THREE.BoxGeometry(0.62, 0.16, 1.05);
 
     for (let layer = 0; layer < 3; layer++) {
       const count = 3 - layer;
       for (let i = 0; i < count; i++) {
         const bar = new THREE.Mesh(goldBarGeo, goldMat);
-        bar.position.set(-0.8 + i * 0.75 + layer * 0.35, -0.7 + layer * 0.22, -1.8);
+        bar.position.set(-1.4 + i * 0.68 + layer * 0.34, 0.14 + layer * 0.16, -0.15);
         bar.castShadow = true;
         inspectionTableGroup.add(bar);
       }
     }
 
-    // Physical Title Deeds & 30-Year Mother Deed Dossiers
-    const deedLeatherMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.4 });
-    const deedPageMat = new THREE.MeshStandardMaterial({ color: 0xfef9c3, roughness: 0.8 });
+    // ── Asset 2: Authentic 30-Year Mother Deed Dossiers & Land Survey Blueprints ──
+    const deedLeatherMat = new THREE.MeshStandardMaterial({ color: 0x065f46, roughness: 0.35 });
+    const deedPageMat = new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.75 });
+    const waxSealMat = new THREE.MeshStandardMaterial({ color: 0x047857, roughness: 0.2, metalness: 0.3 });
 
     for (let d = 0; d < 4; d++) {
       const deedGroup = new THREE.Group();
-      const binder = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.18, 1.5), deedLeatherMat);
-      const pages = new THREE.Mesh(new THREE.BoxGeometry(1.14, 0.14, 1.45), deedPageMat);
+      const binder = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.14, 1.5), deedLeatherMat);
+      const pages = new THREE.Mesh(new THREE.BoxGeometry(1.14, 0.11, 1.45), deedPageMat);
       pages.position.x = 0.04;
       deedGroup.add(binder);
       deedGroup.add(pages);
 
-      const waxSeal = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.04, 16), new THREE.MeshBasicMaterial({ color: 0x15803d }));
-      waxSeal.position.set(0.2, 0.11, 0.3);
+      // Sovereign Notary Wax Seal
+      const waxSeal = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.04, 16), waxSealMat);
+      waxSeal.position.set(0.2, 0.09, 0.3);
       deedGroup.add(waxSeal);
 
-      deedGroup.position.set(0.6, -0.7 + d * 0.2, -1.8);
-      deedGroup.rotation.y = d * 0.12 - 0.2;
+      // Gold Ribbon
+      const ribbon = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.02, 1.52), brushedChampagneMat);
+      ribbon.position.set(0.2, 0.08, 0);
+      deedGroup.add(ribbon);
+
+      deedGroup.position.set(0.6, 0.12 + d * 0.16, -0.15);
+      deedGroup.rotation.y = d * 0.1 - 0.15;
       inspectionTableGroup.add(deedGroup);
     }
 
-    // Table Signboard Plaque
-    const auditLabelTex = createSignTexture('30-YR TITLE DEED AUDIT', '100% ENCUMBRANCE-FREE COLLATERAL', '#065f46');
+    // Rolled Cadastral Blueprint Scroll
+    const blueprint = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.1, 0.1, 1.3, 16),
+      new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.6 })
+    );
+    blueprint.rotation.z = Math.PI / 2;
+    blueprint.position.set(0.6, 0.8, 0.7);
+    inspectionTableGroup.add(blueprint);
+
+    const blueRibbon = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.105, 0.105, 0.12, 16),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2 })
+    );
+    blueRibbon.rotation.z = Math.PI / 2;
+    blueRibbon.position.set(0.6, 0.8, 0.7);
+    inspectionTableGroup.add(blueRibbon);
+
+    // ── Asset 3: Laser Verification Scanner Posts & Emerald Sweep Beam ──
+    [-0.3, 1.5].forEach((postX) => {
+      const post = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.05, 0.05, 0.7, 16),
+        chromeMat
+      );
+      post.position.set(postX, 0.45, -0.15);
+      inspectionTableGroup.add(post);
+
+      const postHead = new THREE.Mesh(
+        new THREE.SphereGeometry(0.08, 12, 12),
+        new THREE.MeshBasicMaterial({ color: 0x10b981 })
+      );
+      postHead.position.set(postX, 0.8, -0.15);
+      inspectionTableGroup.add(postHead);
+    });
+
+    // Sweeping Emerald Laser Line Beam
+    const scanBar = new THREE.Mesh(
+      new THREE.BoxGeometry(1.8, 0.03, 0.03),
+      new THREE.MeshBasicMaterial({ color: 0x10b981 })
+    );
+    scanBar.position.set(0.6, 0.82, -0.15);
+    vaultScannerBeamRef.current = scanBar;
+    inspectionTableGroup.add(scanBar);
+
+    // Subtle Luminous Laser Sweep Fan Sheet
+    const scannerFan = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.8, 0.65),
+      new THREE.MeshBasicMaterial({
+        color: 0x10b981,
+        transparent: true,
+        opacity: 0.25,
+        side: THREE.DoubleSide,
+      })
+    );
+    scannerFan.rotation.x = Math.PI / 2;
+    scannerFan.position.set(0.6, 0.5, -0.15);
+    scannerRef.current = scannerFan;
+    inspectionTableGroup.add(scannerFan);
+
+    // ── Asset 4: Floating Holographic Security Verification Badge ──
+    const holoBadgeGroup = new THREE.Group();
+    holoBadgeGroup.position.set(0.6, 1.5, -0.15);
+
+    const holoRing = new THREE.Mesh(
+      new THREE.RingGeometry(0.7, 0.78, 36),
+      new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.8, side: THREE.DoubleSide })
+    );
+    holoBadgeGroup.add(holoRing);
+
+    const holoInnerRing = new THREE.Mesh(
+      new THREE.RingGeometry(0.48, 0.52, 24),
+      new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.7, side: THREE.DoubleSide })
+    );
+    holoBadgeGroup.add(holoInnerRing);
+
+    vaultHoloRingRef.current = holoBadgeGroup as unknown as THREE.Mesh;
+    inspectionTableGroup.add(holoBadgeGroup);
+
+    // ── Asset 5: Official Desk Plaque ──
+    const auditLabelTex = createSignTexture('30-YEAR TITLE DEED AUDIT', '100% ENCUMBRANCE-FREE COLLATERAL', '#059669');
     if (auditLabelTex) {
       const plaqueMesh = new THREE.Mesh(
         new THREE.PlaneGeometry(2.4, 0.75),
         new THREE.MeshBasicMaterial({ map: auditLabelTex, transparent: true })
       );
-      plaqueMesh.position.set(0, -0.65, -0.6);
+      plaqueMesh.position.set(0.6, -0.05, 1.05);
+      plaqueMesh.rotation.x = -Math.PI / 10;
       inspectionTableGroup.add(plaqueMesh);
     }
-
-    // Animated Sweeping Emerald Laser Scan Beam
-    const scanBar = new THREE.Mesh(
-      new THREE.BoxGeometry(2.4, 0.06, 0.06),
-      new THREE.MeshBasicMaterial({ color: 0x10b981 })
-    );
-    scanBar.position.set(0, -0.05, -1.8);
-    vaultScannerBeamRef.current = scanBar;
-    inspectionTableGroup.add(scanBar);
-
-    // Holographic Emerald Title Scanner Fan
-    const scannerGeo = new THREE.ConeGeometry(2.5, 2.8, 32, 1, true);
-    const scannerMat = new THREE.MeshBasicMaterial({
-      color: 0x10b981,
-      transparent: true,
-      opacity: 0.22,
-      side: THREE.DoubleSide,
-    });
-    const scannerMesh = new THREE.Mesh(scannerGeo, scannerMat);
-    scannerMesh.position.set(0, 1.1, -1.8);
-    scannerMesh.rotation.x = Math.PI;
-    scannerRef.current = scannerMesh;
-    inspectionTableGroup.add(scannerMesh);
-
-    // Floating Holographic Security Verification Ring (Animates revolving in air!)
-    const holoRing = new THREE.Mesh(
-      new THREE.RingGeometry(1.6, 1.75, 48),
-      new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65, side: THREE.DoubleSide })
-    );
-    holoRing.position.set(0, 1.8, -1.8);
-    vaultHoloRingRef.current = holoRing;
-    inspectionTableGroup.add(holoRing);
 
     vaultGroup.add(inspectionTableGroup);
     scene.add(vaultGroup);
@@ -1071,13 +1405,25 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       const delta = clock.getDelta();
       const elapsedTime = clock.getElapsedTime();
 
+      // Dynamic camera vantage adapting smoothly to mode
+      const isVault = currentModeRef.current === 'vault';
+      const targetCamZ = isVault ? 14.5 : 23.0;
+      const targetCamBaseY = isVault ? 4.2 : 10.5;
+      const targetLookY = isVault ? 0.3 : 0.8;
+      const targetLookZ = isVault ? -0.5 : 0.0;
+
       // Camera smooth damping
       mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.04;
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.04;
 
-      camera.position.x = mouseRef.current.x * 2.8;
-      camera.position.y = 10.5 + mouseRef.current.y * 1.8;
-      camera.lookAt(0, 0.8, 0);
+      const desiredCamX = mouseRef.current.x * (isVault ? 1.6 : 2.8);
+      const desiredCamY = targetCamBaseY + mouseRef.current.y * (isVault ? 1.2 : 1.8);
+
+      camera.position.x += (desiredCamX - camera.position.x) * 0.05;
+      camera.position.y += (desiredCamY - camera.position.y) * 0.05;
+      camera.position.z += (targetCamZ - camera.position.z) * 0.05;
+
+      camera.lookAt(0, targetLookY, targetLookZ);
 
       // Auto rotation when not dragging
       if (autoRotate && !isDraggingRef.current) {
@@ -1147,41 +1493,38 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       if (vaultGroup.visible) {
         // 1. Vault Door Dynamic Breathing / Swing Cycle
         if (vaultDoorGroupRef.current) {
-          // Door gently breathes between open angles (unlocked state)
-          const doorAngle = -Math.PI / 3.4 + Math.sin(elapsedTime * 0.8) * 0.12;
+          const doorAngle = -Math.PI / 3.4 + Math.sin(elapsedTime * 0.8) * 0.08;
           vaultDoorGroupRef.current.rotation.y = doorAngle;
         }
 
         // 2. Combination Steering Wheel Rotation
         if (vaultWheelRef.current) {
-          // Turns clockwise then counter-clockwise simulating entering code
           vaultWheelRef.current.rotation.z = Math.sin(elapsedTime * 1.5) * 1.8;
         }
 
-        // 3. Radial Locking Bolts Sliding In and Out
+        // 3. Radial Locking Bolts Sliding In and Out of Door Rim
         if (vaultBoltsRef.current.length > 0) {
-          const boltSlide = (Math.sin(elapsedTime * 1.5) + 1.0) * 0.08;
+          const boltSlide = (Math.sin(elapsedTime * 1.5) + 1.0) * 0.06;
           vaultBoltsRef.current.forEach((bolt, idx) => {
             const bAngle = (idx / 16) * Math.PI * 2;
-            const radius = 3.1 + boltSlide;
+            const radius = 2.38 + boltSlide;
             bolt.position.set(Math.cos(bAngle) * radius, Math.sin(bAngle) * radius, 0);
           });
         }
 
         // 4. Emerald Laser Beam Scanning Back and Forth across Legal Deeds
         if (vaultScannerBeamRef.current) {
-          const scanZ = -1.8 + Math.sin(elapsedTime * 2.2) * 0.75;
+          const scanZ = -0.15 + Math.sin(elapsedTime * 2.2) * 0.65;
           vaultScannerBeamRef.current.position.z = scanZ;
+
+          if (scannerRef.current) {
+            scannerRef.current.position.z = scanZ;
+            const scanPulse = (Math.sin(elapsedTime * 2.2) + 1.0) * 0.5;
+            (scannerRef.current.material as THREE.MeshBasicMaterial).opacity = 0.18 + scanPulse * 0.15;
+          }
         }
 
-        // 5. Holographic Scanner Volume Pulsing
-        if (scannerRef.current) {
-          const scanPulse = (Math.sin(elapsedTime * 2.2) + 1.0) * 0.5;
-          scannerRef.current.scale.set(1.0 + scanPulse * 0.12, 1.0, 1.0 + scanPulse * 0.12);
-          (scannerRef.current.material as THREE.MeshBasicMaterial).opacity = 0.16 + scanPulse * 0.16;
-        }
-
-        // 6. Floating Holographic Security Ring Rotating
+        // 5. Floating Holographic Security HUD Rotating
         if (vaultHoloRingRef.current) {
           vaultHoloRingRef.current.rotation.z += 0.015;
         }
