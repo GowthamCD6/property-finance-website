@@ -243,7 +243,7 @@ export const HowItWorksPage: React.FC = () => {
   ];
 
   return (
-    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
+    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans">
       {/* ────────────────────────────────────────────────────────────
           1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Matching Calculator Suite Palette)
           ──────────────────────────────────────────────────────────── */}
@@ -756,15 +756,15 @@ export const HowItWorksPage: React.FC = () => {
                   </div>
 
                   {/* Right Column: High-Tech Interactive Cockpit Card */}
-                  <div className="lg:col-span-5 bg-gradient-to-br from-[#0B1E2E] via-[#0E2437] to-[#081521] text-white p-6 sm:p-8 rounded-3xl shadow-xl space-y-6 border border-white/15">
+                  <div className="lg:col-span-5 bg-gradient-to-br from-[#102235] to-[#0a1826] text-white p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6 border border-white/15">
                     <div className="flex items-center justify-between pb-4 border-b border-white/10">
                       <div className="flex items-center gap-2">
-                        <Zap className="w-4 h-4 text-teal-300" />
-                        <span className="text-xs uppercase font-bold tracking-wider text-teal-300">
+                        <Zap className="w-4 h-4 text-emerald-400" />
+                        <span className="text-xs uppercase font-bold tracking-wider text-brand-teal-light font-heading">
                           Workflow Position
                         </span>
                       </div>
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/30">
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-mono">
                         Step {curr.number} of 04
                       </span>
                     </div>
@@ -772,21 +772,21 @@ export const HowItWorksPage: React.FC = () => {
                     {/* Phase Metric Hero Pill */}
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
                       <div>
-                        <span className="text-[11px] text-slate-400 uppercase tracking-wider block font-semibold">
+                        <span className="text-[11px] text-gray-400 uppercase tracking-wider block font-semibold">
                           {curr.metricLabel}
                         </span>
                         <span className="text-2xl sm:text-3xl font-extrabold text-white font-heading">
                           {curr.metric}
                         </span>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-300 border border-teal-400/30">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-300 border border-emerald-400/30">
                         <Check className="w-5 h-5" />
                       </div>
                     </div>
 
                     {/* Interactive Step Switcher */}
                     <div className="space-y-2.5">
-                      <span className="text-[11px] uppercase font-bold tracking-wider text-slate-400 block">
+                      <span className="text-[11px] uppercase font-bold tracking-wider text-gray-400 block font-heading">
                         Jump to Phase:
                       </span>
                       {advisoryPhases.map((item) => (
@@ -795,25 +795,25 @@ export const HowItWorksPage: React.FC = () => {
                           onClick={() => setActivePhase(item.phase)}
                           className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                             item.phase === curr.phase
-                              ? 'bg-teal-500/20 border-teal-400 text-white shadow-sm'
-                              : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                              ? 'bg-brand-teal text-white shadow-sm border-brand-teal'
+                              : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                           }`}
                         >
                           <div className="flex items-center gap-2.5">
                             <span
                               className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs ${
                                 item.phase === curr.phase
-                                  ? 'bg-teal-400 text-slate-900'
+                                  ? 'bg-white text-slate-900'
                                   : 'bg-white/10 text-slate-300'
                               }`}
                             >
                               {item.number}
                             </span>
-                            <span className="text-xs font-semibold truncate max-w-[170px]">
+                            <span className="text-xs font-semibold truncate max-w-[170px] font-heading">
                               {item.title.split('&')[0]}
                             </span>
                           </div>
-                          <span className="text-[10px] text-teal-300 font-mono font-bold">
+                          <span className="text-[10px] text-emerald-400 font-mono font-bold">
                             {item.turnaround}
                           </span>
                         </div>
@@ -826,7 +826,7 @@ export const HowItWorksPage: React.FC = () => {
                         to="/enquire"
                         className="w-full py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-950/40"
                       >
-                        <Sparkles className="w-4 h-4 text-teal-100" />
+                        <Sparkles className="w-4 h-4 text-emerald-300" />
                         <span>Initiate Step 01 Intake Now</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -840,47 +840,66 @@ export const HowItWorksPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          3. COMPARISON MATRIX: TRADITIONAL QUEUE VS PRIME ASSOCIATES
+          3. COMPARISON MATRIX: TRADITIONAL QUEUE VS PRIME ASSOCIATES (Glassmorphism Table)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-white border-b border-brand-border">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+      <section className="py-16 sm:py-20 bg-[#091522] text-white border-b border-brand-teal/20 relative overflow-hidden">
+        {/* Subtle Ambient Background Atmosphere */}
+        <div className="absolute top-1/4 left-10 w-96 h-96 bg-brand-teal/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-sky-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-3 mb-12 sm:mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold uppercase tracking-wider border border-teal-200">
-              <Scale className="w-3.5 h-3.5 text-brand-teal" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+              <Scale className="w-3.5 h-3.5 text-emerald-400" />
               <span>Comparative Advantage</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
-              Traditional Branch Queues vs. Institutional Syndication
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight font-heading">
+              Traditional Branch Queues vs.{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
+                Institutional Syndication
+              </span>
             </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-sans">
               Why prospective homeowners, promoters, and corporate borrowers choose Prime Associates over standard walk-in branch applications.
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto overflow-hidden rounded-2xl border border-brand-border shadow-card bg-white">
-            <div className="grid grid-cols-12 bg-slate-100 border-b border-brand-border p-4 text-xs font-extrabold uppercase tracking-wider text-slate-700">
-              <div className="col-span-4 sm:col-span-4">Evaluation Metric</div>
-              <div className="col-span-4 sm:col-span-4 text-slate-500">Retail Branch Walk-In</div>
-              <div className="col-span-4 sm:col-span-4 text-teal-800 font-bold">Prime Associates Desk</div>
+          {/* Glassmorphism Table Container */}
+          <div className="max-w-4xl mx-auto rounded-3xl border border-white/20 bg-white/[0.04] backdrop-blur-2xl shadow-2xl ring-1 ring-white/10 overflow-hidden">
+            <div className="grid grid-cols-12 bg-white/[0.08] backdrop-blur-xl border-b border-white/15 p-4 sm:p-5 text-xs font-extrabold uppercase tracking-wider text-slate-200 font-heading">
+              <div className="col-span-4 sm:col-span-4 flex items-center gap-2 text-white">
+                <span>Evaluation Metric</span>
+              </div>
+              <div className="col-span-4 sm:col-span-4 text-slate-400 font-semibold">
+                Retail Branch Walk-In
+              </div>
+              <div className="col-span-4 sm:col-span-4 text-emerald-400 font-bold flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Prime Associates Desk</span>
+              </div>
             </div>
 
-            <div className="divide-y divide-slate-100 text-xs sm:text-sm">
+            <div className="divide-y divide-white/10 text-xs sm:text-sm font-sans">
               {comparisonData.map((row, idx) => (
                 <div
                   key={idx}
-                  className={`grid grid-cols-12 p-4 items-center transition-colors ${
-                    row.highlight ? 'bg-teal-50/40' : 'hover:bg-slate-50'
+                  className={`grid grid-cols-12 p-4 sm:p-5 items-center transition-all duration-200 hover:bg-white/[0.07] ${
+                    row.highlight ? 'bg-white/[0.03]' : ''
                   }`}
                 >
-                  <div className="col-span-4 font-bold text-brand-navy">
+                  <div className="col-span-4 font-bold text-white font-heading pr-2">
                     {row.metric}
                   </div>
-                  <div className="col-span-4 text-slate-500 pr-2">
-                    <span className="line-through opacity-80 block text-xs">{row.traditional}</span>
+                  <div className="col-span-4 text-slate-400 pr-3">
+                    <span className="inline-block p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200/90 text-xs font-medium line-through opacity-85">
+                      {row.traditional}
+                    </span>
                   </div>
-                  <div className="col-span-4 font-bold text-teal-900 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-brand-teal shrink-0" />
-                    <span>{row.prime}</span>
+                  <div className="col-span-4 font-bold text-emerald-300 flex items-center gap-2">
+                    <div className="inline-flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shadow-sm font-semibold">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      <span>{row.prime}</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -911,7 +930,7 @@ export const HowItWorksPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveBankCategory('ALL')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
                   activeBankCategory === 'ALL'
                     ? 'bg-brand-teal text-white shadow-sm'
                     : 'bg-white text-slate-600 border border-brand-border hover:bg-slate-50'
@@ -924,7 +943,7 @@ export const HowItWorksPage: React.FC = () => {
                   key={cat.category}
                   type="button"
                   onClick={() => setActiveBankCategory(cat.category)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
                     activeBankCategory === cat.category
                       ? 'bg-brand-navy text-white shadow-sm'
                       : 'bg-white text-slate-600 border border-brand-border hover:bg-slate-50'
@@ -948,11 +967,11 @@ export const HowItWorksPage: React.FC = () => {
                 >
                   <div className="flex items-center justify-between mb-1">
                     <Landmark className="w-3.5 h-3.5 text-teal-600" />
-                    <span className="text-[9px] uppercase font-bold text-slate-400">
+                    <span className="text-[9px] uppercase font-bold text-slate-400 font-heading">
                       {group.category.split(' ')[0]}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-brand-navy leading-snug line-clamp-2">
+                  <span className="text-xs font-bold font-heading text-brand-navy leading-snug line-clamp-2">
                     {bank}
                   </span>
                 </div>
@@ -968,7 +987,7 @@ export const HowItWorksPage: React.FC = () => {
       <section className="py-16 sm:py-20 bg-white border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-3xl mx-auto text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold uppercase tracking-wider border border-teal-200">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold uppercase tracking-wider border border-teal-200 font-heading">
               <HelpCircle className="w-3.5 h-3.5 text-brand-teal" />
               <span>Borrower Queries</span>
             </div>
@@ -991,7 +1010,7 @@ export const HowItWorksPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-brand-navy hover:text-brand-teal transition-colors"
+                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold font-heading text-sm sm:text-base text-brand-navy hover:text-brand-teal transition-colors"
                   >
                     <span>{faq.q}</span>
                     <ChevronRight
