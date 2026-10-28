@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Clock,
@@ -24,6 +24,12 @@ import {
   AlertCircle,
   Layers,
   FileCheck,
+  Sliders,
+  Activity,
+  Calculator,
+  TrendingUp,
+  BarChart3,
+  Wallet,
 } from 'lucide-react';
 import { CHANNEL_PARTNERS, ChannelPartnersGroup } from '../../../constants/loanDocuments';
 
@@ -31,6 +37,65 @@ export const HowItWorksPage: React.FC = () => {
   const [activePhase, setActivePhase] = useState<number>(1);
   const [activeBankCategory, setActiveBankCategory] = useState<string>('ALL');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  // Interactive Hero Loan Simulator States
+  const [simLoanType, setSimLoanType] = useState<'home' | 'lap' | 'car' | 'project'>('home');
+  const [simAmountLakhs, setSimAmountLakhs] = useState<number>(65);
+  const [simTenureYears, setSimTenureYears] = useState<number>(20);
+
+  // Animated counters on mount
+  const [counterValues, setCounterValues] = useState({
+    turnaround: 8,
+    lenders: 0,
+    sanction: 0,
+    capital: 0,
+  });
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 50);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      const progress = Math.min(step / 30, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCounterValues({
+        turnaround: 8,
+        lenders: Math.round(40 * eased),
+        sanction: Number((98.4 * eased).toFixed(1)),
+        capital: Math.round(1200 * eased),
+      });
+      if (progress >= 1) clearInterval(interval);
+    }, 40);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Simulator computations
+  const getRateForType = (type: 'home' | 'lap' | 'car' | 'project') => {
+    switch (type) {
+      case 'home':
+        return 8.35;
+      case 'lap':
+        return 8.85;
+      case 'car':
+        return 8.65;
+      case 'project':
+        return 9.25;
+    }
+  };
+
+  const currentRate = getRateForType(simLoanType);
+  const p = simAmountLakhs * 100000;
+  const r = currentRate / 12 / 100;
+  const n = simTenureYears * 12;
+  const estimatedEmi = Math.round((p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+  const estimatedFeeSaved = Math.round(p * 0.005); // 0.50% fee waiver benefit
+
 
   const advisoryPhases = [
     {
@@ -180,9 +245,9 @@ export const HowItWorksPage: React.FC = () => {
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
-          1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE
+          1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Executive Two-Column Layout)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#07131F] via-[#0B1E32] to-[#06101B] text-white pt-16 sm:pt-20 lg:pt-24 pb-16 sm:pb-20 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0B1E2E] via-[#0D2437] to-[#081521] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
         {/* Subtle Ambient Grids & Atmospheric Orbs */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(20,184,166,0.15),transparent)] pointer-events-none" />
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[130px] pointer-events-none" />
@@ -190,43 +255,391 @@ export const HowItWorksPage: React.FC = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(56,189,248,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(56,189,248,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-5 sm:space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 backdrop-blur-md shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
-              </span>
-              <span className="text-xs font-bold uppercase tracking-[0.14em]">
-                Fiduciary Underwriting Architecture
-              </span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            
+            {/* ── LEFT COLUMN: Authority Narrative, Animated Counters & CTA ── */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-7">
+              {/* Institutional Header Tag with Live Status Beacon */}
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(-12px)',
+                  transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
+                }}
+                className="flex flex-wrap items-center gap-3"
+              >
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 shadow-sm backdrop-blur-md">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-[0.14em]">
+                    Institutional Lending Pipeline
+                  </span>
+                </div>
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/10 px-3 py-1 rounded-full border border-white/15 backdrop-blur-sm">
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Fast-Track Zonal Desk • Est. 2011</span>
+                </div>
+              </div>
+
+              {/* Display Headline with High-End Authority Gradient */}
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+                }}
+                className="space-y-3"
+              >
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
+                  From Algorithmic Pre-Audit to{' '}
+                  <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-200 to-sky-300">
+                    Direct Account Credit
+                  </span>.
+                </h1>
+
+                <p className="text-xs sm:text-sm md:text-base text-slate-300 font-normal leading-relaxed max-w-2xl pt-1">
+                  Eliminate 45-day branch queues, arbitrary credit rejections, and hidden broker markups. Our fiduciary 4-stage lending architecture transitions your file from preliminary FOIR assessment to Sub-Registrar MODT registration in <strong className="text-white font-semibold">8 to 12 business days</strong> across 40+ empanelled banks.
+                </p>
+              </div>
+
+              {/* 4 Interactive Institutional Metrics Grid */}
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+                }}
+                className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
+              >
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
+                      Fast-Track
+                    </span>
+                  </div>
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                    {counterValues.turnaround}–12d
+                  </div>
+                  <div className="text-xs font-bold text-slate-200 mt-1">
+                    Sanction to Credit
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                    vs 45d Branch Queue
+                  </div>
+                </div>
+
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
+                      Zonal Panel
+                    </span>
+                  </div>
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                    {counterValues.lenders}+
+                  </div>
+                  <div className="text-xs font-bold text-slate-200 mt-1">
+                    Partner Banks
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                    PSU, Private &amp; NBFCs
+                  </div>
+                </div>
+
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30">
+                      Pre-Audited
+                    </span>
+                  </div>
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                    {counterValues.sanction}%
+                  </div>
+                  <div className="text-xs font-bold text-slate-200 mt-1">
+                    Sanction Ratio
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                    30-Yr Legal Due Diligence
+                  </div>
+                </div>
+
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
+                      Volume
+                    </span>
+                  </div>
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                    ₹{counterValues.capital}+ Cr
+                  </div>
+                  <div className="text-xs font-bold text-slate-200 mt-1">
+                    Capital Facilitated
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                    15-Year Practice
+                  </div>
+                </div>
+              </div>
+
+              {/* Call-to-Action Group */}
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s',
+                }}
+                className="pt-1 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3"
+              >
+                <Link
+                  to="/enquire"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-lg shadow-teal-900/40 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group text-center cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-teal-100" />
+                  <span>Initiate Pre-Approval Application</span>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
+
+                <a
+                  href="#cockpit-breakdown"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-corporate bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-xs sm:text-sm shadow-sm backdrop-blur-sm transition-all duration-200 text-center cursor-pointer"
+                >
+                  <FileCheck2 className="w-4 h-4 text-teal-300" />
+                  <span>Explore 4-Stage Protocol</span>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </a>
+
+                <a
+                  href="tel:+919655566613"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-corporate bg-teal-500/15 hover:bg-teal-500/25 text-teal-200 border border-teal-400/30 text-xs font-semibold backdrop-blur-sm transition-colors shadow-sm text-center"
+                >
+                  <PhoneCall className="w-3.5 h-3.5 text-teal-300" />
+                  <span>Direct Hotline: +91 96555 66613</span>
+                </a>
+              </div>
+
+              {/* Institutional Safety Pillars Strip */}
+              <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-medium">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-teal-400" />
+                  <span>RBI Fair Practice Code Compliant</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-teal-400" />
+                  <span>Zero Unauthorized Bureau Hard Pings</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Scale className="w-4 h-4 text-teal-400" />
+                  <span>Zero Cash Collection Guarantee</span>
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight font-heading leading-[1.15]">
-              The Journey from Forensic Pre-Audit <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-200 to-sky-300">
-                to Safe Property Fund Disbursement.
-              </span>
-            </h1>
+            {/* ── RIGHT COLUMN: Interactive Live Loan Syndication Console & Simulator ── */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-3xl bg-slate-900/85 backdrop-blur-xl border border-teal-500/30 p-5 sm:p-6 shadow-2xl shadow-teal-950/60 overflow-hidden">
+                {/* Decorative Ambient Aura */}
+                <div className="absolute -top-16 -right-16 w-44 h-44 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-sky-500/20 rounded-full blur-3xl pointer-events-none" />
 
-            <p className="text-sm sm:text-base md:text-lg text-slate-300 font-normal leading-relaxed max-w-3xl mx-auto">
-              Eliminate branch queues, arbitrary rejections, and hidden broker commissions. Here is the exact mathematical and legal protocol that transitions your loan from preliminary FOIR assessment to Sub-Registrar MODT registration in 8 to 12 business days.
-            </p>
+                {/* Console Header */}
+                <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-teal-400 animate-pulse" />
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-white">
+                      Live Syndication Simulator
+                    </span>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-bold text-emerald-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>ENGINE ONLINE</span>
+                  </div>
+                </div>
 
-            {/* Quick Hero Highlights Strip */}
-            <div className="pt-2 flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-xs font-semibold text-slate-300">
-              <span className="flex items-center gap-1.5 text-teal-300">
-                <Clock className="w-4 h-4" /> 8–12 Days Total Turnaround
-              </span>
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" /> 0 Hard CIBIL Hit During Audit
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Landmark className="w-4 h-4 text-sky-400" /> 40+ Regulated Partner Desks
-              </span>
-              <span className="flex items-center gap-1.5">
-                <BadgePercent className="w-4 h-4 text-amber-400" /> Lowest Benchmark Rates from 7.25%
-              </span>
+                {/* Loan Archetype Switcher Pills */}
+                <div className="relative z-10 pt-4">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-2">
+                    Select Credit Facility
+                  </span>
+                  <div className="grid grid-cols-4 gap-1.5 p-1 bg-black/40 rounded-xl border border-white/10">
+                    {(
+                      [
+                        { id: 'home', label: 'Home Loan', rate: '8.35%' },
+                        { id: 'lap', label: 'Mortgage LAP', rate: '8.85%' },
+                        { id: 'car', label: 'Car Loan', rate: '8.65%' },
+                        { id: 'project', label: 'Builder Project', rate: '9.25%' },
+                      ] as const
+                    ).map((facility) => {
+                      const isSel = simLoanType === facility.id;
+                      return (
+                        <button
+                          key={facility.id}
+                          type="button"
+                          onClick={() => setSimLoanType(facility.id)}
+                          className={`py-2 px-1 rounded-lg text-center transition-all cursor-pointer ${
+                            isSel
+                              ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white font-extrabold shadow-sm'
+                              : 'text-slate-400 hover:text-white hover:bg-white/5 font-medium'
+                          }`}
+                        >
+                          <span className="text-[11px] block leading-tight">{facility.label}</span>
+                          <span className="text-[9px] block text-teal-200 opacity-90">{facility.rate}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Interactive Sliders: Quantum & Tenure */}
+                <div className="relative z-10 space-y-4 pt-4">
+                  <div>
+                    <div className="flex items-center justify-between text-xs mb-1.5">
+                      <span className="text-slate-300 font-medium flex items-center gap-1.5">
+                        <Wallet className="w-3.5 h-3.5 text-teal-400" /> Loan Quantum Required:
+                      </span>
+                      <span className="text-sm font-extrabold text-teal-300 font-mono">
+                        ₹{simAmountLakhs} Lakhs
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={15}
+                      max={300}
+                      step={5}
+                      value={simAmountLakhs}
+                      onChange={(e) => setSimAmountLakhs(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-500 pt-1 font-mono">
+                      <span>₹15 Lakhs</span>
+                      <span>₹1.50 Crore</span>
+                      <span>₹3.00 Crore</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between text-xs mb-1.5">
+                      <span className="text-slate-300 font-medium flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-sky-400" /> Repayment Tenure:
+                      </span>
+                      <span className="text-sm font-extrabold text-sky-300 font-mono">
+                        {simTenureYears} Years
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      {[10, 15, 20, 25, 30].map((yr) => (
+                        <button
+                          key={yr}
+                          type="button"
+                          onClick={() => setSimTenureYears(yr)}
+                          className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                            simTenureYears === yr
+                              ? 'bg-sky-500 text-white shadow-sm'
+                              : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10'
+                          }`}
+                        >
+                          {yr}y
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dynamic Computation Result Cards */}
+                <div className="relative z-10 grid grid-cols-3 gap-2 pt-4">
+                  <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">
+                      Estimated EMI
+                    </span>
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono block mt-0.5">
+                      ₹{estimatedEmi.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[9px] text-teal-300 font-medium block">
+                      @{currentRate}% Benchmark
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-teal-500/10 border border-teal-400/30 text-center">
+                    <span className="text-[10px] text-teal-300 uppercase font-semibold block">
+                      Fee Waiver Saved
+                    </span>
+                    <span className="text-xs sm:text-sm font-extrabold text-teal-200 font-mono block mt-0.5">
+                      ₹{estimatedFeeSaved.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[9px] text-teal-300/80 font-medium block">
+                      Direct Zonal Benefit
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">
+                      Turnaround
+                    </span>
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono block mt-0.5">
+                      8–12 Days
+                    </span>
+                    <span className="text-[9px] text-emerald-400 font-medium block">
+                      35d Faster vs Branch
+                    </span>
+                  </div>
+                </div>
+
+                {/* Interactive 4-Phase Stepper Inside Console */}
+                <div className="relative z-10 pt-4 border-t border-white/10 mt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                      Interactive Stage Synchronization
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-teal-300">
+                      Phase {activePhase} / 4 Active
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {advisoryPhases.map((p) => {
+                      const isAct = activePhase === p.phase;
+                      return (
+                        <button
+                          key={p.phase}
+                          type="button"
+                          onClick={() => setActivePhase(p.phase)}
+                          className={`py-2 px-1 rounded-xl text-center transition-all cursor-pointer border ${
+                            isAct
+                              ? 'bg-teal-500/25 border-teal-400 text-white shadow-sm'
+                              : 'bg-black/30 border-white/10 text-slate-400 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <span
+                            className={`w-5 h-5 mx-auto rounded-full flex items-center justify-center text-[10px] font-extrabold mb-1 ${
+                              isAct ? 'bg-teal-400 text-slate-950' : 'bg-white/10 text-slate-300'
+                            }`}
+                          >
+                            {p.number}
+                          </span>
+                          <span className="text-[9px] block font-bold truncate">
+                            {p.phase === 1 && 'Pre-Audit'}
+                            {p.phase === 2 && 'Syndication'}
+                            {p.phase === 3 && 'TSR & Site'}
+                            {p.phase === 4 && 'Disbursement'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Console Fast-Track Action Button */}
+                <div className="relative z-10 pt-4">
+                  <Link
+                    to="/enquire"
+                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-500 via-teal-400 to-sky-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
+                  >
+                    <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
+                    <span>Fast-Track Pre-Approval for ₹{simAmountLakhs} Lakhs</span>
+                  </Link>
+                </div>
+              </div>
             </div>
+
           </div>
 
           {/* Interactive Horizontal Timeline Ribbon */}
@@ -290,7 +703,7 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. DETAILED ACTIVE PHASE COCKPIT & INTERACTIVE ENGINE
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-14 sm:py-20 bg-[#f8f8f4] border-b border-brand-border">
+      <section id="cockpit-breakdown" className="py-14 sm:py-20 bg-[#f8f8f4] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           {advisoryPhases
             .filter((p) => p.phase === activePhase)
