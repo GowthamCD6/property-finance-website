@@ -844,69 +844,61 @@ export const HowItWorksPage: React.FC = () => {
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="bg-[#091522] text-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-xl border border-white/10">
-            {/* Subtle Ambient Background Atmosphere */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="max-w-3xl mx-auto text-center space-y-3 mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider border border-brand-teal/20 font-heading">
+              <Scale className="w-3.5 h-3.5" />
+              <span>Comparative Advantage</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
+              Traditional Branch Queues vs.{' '}
+              <span className="text-brand-teal">
+                Institutional Syndication
+              </span>
+            </h2>
+            <p className="text-brand-slate text-sm sm:text-base leading-relaxed font-sans">
+              Why prospective homeowners, promoters, and corporate borrowers choose Prime Associates over standard walk-in branch applications.
+            </p>
+          </div>
 
-            <div className="relative z-10">
-              <div className="max-w-3xl mx-auto text-center space-y-3 mb-8 sm:mb-10">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-                  <Scale className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Comparative Advantage</span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight font-heading">
-                  Traditional Branch Queues vs.{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
-                    Institutional Syndication
-                  </span>
-                </h2>
-                <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-sans">
-                  Why prospective homeowners, promoters, and corporate borrowers choose Prime Associates over standard walk-in branch applications.
-                </p>
+          {/* Glassmorphism Table Container (Clean Normal Color) */}
+          <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl border border-brand-border/80 bg-white/90 backdrop-blur-xl shadow-card ring-1 ring-slate-900/5 overflow-hidden">
+            <div className="grid grid-cols-12 bg-slate-50/90 backdrop-blur-md border-b border-brand-border p-4 sm:p-5 text-xs font-extrabold uppercase tracking-wider text-slate-700 font-heading">
+              <div className="col-span-4 sm:col-span-4 flex items-center gap-2 text-brand-navy">
+                <span>Evaluation Metric</span>
               </div>
+              <div className="col-span-4 sm:col-span-4 text-slate-500 font-semibold">
+                Retail Branch Walk-In
+              </div>
+              <div className="col-span-4 sm:col-span-4 text-brand-teal font-extrabold flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
+                <span>Prime Associates Desk</span>
+              </div>
+            </div>
 
-              {/* Glassmorphism Table Container */}
-              <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl border border-white/20 bg-white/[0.04] backdrop-blur-2xl shadow-2xl ring-1 ring-white/10 overflow-hidden">
-                <div className="grid grid-cols-12 bg-white/[0.08] backdrop-blur-xl border-b border-white/15 p-4 sm:p-5 text-xs font-extrabold uppercase tracking-wider text-slate-200 font-heading">
-                  <div className="col-span-4 sm:col-span-4 flex items-center gap-2 text-white">
-                    <span>Evaluation Metric</span>
+            <div className="divide-y divide-slate-100 text-xs sm:text-sm font-sans">
+              {comparisonData.map((row, idx) => (
+                <div
+                  key={idx}
+                  className={`grid grid-cols-12 p-4 sm:p-5 items-center transition-all duration-200 hover:bg-teal-50/25 ${
+                    row.highlight ? 'bg-teal-50/10' : ''
+                  }`}
+                >
+                  <div className="col-span-4 font-bold text-brand-navy font-heading pr-2">
+                    {row.metric}
                   </div>
-                  <div className="col-span-4 sm:col-span-4 text-slate-400 font-semibold">
-                    Retail Branch Walk-In
+                  <div className="col-span-4 text-slate-500 pr-3">
+                    <span className="inline-block px-2.5 py-1.5 rounded-xl bg-red-50 border border-red-200/80 text-red-700 text-xs font-medium line-through">
+                      {row.traditional}
+                    </span>
                   </div>
-                  <div className="col-span-4 sm:col-span-4 text-emerald-400 font-bold flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Prime Associates Desk</span>
-                  </div>
-                </div>
-
-                <div className="divide-y divide-white/10 text-xs sm:text-sm font-sans">
-                  {comparisonData.map((row, idx) => (
-                    <div
-                      key={idx}
-                      className={`grid grid-cols-12 p-4 sm:p-5 items-center transition-all duration-200 hover:bg-white/[0.07] ${
-                        row.highlight ? 'bg-white/[0.03]' : ''
-                      }`}
-                    >
-                      <div className="col-span-4 font-bold text-white font-heading pr-2">
-                        {row.metric}
-                      </div>
-                      <div className="col-span-4 text-slate-400 pr-3">
-                        <span className="inline-block p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200/90 text-xs font-medium line-through opacity-85">
-                          {row.traditional}
-                        </span>
-                      </div>
-                      <div className="col-span-4 font-bold text-emerald-300 flex items-center gap-2">
-                        <div className="inline-flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shadow-sm font-semibold">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                          <span>{row.prime}</span>
-                        </div>
-                      </div>
+                  <div className="col-span-4 font-bold text-teal-800 flex items-center gap-2">
+                    <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-900 shadow-2xs font-semibold">
+                      <CheckCircle2 className="w-4 h-4 text-brand-teal flex-shrink-0" />
+                      <span>{row.prime}</span>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
