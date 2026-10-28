@@ -18,10 +18,10 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${defaultMessage}`;
 
   return (
-    <aside aria-label="Direct WhatsApp Advisory" className="fixed bottom-6 right-6 z-40 select-none">
+    <aside aria-label="Direct WhatsApp Advisory" className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 select-none">
       {/* Expanded Quick Advisory Card */}
       {isOpen && (
-        <div className="mb-3 w-80 sm:w-88 bg-white rounded-2xl shadow-modal border border-brand-border p-4 animate-in slide-in-from-bottom-3 duration-200">
+        <div className="mb-3 w-[calc(100vw-2.5rem)] max-w-xs sm:w-88 bg-white rounded-2xl shadow-modal border border-brand-border p-4 animate-in slide-in-from-bottom-3 duration-200">
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-3">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
@@ -71,7 +71,7 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
       {/* Floating Trigger Button (Round & Proper) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 relative focus:outline-none focus:ring-4 focus:ring-emerald-400/40 group"
+        className="w-12 h-12 sm:w-14 sm:h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 relative focus:outline-none focus:ring-4 focus:ring-emerald-400/40 group"
         aria-label="Direct WhatsApp Loan Advisory"
         title="Chat on WhatsApp"
       >

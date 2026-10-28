@@ -339,7 +339,7 @@ export const AboutPage: React.FC = () => {
         {/* Subtle Architectural Blueprint grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0284c708_1px,transparent_1px),linear-gradient(to_bottom,#0284c708_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
-        <div className="w-[85%] max-w-7xl mx-auto relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
             {/* ── LEFT COLUMN: Authority Narrative & Interactive Statistics ── */}
@@ -378,7 +378,7 @@ export const AboutPage: React.FC = () => {
                 }}
                 className="space-y-3"
               >
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-extrabold text-[#0f273d] tracking-tight leading-[1.14] font-heading">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-extrabold text-[#0f273d] tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
                   The Architecture of{' '}
                   <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-700 via-teal-600 to-sky-700">
                     Institutional Capital
@@ -386,7 +386,7 @@ export const AboutPage: React.FC = () => {
                   &amp; Collateral Precision.
                 </h1>
 
-                <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-2xl pt-1">
+                <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed max-w-2xl pt-1">
                   <strong className="text-brand-navy">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
                 </p>
               </div>
@@ -398,19 +398,19 @@ export const AboutPage: React.FC = () => {
                   transform: mounted ? 'translateY(0)' : 'translateY(16px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
                 }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1"
+                className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
               >
                 {kpis.map((kpi, idx) => (
                   <div
                     key={idx}
-                    className="relative group p-4 rounded-2xl bg-white border border-brand-border/80 hover:border-teal-500/50 shadow-2xs hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-default"
+                    className="relative group p-3 sm:p-4 rounded-2xl bg-white border border-brand-border/80 hover:border-teal-500/50 shadow-2xs hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-default"
                   >
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[9px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
                         {kpi.badge}
                       </span>
                     </div>
-                    <div className="text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight font-heading">
+                    <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight font-heading">
                       {kpi.value}
                     </div>
                     <div className="text-xs font-bold text-slate-800 mt-1">
@@ -430,11 +430,11 @@ export const AboutPage: React.FC = () => {
                   transform: mounted ? 'translateY(0)' : 'translateY(16px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s',
                 }}
-                className="pt-1 flex flex-wrap items-center gap-3.5"
+                className="pt-1 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3"
               >
                 <Link
                   to="/enquire"
-                  className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group text-center"
                 >
                   <Sparkles className="w-4 h-4 text-teal-100" />
                   <span>Initiate Confidential Advisory</span>
@@ -443,7 +443,7 @@ export const AboutPage: React.FC = () => {
 
                 <a
                   href="#diligence-matrix"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-corporate bg-white hover:bg-slate-50 border border-brand-border/80 text-brand-navy font-semibold text-sm shadow-2xs hover:shadow-sm transition-all duration-200"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-corporate bg-white hover:bg-slate-50 border border-brand-border/80 text-brand-navy font-semibold text-xs sm:text-sm shadow-2xs hover:shadow-sm transition-all duration-200 text-center"
                 >
                   <FileSearch className="w-4 h-4 text-teal-600" />
                   <span>Explore Diligence Protocol</span>
@@ -452,7 +452,7 @@ export const AboutPage: React.FC = () => {
 
                 <a
                   href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-corporate bg-teal-50 hover:bg-teal-100/70 text-teal-800 border border-teal-200 text-xs font-semibold transition-colors shadow-2xs"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-corporate bg-teal-50 hover:bg-teal-100/70 text-teal-800 border border-teal-200 text-xs font-semibold transition-colors shadow-2xs text-center"
                 >
                   <PhoneCall className="w-3.5 h-3.5 text-teal-600" />
                   <span>Direct Hotline: {businessPhone.split(',')[0]}</span>
@@ -488,7 +488,7 @@ export const AboutPage: React.FC = () => {
             >
               <div className="relative rounded-3xl overflow-hidden border border-brand-border/80 bg-white shadow-card">
                 {/* 3D Canvas Area */}
-                <div className="w-full h-[520px] lg:h-[600px] relative">
+                <div className="w-full h-[340px] xs:h-[400px] sm:h-[480px] lg:h-[600px] relative">
                   <AboutHero3D onModeChange={(mode) => setHeroSceneMode(mode)} />
                 </div>
               </div>
@@ -501,7 +501,7 @@ export const AboutPage: React.FC = () => {
           2. INTERACTIVE LOAN FEASIBILITY & ADVISORY BLUEPRINT
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-6">
             <div className="max-w-2xl space-y-2">
@@ -524,7 +524,7 @@ export const AboutPage: React.FC = () => {
                   key={type}
                   type="button"
                   onClick={() => setSelectedLoanType(type)}
-                  className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                  className={`flex-1 sm:flex-initial text-center px-2.5 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                     selectedLoanType === type
                       ? 'bg-brand-teal text-white shadow-sm scale-[1.02]'
                       : 'text-brand-slate hover:text-brand-navy hover:bg-slate-50'
@@ -542,7 +542,7 @@ export const AboutPage: React.FC = () => {
           {/* Interactive Card for Selected Blueprint */}
           <div
             key={selectedLoanType}
-            className="animate-tab-fade bg-white p-6 sm:p-8 lg:p-10 rounded-3xl border border-brand-border/80 shadow-card"
+            className="animate-tab-fade bg-white p-4 sm:p-7 lg:p-10 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card"
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
@@ -603,10 +603,10 @@ export const AboutPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center gap-4">
+                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                   <Link
                     to="/enquire"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm shadow-md transition-all hover:scale-[1.02]"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-md transition-all hover:scale-[1.02] text-center"
                   >
                     <span>Request Eligibility Evaluation</span>
                     <ArrowRight className="w-4 h-4" />
@@ -620,7 +620,7 @@ export const AboutPage: React.FC = () => {
 
               {/* Right Decorative Showcase Card */}
               <div className="lg:col-span-5">
-                <div className="relative rounded-3xl overflow-hidden border border-brand-border/80 shadow-card bg-gradient-to-br from-[#12263a] to-[#183247] text-white p-7 sm:p-8 space-y-6">
+                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-brand-border/80 shadow-card bg-gradient-to-br from-[#12263a] to-[#183247] text-white p-5 sm:p-7 sm:p-8 space-y-5 sm:space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-brand-teal/20 border border-brand-teal/40 flex items-center justify-center text-teal-300">
                       <Landmark className="w-5 h-5" />
@@ -666,7 +666,7 @@ export const AboutPage: React.FC = () => {
           3. OUR ORIGIN & VALUE ARCHITECTURE (Interactive Tabs)
           ──────────────────────────────────────────────────────────── */}
       <section id="diligence-matrix" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             
             {/* Left Narrative Column */}
@@ -690,13 +690,13 @@ export const AboutPage: React.FC = () => {
 
               {/* Interactive Vision / Mission / Governance / Methodology Tabs */}
               <div className="pt-2">
-                <div className="flex flex-wrap border-b border-brand-border/80 gap-4 sm:gap-6">
+                <div className="flex overflow-x-auto scrollbar-none border-b border-brand-border/80 gap-3 sm:gap-6">
                   {(['mission', 'vision', 'governance', 'methodology'] as const).map((tab) => (
                     <button
                       key={tab}
                       type="button"
                       onClick={() => setActiveTab(tab)}
-                      className={`pb-3 text-sm font-semibold capitalize transition-all relative cursor-pointer ${
+                      className={`whitespace-nowrap pb-2.5 sm:pb-3 text-xs sm:text-sm font-semibold capitalize transition-all relative cursor-pointer ${
                         activeTab === tab
                           ? 'text-brand-teal border-b-2 border-brand-teal -mb-[2px] font-bold'
                           : 'text-brand-slate hover:text-brand-navy'
@@ -713,7 +713,7 @@ export const AboutPage: React.FC = () => {
 
                 <div
                   key={activeTab}
-                  className="animate-tab-fade pt-4 text-sm text-brand-slate leading-relaxed bg-white p-6 rounded-2xl border border-brand-border/80 shadow-2xs mt-3"
+                  className="animate-tab-fade pt-4 text-xs sm:text-sm text-brand-slate leading-relaxed bg-white p-4 sm:p-6 rounded-2xl border border-brand-border/80 shadow-2xs mt-3"
                 >
                   {activeTab === 'mission' && (
                     <div className="space-y-2">
@@ -791,7 +791,7 @@ export const AboutPage: React.FC = () => {
                   <img
                     src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
                     alt="High value property portfolio advisory"
-                    className="w-full h-[420px] object-cover transition-transform duration-700 hover:scale-105"
+                    className="w-full h-[260px] sm:h-[340px] lg:h-[420px] object-cover transition-transform duration-700 hover:scale-105"
                   />
 
                   {/* Floating Metric Card Overlay */}
@@ -819,7 +819,7 @@ export const AboutPage: React.FC = () => {
           4. OUR CORE ADVISORY PILLARS (Interactive Expansion Cards)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
@@ -833,12 +833,12 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {advisoryPillars.map((pillar) => (
               <div
                 key={pillar.id}
                 onClick={() => setActivePillar(pillar.id)}
-                className={`card-hover bg-white p-7 rounded-3xl border transition-all duration-300 flex flex-col justify-between cursor-pointer ${
+                className={`card-hover bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border transition-all duration-300 flex flex-col justify-between cursor-pointer ${
                   activePillar === pillar.id
                     ? 'border-brand-teal shadow-card ring-2 ring-brand-teal/20 scale-[1.01]'
                     : 'border-brand-border/80 hover:border-brand-teal/40 shadow-2xs'
@@ -892,7 +892,7 @@ export const AboutPage: React.FC = () => {
           5. COMPARATIVE MATRIX: TRADITIONAL BROKER VS. PRIME ASSOCIATES
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
@@ -906,7 +906,8 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto overflow-hidden rounded-3xl border border-brand-border/80 shadow-card bg-white">
+          {/* Desktop & Tablet Table (sm+) */}
+          <div className="hidden sm:block max-w-4xl mx-auto overflow-hidden rounded-3xl border border-brand-border/80 shadow-card bg-white">
             <div className="grid grid-cols-12 bg-slate-50/80 border-b border-brand-border/80 p-4 sm:p-5 text-xs font-bold uppercase tracking-wider text-brand-navy">
               <div className="col-span-5 sm:col-span-4">Evaluation Dimension</div>
               <div className="col-span-3 sm:col-span-4 text-center text-slate-500">Traditional Unorganized Broker</div>
@@ -963,6 +964,62 @@ export const AboutPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Mobile Card-Based Comparison (< 640px) */}
+          <div className="sm:hidden space-y-3 mt-4">
+            {[
+              {
+                metric: 'Credit Bureau Enquiries',
+                broker: 'Multi-bank blast queries (Damages CIBIL)',
+                anchor: 'Pre-vetted single dossier submission',
+              },
+              {
+                metric: 'Legal Title Diligence',
+                broker: 'Zero audit until lender rejection',
+                anchor: '30-Year mother deed pre-scrutiny',
+              },
+              {
+                metric: 'Lender Matching',
+                broker: 'Biased to highest commission kickback',
+                anchor: '100% Client cost & tenure optimization',
+              },
+              {
+                metric: 'Direct Credit Access',
+                broker: 'Branch-level sales representatives',
+                anchor: 'Zonal & Senior Credit Underwriting Heads',
+              },
+              {
+                metric: 'Fee Transparency',
+                broker: 'Hidden markups and cash demands',
+                anchor: 'Transparent engagement contract',
+              },
+              {
+                metric: 'Complex Income Structuring',
+                broker: 'Strict vanilla salary slips only',
+                anchor: 'Balance sheet normalization for promoters',
+              },
+            ].map((row, i) => (
+              <div key={i} className="bg-white p-4 rounded-2xl border border-brand-border/80 shadow-2xs space-y-2.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-brand-navy border-b border-gray-100 pb-2">
+                  {row.metric}
+                </div>
+                <div className="flex items-start gap-2 text-xs text-slate-600 bg-red-50/70 p-2.5 rounded-xl border border-red-100/70">
+                  <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                  <div>
+                    <span className="font-semibold text-slate-700 block text-[10.5px] uppercase tracking-wide">Traditional Broker:</span>
+                    <span className="text-slate-600">{row.broker}</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 text-xs text-brand-teal bg-teal-50/70 p-2.5 rounded-xl border border-teal-100/80">
+                  <CheckCircle2 className="w-4 h-4 text-brand-teal shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-teal-900 block text-[10.5px] uppercase tracking-wide">Prime Associates Desk:</span>
+                    <span className="font-semibold">{row.anchor}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -970,7 +1027,7 @@ export const AboutPage: React.FC = () => {
           6. LEADERSHIP & ADVISORY COUNCIL (Profiles)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6">
             <div className="max-w-2xl space-y-3">
@@ -994,7 +1051,7 @@ export const AboutPage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {leadership.map((member, idx) => (
               <div
                 key={idx}
@@ -1058,7 +1115,7 @@ export const AboutPage: React.FC = () => {
           7. PRACTICE TIMELINE & MILESTONES (Interactive Journey)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
@@ -1073,12 +1130,12 @@ export const AboutPage: React.FC = () => {
           </div>
 
           {/* Interactive Milestone Selector Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 relative">
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 relative">
             {milestones.map((ms, idx) => (
               <div
                 key={idx}
                 onClick={() => setActiveMilestoneIndex(idx)}
-                className={`p-6 rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+                className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
                   activeMilestoneIndex === idx
                     ? 'bg-gradient-to-br from-[#12263a] to-[#183247] text-white border-teal-500 shadow-xl scale-[1.03]'
                     : 'bg-white hover:bg-white border-brand-border/80 hover:border-brand-teal/40 shadow-2xs hover:shadow-card'
@@ -1141,8 +1198,8 @@ export const AboutPage: React.FC = () => {
           8. REGULATORY COMPLIANCE & LEGAL NOTICE
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
-          <div className="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card flex flex-col sm:flex-row items-start gap-5">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="max-w-4xl mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
             <div className="w-12 h-12 rounded-2xl bg-brand-teal-light flex items-center justify-center shrink-0 text-brand-teal">
               <ShieldCheck className="w-6 h-6" />
             </div>
@@ -1165,8 +1222,8 @@ export const AboutPage: React.FC = () => {
           9. HIGH-IMPACT CONVERSION BANNER (Matching Home Page Rounded Card Style & Spacing)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-16 bg-[#f8f8f4]">
-        <div className="w-[85%] max-w-7xl mx-auto">
-          <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-xl">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
             

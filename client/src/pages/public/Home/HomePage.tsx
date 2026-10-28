@@ -109,7 +109,7 @@ const AnimatedHeadline: React.FC = () => {
       }}
       className="will-change-transform inline-block"
     >
-      <h1 className="text-[33px] sm:text-[43px] md:text-[51px] lg:text-[59px] font-extrabold text-white tracking-tight leading-[1.15] font-heading drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)] max-w-4xl mx-auto select-none">
+      <h1 className="text-[23px] xs:text-[27px] sm:text-[38px] md:text-[48px] lg:text-[58px] font-extrabold text-white tracking-tight leading-[1.2] sm:leading-[1.15] font-heading drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)] max-w-4xl mx-auto select-none px-2">
         <span
           className="relative inline-block overflow-hidden"
           style={{
@@ -325,7 +325,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s',
             }}
-            className="text-[17px] sm:text-[19px] lg:text-[20px] text-white/95 font-medium leading-relaxed max-w-3xl mx-auto drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
+            className="text-sm xs:text-base sm:text-lg lg:text-[19px] text-white/95 font-medium leading-relaxed max-w-3xl mx-auto drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)] px-2"
           >
             {content?.heroSubtitle ||
               'Unlock institutional funding for high-value residential, commercial, and industrial properties. We partner with 40+ leading PSU & private banks and NBFCs across India to secure lowest benchmark interest rates, maximized borrowing eligibility, and zero advance fees.'}
@@ -337,11 +337,11 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.70s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.70s',
             }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-3 sm:pt-4"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-3 sm:pt-4 max-w-md sm:max-w-none mx-auto"
           >
             <Link
               to="/enquire"
-              className="hero-btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-9 py-4 text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide"
+              className="hero-btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-9 py-3.5 sm:py-4 text-xs xs:text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide"
             >
               <span>{content?.heroCtaText || 'Discuss Your Loan'}</span>
               <ArrowRight className="w-4.5 h-4.5 hero-btn-arrow" />
@@ -349,7 +349,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
 
             <Link
               to="/calculator"
-              className="hero-btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 sm:px-8.5 py-4 text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide"
+              className="hero-btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8.5 py-3.5 sm:py-4 text-xs xs:text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide"
             >
               <Calculator className="w-4.5 h-4.5 text-teal-300 hero-calc-icon" />
               <span>Simulate EMI &amp; FOIR</span>
@@ -357,7 +357,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
 
             <Link
               to="/services/home-loans"
-              className="hero-btn-tertiary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-semibold text-slate-200 hover:text-white transition-all text-center group cursor-pointer hover:-translate-y-0.5"
+              className="hero-btn-tertiary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-4 text-xs xs:text-sm sm:text-base font-semibold text-slate-200 hover:text-white transition-all text-center group cursor-pointer hover:-translate-y-0.5"
             >
               <span>Explore All Solutions</span>
               <span className="hero-explore-arrow">→</span>
@@ -370,7 +370,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.85s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.85s',
             }}
-            className="mt-8 pt-4 pb-4 px-6 sm:px-8 rounded-xl bg-slate-950/65 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm text-slate-200"
+            className="mt-6 sm:mt-8 pt-3.5 pb-3.5 px-4 sm:px-8 rounded-xl bg-slate-950/65 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-200"
           >
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
               <div className="flex items-center gap-2">
@@ -559,9 +559,9 @@ const StatsBar: React.FC = () => {
   ];
 
   return (
-    <section className="relative z-20 -mt-8 sm:-mt-10 lg:-mt-14 px-4 pb-0">
-      <div className="w-[85%] max-w-7xl mx-auto p-6 sm:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+    <section className="relative z-20 -mt-6 sm:-mt-8 lg:-mt-12 px-3 sm:px-4 pb-0">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto p-6 sm:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           {stats.map((s, idx) => (
             <div
               key={idx}
@@ -571,7 +571,7 @@ const StatsBar: React.FC = () => {
                 {s.icon}
               </div>
               <div>
-                <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-navy block font-heading">
+                <span className="text-xl xs:text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-navy block font-heading">
                   {s.value}
                 </span>
                 <span className="text-xs sm:text-sm font-bold text-brand-navy block mt-0.5">
@@ -628,7 +628,7 @@ const LenderCard: React.FC<{
       onMouseUp={() => onHoverChange(false)}
       onTouchStart={() => onHoverChange(true)}
       onTouchEnd={() => onHoverChange(false)}
-      className="group relative bg-white p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 shrink-0 w-[320px] sm:w-[360px] lg:w-[380px] overflow-hidden no-underline cursor-pointer block"
+      className="group relative bg-white p-4.5 sm:p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 shrink-0 w-[270px] xs:w-[300px] sm:w-[350px] lg:w-[370px] overflow-hidden no-underline cursor-pointer block"
       style={{
         border: isHovered
           ? `2px solid ${p.accentColor}`
@@ -838,7 +838,7 @@ const LenderPartners: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
-      <div className="w-[85%] max-w-7xl mx-auto">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Award className="w-3.5 h-3.5" />
@@ -853,7 +853,7 @@ const LenderPartners: React.FC = () => {
         </div>
 
         {/* ─── 1. TOP SLIDING BANK CARDS MARQUEE (Above the Card - Forward Stream) ─── */}
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mb-8 sm:mb-10">
+        <div className="relative w-full max-w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden mb-6 sm:mb-10">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
 
@@ -979,7 +979,7 @@ const LenderPartners: React.FC = () => {
         </div>
 
         {/* ─── 3. BOTTOM SLIDING BANK CARDS MARQUEE (Below the Card - Reverse Stream) ─── */}
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-8 sm:mt-10">
+        <div className="relative w-full max-w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden mt-6 sm:mt-10">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
 
@@ -1172,7 +1172,7 @@ const RateComparisonMatrix: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="w-[85%] max-w-7xl mx-auto">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
@@ -1187,11 +1187,11 @@ const RateComparisonMatrix: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
             <div className="bg-white p-1 rounded-xl border border-brand-border flex items-center shadow-2xs">
               <button
                 onClick={() => setActiveTab('home')}
-                className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
+                className={`flex-1 sm:flex-initial text-center px-3 sm:px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap ${
                   activeTab === 'home'
                     ? 'bg-brand-teal text-white shadow-xs'
                     : 'text-brand-slate hover:text-brand-navy'
@@ -1211,7 +1211,7 @@ const RateComparisonMatrix: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 text-xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0 text-xs w-full sm:w-auto">
               <span className="text-brand-slate font-medium mr-1 flex items-center gap-1">
                 <SlidersHorizontal className="w-3.5 h-3.5" /> Filter:
               </span>
@@ -1232,8 +1232,75 @@ const RateComparisonMatrix: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-brand-border overflow-hidden shadow-card">
-          <table className="w-full text-left border-collapse text-xs sm:text-sm">
+        {/* Mobile View: Responsive Cards (< 768px) */}
+        <div className="md:hidden space-y-3">
+          {filtered.map((row, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-2xl border border-brand-border/80 p-4 shadow-sm hover:shadow-md transition-shadow space-y-3"
+            >
+              <div className="flex items-start justify-between gap-2 border-b border-gray-100 pb-2.5">
+                <div>
+                  <h3 className="font-bold text-sm text-brand-navy font-heading">
+                    {row.lender}
+                  </h3>
+                  <span
+                    className={`inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded ${
+                      row.category === 'Public Bank'
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : row.category === 'Private Bank'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-purple-50 text-purple-700 border border-purple-200'
+                    }`}
+                  >
+                    {row.category}
+                  </span>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="text-[10px] uppercase font-bold text-brand-slate block">
+                    {activeTab === 'home' ? 'Home Loan Rate' : 'LAP Rate'}
+                  </span>
+                  <span className="text-base font-extrabold text-brand-teal font-heading block">
+                    {activeTab === 'home' ? row.homeLoanRate : row.lapRate}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-xs">
+                <div>
+                  <span className="text-[10px] text-brand-slate block">Max Tenure</span>
+                  <span className="font-semibold text-brand-navy block text-[11px] mt-0.5">
+                    {activeTab === 'home' ? row.maxTenureHL : row.maxTenureLAP}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-brand-slate block">Indicative LTV</span>
+                  <span className="font-semibold text-brand-navy block text-[11px] mt-0.5 truncate" title={row.maxLtv}>
+                    {row.maxLtv.split('(')[0].trim()}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-brand-slate block">Est. Fee</span>
+                  <span className="font-semibold text-brand-navy block text-[11px] mt-0.5 truncate" title={row.processingFee}>
+                    {row.processingFee.split('(')[0].trim()}
+                  </span>
+                </div>
+              </div>
+
+              <Link
+                to={`/enquire?lender=${encodeURIComponent(row.lender)}`}
+                className="w-full py-2.5 px-3 rounded-corporate bg-brand-teal-light text-brand-teal hover:bg-brand-teal hover:text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
+              >
+                <span>Check Suitability &amp; Eligibility</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop & Tablet Table (md+) */}
+        <div className="hidden md:block bg-white rounded-2xl border border-brand-border overflow-x-auto shadow-card">
+          <table className="w-full min-w-[700px] text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="bg-brand-navy text-white text-[11px] uppercase tracking-wider font-semibold">
                 <th className="py-4 px-5">Lender Name &amp; Category</th>
@@ -1338,7 +1405,7 @@ const HowItWorks: React.FC = () => {
 
   return (
     <section id="how-it-works" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="w-[85%] max-w-7xl mx-auto">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             <Zap className="w-3.5 h-3.5" />
@@ -1352,7 +1419,7 @@ const HowItWorks: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative">
           {steps.map((st, idx) => (
             <div
               key={idx}
@@ -1539,7 +1606,7 @@ const ReviewCard: React.FC<{
       onMouseLeave={() => onHoverChange(false)}
       onTouchStart={() => onHoverChange(true)}
       onTouchEnd={() => onHoverChange(false)}
-      className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border/80 shadow-subtle flex flex-col justify-between shrink-0 w-[330px] sm:w-[380px] lg:w-[410px] transition-all duration-300 hover:-translate-y-1 hover:shadow-card hover:border-brand-teal/40 cursor-pointer relative select-none"
+      className="bg-white rounded-2xl p-5 sm:p-7 border border-brand-border/80 shadow-subtle flex flex-col justify-between shrink-0 w-[275px] xs:w-[310px] sm:w-[360px] lg:w-[400px] transition-all duration-300 hover:-translate-y-1 hover:shadow-card hover:border-brand-teal/40 cursor-pointer relative select-none"
     >
       <div>
         <div className="flex items-center justify-between gap-2 mb-4">
@@ -1600,7 +1667,7 @@ const TestimonialsSection: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
-      <div className="w-[85%] max-w-7xl mx-auto">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Star className="w-3.5 h-3.5 fill-brand-teal" />
@@ -1614,7 +1681,7 @@ const TestimonialsSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden my-2">
+        <div className="relative w-full max-w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden my-2">
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
 
@@ -1768,10 +1835,10 @@ const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
 
   return (
     <section id="why-us" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="w-[85%] max-w-7xl mx-auto">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 order-2 lg:order-1">
-            <div className="relative rounded-3xl overflow-hidden border border-brand-border/80 shadow-card aspect-[4/3] lg:aspect-[4/5] bg-white">
+            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-brand-border/80 shadow-card aspect-[16/10] sm:aspect-[4/3] lg:aspect-[4/5] bg-white">
               <img
                 src={aboutImg}
                 alt="Property document review and consultation"
@@ -1853,7 +1920,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ faqs }) => {
 
   return (
     <section id="faqs" className="py-12 sm:py-16 bg-[#f8f8f4]">
-      <div className="w-[85%] max-w-4xl mx-auto">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-4xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
           <div className="inline-block px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             Common Inquiries
@@ -1866,7 +1933,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ faqs }) => {
           </p>
 
           {categories.length > 2 && (
-            <div className="flex flex-wrap justify-center gap-2 mt-6">
+            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6">
               {categories.map((cat) => (
                 <button
                   key={cat}
@@ -1967,8 +2034,8 @@ export const HomePage: React.FC = () => {
 
       {/* 5. Dynamic EMI & FOIR Calculator Banner */}
       <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
-        <div className="w-[85%] max-w-7xl mx-auto">
-          <div className="p-8 sm:p-12 rounded-3xl bg-white border border-brand-border/80 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-card">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="p-6 sm:p-10 lg:p-12 rounded-2xl sm:rounded-3xl bg-white border border-brand-border/80 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 shadow-card">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
                 <Calculator className="w-3.5 h-3.5" />
@@ -2012,8 +2079,8 @@ export const HomePage: React.FC = () => {
 
       {/* 9. Consultation Invitation CTA */}
       <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
-        <div className="w-[85%] max-w-7xl mx-auto">
-          <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-xl">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
             
             <div className="max-w-2xl space-y-4 text-center lg:text-left z-10">
@@ -2021,7 +2088,7 @@ export const HomePage: React.FC = () => {
                 <Calendar className="w-3.5 h-3.5" />
                 <span>Schedule Confidential Consultation</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-heading leading-tight">
+              <h2 className="text-2xl xs:text-3xl sm:text-4xl font-extrabold tracking-tight font-heading leading-tight">
                 Ready to Discuss Your Loan Requirements?
               </h2>
               <p className="text-gray-300 text-sm sm:text-base leading-relaxed">

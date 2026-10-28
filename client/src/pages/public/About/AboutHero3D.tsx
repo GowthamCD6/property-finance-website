@@ -1362,19 +1362,57 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       isDraggingRef.current = false;
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        isDraggingRef.current = true;
+        previousMousePosition.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDraggingRef.current && e.touches.length === 1) {
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - previousMousePosition.current.x;
+        if (currentModeRef.current === 'skyline') {
+          skylineGroup.rotation.y += deltaX * 0.007;
+        } else if (currentModeRef.current === 'network') {
+          networkGroup.rotation.y += deltaX * 0.007;
+        } else if (currentModeRef.current === 'vault') {
+          vaultGroup.rotation.y += deltaX * 0.005;
+        }
+        previousMousePosition.current = { x: touch.clientX, y: touch.clientY };
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDraggingRef.current = false;
+    };
+
     const handleResize = () => {
       if (!container || !camera || !renderer) return;
       const newWidth = container.clientWidth;
       const newHeight = container.clientHeight;
+      if (newWidth === 0 || newHeight === 0) return;
+      const isMobile = newWidth < 640;
+      camera.fov = isMobile ? 46 : 38;
       camera.aspect = newWidth / newHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(newWidth, newHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     };
+
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+    resizeObserver.observe(container);
 
     window.addEventListener('resize', handleResize);
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
 
     // ─────────────────────────────────────────────────────────────
     // TRAFFIC PATH EVALUATION HELPERS
@@ -1558,10 +1596,14 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
 
     return () => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+      resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
 
       scene.clear();
       renderer.dispose();
@@ -1574,51 +1616,51 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full min-h-[520px] lg:min-h-[640px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
+      className="relative w-full h-full min-h-[340px] xs:min-h-[380px] sm:min-h-[460px] lg:min-h-[580px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-pan-y overflow-hidden"
     >
-      {/* Clean Mode Tab Bar ONLY (No other boxes) */}
-      <div className="absolute top-4 right-4 z-20 flex items-center pointer-events-auto">
-        <div className="flex items-center gap-1 p-1 bg-white/95 backdrop-blur-md rounded-xl border border-slate-200/90 shadow-md">
+      {/* Clean Mode Tab Bar ONLY (Responsive & touch-friendly) */}
+      <div className="absolute top-2.5 xs:top-3 sm:top-4 right-2.5 xs:right-3 sm:right-4 z-20 flex items-center pointer-events-auto max-w-[calc(100%-1.25rem)]">
+        <div className="flex items-center gap-1 p-1 bg-white/95 backdrop-blur-md rounded-xl border border-slate-200/90 shadow-md overflow-x-auto scrollbar-none">
           <button
             type="button"
             onClick={() => handleModeSwitch('skyline')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 xs:px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10.5px] xs:text-[11px] sm:text-xs font-bold transition-all whitespace-nowrap ${
               activeMode === 'skyline'
                 ? 'bg-brand-teal text-white shadow-sm'
                 : 'text-slate-600 hover:text-brand-navy hover:bg-slate-100'
             }`}
             title="City Property Skyline & Roads"
           >
-            <Building className="w-3.5 h-3.5" />
+            <Building className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
             <span>Skyline</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleModeSwitch('network')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 xs:px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10.5px] xs:text-[11px] sm:text-xs font-bold transition-all whitespace-nowrap ${
               activeMode === 'network'
                 ? 'bg-brand-teal text-white shadow-sm'
                 : 'text-slate-600 hover:text-brand-navy hover:bg-slate-100'
             }`}
             title="40+ Bank Syndication Desks & Rates"
           >
-            <Cpu className="w-3.5 h-3.5" />
+            <Cpu className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
             <span>Lender Grid</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleModeSwitch('vault')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 xs:px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10.5px] xs:text-[11px] sm:text-xs font-bold transition-all whitespace-nowrap ${
               activeMode === 'vault'
                 ? 'bg-brand-teal text-white shadow-sm'
                 : 'text-slate-600 hover:text-brand-navy hover:bg-slate-100'
             }`}
             title="High-Security Title Diligence Vault"
           >
-            <Shield className="w-3.5 h-3.5" />
-            <span>Collateral Vault</span>
+            <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+            <span>Vault</span>
           </button>
         </div>
       </div>
