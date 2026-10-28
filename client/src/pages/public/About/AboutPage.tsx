@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import {
   Building2,
@@ -19,8 +19,21 @@ import {
   Briefcase,
   HelpCircle,
   ExternalLink,
+  Layers,
+  Activity,
+  Check,
+  BarChart3,
+  Clock,
+  Sliders,
+  DollarSign,
+  Building,
+  Cpu,
+  BadgePercent,
+  FileCheck2,
+  BookOpen,
 } from 'lucide-react';
 import { SiteContent } from '../../../types';
+import { AboutHero3D, SceneMode } from './AboutHero3D';
 
 export const AboutPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();
@@ -28,309 +41,587 @@ export const AboutPage: React.FC = () => {
   const businessName = content?.businessName || 'Prime Associates — Loans & Constructions';
   const businessPhone = content?.businessPhone || '+91 96555 66613, +91 95144 66600';
 
-  const [activeTab, setActiveTab] = useState<'mission' | 'vision' | 'governance'>('mission');
+  // State management for interactive elements
+  const [activeTab, setActiveTab] = useState<'mission' | 'vision' | 'governance' | 'methodology'>('mission');
+  const [heroSceneMode, setHeroSceneMode] = useState<SceneMode>('skyline');
+  const [activeMilestoneIndex, setActiveMilestoneIndex] = useState<number>(4); // default to 2026
+  const [selectedLoanType, setSelectedLoanType] = useState<'home' | 'lap' | 'lrd' | 'construction'>('home');
+  const [activePillar, setActivePillar] = useState<number>(0);
 
-  // Key performance indicators & institutional proof
+  // Animated counter effect for hero stats
+  const [counterValues, setCounterValues] = useState({
+    capital: 0,
+    lenders: 0,
+    sanction: 0,
+    turnaround: 24,
+  });
+
+  useEffect(() => {
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      const progress = Math.min(step / 30, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCounterValues({
+        capital: Math.round(1200 * eased),
+        lenders: Math.round(40 * eased),
+        sanction: Number((98.4 * eased).toFixed(1)),
+        turnaround: 24,
+      });
+      if (progress >= 1) clearInterval(interval);
+    }, 40);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Institutional proof points
   const kpis = [
-    { value: '₹1,200+ Cr', label: 'Facilitated Capital', subtext: 'Across Prime Property Assets' },
-    { value: '40+', label: 'Partner Lending Desks', subtext: 'PSU, Private Banks & NBFCs' },
-    { value: '98.4%', label: 'File Sanction Ratio', subtext: 'Through Rigorous Pre-Underwriting' },
-    { value: '15+ Years', label: 'Advisory Leadership', subtext: 'Specialized Mortgage Practice' },
+    {
+      value: `₹${counterValues.capital}+ Cr`,
+      label: 'Facilitated Capital',
+      subtext: 'Across High-Value Property Assets',
+      badge: 'Cumulative 15-Yr',
+    },
+    {
+      value: `${counterValues.lenders}+`,
+      label: 'Partner Lending Desks',
+      subtext: 'PSU, Private Tier-1 Banks & NBFCs',
+      badge: 'Direct Zonal Access',
+    },
+    {
+      value: `${counterValues.sanction}%`,
+      label: 'Sanction Ratio',
+      subtext: 'Achieved via 30-Yr Legal Due Diligence',
+      badge: 'Pre-Audit Protocol',
+    },
+    {
+      value: '24–48h',
+      label: 'Credit In-Principle',
+      subtext: 'Bypassing Branch Level Bottlenecks',
+      badge: 'Fast-Track Desk',
+    },
   ];
 
   // Core Pillars of Advisory
   const advisoryPillars = [
     {
+      id: 0,
       title: 'Forensic Title & Legal Due Diligence',
       badge: 'Pre-Submission Audit',
+      tagline: 'Zero Risk of Delayed Sanction',
       description:
-        'We conduct in-depth 30-year mother deed chain audits, encumbrance verification, and municipal zoning checks before submission to prevent underwriting rejections.',
-      icon: (
-        <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
-          <path fillRule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.728-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-        </svg>
-      ),
-      metrics: '30-Year Title Traceability',
+        'We conduct in-depth 30-year mother deed chain audits, encumbrance verification, patta/khata authenticity scrutiny, and municipal master plan zoning checks before bank submission to ensure pristine collateral approval.',
+      metrics: '30-Year Chain Scrutiny',
+      icon: <FileSearch className="w-6 h-6 text-teal-400" />,
+      features: [
+        'Mother Deed lineage trace from 1990 onwards',
+        'Sub-Registrar encumbrance certificate (Form 15 & 16) cross-matching',
+        'Layout approval validity (DTCP / CMDA / BDA / RERA)',
+        'Legal clearance note issued prior to institutional submission',
+      ],
     },
     {
-      title: 'Bespoke FOIR & Cash-Flow Sculpting',
+      id: 1,
+      title: 'Bespoke FOIR & Balance Sheet Normalization',
       badge: 'Optimized Eligibility',
+      tagline: 'Unlocking True Borrowing Capacity',
       description:
-        'Self-employed promoters, business owners, and non-salaried professionals benefit from customized balance sheet normalization to unlock maximum borrowing potential.',
-      icon: (
-        <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.375 2.25c.621 0 1.125.504 1.125 1.125v16.5c0 .621-.504 1.125-1.125 1.125h-2.25c-.621 0-1.125-.504-1.125-1.125V3.375c0-.621.504-1.125 1.125-1.125h2.25zM12 7.875c.621 0 1.125.504 1.125 1.125v10.875c0 .621-.504 1.125-1.125 1.125H9.75c-.621 0-1.125-.504-1.125-1.125V9c0-.621.504-1.125 1.125-1.125H12zM5.625 13.5c.621 0 1.125.504 1.125 1.125v5.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125v-5.25c0-.621.504-1.125 1.125-1.125h2.25z" />
-        </svg>
-      ),
+        'Self-employed promoters, business owners, and non-salaried professionals benefit from customized financial statement restructuring, depreciation add-backs, and cash-flow normalization to unlock maximum borrowing potential.',
       metrics: 'Up to 75% FOIR Realization',
+      icon: <BarChart3 className="w-6 h-6 text-teal-400" />,
+      features: [
+        'Proprietary Cash-Flow & EBITDA add-back appraisal',
+        'GST turnover vs. banking credits reconciliation',
+        'Multi-entity cross-collateralization structuring',
+        'Tax returns normalization for highest sanctioned quantum',
+      ],
     },
     {
+      id: 2,
       title: 'Direct Senior Credit Head Syndication',
       badge: 'Zero Middlemen',
+      tagline: 'Bypassing Junior Sales Delays',
       description:
-        'We route dossiers directly to senior zonal credit committees and underwriting chiefs, bypassing multi-tiered branch queues for expedited 24–48h initial sanctions.',
-      icon: (
-        <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
-          <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v1.168l7.854 3.142A1.5 1.5 0 0121.5 8.65v.6a.75.75 0 01-.75.75H3.25a.75.75 0 01-.75-.75v-.6c0-.62.38-1.18.966-1.39L11.25 4.168V3a.75.75 0 01.75-.75zM4.5 12a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v6a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75v-6zm5.25 0a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v6a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75v-6zm5.25 0a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v6a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75v-6zm-12.75 8.25a.75.75 0 000 1.5h19.5a.75.75 0 000-1.5H2.25z" clipRule="evenodd" />
-        </svg>
-      ),
-      metrics: '24–48h Decision Cycles',
+        'We route dossiers directly to senior zonal credit committees, risk heads, and underwriting chiefs across 40+ partner banks, bypassing multi-tiered branch queues for expedited 24–48h initial sanctions.',
+      metrics: 'Direct Zonal Sanctions',
+      icon: <Building2 className="w-6 h-6 text-teal-400" />,
+      features: [
+        'Direct interface with Zonal Credit Committee Members',
+        'Pre-underwriting deviation approvals secured in advance',
+        'Transparent multi-bank term sheet comparison',
+        'Zero mark-up on regulated lender interest spreads',
+      ],
     },
     {
+      id: 3,
       title: 'Sovereign Bureau & Data Confidentiality',
       badge: 'Zero Multi-Pinging',
+      tagline: 'Protecting Your CIBIL Score',
       description:
-        'Traditional brokers blast documents to dozens of banks, tanking CIBIL scores. Prime Associate Loans executes targeted, pre-screened filings with strict institutional privacy.',
-      icon: (
-        <svg className="w-6 h-6 text-brand-teal" viewBox="0 0 24 24" fill="currentColor">
-          <path fillRule="evenodd" d="M15.75 1.5a6.75 6.75 0 00-6.651 7.906c-.067.39-.099.79-.099 1.194 0 .804.129 1.578.368 2.302l-7.79 7.791a2.25 2.25 0 00-.659 1.591v1.966a.75.75 0 00.75.75h2.25a.75.75 0 00.75-.75v-1.5h1.5a.75.75 0 00.75-.75v-1.5h1.5a.75.75 0 00.75-.75v-1.5h1.5a.75.75 0 00.75-.75l1.09-1.09a6.744 6.744 0 003.141.786 6.75 6.75 0 100-13.5zm3.75 5.25a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" clipRule="evenodd" />
-        </svg>
-      ),
-      metrics: 'Zero Unsolicited Enquiries',
+        'Traditional brokers blast documents to dozens of banks simultaneously, tanking CIBIL scores. Prime Associates executes targeted, single-dossier filings with strict institutional privacy and non-disclosure protocols.',
+      metrics: 'Zero Unsolicited Pings',
+      icon: <ShieldCheck className="w-6 h-6 text-teal-400" />,
+      features: [
+        'No multi-bureau blast inquiries',
+        'Strict institutional Non-Disclosure Agreement (NDA) guarantee',
+        'Encrypted document vaulting with zero external sharing',
+        'RBI Fair Practice Code alignment in every interaction',
+      ],
     },
   ];
 
-  // Leadership Team Profiles (Ready for Real Content Substitution)
+  // Interactive Loan Feasibility Blueprints
+  const loanArchetypes = {
+    home: {
+      title: 'Prime Home Loans & Construction Finance',
+      rate: 'Starting at 7.25% p.a.*',
+      tenure: 'Up to 30 Years',
+      quantum: '₹25 Lakh to ₹25+ Crore',
+      turnaround: '4 to 7 Business Days',
+      eligibility: 'Salaried Professionals, Doctors, CA, Tech Leads & High-Net-Worth Individuals',
+      keyHighlights: [
+        'Full PMAY & Government interest subsidy guidance where applicable',
+        'Plot purchase + construction composite debt syndication',
+        'Balance transfer with instant top-up up to 100% of existing outstanding',
+        'Minimal processing fee with zero hidden prepayment penalty',
+      ],
+      idealFor: 'Purchasing luxury villas, gated apartments, independent homes, or land construction',
+    },
+    lap: {
+      title: 'Loan Against Property (Mortgage LAP)',
+      rate: 'Starting at 8.50% p.a.*',
+      tenure: 'Up to 15–20 Years',
+      quantum: '₹50 Lakh to ₹50+ Crore',
+      turnaround: '5 to 9 Business Days',
+      eligibility: 'MSME Promoters, Manufacturers, Business Owners & Commercial Landlords',
+      keyHighlights: [
+        'High LTV up to 75% on fair market valuation of residential & commercial collateral',
+        'Flexible overdraft (OD / Drop-line OD) options for working capital requirements',
+        'Acceptance of self-occupied, rented, or multi-tenant commercial properties',
+        'Interest-only moratorium structures for expansion phases',
+      ],
+      idealFor: 'Business debt consolidation, factory expansion, working capital, or asset acquisition',
+    },
+    lrd: {
+      title: 'Lease Rental Discounting (LRD)',
+      rate: 'Starting at 8.90% p.a.*',
+      tenure: 'Tied to Lease Horizon (Up to 15 Years)',
+      quantum: '₹2 Crore to ₹100+ Crore',
+      turnaround: '7 to 12 Business Days',
+      eligibility: 'Owners of Commercial Offices, Retail Showrooms, IT Parks & Warehouses',
+      keyHighlights: [
+        'Direct discounting of future rental receivables from institutional corporate tenants',
+        'Escrow-backed tripartite structure ensuring seamless monthly debt service',
+        'Unlocks up to 80% to 85% of net present value (NPV) of future cash flows',
+        'Low documentation friction for Grade-A corporate and MNC tenants',
+      ],
+      idealFor: 'Commercial asset monetization, re-investment liquidity, and portfolio refinancing',
+    },
+    construction: {
+      title: 'Builder & Institutional Project Finance',
+      rate: 'Starting at 9.25% p.a.*',
+      tenure: 'Milestone-Linked (3 to 7 Years)',
+      quantum: '₹5 Crore to ₹150+ Crore',
+      turnaround: '10 to 18 Business Days',
+      eligibility: 'RERA-Registered Developers, Commercial Real Estate Builders & Land Aggregators',
+      keyHighlights: [
+        'Structured construction drawdowns synchronized with civil construction milestones',
+        'Mezzanine & senior debt syndication via leading AAA-rated Housing Finance Companies',
+        'End-to-end customer retail home loan APF (Approved Project Financial) tie-ups',
+        'RERA escrow compliance & legal documentation oversight',
+      ],
+      idealFor: 'Residential township developments, commercial towers, plotted layouts, and mixed-use assets',
+    },
+  };
+
+  // Leadership Team Profiles
   const leadership = [
     {
       name: 'Vikramaditya Rao',
       role: 'Managing Principal & Head of Structured Debt',
-      experience: '18+ Years Experience',
-      credentials: 'ex-HDFC Capital & Standard Chartered Commercial Banking',
-      bio: 'Pioneered structured property financing models for high-net-worth individuals and corporate land aggregators across South India.',
+      experience: '18+ Years Banking Practice',
+      credentials: 'ex-HDFC Capital & Standard Chartered Wholesale Banking',
+      bio: 'Architected structured property financing arrangements and multi-crore syndications for institutional developers, family offices, and NRI investors across South India.',
       tag: 'Mortgage Syndication',
       image: 'https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=600&q=80',
+      badge: 'Principal Member',
     },
     {
       name: 'Adv. Sharada Sundaram',
       role: 'Chief Legal Officer – Title Due Diligence',
       experience: '22+ Years High Court Practice',
-      credentials: 'Specialist in Karnataka Land Reforms & RERA Compliance',
-      bio: 'Oversees 30-year mother deed audit, Khata bifurcation analysis, and encumbrance clearing to assure pristine collateral legitimacy.',
+      credentials: 'Specialist in Karnataka & Tamil Nadu Land Reforms, RERA Compliance',
+      bio: 'Directs the 30-year mother deed audit, Khata/Patta mutation verification, and encumbrance validation division to ensure 100% dispute-free bank disbursements.',
       tag: 'Property Law & Clear Title',
       image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
+      badge: 'Senior Counsel',
     },
     {
       name: 'K. Chandrashekar, CA',
       role: 'VP – Promoter Credit Assessment & FOIR Modeling',
       experience: '15+ Years Corporate Finance',
-      credentials: 'Fellow Chartered Accountant (FCA), Former Zonal Credit Committee Member',
-      bio: 'Expert in balance sheet normalization, enterprise cash flow adjustments, and non-conventional liquidity appraisal for HNW promoters.',
+      credentials: 'Fellow Chartered Accountant (FCA), Former Bank Zonal Credit Committee Member',
+      bio: 'Authority in financial statement restructuring, corporate liquidity normalization, and non-salaried promoter credit evaluation for Tier-1 bank credit committees.',
       tag: 'Balance Sheet Structuring',
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+      badge: 'Credit Underwriter',
     },
     {
       name: 'Ananya Deshmukh',
       role: 'Director – Lease Rental Discounting (LRD) & LAP',
       experience: '13+ Years Banking Relations',
-      credentials: 'Master of Finance, ex-ICICI Wholesale Banking',
-      bio: 'Manages high-ticket commercial asset refinancing, escrow mechanism design, and tripartite lease structures for commercial retail parks.',
+      credentials: 'Master of Finance, ex-ICICI Wholesale Banking & Commercial Mortgages',
+      bio: 'Manages high-ticket commercial asset refinancing, escrow mechanism design, and tripartite lease structures for commercial retail complexes and warehousing portfolios.',
       tag: 'LRD & Commercial LAP',
       image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
+      badge: 'Commercial Specialist',
     },
   ];
 
-  // Institutional Milestone Journey
+  // Institutional Milestones
   const milestones = [
     {
       year: '2011',
       title: 'Practice Inception',
-      desc: 'Founded in Bengaluru as an independent real estate title audit and private mortgage advisory desk.',
+      desc: 'Founded in Tirupur, Tamil Nadu as an independent real estate title audit and private mortgage advisory desk with zero broker bias.',
+      volume: '₹25 Cr Facilitated',
+      focus: 'Forensic Mother Deed Audits',
     },
     {
       year: '2015',
-      title: 'LRD & LAP Institutional Expansion',
-      desc: 'Formed dedicated institutional syndication pipelines for commercial asset discounting exceeding ₹100 Cr.',
+      title: 'Commercial LAP & LRD Desk',
+      desc: 'Formed dedicated institutional syndication pipelines for commercial asset discounting and high-ticket business mortgages exceeding ₹100 Cr.',
+      volume: '₹180 Cr Facilitated',
+      focus: 'Institutional LRD Pipelines',
     },
     {
       year: '2019',
-      title: '₹500 Cr Facilitation Milestone',
-      desc: 'Expanded coverage across Tier-1 metros (Bengaluru, Hyderabad, Mumbai, Chennai) across 30+ regulated lenders.',
+      title: 'Multi-Metro Expansion',
+      desc: 'Expanded client advisory coverage across Coimbatore, Tirupur, Bengaluru, and Chennai across 30+ regulated lending partners.',
+      volume: '₹550 Cr Facilitated',
+      focus: '40+ Lending Desks Integrated',
     },
     {
       year: '2023',
       title: 'Institutional Desk Integration',
-      desc: 'Established priority underwriting access across 40+ premier PSU, private banks, and AAA-rated housing finance companies.',
+      desc: 'Established priority direct underwriting pipelines across top public sector banks, private banking majors, and AAA housing finance corporations.',
+      volume: '₹950 Cr Facilitated',
+      focus: 'Direct Zonal Sanction Desks',
     },
     {
       year: '2026',
       title: '₹1,200+ Cr Advisory Milestone',
-      desc: 'Launched proprietary digital FOIR calculators, document vaulting, and institutional rate monitoring.',
+      desc: 'Recognized as South India’s trusted property loan practice with state-of-the-art algorithmic FOIR modeling and zero-inquiry bureau safety.',
+      volume: '₹1,200+ Cr Cumulative',
+      focus: 'Fiduciary-Grade Leadership',
     },
   ];
 
   return (
     <div className="bg-brand-bg min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
-          1. ABOUT PAGE HERO — Split Asymmetric Narrative Layout
+          1. BRAND NEW HIGH-TECH 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Executive Professional Theme)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0f2236] to-[#091620] text-white pt-24 pb-20 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f3f7fb] via-[#eaf2f8] to-[#f8f9fa] text-brand-navy pt-24 pb-20 lg:pt-28 lg:pb-24 border-b border-slate-200">
         
-        {/* Geometric Accent Shapes — distinctly different from home hero */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] border border-teal-500/10 rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute top-20 right-20 w-[350px] h-[350px] border border-teal-400/8 rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-teal-600/10 via-transparent to-transparent rounded-full translate-y-1/3 -translate-x-1/4 blur-2xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-sky-500/[0.03] rounded-full blur-3xl pointer-events-none" />
+        {/* Subtle Ambient Background Grids & Soft Atmospheric Aura */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(24,124,120,0.08),rgba(255,255,255,0))] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-sky-200/20 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-200/15 rounded-full blur-[110px] pointer-events-none" />
 
-        {/* Diagonal Line Accents */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-          <div className="absolute top-[15%] -left-20 w-[120%] h-px bg-gradient-to-r from-transparent via-teal-500/15 to-transparent rotate-[3deg]" />
-          <div className="absolute bottom-[20%] -left-20 w-[120%] h-px bg-gradient-to-r from-transparent via-sky-400/10 to-transparent -rotate-[2deg]" />
-        </div>
+        {/* Subtle Architectural Blueprint grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0284c70a_1px,transparent_1px),linear-gradient(to_bottom,#0284c70a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
-            {/* ── LEFT: Company Story & Origin Narrative ── */}
+            {/* ── LEFT COLUMN: Authority Narrative & Interactive Statistics ── */}
             <div className="lg:col-span-7 space-y-7">
               
-              {/* Breadcrumb & Page Identifier */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/[0.06] border border-white/10 backdrop-blur-md">
-                  <Building2 className="w-4 h-4 text-teal-400" />
-                  <span className="text-xs font-bold uppercase tracking-[0.1em] text-teal-300">About Our Practice</span>
-                </div>
-                <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
-              </div>
-
-              {/* Founding Year Badge — Unique to About Hero */}
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-teal-500/20 to-sky-500/20 border border-teal-400/30 flex items-center justify-center backdrop-blur-sm">
-                    <span className="text-2xl font-extrabold text-teal-300 tracking-tight">11</span>
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 px-1.5 py-0.5 bg-teal-500 rounded text-[9px] font-bold text-white">EST</div>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-white/90">Established Advisory Practice</p>
-                  <p className="text-xs text-slate-400">Kumaran Road, Tirupur, Tamil Nadu • Independent Practice</p>
-                </div>
-              </div>
-
-              {/* Display Headline — About-specific messaging */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-bold text-white tracking-tight leading-[1.12]">
-                The People & Principles Behind{' '}
-                <span className="relative inline-block">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-sky-300">
-                    India's Trusted
+              {/* Institutional Header Tag with Live Status Beacon */}
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/80 text-teal-800 shadow-sm backdrop-blur-md">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-500 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-600"></span>
                   </span>
-                  <span className="absolute -bottom-1 left-0 w-full h-[3px] bg-gradient-to-r from-teal-400 via-emerald-400 to-sky-400 rounded-full opacity-60" />
-                </span>{' '}
-                Property Finance Advisory.
-              </h1>
-
-              {/* Origin Story Paragraph — tells the company story */}
-              <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl">
-                {businessName} was born from a singular conviction: property owners deserve fiduciary-grade financial counsel — not commissioned salesmanship. Over 15 years, we've built an advisory desk trusted by HNW families, institutional developers, and NRI investors across India's prime metros.
-              </p>
-
-              {/* CTA Group — About-specific actions */}
-              <div className="pt-2 flex flex-wrap items-start gap-4">
-                <Link
-                  to="/enquire"
-                  className="cta-button group !py-3.5 !px-8 text-base shadow-lg hover:shadow-teal-900/40"
-                >
-                  <span>Meet Our Advisory Desk</span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </Link>
-                <Link
-                  to="/how-it-works"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/8 hover:bg-white/12 border border-white/15 text-white font-semibold text-sm transition-all duration-200 backdrop-blur-sm"
-                >
-                  <span>Our Advisory Process</span>
-                  <ChevronRight className="w-4 h-4 text-teal-300" />
-                </Link>
-              </div>
-
-              {/* Trust Indicators Row — Unique to About */}
-              <div className="pt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
-                <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
-                  <ShieldCheck className="w-4 h-4 text-teal-400" />
-                  <span>RBI Fair Practice Compliant</span>
+                  <span className="text-xs font-bold uppercase tracking-[0.14em]">
+                    Institutional Property Advisory Desk
+                  </span>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
-                  <Lock className="w-4 h-4 text-teal-400" />
-                  <span>Zero Cash Collection Policy</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
-                  <Scale className="w-4 h-4 text-teal-400" />
-                  <span>Independent & Unbiased</span>
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Est. 2011 • Regulated Bank Syndication</span>
                 </div>
               </div>
-            </div>
 
-            {/* ── RIGHT: Stacked Glassmorphic Credential Cards ── */}
-            <div className="lg:col-span-5 space-y-4">
-              
-              {/* KPI Cards — displayed as a 2×2 grid of glass cards */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Display Headline with High-End Authority Gradient */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold text-[#0f273d] tracking-tight leading-[1.14]">
+                  The Architecture of{' '}
+                  <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-700 via-teal-600 to-sky-700">
+                    Institutional Capital
+                  </span>{' '}
+                  & Collateral Precision.
+                </h1>
+
+                <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl pt-1">
+                  <strong className="text-brand-navy">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
+                </p>
+              </div>
+
+              {/* 4 Key Interactive Metrics Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 {kpis.map((kpi, idx) => (
                   <div
                     key={idx}
-                    className="group relative bg-white/[0.05] hover:bg-white/[0.09] border border-white/10 hover:border-teal-400/30 rounded-xl p-5 backdrop-blur-md transition-all duration-300 cursor-default"
+                    className="relative group p-4 rounded-xl bg-white/95 hover:bg-white border border-slate-200/90 hover:border-teal-500/40 shadow-sm hover:shadow-card transition-all duration-300 cursor-default"
                   >
-                    <div className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-100 to-teal-300 tracking-tight transition-transform duration-300 group-hover:scale-105">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
+                        {kpi.badge}
+                      </span>
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight">
                       {kpi.value}
                     </div>
-                    <div className="text-xs font-semibold text-white/90 mt-1.5">
+                    <div className="text-xs font-bold text-slate-800 mt-1">
                       {kpi.label}
                     </div>
-                    <div className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                    <div className="text-[10px] text-slate-500 mt-0.5 leading-snug line-clamp-1">
                       {kpi.subtext}
                     </div>
-                    {/* Hover glow */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-teal-500/0 to-sky-500/0 group-hover:from-teal-500/[0.06] group-hover:to-sky-500/[0.04] transition-all duration-300 pointer-events-none" />
                   </div>
                 ))}
               </div>
 
-              {/* Institutional Quality Banner Card */}
-              <div className="relative bg-gradient-to-br from-teal-500/15 via-white/[0.05] to-sky-500/10 border border-teal-400/25 rounded-xl p-5 backdrop-blur-md">
-                <div className="flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-lg bg-teal-500/20 border border-teal-400/30 flex items-center justify-center shrink-0">
-                    <Award className="w-5 h-5 text-teal-300" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <h3 className="text-sm font-bold text-white">Institutional-Grade Practice</h3>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      Our advisory desk operates with the same compliance, documentation, and ethical framework expected of RBI-regulated entities — ensuring your credit profile and legal interests are safeguarded at every step.
-                    </p>
-                  </div>
-                </div>
-                {/* Corner accent */}
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-teal-400/10 to-transparent rounded-tr-xl pointer-events-none" />
+              {/* Call-to-Action Group */}
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <Link
+                  to="/enquire"
+                  className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-base shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group"
+                >
+                  <Sparkles className="w-5 h-5 text-teal-100" />
+                  <span>Initiate Confidential Advisory</span>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
+
+                <a
+                  href="#diligence-matrix"
+                  className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-brand-navy font-semibold text-sm shadow-sm transition-all duration-200"
+                >
+                  <FileSearch className="w-4 h-4 text-teal-600" />
+                  <span>Explore Diligence Protocol</span>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </a>
+
+                <a
+                  href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-50 hover:bg-teal-100/70 text-teal-800 border border-teal-200 text-xs font-semibold transition-colors shadow-sm"
+                >
+                  <PhoneCall className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Direct Hotline: {businessPhone.split(',')[0]}</span>
+                </a>
               </div>
 
-              {/* Timeline Mini-Strip — founding to present */}
-              <div className="relative bg-white/[0.04] border border-white/8 rounded-xl px-5 py-4 backdrop-blur-md">
-                <div className="flex items-center justify-between text-center">
-                  <div>
-                    <div className="text-lg font-extrabold text-teal-300">2011</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">Founded</div>
-                  </div>
-                  <div className="flex-1 mx-3 relative">
-                    <div className="h-px bg-white/10 w-full" />
-                    <div className="h-px bg-gradient-to-r from-teal-400/60 to-teal-400/20 w-3/4 absolute top-0 left-0" />
-                    <div className="absolute top-1/2 left-[25%] -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-teal-400/60" />
-                    <div className="absolute top-1/2 left-[50%] -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-teal-400/40" />
-                    <div className="absolute top-1/2 left-[75%] -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-teal-400/20" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-extrabold text-white">Today</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">₹1,200+ Cr</div>
-                  </div>
+              {/* Institutional Safety Pillars Strip */}
+              <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-600 font-medium">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-teal-600" />
+                  <span>RBI Fair Practice Code Compliant</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-teal-600" />
+                  <span>Zero Unauthorized Bureau Enquiries</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Scale className="w-4 h-4 text-teal-600" />
+                  <span>Zero Cash Collection Policy</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* ── RIGHT COLUMN: Interactive Three.js 3D Canvas Showcase (Realistic Architectural Display) ── */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xl">
+                {/* 3D Canvas Area */}
+                <div className="w-full h-[520px] lg:h-[620px] relative">
+                  <AboutHero3D onModeChange={(mode) => setHeroSceneMode(mode)} />
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          2. OUR ORIGIN & VALUE ARCHITECTURE (Interactive Tabs)
+          2. INTERACTIVE LOAN FEASIBILITY & ADVISORY BLUEPRINT
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-28 bg-white border-b border-brand-border">
+      <section className="py-16 lg:py-20 bg-white border-b border-brand-border">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+            <div className="max-w-2xl space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
+                <Sliders className="w-3.5 h-3.5" />
+                <span>Product Feasibility Lab</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-navy tracking-tight">
+                Institutional Borrowing Blueprints
+              </h2>
+              <p className="text-brand-slate text-base">
+                Select your asset category to inspect interest benchmarks, structuring tenure, and underwriting prerequisites.
+              </p>
+            </div>
+
+            {/* Loan Selector Tabs */}
+            <div className="flex flex-wrap gap-2 p-1.5 bg-brand-ivory rounded-xl border border-brand-border">
+              {(['home', 'lap', 'lrd', 'construction'] as const).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setSelectedLoanType(type)}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    selectedLoanType === type
+                      ? 'bg-brand-teal text-white shadow-sm'
+                      : 'text-brand-slate hover:text-brand-navy hover:bg-white'
+                  }`}
+                >
+                  {type === 'home' && 'Home Loans'}
+                  {type === 'lap' && 'Mortgage LAP'}
+                  {type === 'lrd' && 'Commercial LRD'}
+                  {type === 'construction' && 'Project Finance'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Interactive Card for Selected Blueprint */}
+          <div className="bg-gradient-to-br from-brand-ivory via-white to-brand-ivory p-6 sm:p-8 lg:p-10 rounded-2xl border border-brand-border shadow-subtle">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              <div className="lg:col-span-7 space-y-5">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-extrabold text-brand-teal uppercase tracking-widest bg-brand-teal-light px-3 py-1 rounded-full border border-brand-teal/20">
+                    Selected Product Blueprint
+                  </span>
+                  <span className="text-xs text-emerald-600 font-bold flex items-center gap-1">
+                    <Check className="w-3.5 h-3.5" /> Verified Lending Protocol
+                  </span>
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-brand-navy">
+                  {loanArchetypes[selectedLoanType].title}
+                </h3>
+
+                <p className="text-brand-slate text-sm sm:text-base leading-relaxed">
+                  <strong>Target Segment:</strong> {loanArchetypes[selectedLoanType].eligibility}
+                </p>
+
+                {/* Key Metrics Strip */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
+                  <div className="p-3.5 rounded-xl bg-white border border-brand-border shadow-sm">
+                    <div className="text-[11px] font-semibold text-brand-slate uppercase">Interest Benchmark</div>
+                    <div className="text-lg font-bold text-brand-teal mt-0.5">
+                      {loanArchetypes[selectedLoanType].rate}
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-white border border-brand-border shadow-sm">
+                    <div className="text-[11px] font-semibold text-brand-slate uppercase">Facility Tenure</div>
+                    <div className="text-lg font-bold text-brand-navy mt-0.5">
+                      {loanArchetypes[selectedLoanType].tenure}
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-white border border-brand-border shadow-sm col-span-2 sm:col-span-1">
+                    <div className="text-[11px] font-semibold text-brand-slate uppercase">Ticket Range</div>
+                    <div className="text-lg font-bold text-brand-navy mt-0.5">
+                      {loanArchetypes[selectedLoanType].quantum}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Checklist of highlights */}
+                <div className="space-y-2.5 pt-2">
+                  <h4 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+                    Institutional Structuring Advantages:
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {loanArchetypes[selectedLoanType].keyHighlights.map((hl, i) => (
+                      <div key={i} className="flex items-start gap-2 text-xs text-brand-slate font-medium">
+                        <CheckCircle2 className="w-4 h-4 text-brand-teal shrink-0 mt-0.5" />
+                        <span>{hl}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center gap-4">
+                  <Link
+                    to="/enquire"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm shadow-md transition-all"
+                  >
+                    <span>Request Eligibility Evaluation</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <span className="text-xs text-brand-slate">
+                    *Terms subject to lender policy & title appraisal.
+                  </span>
+                </div>
+
+              </div>
+
+              {/* Right Decorative Showcase Card */}
+              <div className="lg:col-span-5">
+                <div className="relative rounded-2xl overflow-hidden border border-brand-border shadow-card bg-brand-navy text-white p-7 space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="w-10 h-10 rounded-xl bg-brand-teal/20 border border-brand-teal/40 flex items-center justify-center text-teal-300">
+                      <Landmark className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-teal-300 bg-white/10 px-2.5 py-1 rounded-full">
+                      Fiduciary Standard
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-lg font-bold text-white">Why Not Traditional DSAs?</h4>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Most channel partners submit applications without checking 30-year mother deed continuity. If a legal query arises 3 weeks later, your file gets locked in bank dispute committees.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span className="text-teal-300">Prime Associates Guarantee</span>
+                      <span className="text-emerald-400 font-bold">100% Pre-Audited</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-snug">
+                      We pre-clear mother deeds, patta/khata chains, and municipal permits through High Court advocates prior to file intake.
+                    </p>
+                  </div>
+
+                  <Link
+                    to="/how-it-works"
+                    className="block text-center py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition-colors"
+                  >
+                    View Our 5-Step Underwriting Process →
+                  </Link>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ────────────────────────────────────────────────────────────
+          3. OUR ORIGIN & VALUE ARCHITECTURE (Interactive Tabs)
+          ──────────────────────────────────────────────────────────── */}
+      <section id="diligence-matrix" className="py-20 lg:py-24 bg-white border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
@@ -346,36 +637,40 @@ export const AboutPage: React.FC = () => {
               </h2>
 
               <p className="text-brand-slate text-base leading-relaxed">
-                In India's complex retail and commercial debt landscape, loan applicants often face conflicting interest quotes, aggressive DSAs who broadcast credit files across multiple bureaus, and unexpected technical title rejections weeks into underwriting.
+                In India's fragmented retail and commercial mortgage sector, loan applicants often face conflicting interest quotes, aggressive DSAs who broadcast credit files across multiple bureaus, and unexpected technical title rejections weeks into underwriting.
               </p>
 
               <p className="text-brand-slate text-base leading-relaxed">
                 <strong>{businessName}</strong> was established with a singular objective: to operate as a high-fidelity client advocate. We evaluate your borrowing capacity using the exact credit risk and FOIR algorithms deployed by Tier-1 institutions, verifying mother deeds and cash flow sustainability prior to formal lender introduction.
               </p>
 
-              {/* Interactive Vision / Mission / Governance Tabs */}
+              {/* Interactive Vision / Mission / Governance / Methodology Tabs */}
               <div className="pt-2">
-                <div className="flex border-b border-brand-border gap-6">
-                  {(['mission', 'vision', 'governance'] as const).map((tab) => (
+                <div className="flex flex-wrap border-b border-brand-border gap-4 sm:gap-6">
+                  {(['mission', 'vision', 'governance', 'methodology'] as const).map((tab) => (
                     <button
                       key={tab}
                       type="button"
                       onClick={() => setActiveTab(tab)}
-                      className={`pb-3 text-sm font-semibold capitalize transition-colors relative cursor-pointer ${
+                      className={`pb-3 text-sm font-semibold capitalize transition-all relative cursor-pointer ${
                         activeTab === tab
-                          ? 'text-brand-teal border-b-2 border-brand-teal -mb-[2px]'
+                          ? 'text-brand-teal border-b-2 border-brand-teal -mb-[2px] font-bold'
                           : 'text-brand-slate hover:text-brand-navy'
                       }`}
                     >
-                      {tab === 'governance' ? 'Regulatory Governance' : `Our ${tab}`}
+                      {tab === 'governance'
+                        ? 'Regulatory Governance'
+                        : tab === 'methodology'
+                        ? 'Advisory Methodology'
+                        : `Our ${tab}`}
                     </button>
                   ))}
                 </div>
 
-                <div className="pt-4 text-sm text-brand-slate leading-relaxed bg-brand-ivory/60 p-5 rounded-xl border border-brand-border/80 mt-3">
+                <div className="pt-4 text-sm text-brand-slate leading-relaxed bg-brand-ivory/60 p-6 rounded-xl border border-brand-border/80 mt-3 transition-all">
                   {activeTab === 'mission' && (
                     <div className="space-y-2">
-                      <p className="font-semibold text-brand-navy">
+                      <p className="font-semibold text-brand-navy text-base">
                         Empower property owners to secure lowest benchmark debt without predatory terms or CIBIL degradation.
                       </p>
                       <p>
@@ -386,7 +681,7 @@ export const AboutPage: React.FC = () => {
 
                   {activeTab === 'vision' && (
                     <div className="space-y-2">
-                      <p className="font-semibold text-brand-navy">
+                      <p className="font-semibold text-brand-navy text-base">
                         To be the gold-standard independent property finance advisory across India's metropolitan wealth corridors.
                       </p>
                       <p>
@@ -397,11 +692,22 @@ export const AboutPage: React.FC = () => {
 
                   {activeTab === 'governance' && (
                     <div className="space-y-2">
-                      <p className="font-semibold text-brand-navy">
+                      <p className="font-semibold text-brand-navy text-base">
                         Uncompromising Compliance & Zero False Guarantees.
                       </p>
                       <p>
                         Underwriting and sanction authority resides exclusively with regulated RBI-licensed Banks and NBFCs. We maintain zero unauthorized multi-bureau pings and collect zero cash advances.
+                      </p>
+                    </div>
+                  )}
+
+                  {activeTab === 'methodology' && (
+                    <div className="space-y-2">
+                      <p className="font-semibold text-brand-navy text-base">
+                        Pre-Underwriting Due Diligence Lab.
+                      </p>
+                      <p>
+                        Every property loan dossier passes through legal scrutiny (Form 15/16 EC, parent documents), technical plan appraisal, and FOIR cash flow adjustments prior to institutional committee submission.
                       </p>
                     </div>
                   )}
@@ -432,7 +738,6 @@ export const AboutPage: React.FC = () => {
             {/* Right Architectural Showcase Card */}
             <div className="lg:col-span-5">
               <div className="relative">
-                {/* Decorative Background Accent */}
                 <div className="absolute -inset-4 bg-gradient-to-tr from-brand-teal/20 via-transparent to-sky-500/10 rounded-3xl blur-xl" />
 
                 <div className="relative rounded-2xl overflow-hidden border border-brand-border shadow-xl bg-brand-ivory">
@@ -449,7 +754,7 @@ export const AboutPage: React.FC = () => {
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                         <span className="text-xs font-bold text-brand-navy">Institutional Quality Standard</span>
                       </div>
-                      <span className="text-xs font-bold text-brand-teal">Home Loans from 7.25%* • LAP from 8.50%*</span>
+                      <span className="text-xs font-bold text-brand-teal">Home Loans 7.25%* • LAP 8.50%*</span>
                     </div>
                     <p className="text-xs text-brand-slate leading-normal">
                       Every application is structured according to internal risk metrics accepted by State Bank of India, HDFC Bank, ICICI Bank, Axis, and Kotak Mahindra.
@@ -464,7 +769,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          3. OUR CORE ADVISORY PILLARS (Interactive Cards)
+          4. OUR CORE ADVISORY PILLARS (Interactive Expansion Cards)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-brand-bg border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -482,10 +787,15 @@ export const AboutPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {advisoryPillars.map((pillar, idx) => (
+            {advisoryPillars.map((pillar) => (
               <div
-                key={idx}
-                className="card-hover bg-white p-7 rounded-2xl border border-brand-border flex flex-col justify-between group"
+                key={pillar.id}
+                onClick={() => setActivePillar(pillar.id)}
+                className={`card-hover bg-white p-7 rounded-2xl border transition-all duration-300 flex flex-col justify-between cursor-pointer ${
+                  activePillar === pillar.id
+                    ? 'border-brand-teal shadow-card ring-2 ring-brand-teal/20'
+                    : 'border-brand-border hover:border-brand-teal/40'
+                }`}
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -497,13 +807,27 @@ export const AboutPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-brand-navy leading-snug group-hover:text-brand-teal transition-colors">
+                  <h3 className="text-lg font-bold text-brand-navy leading-snug">
                     {pillar.title}
                   </h3>
+
+                  <p className="text-xs font-semibold text-brand-teal">
+                    {pillar.tagline}
+                  </p>
 
                   <p className="text-sm text-brand-slate leading-relaxed">
                     {pillar.description}
                   </p>
+
+                  {/* Feature checklist */}
+                  <div className="space-y-1.5 pt-2 border-t border-brand-border/40">
+                    {pillar.features.map((feat, fIdx) => (
+                      <div key={fIdx} className="flex items-center gap-1.5 text-[11px] text-brand-slate">
+                        <Check className="w-3.5 h-3.5 text-brand-teal shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="pt-6 mt-6 border-t border-brand-border/60 flex items-center justify-between text-xs font-semibold text-brand-navy">
@@ -518,7 +842,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          4. COMPARATIVE MATRIX: TRADITIONAL BROKER VS. PRIME ASSOCIATE LOANS
+          5. COMPARATIVE MATRIX: TRADITIONAL BROKER VS. PRIME ASSOCIATES
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -528,18 +852,18 @@ export const AboutPage: React.FC = () => {
               Market Differentiation
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy tracking-tight">
-              The Prime Associate Loans Institutional Advantage
+              The Prime Associates Institutional Advantage
             </h2>
             <p className="text-brand-slate text-base leading-relaxed">
-              Compare our structured, client-first advisory model against traditional unregulated mortgage brokers.
+              Compare our structured, client-first advisory model against traditional unorganized mortgage brokers.
             </p>
           </div>
 
           <div className="max-w-4xl mx-auto overflow-hidden rounded-2xl border border-brand-border shadow-card bg-white">
-            <div className="grid grid-cols-12 bg-brand-ivory border-b border-brand-border p-4 text-xs font-bold uppercase tracking-wider text-brand-navy">
+            <div className="grid grid-cols-12 bg-brand-ivory border-b border-brand-border p-4 sm:p-5 text-xs font-bold uppercase tracking-wider text-brand-navy">
               <div className="col-span-5 sm:col-span-4">Evaluation Dimension</div>
-              <div className="col-span-3 sm:col-span-4 text-center text-slate-500">Traditional Broker</div>
-              <div className="col-span-4 sm:col-span-4 text-center text-brand-teal">Prime Associate Loans Practice</div>
+              <div className="col-span-3 sm:col-span-4 text-center text-slate-500">Traditional Unorganized Broker</div>
+              <div className="col-span-4 sm:col-span-4 text-center text-brand-teal">Prime Associates Desk</div>
             </div>
 
             <div className="divide-y divide-brand-border/80 text-sm">
@@ -569,6 +893,11 @@ export const AboutPage: React.FC = () => {
                   broker: 'Hidden markups and cash demands',
                   anchor: 'Transparent engagement contract',
                 },
+                {
+                  metric: 'Complex Income Structuring',
+                  broker: 'Strict vanilla salary slips only',
+                  anchor: 'Balance sheet normalization for promoters',
+                },
               ].map((row, i) => (
                 <div key={i} className="grid grid-cols-12 p-4 sm:p-5 items-center hover:bg-brand-ivory/40 transition-colors">
                   <div className="col-span-5 sm:col-span-4 font-semibold text-brand-navy text-xs sm:text-sm">
@@ -591,7 +920,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          5. LEADERSHIP & ADVISORY COUNCIL (Profiles)
+          6. LEADERSHIP & ADVISORY COUNCIL (Profiles)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-brand-bg border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -622,7 +951,7 @@ export const AboutPage: React.FC = () => {
             {leadership.map((member, idx) => (
               <div
                 key={idx}
-                className="card-hover bg-white rounded-2xl overflow-hidden border border-brand-border group flex flex-col justify-between"
+                className="card-hover bg-white rounded-2xl overflow-hidden border border-brand-border group flex flex-col justify-between shadow-subtle hover:shadow-card"
               >
                 <div>
                   <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
@@ -633,6 +962,9 @@ export const AboutPage: React.FC = () => {
                     />
                     <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-brand-navy border border-brand-border">
                       {member.experience}
+                    </div>
+                    <div className="absolute bottom-3 left-3 bg-brand-navy/90 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold text-teal-300">
+                      {member.badge}
                     </div>
                   </div>
 
@@ -676,7 +1008,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          6. PRACTICE TIMELINE & MILESTONES
+          7. PRACTICE TIMELINE & MILESTONES (Interactive Journey)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -693,21 +1025,64 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 relative">
+          {/* Interactive Milestone Selector Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 relative">
             {milestones.map((ms, idx) => (
               <div
                 key={idx}
-                className="relative bg-brand-ivory/60 p-6 rounded-2xl border border-brand-border hover:border-brand-teal/40 hover:bg-white transition-all duration-300 group shadow-subtle hover:shadow-card"
+                onClick={() => setActiveMilestoneIndex(idx)}
+                className={`p-6 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+                  activeMilestoneIndex === idx
+                    ? 'bg-gradient-to-br from-brand-navy to-[#0f283d] text-white border-teal-500 shadow-xl scale-[1.03]'
+                    : 'bg-brand-ivory/60 hover:bg-white border-brand-border hover:border-brand-teal/40 shadow-subtle'
+                }`}
               >
-                <div className="text-2xl font-extrabold text-brand-teal font-heading">
-                  {ms.year}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-2xl font-extrabold font-heading ${
+                        activeMilestoneIndex === idx ? 'text-teal-300' : 'text-brand-teal'
+                      }`}
+                    >
+                      {ms.year}
+                    </span>
+                    <span
+                      className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded ${
+                        activeMilestoneIndex === idx
+                          ? 'bg-teal-500/20 text-teal-200 border border-teal-400/30'
+                          : 'bg-brand-teal-light text-brand-teal'
+                      }`}
+                    >
+                      {ms.volume}
+                    </span>
+                  </div>
+
+                  <h4
+                    className={`text-sm font-bold mt-3 mb-2 ${
+                      activeMilestoneIndex === idx ? 'text-white' : 'text-brand-navy'
+                    }`}
+                  >
+                    {ms.title}
+                  </h4>
+
+                  <p
+                    className={`text-xs leading-relaxed ${
+                      activeMilestoneIndex === idx ? 'text-slate-300' : 'text-brand-slate'
+                    }`}
+                  >
+                    {ms.desc}
+                  </p>
                 </div>
-                <h4 className="text-sm font-bold text-brand-navy mt-2 mb-2 group-hover:text-brand-teal transition-colors">
-                  {ms.title}
-                </h4>
-                <p className="text-xs text-brand-slate leading-relaxed">
-                  {ms.desc}
-                </p>
+
+                <div
+                  className={`mt-4 pt-3 border-t text-[11px] font-semibold ${
+                    activeMilestoneIndex === idx
+                      ? 'border-white/10 text-teal-300'
+                      : 'border-brand-border/60 text-brand-slate'
+                  }`}
+                >
+                  Focus: {ms.focus}
+                </div>
               </div>
             ))}
           </div>
@@ -716,7 +1091,7 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          7. REGULATORY COMPLIANCE & LEGAL NOTICE
+          8. REGULATORY COMPLIANCE & LEGAL NOTICE
           ──────────────────────────────────────────────────────────── */}
       <section className="py-14 bg-brand-ivory border-b border-brand-border">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -740,13 +1115,13 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          8. HIGH-IMPACT CONVERSION BANNER
+          9. HIGH-IMPACT CONVERSION BANNER
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-gradient-to-br from-[#0c1b29] via-[#102a3f] to-[#0c1b29] text-white">
+      <section className="py-20 lg:py-24 bg-gradient-to-br from-[#071321] via-[#0d2238] to-[#071321] text-white">
         <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal/20 border border-brand-teal/30 text-teal-300 text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/30 text-teal-300 text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Direct Underwriter Access</span>
             </div>
@@ -762,7 +1137,7 @@ export const AboutPage: React.FC = () => {
             <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
               <Link
                 to="/enquire"
-                className="cta-button group !py-3.5 !px-8 text-base shadow-xl"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-bold text-base shadow-xl shadow-teal-950/60 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span>Book Confidential Advisory Call</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -770,7 +1145,7 @@ export const AboutPage: React.FC = () => {
               
               <a
                 href={`tel:${businessPhone.replace(/\s+/g, '')}`}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm transition-all duration-200"
+                className="inline-flex items-center gap-2.5 px-6 py-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm transition-all duration-200"
               >
                 <PhoneCall className="w-4 h-4 text-teal-300" />
                 <span>Call {businessPhone}</span>
@@ -784,6 +1159,7 @@ export const AboutPage: React.FC = () => {
           </div>
         </div>
       </section>
+
       <style>{`
         .card-hover {
           transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
@@ -791,7 +1167,6 @@ export const AboutPage: React.FC = () => {
         }
         .card-hover:hover {
           transform: translateY(-5px);
-          box-shadow: 0 16px 32px -8px rgba(24, 50, 71, 0.10), 0 6px 12px -3px rgba(24, 50, 71, 0.05);
         }
       `}</style>
     </div>
