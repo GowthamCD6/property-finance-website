@@ -30,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
 
   return (
     <footer id="contact" className="bg-[#183247] text-white pt-16 pb-12 border-t border-brand-navy">
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
           {/* Brand & Mission */}
           <div className="space-y-4">

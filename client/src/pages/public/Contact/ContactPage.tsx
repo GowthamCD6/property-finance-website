@@ -62,7 +62,7 @@ export const ContactPage: React.FC = () => {
           1. CONTENT-SPECIFIC HERO: DIRECT ADVISORY & OFFICE CONNECT
           ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#0A1724] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Column: Heading & Live Status */}
@@ -159,7 +159,7 @@ export const ContactPage: React.FC = () => {
           2. REGIONAL ADVISORY DESKS
           ──────────────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 bg-white border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-3xl mb-12">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
               Geographic Specialization

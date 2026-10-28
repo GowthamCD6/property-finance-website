@@ -147,7 +147,7 @@ export const PropertyFundingPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Column: Commercial Mandate */}
@@ -260,7 +260,7 @@ export const PropertyFundingPage: React.FC = () => {
           2. FOUR COMMERCIAL FUNDING SOLUTIONS (Interactive Tabs)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-brand-ivory/60 border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-2">
               Bespoke Capital Architecture

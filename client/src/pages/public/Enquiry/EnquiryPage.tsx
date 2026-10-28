@@ -24,7 +24,7 @@ export const EnquiryPage: React.FC = () => {
           1. CONTENT-SPECIFIC HERO: CONFIDENTIAL INTAKE & SCHEDULING
           ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#0A1624] text-white pt-20 pb-16 lg:pt-28 lg:pb-20 border-b border-brand-teal/20">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             {/* Left Column: Heading & Intake Purpose */}

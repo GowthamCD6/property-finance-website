@@ -630,7 +630,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
   };
 
   const contentBody = (
-    <div className={embedded ? 'w-full' : 'max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10'}>
+    <div className={embedded ? 'w-full' : 'w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto'}>
       {/* Header */}
       <div className={`text-center max-w-3xl mx-auto ${embedded ? 'mb-6 space-y-2' : 'mb-10 sm:mb-12 space-y-3'}`}>
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase">

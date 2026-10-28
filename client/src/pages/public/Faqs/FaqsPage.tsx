@@ -190,7 +190,7 @@ export const FaqsPage: React.FC = () => {
           1. CONTENT-SPECIFIC HERO: SEARCHABLE KNOWLEDGE REPOSITORY
           ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#0A1624] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 backdrop-blur-md">
               <HelpCircle className="w-4 h-4 text-brand-teal" />
@@ -243,7 +243,7 @@ export const FaqsPage: React.FC = () => {
           2. CATEGORY FILTER TABS
           ──────────────────────────────────────────────────────────── */}
       <section className="py-6 border-b border-brand-border bg-brand-ivory/60 sticky top-16 sm:top-20 z-20 backdrop-blur-md">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="flex flex-wrap gap-2 items-center">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-slate mr-2 hidden sm:inline">
               Filter by Category:
@@ -272,7 +272,7 @@ export const FaqsPage: React.FC = () => {
           3. ACCORDION Q&A LIST
           ──────────────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 bg-white">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-4xl mx-auto">
             {filteredFaqs.length === 0 ? (
               <div className="p-12 text-center text-brand-slate bg-brand-ivory rounded-3xl border border-brand-border space-y-4">

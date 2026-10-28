@@ -99,7 +99,7 @@ export const HowItWorksPage: React.FC = () => {
       <section className="relative overflow-hidden bg-[#0A1726] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-5">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 backdrop-blur-md">
               <Clock className="w-4 h-4 text-brand-teal" />
@@ -152,7 +152,7 @@ export const HowItWorksPage: React.FC = () => {
           2. DETAILED ACTIVE PHASE BREAKDOWN CARD
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           {advisoryPhases
             .filter((p) => p.phase === activePhase)
             .map((curr) => (

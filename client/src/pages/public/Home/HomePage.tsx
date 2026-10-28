@@ -303,8 +303,8 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/70" />
       </div>
 
-      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-10 xl:px-12 pt-12 pb-24 sm:pt-16 sm:pb-28 lg:pt-16 lg:pb-32">
-        <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-7">
+      <div className="relative z-10 w-full pt-12 pb-24 sm:pt-16 sm:pb-28 lg:pt-16 lg:pb-32">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto text-center space-y-6 sm:space-y-7">
           <div
             style={{
               opacity: mounted ? 1 : 0,
@@ -838,7 +838,7 @@ const LenderPartners: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Award className="w-3.5 h-3.5" />
@@ -883,7 +883,7 @@ const LenderPartners: React.FC = () => {
       </div>
 
       {/* ─── 2. MIDDLE 4-PILLAR FEATURES CARD (Compact & Sleek) ─── */}
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="bg-white rounded-2xl border border-brand-border/80 p-4 sm:p-6 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4.5">
             <div className="group flex flex-col justify-between p-4 rounded-xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-teal-500/40 hover:shadow-sm transition-all duration-300">
@@ -1174,7 +1174,7 @@ const RateComparisonMatrix: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
@@ -1407,7 +1407,7 @@ const HowItWorks: React.FC = () => {
 
   return (
     <section id="how-it-works" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             <Zap className="w-3.5 h-3.5" />
@@ -1669,7 +1669,7 @@ const TestimonialsSection: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Star className="w-3.5 h-3.5 fill-brand-teal" />
@@ -1714,7 +1714,7 @@ const TestimonialsSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="mt-10 bg-white rounded-2xl border border-brand-border p-6 sm:p-7 shadow-2xs">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="flex flex-col items-center space-y-1">
@@ -1840,7 +1840,7 @@ const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
 
   return (
     <section id="why-us" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 order-2 lg:order-1">
             <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-brand-border/80 shadow-card aspect-[16/10] sm:aspect-[4/3] lg:aspect-[4/5] bg-white">
@@ -2039,7 +2039,7 @@ export const HomePage: React.FC = () => {
 
       {/* 5. Dynamic EMI & FOIR Calculator Banner */}
       <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="p-6 sm:p-10 lg:p-12 rounded-2xl sm:rounded-3xl bg-white border border-brand-border/80 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 shadow-card">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
@@ -2084,7 +2084,7 @@ export const HomePage: React.FC = () => {
 
       {/* 9. Consultation Invitation CTA */}
       <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
             

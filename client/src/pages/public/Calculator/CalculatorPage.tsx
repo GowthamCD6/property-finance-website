@@ -118,7 +118,7 @@ export const CalculatorPage: React.FC = () => {
           1. CONTENT-SPECIFIC HERO: FINANCIAL INSTRUMENT SUITE
           ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#091522] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             {/* Left Column: Heading */}
@@ -219,7 +219,7 @@ export const CalculatorPage: React.FC = () => {
           2. INTERACTIVE SLIDER DASHBOARD
           ──────────────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 bg-brand-ivory/50 border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           {calcMode === 'emi' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
               <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-border shadow-subtle space-y-8">

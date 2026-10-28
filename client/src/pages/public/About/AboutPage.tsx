@@ -1199,7 +1199,7 @@ export const AboutPage: React.FC = () => {
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="max-w-4xl mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+          <div className="w-full bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
             <div className="w-12 h-12 rounded-2xl bg-brand-teal-light flex items-center justify-center shrink-0 text-brand-teal">
               <ShieldCheck className="w-6 h-6" />
             </div>

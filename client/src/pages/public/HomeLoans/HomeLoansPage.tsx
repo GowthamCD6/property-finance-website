@@ -162,7 +162,7 @@ export const HomeLoansPage: React.FC = () => {
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#14b8a6_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
         <div className="absolute top-10 right-10 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Column: Dedicated Heading & Value Proposition */}
@@ -314,7 +314,7 @@ export const HomeLoansPage: React.FC = () => {
           2. SIX SPECIALIZED PATHWAYS (Interactive Grid)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
@@ -371,7 +371,7 @@ export const HomeLoansPage: React.FC = () => {
           3. CRITICAL LAND FINANCING ADVISORY (Must-Know Nuances)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-brand-ivory/60 border-b border-brand-border">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-3xl mb-12">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
               Title Due Diligence

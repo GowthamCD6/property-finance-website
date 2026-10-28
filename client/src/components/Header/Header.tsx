@@ -241,16 +241,15 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
         }}
       >
         <div
+          className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto"
           style={{
-            maxWidth: '1580px',
-            margin: '0 auto',
-            padding: isScrolled ? '6px 36px' : '8px 48px',
+            padding: isScrolled ? '6px 0' : '8px 0',
             transition: 'padding 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             
-            {/* ─── Logo (Moved little bit right) ─── */}
+            {/* ─── Logo ─── */}
             <Link
               to="/"
               style={{
@@ -258,7 +257,6 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
                 alignItems: 'center',
                 textDecoration: 'none',
                 flexShrink: 0,
-                marginLeft: '16px',
               }}
               className="group"
             >
@@ -394,8 +392,8 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
               </div>
             </nav>
 
-            {/* ─── CTA Button (Desktop - moved little bit left) ─── */}
-            <div className="desktop-cta" style={{ marginRight: '16px' }}>
+            {/* ─── CTA Button (Desktop) ─── */}
+            <div className="desktop-cta">
               <Link
                 to="/enquire"
                 className="cta-button"
