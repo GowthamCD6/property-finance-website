@@ -57,7 +57,12 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
 
     if (skylineGroupRef.current) skylineGroupRef.current.visible = mode === 'skyline';
     if (networkGroupRef.current) networkGroupRef.current.visible = mode === 'network';
-    if (vaultGroupRef.current) vaultGroupRef.current.visible = mode === 'vault';
+    if (vaultGroupRef.current) {
+      vaultGroupRef.current.visible = mode === 'vault';
+      if (mode === 'vault') {
+        vaultGroupRef.current.rotation.y = 0; // Instantly align to front face
+      }
+    }
   };
 
   useEffect(() => {
@@ -251,30 +256,32 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     // Procedural Clean Signboard Canvas Texture
     const createSignTexture = (bankName: string, rate: string, primaryColor: string) => {
       const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 160;
+      canvas.width = 640;
+      canvas.height = 180;
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
 
       ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, 512, 160);
+      ctx.fillRect(0, 0, 640, 180);
 
       ctx.fillStyle = primaryColor;
-      ctx.fillRect(0, 0, 512, 16);
+      ctx.fillRect(0, 0, 640, 14);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 44px sans-serif';
+      const titleFont = bankName.length > 20 ? 'bold 30px sans-serif' : 'bold 38px sans-serif';
+      ctx.font = titleFont;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(bankName, 256, 68);
+      ctx.fillText(bankName, 320, 70);
 
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 32px sans-serif';
-      ctx.fillText(rate, 256, 120);
+      const subFont = rate.length > 26 ? 'bold 22px sans-serif' : 'bold 28px sans-serif';
+      ctx.font = subFont;
+      ctx.fillText(rate, 320, 126);
 
       ctx.strokeStyle = primaryColor;
-      ctx.lineWidth = 6;
-      ctx.strokeRect(3, 3, 506, 154);
+      ctx.lineWidth = 5;
+      ctx.strokeRect(3, 3, 634, 174);
 
       const texture = new THREE.CanvasTexture(canvas);
       return texture;
@@ -786,28 +793,33 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     const vaultGroup = vaultGroupRef.current;
     vaultGroup.clear();
     vaultGroup.visible = false;
+    vaultGroup.scale.set(0.72, 0.72, 0.72); // Reduced animation size so it fits properly and elegantly
 
-    // Dedicated Vault Atmospheric Lights
-    const vaultSpot = new THREE.SpotLight(0xfff7ed, 2.8, 26, Math.PI / 4, 0.4, 1.2);
-    vaultSpot.position.set(0, 7.8, 3.5);
-    vaultSpot.target.position.set(0, 0, -0.5);
+    // Dedicated Vault Atmospheric Lights (Daylight Corporate Treasury Ambience)
+    const vaultSpot = new THREE.SpotLight(0xfffbeb, 3.2, 28, Math.PI / 3.5, 0.35, 1.0);
+    vaultSpot.position.set(0, 9.0, 5.0);
+    vaultSpot.target.position.set(0, 0, 0);
     vaultGroup.add(vaultSpot);
     vaultGroup.add(vaultSpot.target);
 
-    const vaultGreenGlow = new THREE.PointLight(0x10b981, 2.0, 10);
-    vaultGreenGlow.position.set(1.4, 0.5, 0.6);
+    const vaultFill = new THREE.DirectionalLight(0xe0f2fe, 1.8);
+    vaultFill.position.set(3, 8, 8);
+    vaultGroup.add(vaultFill);
+
+    const vaultGreenGlow = new THREE.PointLight(0x10b981, 2.4, 12);
+    vaultGreenGlow.position.set(1.4, 0.6, 0.8);
     vaultGroup.add(vaultGreenGlow);
 
-    const vaultGoldGlow = new THREE.PointLight(0xf59e0b, 1.8, 8);
-    vaultGoldGlow.position.set(-0.2, 0.2, 0.3);
+    const vaultGoldGlow = new THREE.PointLight(0xf59e0b, 2.2, 10);
+    vaultGoldGlow.position.set(-0.2, 0.4, 0.5);
     vaultGroup.add(vaultGoldGlow);
 
-    // 1. Architectural Chamber Floor Foundation
-    const vaultFloorGeo = new THREE.BoxGeometry(17.5, 0.24, 13.5);
+    // 1. Architectural Chamber Floor Foundation (Prestige Carrara White Marble)
+    const vaultFloorGeo = new THREE.BoxGeometry(16.5, 0.22, 13.0);
     const vaultFloorMat = new THREE.MeshStandardMaterial({
-      color: 0x1e2638,
-      roughness: 0.22,
-      metalness: 0.85,
+      color: 0xf8fafc,
+      roughness: 0.18,
+      metalness: 0.2,
     });
     const vaultFloor = new THREE.Mesh(vaultFloorGeo, vaultFloorMat);
     vaultFloor.position.set(0, -1.88, -0.2);
@@ -816,14 +828,14 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
 
     // Champagne Gold Perimeter Curb Trim
     const vaultFloorTrim = new THREE.Mesh(
-      new THREE.BoxGeometry(17.9, 0.08, 13.9),
+      new THREE.BoxGeometry(16.9, 0.08, 13.4),
       brushedChampagneMat
     );
     vaultFloorTrim.position.set(0, -1.82, -0.2);
     vaultGroup.add(vaultFloorTrim);
 
     // High-Security Floor Track Perimeter Inlays (Chrome & Emerald Inlay Bands)
-    [3.6, 6.2].forEach((r, idx) => {
+    [3.4, 5.8].forEach((r, idx) => {
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(r, r + 0.12, 64),
         new THREE.MeshStandardMaterial({
@@ -838,56 +850,56 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       vaultGroup.add(ring);
     });
 
-    // 2. Heavy Architectural Vault Rear & Side Wall Bulkhead
+    // 2. Heavy Architectural Vault Rear Wall (Low-Profile so Blue Sky is Visible)
     const vaultWallGroup = new THREE.Group();
 
-    // Solid Armored Steel Back Wall
+    // Solid Armored Slate Titanium Back Wall
     const backWall = new THREE.Mesh(
-      new THREE.BoxGeometry(17.5, 7.2, 0.45),
-      new THREE.MeshStandardMaterial({ color: 0x242e3f, roughness: 0.35, metalness: 0.75 })
+      new THREE.BoxGeometry(16.5, 4.6, 0.4),
+      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.28, metalness: 0.85 })
     );
-    backWall.position.set(0, 1.7, -4.6);
+    backWall.position.set(0, 0.5, -4.6);
     vaultWallGroup.add(backWall);
 
     // Top Architectural Lintel Beam
     const lintelBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(17.9, 0.6, 0.9),
-      new THREE.MeshStandardMaterial({ color: 0x18202d, roughness: 0.25, metalness: 0.85 })
+      new THREE.BoxGeometry(16.9, 0.5, 0.8),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.25, metalness: 0.9 })
     );
-    lintelBeam.position.set(0, 5.3, -4.4);
+    lintelBeam.position.set(0, 2.9, -4.4);
     vaultWallGroup.add(lintelBeam);
 
     // Heavy Security Pilasters (Left & Right) with Emerald Status Light Strips
-    [-8.4, 8.4].forEach((px) => {
+    [-8.0, 8.0].forEach((px) => {
       const pilaster = new THREE.Mesh(
-        new THREE.BoxGeometry(0.7, 7.2, 0.7),
-        new THREE.MeshStandardMaterial({ color: 0x18202d, roughness: 0.25, metalness: 0.85 })
+        new THREE.BoxGeometry(0.65, 4.6, 0.65),
+        new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.25, metalness: 0.88 })
       );
-      pilaster.position.set(px, 1.7, -4.45);
+      pilaster.position.set(px, 0.5, -4.45);
       vaultWallGroup.add(pilaster);
 
       // Embedded Vertical LED Safety Light Strip
       const lightStrip = new THREE.Mesh(
-        new THREE.BoxGeometry(0.12, 6.8, 0.08),
+        new THREE.BoxGeometry(0.1, 4.2, 0.08),
         new THREE.MeshBasicMaterial({ color: 0x10b981 })
       );
-      lightStrip.position.set(px > 0 ? px - 0.36 : px + 0.36, 1.7, -4.08);
+      lightStrip.position.set(px > 0 ? px - 0.34 : px + 0.34, 0.5, -4.1);
       vaultWallGroup.add(lightStrip);
     });
 
     // 3. Integrated Precision Safety Deposit Locker Matrix (Built onto Back Wall)
     const lockerBank = new THREE.Group();
-    const lockerFaceMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.2, metalness: 0.92 });
+    const lockerFaceMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.2, metalness: 0.92 });
     const lockerBrassMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.95 });
     const lockerChromeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.98 });
     const lockerLedMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
 
-    const rows = 5;
+    const rows = 4;
     const cols = 7;
-    const boxW = 0.84;
-    const boxH = 0.62;
+    const boxW = 0.82;
+    const boxH = 0.56;
     const startX = 0.4;
-    const startY = -0.5;
+    const startY = -0.7;
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
@@ -931,7 +943,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
 
     // 4. Massive 3D Bank Vault Doorway & Articulated Open Vault Door
     const doorwayGroup = new THREE.Group();
-    doorwayGroup.position.set(-2.8, 1.4, -0.6);
+    doorwayGroup.position.set(-2.2, 0.8, -0.6);
 
     // Deep 3D Outer Portal Frame Collar (Solid 3D Steel Collar with Bevel)
     const portalCollar = new THREE.Mesh(
@@ -1332,7 +1344,11 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
         const deltaX = e.clientX - previousMousePosition.current.x;
         skylineGroup.rotation.y += deltaX * 0.006;
         networkGroup.rotation.y += deltaX * 0.006;
-        vaultGroup.rotation.y += deltaX * 0.006;
+        if (currentModeRef.current === 'vault') {
+          vaultGroup.rotation.y = Math.max(-0.4, Math.min(0.4, vaultGroup.rotation.y + deltaX * 0.003));
+        } else {
+          vaultGroup.rotation.y += deltaX * 0.006;
+        }
         previousMousePosition.current = { x: e.clientX, y: e.clientY };
       }
     };
@@ -1407,17 +1423,17 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
 
       // Dynamic camera vantage adapting smoothly to mode
       const isVault = currentModeRef.current === 'vault';
-      const targetCamZ = isVault ? 14.5 : 23.0;
-      const targetCamBaseY = isVault ? 4.2 : 10.5;
+      const targetCamZ = isVault ? 19.5 : 23.0; // Reduced animation size: comfortably framed without cutoff
+      const targetCamBaseY = isVault ? 5.8 : 10.5;
       const targetLookY = isVault ? 0.3 : 0.8;
-      const targetLookZ = isVault ? -0.5 : 0.0;
+      const targetLookZ = isVault ? -0.2 : 0.0;
 
       // Camera smooth damping
       mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.04;
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.04;
 
-      const desiredCamX = mouseRef.current.x * (isVault ? 1.6 : 2.8);
-      const desiredCamY = targetCamBaseY + mouseRef.current.y * (isVault ? 1.2 : 1.8);
+      const desiredCamX = mouseRef.current.x * (isVault ? 1.4 : 2.8);
+      const desiredCamY = targetCamBaseY + mouseRef.current.y * (isVault ? 1.0 : 1.8);
 
       camera.position.x += (desiredCamX - camera.position.x) * 0.05;
       camera.position.y += (desiredCamY - camera.position.y) * 0.05;
@@ -1429,7 +1445,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       if (autoRotate && !isDraggingRef.current) {
         skylineGroup.rotation.y += 0.0016;
         networkGroup.rotation.y += 0.0022;
-        vaultGroup.rotation.y += 0.0018;
+        // vaultGroup does NOT spin 360 degrees, stays front-facing
       }
 
       // Drift Clouds across the vibrant blue sky
@@ -1491,6 +1507,11 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
 
       // ── MODE 3: HIGH-SECURITY VAULT ANIMATION SEQUENCE ──
       if (vaultGroup.visible) {
+        // Subtle organic breathing sway (stays front-facing, never turns to show back wall)
+        if (!isDraggingRef.current) {
+          vaultGroup.rotation.y = Math.sin(elapsedTime * 0.4) * 0.035;
+        }
+
         // 1. Vault Door Dynamic Breathing / Swing Cycle
         if (vaultDoorGroupRef.current) {
           const doorAngle = -Math.PI / 3.4 + Math.sin(elapsedTime * 0.8) * 0.08;
