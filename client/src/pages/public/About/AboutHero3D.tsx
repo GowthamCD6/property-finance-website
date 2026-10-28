@@ -35,6 +35,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
   const vehiclesRef = useRef<VehicleData[]>([]);
   const dataPacketsRef = useRef<{ mesh: THREE.Mesh; start: THREE.Vector3; end: THREE.Vector3; progress: number; speed: number }[]>([]);
   const scannerRef = useRef<THREE.Mesh | null>(null);
+  const bannerRingRef = useRef<THREE.Mesh | null>(null);
 
   // Mouse & interaction states
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
@@ -57,16 +58,16 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // 1. Scene Setup with Rich Daylight Atmosphere
+    // 1. Scene Setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // Atmospheric Fog softly blending into the sky horizon
-    scene.fog = new THREE.FogExp2(0xcde3f7, 0.009);
+    // Soft daylight aerial fog
+    scene.fog = new THREE.FogExp2(0xcde3f7, 0.008);
 
-    // 2. Camera setup with isometric architectural vantage
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(0, 9.5, 22);
+    // 2. Camera setup with isometric vantage
+    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 1000);
+    camera.position.set(0, 10.5, 23);
     camera.lookAt(0, 0.8, 0);
     cameraRef.current = camera;
 
@@ -81,7 +82,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.18;
     rendererRef.current = renderer;
     container.appendChild(renderer.domElement);
 
@@ -93,11 +94,11 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       const ctx = canvas.getContext('2d');
       if (ctx) {
         const gradient = ctx.createLinearGradient(0, 0, 0, 512);
-        gradient.addColorStop(0.0, '#0284c7'); // Deep azure blue at top of sky
-        gradient.addColorStop(0.3, '#38bdf8'); // Clear radiant summer blue
-        gradient.addColorStop(0.65, '#93c5fd'); // Soft light sky blue
-        gradient.addColorStop(0.9, '#cde3f7'); // Warm horizon glow
-        gradient.addColorStop(1.0, '#dbeafe'); // Ground horizon blend
+        gradient.addColorStop(0.0, '#0284c7'); // Deep azure blue at sky zenith
+        gradient.addColorStop(0.35, '#38bdf8'); // Radiant summer blue
+        gradient.addColorStop(0.7, '#93c5fd');  // Soft light sky blue
+        gradient.addColorStop(0.92, '#cde3f7'); // Radiant daylight horizon glow
+        gradient.addColorStop(1.0, '#dbeafe');  // Horizon blend
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, 512, 512);
       }
@@ -120,7 +121,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       roughness: 0.95,
       metalness: 0.05,
       transparent: true,
-      opacity: 0.88,
+      opacity: 0.9,
     });
 
     const createCloudCluster = (x: number, y: number, z: number, scale: number) => {
@@ -146,23 +147,23 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     };
 
     const clouds = [
-      createCloudCluster(-28, 18, -35, 2.6),
-      createCloudCluster(15, 22, -45, 3.2),
-      createCloudCluster(32, 19, -30, 2.8),
-      createCloudCluster(-10, 24, -50, 3.5),
-      createCloudCluster(4, 16, 25, 2.4),
-      createCloudCluster(-35, 20, 10, 2.9),
+      createCloudCluster(-30, 20, -38, 2.8),
+      createCloudCluster(18, 24, -45, 3.4),
+      createCloudCluster(35, 21, -30, 2.9),
+      createCloudCluster(-12, 26, -52, 3.6),
+      createCloudCluster(5, 18, 26, 2.5),
+      createCloudCluster(-38, 22, 12, 3.0),
     ];
     clouds.forEach((c) => cloudsGroup.add(c));
     scene.add(cloudsGroup);
 
     // 6. Natural Daylight Lighting
-    const hemiLight = new THREE.HemisphereLight(0xbae6fd, 0xf1f5f9, 1.85);
+    const hemiLight = new THREE.HemisphereLight(0xbae6fd, 0xf1f5f9, 1.9);
     hemiLight.position.set(0, 40, 0);
     scene.add(hemiLight);
 
     const sunLight = new THREE.DirectionalLight(0xfffbeb, 2.9);
-    sunLight.position.set(18, 32, 20);
+    sunLight.position.set(18, 34, 20);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 1024;
     sunLight.shadow.mapSize.height = 1024;
@@ -173,10 +174,10 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     fillLight.position.set(-20, 18, -15);
     scene.add(fillLight);
 
-    // Ground Expanse (Seamless Urban Landscape)
+    // Ground Expanse
     const groundGeo = new THREE.PlaneGeometry(160, 160);
     const groundMat = new THREE.MeshStandardMaterial({
-      color: 0x93c5fd, // Soft distance landscape color blending with horizon
+      color: 0x93c5fd,
       roughness: 0.8,
     });
     const ground = new THREE.Mesh(groundGeo, groundMat);
@@ -196,7 +197,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     plaza.receiveShadow = true;
     scene.add(plaza);
 
-    // Procedural Window Texture Generator
+    // Procedural Window Texture Generator for Real Glass Facades
     const createWindowTexture = (floorCount: number, columnCount: number, glassColor: string) => {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
@@ -234,43 +235,52 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       return texture;
     };
 
-    const windowTexBlue = createWindowTexture(12, 8, '#2563eb');
+    const windowTexBlue = createWindowTexture(12, 8, '#1d4ed8');
     const windowTexTeal = createWindowTexture(14, 8, '#0d9488');
     const windowTexAzure = createWindowTexture(10, 6, '#0284c7');
 
-    // Procedural Badge Text Canvas Texture Helper
-    const createLabelTexture = (text: string, subtext: string, bgColor: string, textColor: string) => {
+    // Procedural Clean Signboard Canvas Texture
+    const createSignTexture = (bankName: string, rate: string, primaryColor: string) => {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 160;
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
 
-      // Card Background
-      ctx.fillStyle = bgColor;
-      ctx.roundRect ? ctx.roundRect(10, 10, 492, 140, 20) : ctx.rect(10, 10, 492, 140);
-      ctx.fill();
+      // Dark executive backing
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, 512, 160);
 
-      // Border
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 6;
-      ctx.stroke();
+      // Top color accent bar
+      ctx.fillStyle = primaryColor;
+      ctx.fillRect(0, 0, 512, 16);
 
-      // Header Text
-      ctx.fillStyle = textColor;
+      // Bank Title
+      ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 44px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(text, 256, 58);
+      ctx.fillText(bankName, 256, 68);
 
-      // Subtext Text
-      ctx.fillStyle = '#f8fafc';
-      ctx.font = 'bold 30px sans-serif';
-      ctx.fillText(subtext, 256, 110);
+      // Interest Rate Highlight
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 32px sans-serif';
+      ctx.fillText(rate, 256, 120);
+
+      // Border frame
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 6;
+      ctx.strokeRect(3, 3, 506, 154);
 
       const texture = new THREE.CanvasTexture(canvas);
       return texture;
     };
+
+    // Reusable Architectural Materials
+    const whiteGraniteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.35 });
+    const brushedChampagneMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.25, metalness: 0.75 });
+    const chromeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.95 });
+    const darkRoofMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.4 });
 
     // ─────────────────────────────────────────────────────────────
     // MODE 1: REALISTIC ARCHITECTURAL SKYLINE & MOVING VEHICLES
@@ -278,12 +288,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     const skylineGroup = skylineGroupRef.current;
     skylineGroup.clear();
 
-    const roadMat = new THREE.MeshStandardMaterial({
-      color: 0x27303f,
-      roughness: 0.85,
-      metalness: 0.1,
-    });
-
+    const roadMat = new THREE.MeshStandardMaterial({ color: 0x27303f, roughness: 0.85, metalness: 0.1 });
     const roadMarkingMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
     const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0xdde4ec, roughness: 0.5 });
 
@@ -316,23 +321,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     createRoad(2.4, 16.4, 8.0, 0, true);
     createRoad(2.0, 16.4, 0, 0, true);
 
-    // Pedestrian crossings
-    const createZebraCrossing = (x: number, z: number, isVertical: boolean) => {
-      for (let i = 0; i < 5; i++) {
-        const bar = new THREE.Mesh(new THREE.PlaneGeometry(0.25, 1.4), roadMarkingMat);
-        bar.rotation.x = -Math.PI / 2;
-        if (isVertical) {
-          bar.position.set(x - 0.7 + i * 0.35, -1.92, z);
-        } else {
-          bar.rotation.z = Math.PI / 2;
-          bar.position.set(x, -1.92, z - 0.7 + i * 0.35);
-        }
-        skylineGroup.add(bar);
-      }
-    };
-    createZebraCrossing(0, -5.6, true);
-    createZebraCrossing(0, 5.6, true);
-
+    // Sidewalk Blocks
     const createSidewalkBlock = (w: number, d: number, x: number, z: number) => {
       const sw = new THREE.Mesh(new THREE.BoxGeometry(w, 0.12, d), sidewalkMat);
       sw.position.set(x, -1.9, z);
@@ -342,20 +331,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     createSidewalkBlock(6.2, 11.8, -4.0, 0);
     createSidewalkBlock(6.2, 11.8, 4.0, 0);
 
-    // Reusable Materials
-    const whiteGraniteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.35 });
-    const brushedChampagneMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.25, metalness: 0.75 });
-    const glassTowerMat = new THREE.MeshPhysicalMaterial({
-      color: 0x38bdf8,
-      roughness: 0.08,
-      metalness: 0.15,
-      transmission: 0.45,
-      transparent: true,
-      opacity: 0.92,
-      clearcoat: 1.0,
-    });
-
-    // Centerpiece Prime Headquarters Tower
+    // Centerpiece Prime Tower
     const centerTowerGroup = new THREE.Group();
     const podiumMesh = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.2, 3.2), whiteGraniteMat);
     podiumMesh.position.y = -1.4;
@@ -370,6 +346,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     centerShaft.castShadow = true;
     centerTowerGroup.add(centerShaft);
 
+    // Pilasters & Crown
     const pilasterGeo = new THREE.BoxGeometry(0.16, 8.4, 0.16);
     [[-1.3, -1.3], [1.3, -1.3], [-1.3, 1.3], [1.3, 1.3]].forEach(([px, pz]) => {
       const pil = new THREE.Mesh(pilasterGeo, brushedChampagneMat);
@@ -377,15 +354,18 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       centerTowerGroup.add(pil);
     });
 
-    const crown = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.4, 2.0), glassTowerMat);
+    const crown = new THREE.Mesh(
+      new THREE.BoxGeometry(2.0, 1.4, 2.0),
+      new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, roughness: 0.08, transmission: 0.5, transparent: true, opacity: 0.9 })
+    );
     crown.position.y = 8.1;
     centerTowerGroup.add(crown);
 
-    const helipad = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.15, 32), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+    const helipad = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.15, 32), darkRoofMat);
     helipad.position.y = 8.85;
     centerTowerGroup.add(helipad);
 
-    const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.1, 2.0, 16), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9 }));
+    const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.1, 2.0, 16), chromeMat);
     spire.position.y = 9.9;
     centerTowerGroup.add(spire);
 
@@ -418,7 +398,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       bShaft.castShadow = true;
       bGroup.add(bShaft);
 
-      const bRoof = new THREE.Mesh(new THREE.BoxGeometry(b.w * 0.75, 0.7, b.d * 0.75), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+      const bRoof = new THREE.Mesh(new THREE.BoxGeometry(b.w * 0.75, 0.7, b.d * 0.75), darkRoofMat);
       bRoof.position.y = -2 + b.h + 0.35;
       bGroup.add(bRoof);
 
@@ -426,13 +406,10 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       skylineGroup.add(bGroup);
     });
 
-    // Plaza Trees
+    // Street Trees
     const treeMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.7 });
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0x78350f });
-    [
-      [-1.5, -4.2], [1.5, -4.2], [-1.5, 4.2], [1.5, 4.2],
-      [-6.5, -4.2], [6.5, -4.2], [-6.5, 4.2], [6.5, 4.2]
-    ].forEach(([tx, tz]) => {
+    [[-1.5, -4.2], [1.5, -4.2], [-1.5, 4.2], [1.5, 4.2], [-6.5, -4.2], [6.5, -4.2], [-6.5, 4.2], [6.5, 4.2]].forEach(([tx, tz]) => {
       const tree = new THREE.Group();
       const trk = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.6, 8), trunkMat);
       trk.position.y = -1.65;
@@ -444,7 +421,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       skylineGroup.add(tree);
     });
 
-    // Moving Vehicles on Roads
+    // Moving Street Vehicles
     const createVehicleMesh = (carType: 'sedan' | 'suv' | 'taxi' | 'van', bodyColor: number) => {
       const car = new THREE.Group();
       const bodyMat = new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.2, metalness: 0.6 });
@@ -479,7 +456,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
         car.add(taxiSign);
       }
 
-      // Headlights & Taillights
+      // Lights
       const hlLeft = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 0.04), headlightMat);
       hlLeft.position.set(-width / 2 + 0.08, height / 2 + 0.08, length / 2 + 0.02);
       car.add(hlLeft);
@@ -499,14 +476,12 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       const wheels: THREE.Mesh[] = [];
       const wheelRadius = 0.14;
       const wheelWidth = 0.08;
-      const wheelPositions = [
+      [
         [-width / 2 - 0.02, wheelRadius, length * 0.3],
         [width / 2 + 0.02, wheelRadius, length * 0.3],
         [-width / 2 - 0.02, wheelRadius, -length * 0.3],
         [width / 2 + 0.02, wheelRadius, -length * 0.3],
-      ];
-
-      wheelPositions.forEach(([wx, wy, wz]) => {
+      ].forEach(([wx, wy, wz]) => {
         const wMesh = new THREE.Mesh(new THREE.CylinderGeometry(wheelRadius, wheelRadius, wheelWidth, 16), wheelMat);
         wMesh.rotation.z = Math.PI / 2;
         wMesh.position.set(wx, wy, wz);
@@ -551,191 +526,254 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     scene.add(skylineGroup);
 
     // ─────────────────────────────────────────────────────────────
-    // MODE 2: MEANINGFUL INSTITUTIONAL LENDER GRID (Banking Exchange Campus)
+    // MODE 2: HIGH-END INSTITUTIONAL LENDER CAMPUS (Realistic Bank Towers)
     // ─────────────────────────────────────────────────────────────
     const networkGroup = networkGroupRef.current;
     networkGroup.clear();
     networkGroup.visible = false;
 
-    // Banking Campus Ground with Radial Inlaid Marble Rings
-    const lenderCampusFloor = new THREE.Mesh(
-      new THREE.CylinderGeometry(11, 11, 0.2, 48),
-      new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.4, metalness: 0.1 })
+    // Architectural Campus Plaza Floor (Concentric Granite & Inlaid Marble Paving)
+    const campusPlaza = new THREE.Mesh(
+      new THREE.CylinderGeometry(11.5, 11.5, 0.22, 64),
+      new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3, metalness: 0.1 })
     );
-    lenderCampusFloor.position.y = -1.9;
-    lenderCampusFloor.receiveShadow = true;
-    networkGroup.add(lenderCampusFloor);
+    campusPlaza.position.y = -1.9;
+    campusPlaza.receiveShadow = true;
+    networkGroup.add(campusPlaza);
 
-    // Concentric Inlaid Gold Compass Rings
-    [4.5, 7.8, 10.2].forEach((r) => {
-      const ring = new THREE.Line(
-        new THREE.RingGeometry(r, r + 0.06, 64),
-        new THREE.LineBasicMaterial({ color: 0xd97706, transparent: true, opacity: 0.6 })
+    // Concentric Inlaid Marble Bands
+    [4.6, 7.8, 10.5].forEach((r) => {
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(r, r + 0.18, 64),
+        new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.8, side: THREE.DoubleSide })
       );
       ring.rotation.x = -Math.PI / 2;
       ring.position.y = -1.78;
       networkGroup.add(ring);
     });
 
-    // Central Monumental Prime Associates Syndication Rotunda
+    // Central Monumental Prime Syndication Rotunda
     const centralDeskGroup = new THREE.Group();
 
-    // Rotunda Marble Base
-    const rotundaBase = new THREE.Mesh(
-      new THREE.CylinderGeometry(2.4, 2.6, 1.0, 32),
-      new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3, metalness: 0.15 })
-    );
-    rotundaBase.position.y = -1.3;
-    rotundaBase.castShadow = true;
-    centralDeskGroup.add(rotundaBase);
+    // Rotunda Tiered Marble Steps
+    const step1 = new THREE.Mesh(new THREE.CylinderGeometry(3.0, 3.2, 0.25, 36), whiteGraniteMat);
+    step1.position.y = -1.7;
+    centralDeskGroup.add(step1);
 
-    // Rotunda Glass Mezzanine
+    const step2 = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.8, 0.3, 36), whiteGraniteMat);
+    step2.position.y = -1.45;
+    centralDeskGroup.add(step2);
+
+    // Inner Glass Boardroom Cylinder
     const rotundaGlass = new THREE.Mesh(
-      new THREE.CylinderGeometry(2.0, 2.0, 2.4, 32),
+      new THREE.CylinderGeometry(1.9, 1.9, 2.4, 32),
       new THREE.MeshPhysicalMaterial({
-        color: 0x0284c7,
-        roughness: 0.1,
-        transmission: 0.6,
+        color: 0x38bdf8,
+        roughness: 0.05,
+        transmission: 0.7,
         transparent: true,
         opacity: 0.85,
         clearcoat: 1.0,
       })
     );
-    rotundaGlass.position.y = 0.4;
+    rotundaGlass.position.y = -0.1;
     centralDeskGroup.add(rotundaGlass);
 
-    // Fluted Gold Columns around Rotunda
-    for (let c = 0; c < 8; c++) {
-      const cAngle = (c / 8) * Math.PI * 2;
-      const col = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.1, 0.1, 2.4, 12),
+    // 10 Fluted Marble & Gold Columns
+    for (let c = 0; c < 10; c++) {
+      const cAngle = (c / 10) * Math.PI * 2;
+      const colGroup = new THREE.Group();
+      const colShaft = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.09, 0.09, 2.4, 16),
+        whiteGraniteMat
+      );
+      const colCap = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.16, 0.09, 0.15, 16),
         brushedChampagneMat
       );
-      col.position.set(Math.cos(cAngle) * 2.1, 0.4, Math.sin(cAngle) * 2.1);
-      col.castShadow = true;
-      centralDeskGroup.add(col);
+      colCap.position.y = 1.2;
+      colGroup.add(colShaft);
+      colGroup.add(colCap);
+      colGroup.position.set(Math.cos(cAngle) * 2.1, -0.1, Math.sin(cAngle) * 2.1);
+      centralDeskGroup.add(colGroup);
     }
 
-    // Golden Rotunda Dome
-    const rotundaDome = new THREE.Mesh(
-      new THREE.SphereGeometry(2.1, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2),
-      new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 })
+    // Sculpted Entablature Ring
+    const entablature = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.35, 2.3, 0.35, 36),
+      whiteGraniteMat
     );
-    rotundaDome.position.y = 1.6;
-    rotundaDome.castShadow = true;
+    entablature.position.y = 1.25;
+    centralDeskGroup.add(entablature);
+
+    // Classical Ribbed Bronze Dome
+    const rotundaDome = new THREE.Mesh(
+      new THREE.SphereGeometry(2.2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.25, metalness: 0.85 })
+    );
+    rotundaDome.position.y = 1.4;
     centralDeskGroup.add(rotundaDome);
 
-    // Crown Beacon
-    const rotundaSpire = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.06, 0.15, 1.8, 16),
-      new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9 })
-    );
-    rotundaSpire.position.y = 3.6;
-    centralDeskGroup.add(rotundaSpire);
+    // Dome Lantern & Golden Finial
+    const lantern = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.45, 0.7, 16), whiteGraniteMat);
+    lantern.position.y = 3.7;
+    centralDeskGroup.add(lantern);
 
-    // Central Label Ring Billboard
-    const centralLabelTex = createLabelTexture('PRIME ASSOCIATES', 'CENTRAL LENDING DESK • 40+ PARTNERS', '#0f766e', '#5eead4');
-    if (centralLabelTex) {
-      const bannerMesh = new THREE.Mesh(
-        new THREE.CylinderGeometry(2.25, 2.25, 0.6, 32, 1, true),
-        new THREE.MeshBasicMaterial({ map: centralLabelTex, side: THREE.DoubleSide })
-      );
-      bannerMesh.position.y = 2.4;
-      centralDeskGroup.add(bannerMesh);
+    const finialSpire = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.1, 1.4, 16), brushedChampagneMat);
+    finialSpire.position.y = 4.6;
+    centralDeskGroup.add(finialSpire);
+
+    // Rotating 360° Illuminated Ticker Ribbon
+    const tickerCanvas = document.createElement('canvas');
+    tickerCanvas.width = 1024;
+    tickerCanvas.height = 128;
+    const tCtx = tickerCanvas.getContext('2d');
+    if (tCtx) {
+      tCtx.fillStyle = '#0f172a';
+      tCtx.fillRect(0, 0, 1024, 128);
+      tCtx.fillStyle = '#14b8a6';
+      tCtx.fillRect(0, 0, 1024, 8);
+      tCtx.fillRect(0, 120, 1024, 8);
+      tCtx.fillStyle = '#f8fafc';
+      tCtx.font = 'bold 36px sans-serif';
+      tCtx.textAlign = 'center';
+      tCtx.textBaseline = 'middle';
+      tCtx.fillText('★ PRIME ASSOCIATES ★ CENTRAL LENDING DESK ★ 40+ BANK PARTNERS ★', 512, 64);
     }
+    const tickerTex = new THREE.CanvasTexture(tickerCanvas);
+    tickerTex.wrapS = THREE.RepeatWrapping;
+    tickerTex.wrapT = THREE.RepeatWrapping;
+
+    const tickerRing = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.45, 2.45, 0.5, 48, 1, true),
+      new THREE.MeshBasicMaterial({ map: tickerTex, side: THREE.DoubleSide })
+    );
+    tickerRing.position.y = 2.4;
+    bannerRingRef.current = tickerRing;
+    centralDeskGroup.add(tickerRing);
 
     networkGroup.add(centralDeskGroup);
 
-    // 6 Real Partner Bank Pavilions
+    // 6 Realistic Banking Headquarters Towers
     const partnerBanks = [
-      { name: 'STATE BANK OF INDIA', rate: 'Home Loan 7.25%*', color: '#1e3a8a', bColor: 0x1d4ed8, accent: 0xf59e0b, angle: 0 },
-      { name: 'HDFC BANK', rate: 'Lowest Rate 7.25%*', color: '#0369a1', bColor: 0x0284c7, accent: 0xef4444, angle: (Math.PI / 3) },
-      { name: 'ICICI BANK', rate: 'Mortgage LAP 8.50%*', color: '#b45309', bColor: 0xd97706, accent: 0xfbbf24, angle: (2 * Math.PI / 3) },
-      { name: 'AXIS BANK', rate: 'Commercial LRD 8.90%*', color: '#881337', bColor: 0x9f1239, accent: 0xf43f5e, angle: Math.PI },
-      { name: 'KOTAK MAHINDRA', rate: 'Fast-Track 24h Approval', color: '#dc2626', bColor: 0xb91c1c, accent: 0xf87171, angle: (4 * Math.PI / 3) },
-      { name: 'LIC HOUSING FINANCE', rate: 'Govt. Subsidy / PMAY', color: '#065f46', bColor: 0x047857, accent: 0x34d399, angle: (5 * Math.PI / 3) },
+      { name: 'SBI BANK', rate: 'Rate 7.25%*', color: '#1e40af', bColor: 0x1d4ed8, angle: 0 },
+      { name: 'HDFC BANK', rate: 'Rate 7.25%*', color: '#0369a1', bColor: 0x0284c7, angle: Math.PI / 3 },
+      { name: 'ICICI BANK', rate: 'LAP 8.50%*', color: '#c2410c', bColor: 0xd97706, angle: (2 * Math.PI) / 3 },
+      { name: 'AXIS BANK', rate: 'LRD 8.90%*', color: '#9f1239', bColor: 0x881337, angle: Math.PI },
+      { name: 'KOTAK BANK', rate: '24h Approval', color: '#b91c1c', bColor: 0xdc2626, angle: (4 * Math.PI) / 3 },
+      { name: 'LIC HOUSING', rate: 'PMAY Subsidy', color: '#047857', bColor: 0x059669, angle: (5 * Math.PI) / 3 },
     ];
 
     const dataPackets: { mesh: THREE.Mesh; start: THREE.Vector3; end: THREE.Vector3; progress: number; speed: number }[] = [];
 
     partnerBanks.forEach((bank) => {
-      const bankDist = 7.6;
+      const bankDist = 7.8;
       const bx = Math.cos(bank.angle) * bankDist;
       const bz = Math.sin(bank.angle) * bankDist;
 
       const bankPavilion = new THREE.Group();
 
-      // Bank Base Podium
-      const bBase = new THREE.Mesh(
-        new THREE.BoxGeometry(2.4, 0.6, 2.4),
-        new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 })
-      );
+      // Bank Base Podium (Polished Stone)
+      const bBase = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.6, 2.6), whiteGraniteMat);
       bBase.position.y = -1.6;
       bBase.castShadow = true;
       bankPavilion.add(bBase);
 
-      // Bank Architectural Tower
+      // Bank Main Glass High-Rise Tower Shaft
       const bTower = new THREE.Mesh(
-        new THREE.BoxGeometry(2.0, 3.4, 2.0),
-        new THREE.MeshStandardMaterial({ color: bank.bColor, roughness: 0.2, metalness: 0.4 })
+        new THREE.BoxGeometry(2.2, 4.4, 2.2),
+        new THREE.MeshStandardMaterial({
+          color: bank.bColor,
+          map: windowTexAzure || undefined,
+          roughness: 0.15,
+          metalness: 0.35,
+        })
       );
-      bTower.position.y = 0.4;
+      bTower.position.y = 0.9;
       bTower.castShadow = true;
       bankPavilion.add(bTower);
 
-      // Bank Roof Crown
-      const bRoof = new THREE.Mesh(
-        new THREE.BoxGeometry(2.2, 0.4, 2.2),
-        new THREE.MeshStandardMaterial({ color: bank.accent, roughness: 0.3, metalness: 0.8 })
-      );
-      bRoof.position.y = 2.3;
-      bankPavilion.add(bRoof);
+      // Corner Metal Trims
+      const trimGeo = new THREE.BoxGeometry(0.12, 4.5, 0.12);
+      [[-1.1, -1.1], [1.1, -1.1], [-1.1, 1.1], [1.1, 1.1]].forEach(([cx, cz]) => {
+        const trim = new THREE.Mesh(trimGeo, brushedChampagneMat);
+        trim.position.set(cx, 0.9, cz);
+        bankPavilion.add(trim);
+      });
 
-      // Bank Billboard Plaque
-      const labelTex = createLabelTexture(bank.name, bank.rate, bank.color, '#ffffff');
-      if (labelTex) {
-        const plaque = new THREE.Mesh(
-          new THREE.PlaneGeometry(2.4, 0.8),
-          new THREE.MeshBasicMaterial({ map: labelTex, transparent: true })
-        );
-        plaque.position.set(0, 3.1, 0);
-        // Turn plaque toward center
-        plaque.rotation.y = Math.PI - bank.angle;
-        bankPavilion.add(plaque);
+      // Ground Floor Entrance Lobby Portico
+      const lobbyCanopy = new THREE.Mesh(
+        new THREE.BoxGeometry(1.6, 0.12, 0.7),
+        brushedChampagneMat
+      );
+      lobbyCanopy.position.set(0, -0.6, 1.25);
+      bankPavilion.add(lobbyCanopy);
+
+      // Rooftop Architectural Parapet
+      const bParapet = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.35, 2.35), darkRoofMat);
+      bParapet.position.y = 3.25;
+      bankPavilion.add(bParapet);
+
+      // 4-Sided Illuminated 3D Rooftop Marquee Box (Legible from all angles!)
+      const signTex = createSignTexture(bank.name, bank.rate, bank.color);
+      if (signTex) {
+        const signBoxMat = new THREE.MeshBasicMaterial({ map: signTex });
+        const signMesh = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.75, 2.2), signBoxMat);
+        signMesh.position.y = 3.8;
+        bankPavilion.add(signMesh);
       }
 
       bankPavilion.position.set(bx, 0, bz);
+      // Turn bank slightly towards the central rotunda
+      bankPavilion.rotation.y = -bank.angle + Math.PI / 2;
       networkGroup.add(bankPavilion);
 
-      // Glass Sky-Bridge connecting Central Desk to Bank Pavilion
-      const bridgeDist = bankDist - 2.8;
+      // Futuristic Illuminated Glass Skyway Bridge
+      const bridgeLen = bankDist - 3.2;
       const bridgeCenter = (2.2 + bankDist) / 2;
-      const bridge = new THREE.Mesh(
-        new THREE.BoxGeometry(bridgeDist, 0.25, 0.8),
+      const bridgeGroup = new THREE.Group();
+
+      const bridgeTube = new THREE.Mesh(
+        new THREE.BoxGeometry(bridgeLen, 0.35, 0.7),
         new THREE.MeshPhysicalMaterial({
           color: 0x38bdf8,
           roughness: 0.1,
-          transmission: 0.6,
+          transmission: 0.7,
           transparent: true,
           opacity: 0.85,
         })
       );
-      bridge.position.set(Math.cos(bank.angle) * bridgeCenter, -0.6, Math.sin(bank.angle) * bridgeCenter);
-      bridge.rotation.y = -bank.angle;
-      networkGroup.add(bridge);
+      bridgeGroup.add(bridgeTube);
 
-      // Moving Data Packets (Financial sanctions & disbursements)
-      const packetGeo = new THREE.SphereGeometry(0.18, 12, 12);
-      const packetMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
-      const pMesh = new THREE.Mesh(packetGeo, packetMat);
-      networkGroup.add(pMesh);
+      // Bridge Side Rails
+      const railGeo = new THREE.CylinderGeometry(0.04, 0.04, bridgeLen, 8);
+      const rail1 = new THREE.Mesh(railGeo, chromeMat);
+      rail1.rotation.z = Math.PI / 2;
+      rail1.position.set(0, 0.22, 0.32);
+      bridgeGroup.add(rail1);
+
+      const rail2 = new THREE.Mesh(railGeo, chromeMat);
+      rail2.rotation.z = Math.PI / 2;
+      rail2.position.set(0, 0.22, -0.32);
+      bridgeGroup.add(rail2);
+
+      bridgeGroup.position.set(Math.cos(bank.angle) * bridgeCenter, -0.65, Math.sin(bank.angle) * bridgeCenter);
+      bridgeGroup.rotation.y = -bank.angle;
+      networkGroup.add(bridgeGroup);
+
+      // Glowing Data Packets (Sanction & liquidity pulses)
+      const packet = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16, 12, 12),
+        new THREE.MeshBasicMaterial({ color: 0xfbbf24 })
+      );
+      networkGroup.add(packet);
 
       dataPackets.push({
-        mesh: pMesh,
-        start: new THREE.Vector3(Math.cos(bank.angle) * 2.2, -0.5, Math.sin(bank.angle) * 2.2),
-        end: new THREE.Vector3(bx, -0.5, bz),
+        mesh: packet,
+        start: new THREE.Vector3(Math.cos(bank.angle) * 2.3, -0.6, Math.sin(bank.angle) * 2.3),
+        end: new THREE.Vector3(bx, -0.6, bz),
         progress: Math.random(),
-        speed: 0.4 + Math.random() * 0.2,
+        speed: 0.35 + Math.random() * 0.2,
       });
     });
 
@@ -743,38 +781,28 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     scene.add(networkGroup);
 
     // ─────────────────────────────────────────────────────────────
-    // MODE 3: MEANINGFUL COLLATERAL TITLE DILIGENCE VAULT
+    // MODE 3: REALISTIC HIGH-SECURITY COLLATERAL VAULT
     // ─────────────────────────────────────────────────────────────
     const vaultGroup = vaultGroupRef.current;
     vaultGroup.clear();
     vaultGroup.visible = false;
 
-    // Vault Treasury Chamber Base (Heavy Polished Steel Floor)
+    // Heavy Polished Granite Vault Floor
     const vaultFloor = new THREE.Mesh(
       new THREE.CylinderGeometry(9.0, 9.0, 0.3, 48),
-      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.3, metalness: 0.8 })
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.8 })
     );
     vaultFloor.position.y = -1.9;
     vaultFloor.receiveShadow = true;
     vaultGroup.add(vaultFloor);
 
-    // Rear Safety Deposit Locker Wall
+    // Stainless Steel Safety Deposit Locker Wall
     const lockerWall = new THREE.Group();
-    const lockerCols = 7;
-    const lockerRows = 5;
-    const lockerMat = new THREE.MeshStandardMaterial({
-      color: 0x64748b, // Brushed stainless steel
-      roughness: 0.25,
-      metalness: 0.85,
-    });
-    const lockerHandleMat = new THREE.MeshStandardMaterial({
-      color: 0xd97706, // Polished brass keyholes
-      roughness: 0.2,
-      metalness: 0.9,
-    });
+    const lockerMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.25, metalness: 0.85 });
+    const lockerHandleMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.9 });
 
-    for (let r = 0; r < lockerRows; r++) {
-      for (let c = 0; c < lockerCols; c++) {
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 7; c++) {
         const box = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.65, 0.3), lockerMat);
         box.position.set(-2.7 + c * 0.9, -0.8 + r * 0.72, -4.8);
         lockerWall.add(box);
@@ -789,7 +817,6 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     // Massive Heavy Bank Vault Portal & Open Circular Vault Door
     const portalGroup = new THREE.Group();
 
-    // Vault Outer Portal Frame
     const portalFrame = new THREE.Mesh(
       new THREE.RingGeometry(3.2, 4.4, 36),
       new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.3, metalness: 0.9, side: THREE.DoubleSide })
@@ -797,54 +824,40 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     portalFrame.position.set(0, 1.2, 0);
     portalGroup.add(portalFrame);
 
-    // Massive Circular Bank Vault Door (Open ajar at 45 degrees)
+    // Heavy Vault Door (Open ajar at 45 degrees)
     const doorGroup = new THREE.Group();
-    doorGroup.position.set(-3.2, 1.2, 0); // Hinge pivot point
+    doorGroup.position.set(-3.2, 1.2, 0);
 
     const vaultDoor = new THREE.Mesh(
       new THREE.CylinderGeometry(3.0, 3.0, 0.6, 48),
-      new THREE.MeshStandardMaterial({
-        color: 0x94a3b8, // Polished armor plate steel
-        roughness: 0.2,
-        metalness: 0.85,
-      })
+      new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.2, metalness: 0.85 })
     );
     vaultDoor.rotation.x = Math.PI / 2;
     vaultDoor.position.set(3.0, 0, 0);
 
-    // Chrome Radial Locking Bolts around Door Rim
+    // Chrome Radial Locking Bolts
     for (let b = 0; b < 16; b++) {
       const bAngle = (b / 16) * Math.PI * 2;
-      const bolt = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.12, 0.12, 0.45, 16),
-        new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.1 })
-      );
+      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.45, 16), chromeMat);
       bolt.position.set(Math.cos(bAngle) * 3.1, Math.sin(bAngle) * 3.1, 0);
       bolt.rotation.z = bAngle;
       vaultDoor.add(bolt);
     }
 
-    // Central Brass Steering / Combination Wheel
-    const wheelHub = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.65, 0.65, 0.25, 32),
-      brushedChampagneMat
-    );
+    // Combination Steering Wheel
+    const wheelHub = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 0.25, 32), brushedChampagneMat);
     wheelHub.position.z = 0.38;
     vaultDoor.add(wheelHub);
 
-    // 3 Chrome Spokes
     for (let sp = 0; sp < 3; sp++) {
-      const spoke = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.06, 0.06, 1.8, 12),
-        new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.95 })
-      );
+      const spoke = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.8, 12), chromeMat);
       spoke.rotation.z = (sp / 3) * Math.PI;
       spoke.position.z = 0.42;
       vaultDoor.add(spoke);
     }
 
     doorGroup.add(vaultDoor);
-    doorGroup.rotation.y = -Math.PI / 3.2; // Swung open to show inside
+    doorGroup.rotation.y = -Math.PI / 3.2;
     portalGroup.add(doorGroup);
     vaultGroup.add(portalGroup);
 
@@ -859,15 +872,10 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     tableBase.castShadow = true;
     inspectionTableGroup.add(tableBase);
 
-    // Stack of 24K Gold Bullion Reserves (Capital Liquidity)
-    const goldMat = new THREE.MeshStandardMaterial({
-      color: 0xf59e0b,
-      metalness: 0.95,
-      roughness: 0.12,
-    });
+    // 24K Gold Bullion Ingot Pyramid Stack
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.95, roughness: 0.12 });
     const goldBarGeo = new THREE.BoxGeometry(0.65, 0.2, 1.1);
 
-    // Pyramid Stack of Gold Bars
     for (let layer = 0; layer < 3; layer++) {
       const count = 3 - layer;
       for (let i = 0; i < count; i++) {
@@ -879,14 +887,8 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     }
 
     // Physical Title Deeds & 30-Year Mother Deed Dossiers
-    const deedLeatherMat = new THREE.MeshStandardMaterial({
-      color: 0x0f766e, // Deep emerald legal binder
-      roughness: 0.4,
-    });
-    const deedPageMat = new THREE.MeshStandardMaterial({
-      color: 0xfef9c3, // Parchment paper
-      roughness: 0.8,
-    });
+    const deedLeatherMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.4 });
+    const deedPageMat = new THREE.MeshStandardMaterial({ color: 0xfef9c3, roughness: 0.8 });
 
     for (let d = 0; d < 4; d++) {
       const deedGroup = new THREE.Group();
@@ -896,21 +898,17 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       deedGroup.add(binder);
       deedGroup.add(pages);
 
-      // Red/Green Wax Seal on Deed
-      const waxSeal = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.18, 0.18, 0.04, 16),
-        new THREE.MeshBasicMaterial({ color: 0x15803d })
-      );
+      const waxSeal = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.04, 16), new THREE.MeshBasicMaterial({ color: 0x15803d }));
       waxSeal.position.set(0.2, 0.11, 0.3);
       deedGroup.add(waxSeal);
 
       deedGroup.position.set(0.6, -0.7 + d * 0.2, -1.8);
-      deedGroup.rotation.y = (d * 0.12) - 0.2;
+      deedGroup.rotation.y = d * 0.12 - 0.2;
       inspectionTableGroup.add(deedGroup);
     }
 
-    // Inspection Table Plaque
-    const auditLabelTex = createLabelTexture('30-YR TITLE DEED AUDIT', '100% ENCUMBRANCE-FREE COLLATERAL', '#065f46', '#4ade80');
+    // Table Signboard Plaque
+    const auditLabelTex = createSignTexture('30-YR TITLE DEED AUDIT', '100% ENCUMBRANCE-FREE COLLATERAL', '#065f46');
     if (auditLabelTex) {
       const plaqueMesh = new THREE.Mesh(
         new THREE.PlaneGeometry(2.4, 0.75),
@@ -1015,7 +1013,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     };
 
     // ─────────────────────────────────────────────────────────────
-    // ANIMATION LOOP (Traffic, Clouds, Banking Pulses, Scanner)
+    // ANIMATION LOOP
     // ─────────────────────────────────────────────────────────────
     let clock = new THREE.Clock();
 
@@ -1029,7 +1027,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.04;
 
       camera.position.x = mouseRef.current.x * 2.8;
-      camera.position.y = 9.5 + mouseRef.current.y * 1.8;
+      camera.position.y = 10.5 + mouseRef.current.y * 1.8;
       camera.lookAt(0, 0.8, 0);
 
       // Auto rotation when not dragging
@@ -1039,7 +1037,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
         vaultGroup.rotation.y += 0.002;
       }
 
-      // Drift Clouds gently across the blue sky
+      // Drift Clouds across the vibrant blue sky
       if (cloudsGroup) {
         cloudsGroup.rotation.y += 0.0006;
       }
@@ -1080,14 +1078,20 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
         });
       }
 
-      // Update Active Banking Pulses in Lender Grid mode
-      if (networkGroup.visible && dataPacketsRef.current.length > 0) {
-        dataPacketsRef.current.forEach((dp) => {
-          dp.progress = (dp.progress + dp.speed * delta) % 1.0;
-          dp.mesh.position.lerpVectors(dp.start, dp.end, dp.progress);
-          const pScale = 0.8 + Math.sin(dp.progress * Math.PI) * 0.6;
-          dp.mesh.scale.set(pScale, pScale, pScale);
-        });
+      // Update Active Banking Pulses & Ticker in Lender Grid mode
+      if (networkGroup.visible) {
+        if (bannerRingRef.current) {
+          bannerRingRef.current.rotation.y += 0.005;
+        }
+
+        if (dataPacketsRef.current.length > 0) {
+          dataPacketsRef.current.forEach((dp) => {
+            dp.progress = (dp.progress + dp.speed * delta) % 1.0;
+            dp.mesh.position.lerpVectors(dp.start, dp.end, dp.progress);
+            const pScale = 0.8 + Math.sin(dp.progress * Math.PI) * 0.6;
+            dp.mesh.scale.set(pScale, pScale, pScale);
+          });
+        }
       }
 
       // Update Holographic Scanner in Collateral Vault mode
