@@ -980,12 +980,13 @@ export const HowItWorksPage: React.FC = () => {
               ))}
             </div>
           </div>
+        </div>
 
-          {/* Sliding Bank Marquee Streams */}
-          <div className="relative w-full overflow-hidden mt-6 sm:mt-8 space-y-3.5">
-            {/* Edge Blur Gradients */}
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#f8f8f4] to-transparent z-20" />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#f8f8f4] to-transparent z-20" />
+        {/* Sliding Bank Marquee Streams (Full Viewport Width) */}
+        <div className="relative w-full overflow-hidden mt-6 sm:mt-8 space-y-3.5">
+          {/* Edge Blur Gradients */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-36 lg:w-48 bg-gradient-to-r from-[#f8f8f4] via-[#f8f8f4]/80 to-transparent z-20" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-36 lg:w-48 bg-gradient-to-l from-[#f8f8f4] via-[#f8f8f4]/80 to-transparent z-20" />
 
             {/* Row 1: Leftward Stream */}
             <div className="overflow-hidden">
@@ -1100,7 +1101,6 @@ export const HowItWorksPage: React.FC = () => {
               }
             `}</style>
           </div>
-        </div>
       </section>
 
       {/* ────────────────────────────────────────────────────────────
