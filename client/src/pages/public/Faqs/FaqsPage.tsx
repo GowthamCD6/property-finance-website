@@ -185,51 +185,67 @@ export const FaqsPage: React.FC = () => {
   });
 
   return (
-    <div className="bg-brand-bg min-h-screen text-brand-navy">
+    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: SEARCHABLE KNOWLEDGE REPOSITORY
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#0A1624] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-[#091522] text-white pt-16 pb-16 lg:pt-24 lg:pb-20 border-b border-brand-teal/20">
+        {/* Subtle Atmospheric Light Orbs */}
+        <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-brand-teal/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[550px] h-[550px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none" />
+
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 backdrop-blur-md">
-              <HelpCircle className="w-4 h-4 text-brand-teal" />
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light">
-                Property Finance &amp; Title Diligence Encyclopedia
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
               </span>
+              <span>Property Finance &amp; Title Diligence Encyclopedia</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight text-white">
               Instant Answers on Land, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-brand-gold">
+              <span className="text-[#38bdf8] drop-shadow-[0_4px_22px_rgba(56,189,248,0.65)] font-extrabold">
                 Home Loans &amp; Title Verification.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-gray-300 font-normal leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto">
               Find factual answers regarding municipal layout approvals (BDA/DTCP), Khata classifications, composite plot loan rules, banking FOIR formulas, and legal documentation.
             </p>
 
             {/* Prominent Knowledge Search Bar inside Hero */}
             <div className="pt-2 max-w-2xl mx-auto relative">
-              <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-brand-teal" />
+              <Search className="w-5 h-5 absolute left-4.5 top-1/2 -translate-y-1/2 text-teal-400 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search topics (e.g. A-Khata, CIBIL, Pre-EMI, Plot Loan, MODT, LRD)..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal focus:bg-white/15 transition-all shadow-xl"
+                className="w-full pl-12 pr-4 py-4 bg-white/[0.08] backdrop-blur-xl border border-white/20 rounded-2xl text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white/[0.14] transition-all shadow-2xl"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white bg-white/10 px-2 py-1 rounded-md"
+                >
+                  Clear
+                </button>
+              )}
             </div>
 
             {/* Trending Topic Quick Pills */}
-            <div className="pt-2 flex flex-wrap justify-center items-center gap-2 text-xs text-gray-300">
-              <span className="text-gray-400 font-medium">Trending Queries:</span>
+            <div className="pt-2 flex flex-wrap justify-center items-center gap-2 text-xs text-slate-300">
+              <span className="text-slate-400 font-medium">Trending Queries:</span>
               {trendingTopics.map((topic) => (
                 <button
                   key={topic}
+                  type="button"
                   onClick={() => setSearchTerm(topic)}
-                  className="px-3 py-1 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 transition-colors text-brand-teal-light"
+                  className="px-3 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.15] border border-white/10 transition-colors text-teal-300 cursor-pointer"
                 >
                   #{topic}
                 </button>
@@ -242,23 +258,24 @@ export const FaqsPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. CATEGORY FILTER TABS
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-6 border-b border-brand-border bg-brand-ivory/60 sticky top-16 sm:top-20 z-20 backdrop-blur-md">
+      <section className="py-4 border-b border-brand-border/60 bg-[#f8f8f4]/90 sticky top-16 sm:top-20 z-20 backdrop-blur-xl shadow-2xs">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-slate mr-2 hidden sm:inline">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mr-2 hidden sm:inline font-heading">
               Filter by Category:
             </span>
             {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => {
                   setSelectedCategory(cat);
                   setOpenIndex(null);
                 }}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
                   selectedCategory === cat
-                    ? 'bg-brand-navy text-white shadow-md scale-105'
-                    : 'bg-white text-brand-slate hover:text-brand-navy border border-brand-border hover:bg-white/80'
+                    ? 'bg-brand-teal text-white shadow-sm border border-brand-teal'
+                    : 'bg-white text-slate-600 border border-brand-border/80 hover:bg-slate-50 hover:text-brand-navy'
                 }`}
               >
                 {cat === 'ALL' ? 'All Questions' : cat}
@@ -271,21 +288,23 @@ export const FaqsPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           3. ACCORDION Q&A LIST
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-white">
+      <section className="pt-12 sm:pt-16 pb-16 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-4xl mx-auto">
             {filteredFaqs.length === 0 ? (
-              <div className="p-12 text-center text-brand-slate bg-brand-ivory rounded-3xl border border-brand-border space-y-4">
+              <div className="p-12 text-center text-slate-500 bg-white rounded-3xl border border-brand-border/80 shadow-card space-y-4">
                 <HelpCircle className="w-10 h-10 text-brand-teal mx-auto" />
-                <h3 className="text-lg font-bold text-brand-navy">No matching answers found</h3>
+                <h3 className="text-lg font-bold text-brand-navy font-heading">No matching answers found</h3>
                 <p className="text-sm">Try different keywords or speak directly with our senior financial advisors.</p>
-                <Link
-                  to="/enquire"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-brand-teal text-white text-xs font-bold rounded-corporate shadow-sm hover:bg-brand-teal-hover transition-colors"
-                >
-                  <span>Ask an Advisor Directly</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                <div className="pt-2">
+                  <Link
+                    to="/enquire"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-brand-teal text-white text-xs font-bold rounded-xl shadow-sm hover:bg-brand-teal-hover transition-colors"
+                  >
+                    <span>Ask an Advisor Directly</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">
@@ -295,32 +314,43 @@ export const FaqsPage: React.FC = () => {
                   return (
                     <div
                       key={faq.id || idx}
-                      className="border border-brand-border rounded-2xl overflow-hidden bg-brand-ivory/20 transition-all hover:border-brand-teal/40"
+                      className={`rounded-2xl overflow-hidden transition-all duration-300 border bg-white/95 backdrop-blur-xl shadow-card ring-1 ring-slate-900/5 ${
+                        isOpen
+                          ? 'border-brand-teal/60 shadow-lg'
+                          : 'border-brand-border/80 hover:border-teal-400'
+                      }`}
                     >
                       <button
+                        type="button"
                         onClick={() => setOpenIndex(isOpen ? null : idx)}
-                        className="w-full flex items-center justify-between p-6 text-left bg-white hover:bg-brand-ivory/40 transition-colors focus:outline-none"
+                        className="w-full flex items-center justify-between p-5 sm:p-6 text-left hover:bg-slate-50/50 transition-colors focus:outline-none cursor-pointer"
                       >
                         <span className="text-base sm:text-lg font-bold text-brand-navy pr-4 flex items-start gap-3.5 font-heading">
-                          <span className="w-6 h-6 rounded-md bg-brand-teal-light text-brand-teal flex items-center justify-center font-mono text-xs flex-shrink-0 mt-0.5">
+                          <span
+                            className={`w-7 h-7 rounded-lg flex items-center justify-center font-mono text-xs font-extrabold flex-shrink-0 mt-0.5 transition-colors ${
+                              isOpen
+                                ? 'bg-brand-teal text-white'
+                                : 'bg-brand-teal-light text-brand-teal'
+                            }`}
+                          >
                             Q
                           </span>
-                          <span>{faq.question}</span>
+                          <span className="leading-snug">{faq.question}</span>
                         </span>
                         <ChevronDown
-                          className={`w-5 h-5 text-brand-slate transition-transform duration-300 flex-shrink-0 ${
+                          className={`w-5 h-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ${
                             isOpen ? 'rotate-180 text-brand-teal' : ''
                           }`}
                         />
                       </button>
 
                       {isOpen && (
-                        <div className="p-6 pt-2 text-sm text-brand-slate bg-white leading-relaxed border-t border-brand-border/40 space-y-3">
-                          <div className="pl-9 text-brand-navy/90 leading-relaxed font-normal">
+                        <div className="p-5 sm:p-6 pt-0 text-sm text-slate-700 bg-white leading-relaxed space-y-3">
+                          <div className="pl-10.5 text-slate-700 leading-relaxed font-normal text-sm sm:text-base border-t border-slate-100 pt-4">
                             {faq.answer}
                           </div>
-                          <div className="pl-9 pt-2 flex items-center gap-2">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-teal bg-brand-teal-light px-2.5 py-0.5 rounded">
+                          <div className="pl-10.5 pt-1 flex items-center gap-2">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-teal bg-brand-teal-light px-2.5 py-1 rounded-md font-heading border border-brand-teal/20">
                               {faq.category}
                             </span>
                           </div>
@@ -331,6 +361,39 @@ export const FaqsPage: React.FC = () => {
                 })}
               </div>
             )}
+
+            {/* Still Have Questions Banner */}
+            <div className="mt-12 bg-gradient-to-br from-[#091522] via-[#0d2238] to-[#122e4a] text-white p-6 sm:p-10 rounded-3xl shadow-2xl border border-white/15 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="space-y-2 max-w-xl relative z-10">
+                <span className="text-xs uppercase font-bold tracking-wider text-brand-teal-light font-heading">
+                  Complex Title or Financing Query?
+                </span>
+                <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white">
+                  Speak Directly with Our Senior Underwriters
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Have unique title paperwork, unapproved layout concerns, or complex commercial valuation questions? Our desk reviews municipal parent deeds directly.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 w-full md:w-auto">
+                <Link
+                  to="/enquire"
+                  className="w-full sm:w-auto px-6 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-teal-950/40 flex items-center justify-center gap-2 transition-all text-center cursor-pointer"
+                >
+                  <span>Initiate Advisory Dossier</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <a
+                  href="tel:+919655566613"
+                  className="w-full sm:w-auto px-5 py-3.5 bg-white/[0.08] hover:bg-white/[0.15] text-white border border-white/15 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2"
+                >
+                  <PhoneCall className="w-4 h-4 text-emerald-400" />
+                  <span>+91 96555 66613</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
