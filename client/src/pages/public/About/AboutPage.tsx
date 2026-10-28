@@ -82,24 +82,28 @@ export const AboutPage: React.FC = () => {
       label: 'Facilitated Capital',
       subtext: 'Across High-Value Property Assets',
       badge: 'Cumulative 15-Yr',
+      icon: Building2,
     },
     {
       value: `${counterValues.lenders}+`,
       label: 'Partner Lending Desks',
       subtext: 'PSU, Private Tier-1 Banks & NBFCs',
       badge: 'Direct Zonal Access',
+      icon: Landmark,
     },
     {
       value: `${counterValues.sanction}%`,
       label: 'Sanction Ratio',
-      subtext: 'Achieved via 30-Yr Legal Due Diligence',
+      subtext: 'Forensic 30-Yr Legal Due Diligence',
       badge: 'Pre-Audit Protocol',
+      icon: CheckCircle2,
     },
     {
       value: '24–48h',
       label: 'Credit In-Principle',
-      subtext: 'Bypassing Branch Level Bottlenecks',
+      subtext: 'Direct Zonal Committee Sanction',
       badge: 'Fast-Track Desk',
+      icon: Clock,
     },
   ];
 
@@ -337,20 +341,20 @@ export const AboutPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* ── LEFT COLUMN: Authority Narrative & Interactive Statistics ── */}
-            <div className="lg:col-span-7 space-y-7">
+            <div className="lg:col-span-7 space-y-6 sm:space-y-7">
               
               {/* Institutional Header Tag with Live Status Beacon */}
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/80 text-teal-800 shadow-sm backdrop-blur-md">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/90 text-teal-900 shadow-xs backdrop-blur-md">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-500 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-600"></span>
                   </span>
-                  <span className="text-xs font-bold uppercase tracking-[0.14em]">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.14em]">
                     Institutional Property Advisory Desk
                   </span>
                 </div>
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                <div className="inline-flex items-center gap-1.5 text-xs text-slate-600 font-medium bg-white/90 px-3 py-1.5 rounded-full border border-slate-200 shadow-xs">
                   <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
                   <span>Est. 2011 • Regulated Bank Syndication</span>
                 </div>
@@ -358,7 +362,7 @@ export const AboutPage: React.FC = () => {
 
               {/* Display Headline with High-End Authority Gradient */}
               <div className="space-y-3">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold text-[#0f273d] tracking-tight leading-[1.14]">
+                <h1 className="text-3xl sm:text-4xl lg:text-[46px] xl:text-[52px] font-extrabold text-[#0f273d] tracking-tight leading-[1.15]">
                   The Architecture of{' '}
                   <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-700 via-teal-600 to-sky-700">
                     Institutional Capital
@@ -367,76 +371,91 @@ export const AboutPage: React.FC = () => {
                 </h1>
 
                 <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl pt-1">
-                  <strong className="text-brand-navy">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
+                  <strong className="text-brand-navy font-semibold">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
                 </p>
               </div>
 
-              {/* 4 Key Interactive Metrics Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                {kpis.map((kpi, idx) => (
-                  <div
-                    key={idx}
-                    className="relative group p-4 rounded-xl bg-white/95 hover:bg-white border border-slate-200/90 hover:border-teal-500/40 shadow-sm hover:shadow-card transition-all duration-300 cursor-default"
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
-                        {kpi.badge}
-                      </span>
+              {/* 4 Key Interactive Metrics Grid — Adaptable 2x2 on Tablets/Laptops, 4-Across on Wide Desktop */}
+              <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3.5 pt-1">
+                {kpis.map((kpi, idx) => {
+                  const IconComp = kpi.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="relative group p-4 rounded-xl bg-white/95 hover:bg-white border border-slate-200/90 hover:border-teal-500/40 shadow-xs hover:shadow-card transition-all duration-300 flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
+                            {kpi.badge}
+                          </span>
+                          <IconComp className="w-4 h-4 text-teal-600/70 group-hover:text-teal-600 transition-colors" />
+                        </div>
+                        <div className="text-2xl sm:text-[28px] font-extrabold text-brand-navy tracking-tight leading-none mt-1">
+                          {kpi.value}
+                        </div>
+                        <div className="text-xs font-bold text-slate-800 mt-1.5">
+                          {kpi.label}
+                        </div>
+                      </div>
+                      <div className="text-[11px] text-slate-500 mt-1 leading-snug">
+                        {kpi.subtext}
+                      </div>
                     </div>
-                    <div className="text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight">
-                      {kpi.value}
-                    </div>
-                    <div className="text-xs font-bold text-slate-800 mt-1">
-                      {kpi.label}
-                    </div>
-                    <div className="text-[10px] text-slate-500 mt-0.5 leading-snug line-clamp-1">
-                      {kpi.subtext}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
-              {/* Call-to-Action Group */}
-              <div className="pt-2 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/enquire"
-                  className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-base shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group"
-                >
-                  <Sparkles className="w-5 h-5 text-teal-100" />
-                  <span>Initiate Confidential Advisory</span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </Link>
+              {/* Action Controls & Direct Advisory Hotline */}
+              <div className="pt-2 space-y-3.5">
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/enquire"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm sm:text-base shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] group"
+                  >
+                    <Sparkles className="w-4 h-4 text-teal-200" />
+                    <span>Initiate Confidential Advisory</span>
+                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </Link>
 
-                <a
-                  href="#diligence-matrix"
-                  className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-brand-navy font-semibold text-sm shadow-sm transition-all duration-200"
-                >
-                  <FileSearch className="w-4 h-4 text-teal-600" />
-                  <span>Explore Diligence Protocol</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
-                </a>
+                  <a
+                    href="#diligence-matrix"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-brand-navy font-semibold text-sm shadow-xs hover:border-slate-300 transition-all duration-200"
+                  >
+                    <FileSearch className="w-4 h-4 text-teal-600" />
+                    <span>Explore Diligence Protocol</span>
+                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                  </a>
+                </div>
 
-                <a
-                  href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-50 hover:bg-teal-100/70 text-teal-800 border border-teal-200 text-xs font-semibold transition-colors shadow-sm"
-                >
-                  <PhoneCall className="w-3.5 h-3.5 text-teal-600" />
-                  <span>Direct Hotline: {businessPhone.split(',')[0]}</span>
-                </a>
+                {/* Direct Zonal Advisory Phone Strip */}
+                <div className="inline-flex flex-wrap items-center gap-2.5 px-3.5 py-2 rounded-lg bg-teal-50/70 border border-teal-200/80 text-xs text-teal-950 shadow-xs">
+                  <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-teal-900 font-semibold">Priority Advisory Desk:</span>
+                  <a
+                    href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
+                    className="font-bold text-teal-700 hover:text-teal-900 hover:underline flex items-center gap-1"
+                  >
+                    <PhoneCall className="w-3.5 h-3.5 text-teal-600" />
+                    <span>{businessPhone.split(',')[0]}</span>
+                  </a>
+                  <span className="hidden sm:inline text-teal-300">|</span>
+                  <span className="hidden sm:inline text-teal-700/80 text-[11px]">Direct Zonal Syndication</span>
+                </div>
               </div>
 
               {/* Institutional Safety Pillars Strip */}
-              <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-600 font-medium">
+              <div className="pt-4 border-t border-slate-200/90 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-xs text-slate-600 font-medium">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-teal-600" />
+                  <ShieldCheck className="w-4 h-4 text-teal-600 flex-shrink-0" />
                   <span>RBI Fair Practice Code Compliant</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-teal-600" />
+                  <Lock className="w-4 h-4 text-teal-600 flex-shrink-0" />
                   <span>Zero Unauthorized Bureau Enquiries</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Scale className="w-4 h-4 text-teal-600" />
+                  <Scale className="w-4 h-4 text-teal-600 flex-shrink-0" />
                   <span>Zero Cash Collection Policy</span>
                 </div>
               </div>
