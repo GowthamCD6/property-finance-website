@@ -329,7 +329,7 @@ export const AboutPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Executive Professional Navy Theme)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#183247] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-[#091522] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
@@ -345,22 +345,22 @@ export const AboutPage: React.FC = () => {
                 }}
                 className="flex flex-wrap items-center gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 shadow-sm backdrop-blur-md">
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light shadow-sm backdrop-blur-md">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
                   </span>
-                  <span className="text-xs font-bold uppercase tracking-[0.14em]">
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light">
                     Institutional Property Advisory Desk
                   </span>
                 </div>
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/10 px-3 py-1 rounded-full border border-white/15 backdrop-blur-sm">
-                  <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-gray-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Est. 2011 • Regulated Bank Syndication</span>
                 </div>
               </div>
 
-              {/* Display Headline with High-End Authority Gradient */}
+              {/* Display Headline with High-End Calculator Palette */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
@@ -371,13 +371,13 @@ export const AboutPage: React.FC = () => {
               >
                 <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
                   The Architecture of{' '}
-                  <span className="relative inline-block text-teal-300">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
                     Institutional Capital
                   </span>{' '}
                   &amp; Collateral Precision.
                 </h1>
 
-                <p className="text-xs sm:text-sm md:text-base text-slate-300 font-normal leading-relaxed max-w-2xl pt-1">
+                <p className="text-xs sm:text-sm md:text-base text-gray-300 font-normal leading-relaxed max-w-2xl pt-1">
                   <strong className="text-white font-bold">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
                 </p>
               </div>
@@ -1214,7 +1214,7 @@ export const AboutPage: React.FC = () => {
           ──────────────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-16 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="bg-[#183247] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-xl">
+          <div className="bg-[#091522] text-white border border-brand-teal/20 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-xl">
             <div className="max-w-2xl space-y-4 text-center lg:text-left z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal/20 text-brand-teal-light text-xs font-bold uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />

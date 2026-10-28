@@ -245,9 +245,9 @@ export const HowItWorksPage: React.FC = () => {
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
-          1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Executive Two-Column Layout)
+          1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Matching Calculator Suite Palette)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#183247] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-[#091522] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
@@ -262,22 +262,22 @@ export const HowItWorksPage: React.FC = () => {
                 }}
                 className="flex flex-wrap items-center gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 shadow-sm backdrop-blur-md">
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light shadow-sm backdrop-blur-md">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
                   </span>
-                  <span className="text-xs font-bold uppercase tracking-[0.14em]">
-                    Institutional Lending Pipeline
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light">
+                    Institutional Lending Pipeline &amp; FOIR Engine
                   </span>
                 </div>
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/10 px-3 py-1 rounded-full border border-white/15 backdrop-blur-sm">
-                  <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-gray-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Fast-Track Zonal Desk • Est. 2011</span>
                 </div>
               </div>
 
-              {/* Display Headline with High-End Authority Gradient */}
+              {/* Display Headline with High-End Calculator Page Palette */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
@@ -288,12 +288,12 @@ export const HowItWorksPage: React.FC = () => {
               >
                 <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
                   From Algorithmic Pre-Audit to{' '}
-                  <span className="relative inline-block text-teal-300">
-                    Direct Account Credit
-                  </span>.
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
+                    Direct Account Credit.
+                  </span>
                 </h1>
 
-                <p className="text-xs sm:text-sm md:text-base text-slate-300 font-normal leading-relaxed max-w-2xl pt-1">
+                <p className="text-xs sm:text-sm md:text-base text-gray-300 font-normal leading-relaxed max-w-2xl pt-1">
                   Eliminate 45-day branch queues, arbitrary credit rejections, and hidden broker markups. Our fiduciary 4-stage lending architecture transitions your file from preliminary FOIR assessment to Sub-Registrar MODT registration in <strong className="text-white font-semibold">8 to 12 business days</strong> across 40+ empanelled banks.
                 </p>
               </div>
@@ -307,70 +307,70 @@ export const HowItWorksPage: React.FC = () => {
                 }}
                 className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
               >
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
                       Fast-Track
                     </span>
                   </div>
                   <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
                     {counterValues.turnaround}–12d
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1">
                     Sanction to Credit
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
                     vs 45d Branch Queue
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
                       Zonal Panel
                     </span>
                   </div>
                   <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
                     {counterValues.lenders}+
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1">
                     Partner Banks
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
                     PSU, Private &amp; NBFCs
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
                       Pre-Audited
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-emerald-400 font-heading">
                     {counterValues.sanction}%
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1">
                     Sanction Ratio
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
                     30-Yr Legal Due Diligence
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
                       Volume
                     </span>
                   </div>
                   <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
                     ₹{counterValues.capital}+ Cr
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1">
                     Capital Facilitated
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
                     15-Year Practice
                   </div>
                 </div>
@@ -431,18 +431,18 @@ export const HowItWorksPage: React.FC = () => {
 
             {/* ── RIGHT COLUMN: Interactive Live Loan Syndication Console & Simulator ── */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-3xl bg-[#112332] border border-white/15 p-5 sm:p-6 shadow-xl overflow-hidden">
+              <div className="relative rounded-3xl bg-gradient-to-br from-[#102235] to-[#0a1826] border border-white/15 p-6 sm:p-7 shadow-2xl overflow-hidden space-y-4">
                 {/* Console Header */}
                 <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/10">
                   <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-teal-400 animate-pulse" />
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-white">
+                    <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
+                    <span className="text-xs uppercase font-bold tracking-wider text-brand-teal-light">
                       Live Syndication Simulator
                     </span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-bold text-emerald-300">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-mono text-emerald-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span>ENGINE ONLINE</span>
+                    <span>Live Benchmarks</span>
                   </div>
                 </div>
 
@@ -638,7 +638,7 @@ export const HowItWorksPage: React.FC = () => {
             <div className="hidden lg:block relative mb-4">
               <div className="h-1 bg-white/10 rounded-full w-full">
                 <div
-                  className="h-1 bg-teal-400 rounded-full transition-all duration-500"
+                  className="h-1 bg-brand-teal rounded-full transition-all duration-500"
                   style={{ width: `${(activePhase / 4) * 100}%` }}
                 />
               </div>
@@ -653,21 +653,21 @@ export const HowItWorksPage: React.FC = () => {
                     onClick={() => setActivePhase(phase.phase)}
                     className={`relative p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all duration-300 text-left group ${
                       isActive
-                        ? 'bg-[#1f3f58] border-teal-400 shadow-xl scale-[1.02]'
-                        : 'bg-white/[0.05] border-white/10 text-slate-300 hover:bg-white/[0.09] hover:border-white/20'
+                        ? 'bg-gradient-to-br from-[#102235] to-[#0a1826] border-brand-teal text-white shadow-xl scale-[1.02]'
+                        : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-3">
                       <span
                         className={`w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-xs font-heading ${
                           isActive
-                            ? 'bg-teal-400 text-[#07131F] shadow-sm'
-                            : 'bg-white/10 text-slate-300 group-hover:bg-white/15'
+                            ? 'bg-brand-teal text-white shadow-sm'
+                            : 'bg-white/10 text-gray-300 group-hover:bg-white/15'
                         }`}
                       >
                         {phase.number}
                       </span>
-                      <span className="text-[11px] font-mono text-teal-300 font-bold bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
+                      <span className="text-[11px] font-mono text-emerald-400 font-bold bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
                         {phase.turnaround}
                       </span>
                     </div>
@@ -1016,17 +1016,17 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           6. CONVERSION CTA BANNER
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-[#183247] text-white">
+      <section className="py-16 sm:py-20 bg-[#091522] text-white border-t border-brand-teal/20">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-6">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-4 h-4 text-teal-300" />
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
               <span>Fast-Track Pre-Underwriting</span>
             </span>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-heading leading-tight">
               Ready to Secure Institutional Financing <br />
-              <span className="text-teal-300">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
                 Without the Standard Bank Hassle?
               </span>
             </h2>
