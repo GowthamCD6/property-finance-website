@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Clock,
@@ -51,6 +51,36 @@ export const HowItWorksPage: React.FC = () => {
     sanction: 0,
     capital: 0,
   });
+
+  // Filtered banks for sliding marquee animation
+  const filteredBanksList = useMemo(() => {
+    return CHANNEL_PARTNERS.filter(
+      (group: ChannelPartnersGroup) => activeBankCategory === 'ALL' || group.category === activeBankCategory
+    ).flatMap((group: ChannelPartnersGroup) =>
+      group.banks.map((bank: string) => ({
+        bank,
+        category: group.category.split(' ')[0],
+      }))
+    );
+  }, [activeBankCategory]);
+
+  const row1Banks = useMemo(() => {
+    const half = Math.ceil(filteredBanksList.length / 2);
+    const list = filteredBanksList.slice(0, half);
+    const source = list.length > 0 ? list : filteredBanksList;
+    let res = [...source];
+    while (res.length < 10) res = [...res, ...source];
+    return res;
+  }, [filteredBanksList]);
+
+  const row2Banks = useMemo(() => {
+    const half = Math.ceil(filteredBanksList.length / 2);
+    const list = filteredBanksList.slice(half);
+    const source = list.length > 0 ? list : filteredBanksList;
+    let res = [...source];
+    while (res.length < 10) res = [...res, ...source];
+    return res;
+  }, [filteredBanksList]);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 50);
@@ -951,28 +981,124 @@ export const HowItWorksPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Bank Cards Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 max-w-5xl mx-auto">
-            {CHANNEL_PARTNERS.filter(
-              (group: ChannelPartnersGroup) => activeBankCategory === 'ALL' || group.category === activeBankCategory
-            ).flatMap((group: ChannelPartnersGroup) =>
-              group.banks.map((bank: string, bIdx: number) => (
-                <div
-                  key={`${group.category}-${bIdx}`}
-                  className="p-3.5 rounded-xl bg-white border border-brand-border shadow-2xs hover:border-teal-400 hover:shadow-card transition-all flex flex-col justify-between"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <Landmark className="w-3.5 h-3.5 text-teal-600" />
-                    <span className="text-[9px] uppercase font-bold text-slate-400 font-heading">
-                      {group.category.split(' ')[0]}
+          {/* Sliding Bank Marquee Streams */}
+          <div className="relative w-full overflow-hidden mt-6 sm:mt-8 space-y-3.5">
+            {/* Edge Blur Gradients */}
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#f8f8f4] to-transparent z-20" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#f8f8f4] to-transparent z-20" />
+
+            {/* Row 1: Leftward Stream */}
+            <div className="overflow-hidden">
+              <div className="animate-continuous-scroll flex items-stretch gap-3 sm:gap-4 py-1 select-none">
+                {row1Banks.map((item, idx) => (
+                  <div
+                    key={`r1-${idx}`}
+                    className="p-3.5 rounded-xl bg-white border border-brand-border/80 shadow-2xs hover:border-teal-400 hover:shadow-card transition-all flex flex-col justify-between shrink-0 w-[190px] sm:w-[220px] h-[78px] cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <Landmark className="w-3.5 h-3.5 text-teal-600" />
+                      <span className="text-[9px] uppercase font-bold text-slate-400 font-heading">
+                        {item.category}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold font-heading text-brand-navy leading-snug truncate">
+                      {item.bank}
                     </span>
                   </div>
-                  <span className="text-xs font-bold font-heading text-brand-navy leading-snug line-clamp-2">
-                    {bank}
-                  </span>
-                </div>
-              ))
-            )}
+                ))}
+                {/* Duplicate for seamless infinite loop */}
+                {row1Banks.map((item, idx) => (
+                  <div
+                    key={`r1-dup-${idx}`}
+                    aria-hidden="true"
+                    className="p-3.5 rounded-xl bg-white border border-brand-border/80 shadow-2xs hover:border-teal-400 hover:shadow-card transition-all flex flex-col justify-between shrink-0 w-[190px] sm:w-[220px] h-[78px] cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <Landmark className="w-3.5 h-3.5 text-teal-600" />
+                      <span className="text-[9px] uppercase font-bold text-slate-400 font-heading">
+                        {item.category}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold font-heading text-brand-navy leading-snug truncate">
+                      {item.bank}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Row 2: Rightward Reverse Stream */}
+            <div className="overflow-hidden">
+              <div className="animate-continuous-scroll-reverse flex items-stretch gap-3 sm:gap-4 py-1 select-none">
+                {row2Banks.map((item, idx) => (
+                  <div
+                    key={`r2-${idx}`}
+                    className="p-3.5 rounded-xl bg-white border border-brand-border/80 shadow-2xs hover:border-teal-400 hover:shadow-card transition-all flex flex-col justify-between shrink-0 w-[190px] sm:w-[220px] h-[78px] cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <Landmark className="w-3.5 h-3.5 text-teal-600" />
+                      <span className="text-[9px] uppercase font-bold text-slate-400 font-heading">
+                        {item.category}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold font-heading text-brand-navy leading-snug truncate">
+                      {item.bank}
+                    </span>
+                  </div>
+                ))}
+                {/* Duplicate for seamless infinite loop */}
+                {row2Banks.map((item, idx) => (
+                  <div
+                    key={`r2-dup-${idx}`}
+                    aria-hidden="true"
+                    className="p-3.5 rounded-xl bg-white border border-brand-border/80 shadow-2xs hover:border-teal-400 hover:shadow-card transition-all flex flex-col justify-between shrink-0 w-[190px] sm:w-[220px] h-[78px] cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <Landmark className="w-3.5 h-3.5 text-teal-600" />
+                      <span className="text-[9px] uppercase font-bold text-slate-400 font-heading">
+                        {item.category}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold font-heading text-brand-navy leading-snug truncate">
+                      {item.bank}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <style>{`
+              @keyframes continuousScroll {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+              }
+
+              @keyframes continuousScrollReverse {
+                0% { transform: translate3d(-50%, 0, 0); }
+                100% { transform: translate3d(0, 0, 0); }
+              }
+
+              .animate-continuous-scroll {
+                display: flex;
+                width: max-content;
+                animation: continuousScroll 40s linear infinite;
+                will-change: transform;
+              }
+
+              .animate-continuous-scroll-reverse {
+                display: flex;
+                width: max-content;
+                animation: continuousScrollReverse 40s linear infinite;
+                will-change: transform;
+              }
+
+              .animate-continuous-scroll:hover,
+              .animate-continuous-scroll:active,
+              .animate-continuous-scroll-reverse:hover,
+              .animate-continuous-scroll-reverse:active {
+                animation-play-state: paused !important;
+              }
+            `}</style>
           </div>
         </div>
       </section>
