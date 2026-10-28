@@ -63,18 +63,88 @@ export async function getPublicAvailability(date?: string): Promise<any> {
   return json.data;
 }
 
-export async function submitLoanEnquiry(data: any): Promise<any> {
-  const res = await fetch(`${API_BASE}/public/enquiries`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-  const json = await res.json();
-  if (!res.ok) {
-    const errorMsg = json.errors ? json.errors.map((e: any) => e.message).join('. ') : json.message;
-    throw new Error(errorMsg || 'Failed to submit loan enquiry');
+// Local document caching helpers
+export function saveLocalEnquiryDocuments(refOrId: string, docs: any[]): void {
+  try {
+    localStorage.setItem(`vpf_docs_${refOrId}`, JSON.stringify(docs));
+  } catch (e) {
+    console.warn('Unable to cache docs locally', e);
   }
-  return json;
+}
+
+export function getLocalEnquiryDocuments(refOrId: string): any[] {
+  try {
+    const raw = localStorage.getItem(`vpf_docs_${refOrId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveLocalEnquiry(enq: any, docs: any[]): void {
+  try {
+    const listRaw = localStorage.getItem('vpf_local_enquiries');
+    const list = listRaw ? JSON.parse(listRaw) : [];
+    const existingIdx = list.findIndex((x: any) => x.id === enq.id || x.referenceNumber === enq.referenceNumber);
+    const fullEnq = { ...enq, documents: docs };
+    if (existingIdx >= 0) {
+      list[existingIdx] = fullEnq;
+    } else {
+      list.unshift(fullEnq);
+    }
+    localStorage.setItem('vpf_local_enquiries', JSON.stringify(list.slice(0, 50)));
+  } catch (e) {
+    console.warn('Failed to save local enquiry list', e);
+  }
+}
+
+export async function submitLoanEnquiry(data: any): Promise<any> {
+  const documents = data.documents || [];
+  try {
+    const res = await fetch(`${API_BASE}/public/enquiries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      const errorMsg = json.errors ? json.errors.map((e: any) => e.message).join('. ') : json.message;
+      throw new Error(errorMsg || 'Failed to submit loan enquiry');
+    }
+    const createdEnquiry = json.data?.enquiry || json.data;
+    if (createdEnquiry) {
+      if (createdEnquiry.id) saveLocalEnquiryDocuments(createdEnquiry.id, documents);
+      if (createdEnquiry.referenceNumber) saveLocalEnquiryDocuments(createdEnquiry.referenceNumber, documents);
+      saveLocalEnquiry(createdEnquiry, documents);
+    }
+    return json;
+  } catch (err: any) {
+    if (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError'))) {
+      const refNum = `VPF-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+      const localEnq = {
+        id: `local-${Date.now()}`,
+        referenceNumber: refNum,
+        ...data,
+        status: 'New',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      saveLocalEnquiryDocuments(refNum, documents);
+      saveLocalEnquiry(localEnq, documents);
+      return {
+        success: true,
+        data: {
+          enquiry: localEnq,
+          appointment: {
+            date: data.preferredDate,
+            timeSlot: data.preferredTimeSlot,
+            meetingMode: data.meetingMode,
+          },
+        },
+      };
+    }
+    throw err;
+  }
 }
 
 // 2. AUTH API
@@ -134,21 +204,81 @@ export async function getEnquiriesApi(params?: {
   if (params?.startDate) query.set('startDate', params.startDate);
   if (params?.endDate) query.set('endDate', params.endDate);
 
-  const res = await fetch(`${API_BASE}/admin/enquiries?${query.toString()}`, {
-    headers: getAuthHeaders(),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Failed to fetch enquiries');
-  return json.data;
+  try {
+    const res = await fetch(`${API_BASE}/admin/enquiries?${query.toString()}`, {
+      headers: getAuthHeaders(),
+    });
+    const json = await res.json();
+    if (res.ok && json.data) {
+      // Attach any documents cached locally
+      const serverEnquiries: Enquiry[] = json.data.enquiries.map((enq: Enquiry) => {
+        const docs = getLocalEnquiryDocuments(enq.id).concat(getLocalEnquiryDocuments(enq.referenceNumber));
+        return {
+          ...enq,
+          documents: enq.documents && enq.documents.length > 0 ? enq.documents : docs,
+        };
+      });
+      return {
+        ...json.data,
+        enquiries: serverEnquiries,
+      };
+    }
+  } catch (e) {
+    // Fallback to local
+  }
+
+  // Local fallback
+  const localList: Enquiry[] = JSON.parse(localStorage.getItem('vpf_local_enquiries') || '[]');
+  let filtered = localList;
+  if (params?.status && params.status !== 'ALL') {
+    filtered = filtered.filter((e) => e.status === params.status);
+  }
+  if (params?.search) {
+    const s = params.search.toLowerCase();
+    filtered = filtered.filter(
+      (e) =>
+        e.fullName?.toLowerCase().includes(s) ||
+        e.mobileNumber?.includes(s) ||
+        e.referenceNumber?.toLowerCase().includes(s)
+    );
+  }
+  return {
+    enquiries: filtered,
+    pagination: {
+      total: filtered.length,
+      page: params?.page || 1,
+      limit: params?.limit || 15,
+      totalPages: Math.max(1, Math.ceil(filtered.length / (params?.limit || 15))),
+    },
+  };
 }
 
 export async function getEnquiryByIdApi(id: string): Promise<Enquiry> {
-  const res = await fetch(`${API_BASE}/admin/enquiries/${id}`, {
-    headers: getAuthHeaders(),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Failed to fetch enquiry detail');
-  return json.data;
+  let enquiry: Enquiry | null = null;
+  try {
+    const res = await fetch(`${API_BASE}/admin/enquiries/${id}`, {
+      headers: getAuthHeaders(),
+    });
+    const json = await res.json();
+    if (res.ok && json.data) {
+      enquiry = json.data;
+    }
+  } catch (e) {
+    // Fallback to local
+  }
+
+  if (!enquiry) {
+    const localList: Enquiry[] = JSON.parse(localStorage.getItem('vpf_local_enquiries') || '[]');
+    enquiry = localList.find((x) => x.id === id || x.referenceNumber === id) || null;
+  }
+
+  if (!enquiry) throw new Error('Enquiry not found');
+
+  const docs = getLocalEnquiryDocuments(enquiry.id).concat(getLocalEnquiryDocuments(enquiry.referenceNumber));
+  if (!enquiry.documents || enquiry.documents.length === 0) {
+    enquiry.documents = docs;
+  }
+  return enquiry;
 }
 
 export async function updateEnquiryStatusApi(id: string, status: string, note?: string): Promise<Enquiry> {

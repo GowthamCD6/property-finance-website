@@ -74,6 +74,17 @@ export interface StatusHistory {
   createdAt: string;
 }
 
+export interface UploadedDocument {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  category: 'KYC' | 'Income' | 'Legal' | 'Technical' | 'Mortgage_LAP' | 'Vehicle' | 'General';
+  documentName: string;
+  previewUrl: string;
+  uploadedAt: string;
+}
+
 export interface Enquiry {
   id: string;
   referenceNumber: string;
@@ -90,6 +101,17 @@ export interface Enquiry {
   propertyLocation: string;
   propertyOwnershipStatus: 'owned' | 'jointly_owned' | 'purchasing' | 'other';
   employmentType: 'salaried' | 'self_employed' | 'business_owner' | 'other';
+  preferredBank?: string;
+  carLoanDetails?: {
+    carType: 'new' | 'used' | 'refinance';
+    onRoadPrice?: number;
+    showroomName?: string;
+    area?: string;
+    modelYear?: string;
+    ownersCount?: number;
+    purchaseValue?: number;
+  };
+  documents?: UploadedDocument[];
   preferredDate: string;
   preferredTimeSlot: string;
   meetingMode: 'phone' | 'video' | 'in_person';

@@ -74,11 +74,14 @@ export const createEnquirySchema = z.object({
     .max(1000, 'Additional notes cannot exceed 1000 characters')
     .optional()
     .nullable(),
+  preferredBank: z.string().optional().nullable(),
+  carLoanDetails: z.any().optional().nullable(),
+  documents: z.array(z.any()).optional().nullable(),
   consentGiven: z.literal(true, {
     errorMap: () => ({
       message: 'You must review and consent to the privacy notice to submit your enquiry',
     }),
   }),
-});
+}).passthrough();
 
 export type CreateEnquiryInput = z.infer<typeof createEnquirySchema>;

@@ -20,8 +20,13 @@ import {
   ShieldCheck,
   Send,
   History,
+  FileCheck,
+  Image as ImageIcon,
+  ExternalLink,
+  Car,
+  Landmark,
 } from 'lucide-react';
-import { Enquiry } from '../../types';
+import { Enquiry, UploadedDocument } from '../../types';
 import {
   getEnquiriesApi,
   getEnquiryByIdApi,
@@ -61,6 +66,7 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [selectedEnquiryId, setSelectedEnquiryId] = useState<string | null>(null);
   const [detailEnquiry, setDetailEnquiry] = useState<Enquiry | null>(null);
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
+  const [adminPreviewDoc, setAdminPreviewDoc] = useState<UploadedDocument | null>(null);
 
   // Status Change State
   const [newStatus, setNewStatus] = useState<string>('');
@@ -537,13 +543,148 @@ export const AdminEnquiriesPage: React.FC = () => {
                           {detailEnquiry.employmentType.replace('_', ' ')}
                         </span>
                       </div>
+
+                      {detailEnquiry.preferredBank && (
+                        <div className="col-span-2 pt-2 border-t border-brand-border/40">
+                          <span className="text-brand-slate block text-[11px]">Preferred Channel Partner / Bank</span>
+                          <span className="inline-flex items-center gap-1.5 font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-md border border-teal-200 mt-0.5">
+                            <Landmark className="w-3.5 h-3.5 text-brand-teal" />
+                            <span>{detailEnquiry.preferredBank}</span>
+                          </span>
+                        </div>
+                      )}
                     </div>
+
+                    {/* VEHICLE DETAILS (IF CAR LOAN - PAGE 4) */}
+                    {detailEnquiry.carLoanDetails && (
+                      <div className="p-3 bg-teal-50/60 rounded-lg border border-teal-200 space-y-2 mt-2">
+                        <div className="flex items-center gap-1.5 text-brand-navy font-bold text-xs">
+                          <Car className="w-3.5 h-3.5 text-brand-teal" />
+                          <span>Vehicle Specifications ({detailEnquiry.carLoanDetails.carType?.toUpperCase()})</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          {detailEnquiry.carLoanDetails.onRoadPrice && (
+                            <div>
+                              <span className="text-brand-slate block text-[10px]">On-Road Price</span>
+                              <span className="font-bold text-brand-navy">{formatAmountINR(detailEnquiry.carLoanDetails.onRoadPrice)}</span>
+                            </div>
+                          )}
+                          {detailEnquiry.carLoanDetails.showroomName && (
+                            <div>
+                              <span className="text-brand-slate block text-[10px]">Showroom / Financer</span>
+                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.showroomName}</span>
+                            </div>
+                          )}
+                          {detailEnquiry.carLoanDetails.area && (
+                            <div>
+                              <span className="text-brand-slate block text-[10px]">Area</span>
+                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.area}</span>
+                            </div>
+                          )}
+                          {detailEnquiry.carLoanDetails.modelYear && (
+                            <div>
+                              <span className="text-brand-slate block text-[10px]">Model &amp; Year</span>
+                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.modelYear}</span>
+                            </div>
+                          )}
+                          {detailEnquiry.carLoanDetails.ownersCount && (
+                            <div>
+                              <span className="text-brand-slate block text-[10px]">Ownership</span>
+                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.ownersCount} Owner(s)</span>
+                            </div>
+                          )}
+                          {detailEnquiry.carLoanDetails.purchaseValue && (
+                            <div>
+                              <span className="text-brand-slate block text-[10px]">Purchase / Valuation Value</span>
+                              <span className="font-bold text-brand-navy">{formatAmountINR(detailEnquiry.carLoanDetails.purchaseValue)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     {detailEnquiry.additionalNotes && (
                       <div className="pt-2 border-t border-brand-border/60">
                         <span className="text-brand-slate block text-[11px] mb-1">Applicant Remarks:</span>
                         <p className="bg-brand-ivory p-3 rounded-lg text-brand-navy italic">
                           "{detailEnquiry.additionalNotes}"
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* SUBMITTED REFERENCE DOCUMENTS (REAL-DOCUMENT INTAKE) */}
+                  <div className="border border-brand-border rounded-xl p-4 space-y-3 bg-white">
+                    <div className="flex items-center justify-between pb-2 border-b border-brand-border">
+                      <div className="flex items-center gap-2">
+                        <FileCheck className="w-4 h-4 text-brand-teal" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-brand-navy">
+                          Submitted Reference Documents
+                        </h4>
+                      </div>
+                      <span className="text-xs font-extrabold text-brand-teal bg-brand-teal-light px-2.5 py-0.5 rounded-full border border-brand-teal/20">
+                        {detailEnquiry.documents?.length || 0} File(s)
+                      </span>
+                    </div>
+
+                    {detailEnquiry.documents && detailEnquiry.documents.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        {detailEnquiry.documents.map((doc) => (
+                          <div
+                            key={doc.id}
+                            className="p-2.5 rounded-xl border border-brand-border hover:border-brand-teal/50 bg-brand-ivory/40 transition-all flex items-start gap-3 group"
+                          >
+                            {doc.type.includes('image') ? (
+                              <img
+                                src={doc.previewUrl}
+                                alt={doc.name}
+                                onClick={() => setAdminPreviewDoc(doc)}
+                                className="w-14 h-14 object-cover rounded-lg border border-brand-border cursor-pointer hover:opacity-80 transition-opacity shrink-0 shadow-2xs"
+                              />
+                            ) : (
+                              <div className="w-14 h-14 rounded-lg bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs">
+                                <span>PDF</span>
+                              </div>
+                            )}
+
+                            <div className="min-w-0 flex-1 space-y-1">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-teal bg-white px-1.5 py-0.5 rounded border border-brand-teal/20">
+                                {doc.category || 'Reference'}
+                              </span>
+                              <h5 className="text-xs font-bold text-brand-navy truncate block" title={doc.documentName}>
+                                {doc.documentName || doc.name}
+                              </h5>
+                              <div className="flex items-center justify-between pt-1 text-[10px] text-brand-slate">
+                                <span>{doc.size ? `${(doc.size / 1024).toFixed(0)} KB` : 'Verified'}</span>
+                                <div className="flex items-center gap-2">
+                                  {doc.type.includes('image') && (
+                                    <button
+                                      type="button"
+                                      onClick={() => setAdminPreviewDoc(doc)}
+                                      className="text-brand-teal hover:underline font-bold flex items-center gap-0.5"
+                                    >
+                                      <Eye className="w-3 h-3" /> View
+                                    </button>
+                                  )}
+                                  <a
+                                    href={doc.previewUrl}
+                                    download={doc.name}
+                                    className="text-slate-600 hover:text-brand-navy font-bold flex items-center gap-0.5"
+                                  >
+                                    <Download className="w-3 h-3" />
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-lg bg-brand-ivory/60 border border-dashed border-brand-border text-center space-y-1 text-xs text-brand-slate">
+                        <ImageIcon className="w-6 h-6 text-gray-400 mx-auto" />
+                        <p className="font-semibold text-brand-navy">No Document Images Uploaded Yet</p>
+                        <p className="text-[11px]">
+                          Applicant has opted to provide document copies during their in-person consultation or via WhatsApp.
                         </p>
                       </div>
                     )}
@@ -650,6 +791,50 @@ export const AdminEnquiriesPage: React.FC = () => {
                   </div>
                 </>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN DOCUMENT IMAGE LIGHTBOX MODAL */}
+      {adminPreviewDoc && (
+        <div className="fixed inset-0 z-60 bg-black/85 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-brand-border flex items-center justify-between bg-brand-ivory">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-brand-teal tracking-wider block">
+                  Reference Document Verification
+                </span>
+                <h4 className="text-base font-bold text-brand-navy flex items-center gap-2">
+                  <FileCheck className="w-4 h-4 text-brand-teal" />
+                  <span>{adminPreviewDoc.documentName || adminPreviewDoc.name}</span>
+                </h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAdminPreviewDoc(null)}
+                className="p-1.5 rounded-lg text-brand-slate hover:text-brand-navy hover:bg-gray-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-gray-950">
+              <img
+                src={adminPreviewDoc.previewUrl}
+                alt={adminPreviewDoc.name}
+                className="max-h-[76vh] object-contain rounded"
+              />
+            </div>
+            <div className="p-3.5 border-t border-brand-border flex items-center justify-between text-xs text-brand-slate bg-white">
+              <span>{adminPreviewDoc.name} ({adminPreviewDoc.size ? `${(adminPreviewDoc.size / 1024).toFixed(0)} KB` : 'Verified'})</span>
+              <a
+                href={adminPreviewDoc.previewUrl}
+                download={adminPreviewDoc.name}
+                className="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download Document</span>
+              </a>
             </div>
           </div>
         </div>
