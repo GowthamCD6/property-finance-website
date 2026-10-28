@@ -244,7 +244,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
           style={{
             maxWidth: '1580px',
             margin: '0 auto',
-            padding: isScrolled ? '6px 16px' : '8px 20px',
+            padding: isScrolled ? '6px 36px' : '8px 48px',
             transition: 'padding 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
@@ -258,11 +258,11 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
                 alignItems: 'center',
                 textDecoration: 'none',
                 flexShrink: 0,
-                marginLeft: '0px',
+                marginLeft: '16px',
               }}
               className="group"
             >
-              <WealthAnchorLogo size={isScrolled ? 42 : 48} showWordmark={true} variant="dark" />
+              <WealthAnchorLogo size={isScrolled ? 48 : 56} showWordmark={true} variant="dark" />
             </Link>
 
             {/* ─── Desktop Navigation ─── */}
@@ -486,7 +486,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             top: 0,
             right: 0,
             width: '100%',
-            maxWidth: 'min(360px, 88vw)',
+            maxWidth: '380px',
             height: '100%',
             backgroundColor: '#ffffff',
             boxShadow: '-8px 0 30px rgba(0,0,0,0.1)',

@@ -329,7 +329,7 @@ export const AboutPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Unified bg-[#f8f8f4], No dividing line, Standard Home Spacing)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#f8f8f4] text-brand-navy pt-8 sm:pt-12 pb-0">
+      <section className="relative overflow-hidden bg-[#f8f8f4] text-brand-navy pt-8 sm:pt-12 pb-8 sm:pb-12 lg:pb-16">
         
         {/* Subtle Ambient Background Grids & Soft Atmospheric Aura */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(24,124,120,0.06),rgba(248,248,244,0))] pointer-events-none" />
@@ -339,7 +339,7 @@ export const AboutPage: React.FC = () => {
         {/* Subtle Architectural Blueprint grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0284c708_1px,transparent_1px),linear-gradient(to_bottom,#0284c708_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
             {/* ── LEFT COLUMN: Authority Narrative & Interactive Statistics ── */}
@@ -501,7 +501,7 @@ export const AboutPage: React.FC = () => {
           2. INTERACTIVE LOAN FEASIBILITY & ADVISORY BLUEPRINT
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-6">
             <div className="max-w-2xl space-y-2">
@@ -666,7 +666,7 @@ export const AboutPage: React.FC = () => {
           3. OUR ORIGIN & VALUE ARCHITECTURE (Interactive Tabs)
           ──────────────────────────────────────────────────────────── */}
       <section id="diligence-matrix" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             
             {/* Left Narrative Column */}
@@ -819,7 +819,7 @@ export const AboutPage: React.FC = () => {
           4. OUR CORE ADVISORY PILLARS (Interactive Expansion Cards)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
@@ -892,7 +892,7 @@ export const AboutPage: React.FC = () => {
           5. COMPARATIVE MATRIX: TRADITIONAL BROKER VS. PRIME ASSOCIATES
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
@@ -1027,7 +1027,7 @@ export const AboutPage: React.FC = () => {
           6. LEADERSHIP & ADVISORY COUNCIL (Profiles)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6">
             <div className="max-w-2xl space-y-3">
@@ -1115,7 +1115,7 @@ export const AboutPage: React.FC = () => {
           7. PRACTICE TIMELINE & MILESTONES (Interactive Journey)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
@@ -1198,7 +1198,7 @@ export const AboutPage: React.FC = () => {
           8. REGULATORY COMPLIANCE & LEGAL NOTICE
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           <div className="max-w-4xl mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
             <div className="w-12 h-12 rounded-2xl bg-brand-teal-light flex items-center justify-center shrink-0 text-brand-teal">
               <ShieldCheck className="w-6 h-6" />
@@ -1222,7 +1222,7 @@ export const AboutPage: React.FC = () => {
           9. HIGH-IMPACT CONVERSION BANNER (Matching Home Page Rounded Card Style & Spacing)
           ──────────────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-16 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />

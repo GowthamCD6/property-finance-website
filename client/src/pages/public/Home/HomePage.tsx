@@ -559,30 +559,32 @@ const StatsBar: React.FC = () => {
   ];
 
   return (
-    <section className="relative z-20 -mt-6 sm:-mt-8 lg:-mt-12 px-3 sm:px-4 pb-0">
-      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto p-6 sm:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
-        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-          {stats.map((s, idx) => (
-            <div
-              key={idx}
-              className="flex items-start gap-4 p-4 rounded-xl bg-brand-ivory/40 border border-brand-border/60 hover:bg-white hover:border-brand-teal/40 hover:shadow-subtle transition-all duration-200"
-            >
-              <div className="w-10 h-10 rounded-lg bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
-                {s.icon}
+    <section className="relative z-20 -mt-6 sm:-mt-8 lg:-mt-12 px-3 sm:px-4 pb-6 sm:pb-8 lg:pb-10">
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
+          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            {stats.map((s, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-4 p-4 rounded-xl bg-brand-ivory/40 border border-brand-border/60 hover:bg-white hover:border-brand-teal/40 hover:shadow-subtle transition-all duration-200"
+              >
+                <div className="w-10 h-10 rounded-lg bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
+                  {s.icon}
+                </div>
+                <div>
+                  <span className="text-xl xs:text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-navy block font-heading">
+                    {s.value}
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-brand-navy block mt-0.5">
+                    {s.label}
+                  </span>
+                  <span className="text-[11px] text-brand-slate block mt-0.5 leading-snug">
+                    {s.sub}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-xl xs:text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-navy block font-heading">
-                  {s.value}
-                </span>
-                <span className="text-xs sm:text-sm font-bold text-brand-navy block mt-0.5">
-                  {s.label}
-                </span>
-                <span className="text-[11px] text-brand-slate block mt-0.5 leading-snug">
-                  {s.sub}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -838,7 +840,7 @@ const LenderPartners: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
-      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Award className="w-3.5 h-3.5" />
@@ -851,37 +853,39 @@ const LenderPartners: React.FC = () => {
             Direct channel access to 40+ premier banks and housing finance institutions to secure optimal borrowing terms.
           </p>
         </div>
+      </div>
 
-        {/* ─── 1. TOP SLIDING BANK CARDS MARQUEE (Above the Card - Forward Stream) ─── */}
-        <div className="relative w-full max-w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden mb-6 sm:mb-10">
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
+      {/* ─── 1. TOP SLIDING BANK CARDS MARQUEE (Full Width - Forward Stream) ─── */}
+      <div className="relative w-full overflow-hidden mb-6 sm:mb-10">
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-r from-brand-bg to-transparent z-20" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-l from-brand-bg to-transparent z-20" />
 
-          <div
-            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
-            style={{
-              animationPlayState: isHovered ? 'paused' : 'running',
-            }}
-          >
-            {row1Partners.map((p, idx) => (
-              <LenderCard
-                key={`p1-${p.id}-${idx}`}
-                partner={p}
-                onHoverChange={setIsHovered}
-              />
-            ))}
-            {row1Partners.map((p, idx) => (
-              <LenderCard
-                key={`p1-dup-${p.id}-${idx}`}
-                partner={p}
-                ariaHidden
-                onHoverChange={setIsHovered}
-              />
-            ))}
-          </div>
+        <div
+          className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-2 px-4 sm:px-6 select-none"
+          style={{
+            animationPlayState: isHovered ? 'paused' : 'running',
+          }}
+        >
+          {row1Partners.map((p, idx) => (
+            <LenderCard
+              key={`p1-${p.id}-${idx}`}
+              partner={p}
+              onHoverChange={setIsHovered}
+            />
+          ))}
+          {row1Partners.map((p, idx) => (
+            <LenderCard
+              key={`p1-dup-${p.id}-${idx}`}
+              partner={p}
+              ariaHidden
+              onHoverChange={setIsHovered}
+            />
+          ))}
         </div>
+      </div>
 
-        {/* ─── 2. MIDDLE 4-PILLAR FEATURES CARD (Compact & Sleek) ─── */}
+      {/* ─── 2. MIDDLE 4-PILLAR FEATURES CARD (Compact & Sleek) ─── */}
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="bg-white rounded-2xl border border-brand-border/80 p-4 sm:p-6 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4.5">
             <div className="group flex flex-col justify-between p-4 rounded-xl bg-slate-50/70 border border-slate-100 hover:bg-white hover:border-teal-500/40 hover:shadow-sm transition-all duration-300">
@@ -977,34 +981,34 @@ const LenderPartners: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* ─── 3. BOTTOM SLIDING BANK CARDS MARQUEE (Below the Card - Reverse Stream) ─── */}
-        <div className="relative w-full max-w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden mt-6 sm:mt-10">
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-brand-bg to-transparent z-20" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-brand-bg to-transparent z-20" />
+      {/* ─── 3. BOTTOM SLIDING BANK CARDS MARQUEE (Full Width - Reverse Stream) ─── */}
+      <div className="relative w-full overflow-hidden mt-6 sm:mt-10">
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-r from-brand-bg to-transparent z-20" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-l from-brand-bg to-transparent z-20" />
 
-          <div
-            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-6 sm:px-12 select-none"
-            style={{
-              animationPlayState: isHovered ? 'paused' : 'running',
-            }}
-          >
-            {row2Partners.map((p, idx) => (
-              <LenderCard
-                key={`p2-${p.id}-${idx}`}
-                partner={p}
-                onHoverChange={setIsHovered}
-              />
-            ))}
-            {row2Partners.map((p, idx) => (
-              <LenderCard
-                key={`p2-dup-${p.id}-${idx}`}
-                partner={p}
-                ariaHidden
-                onHoverChange={setIsHovered}
-              />
-            ))}
-          </div>
+        <div
+          className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-2 px-4 sm:px-6 select-none"
+          style={{
+            animationPlayState: isHovered ? 'paused' : 'running',
+          }}
+        >
+          {row2Partners.map((p, idx) => (
+            <LenderCard
+              key={`p2-${p.id}-${idx}`}
+              partner={p}
+              onHoverChange={setIsHovered}
+            />
+          ))}
+          {row2Partners.map((p, idx) => (
+            <LenderCard
+              key={`p2-dup-${p.id}-${idx}`}
+              partner={p}
+              ariaHidden
+              onHoverChange={setIsHovered}
+            />
+          ))}
         </div>
       </div>
       <style>{`
@@ -1172,7 +1176,7 @@ const RateComparisonMatrix: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
@@ -1405,7 +1409,7 @@ const HowItWorks: React.FC = () => {
 
   return (
     <section id="how-it-works" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3">
             <Zap className="w-3.5 h-3.5" />
@@ -1667,7 +1671,7 @@ const TestimonialsSection: React.FC = () => {
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
-      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
             <Star className="w-3.5 h-3.5 fill-brand-teal" />
@@ -1680,36 +1684,39 @@ const TestimonialsSection: React.FC = () => {
             Real feedback from borrowers who secured prompt sanctions through our transparent multi-lender advisory.
           </p>
         </div>
+      </div>
 
-        <div className="relative w-full max-w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden my-2">
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#F7F7F2] via-[#F7F7F2]/90 to-transparent z-20" />
+      {/* Sliding Reviews (Full Width) */}
+      <div className="relative w-full overflow-hidden my-4 sm:my-6">
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-r from-brand-bg via-brand-bg/90 to-transparent z-20" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-l from-brand-bg via-brand-bg/90 to-transparent z-20" />
 
-          {/* Single Sliding Stream */}
-          <div
-            className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-4 px-6 sm:px-12 select-none"
-            style={{
-              animationPlayState: isHovered ? 'paused' : 'running',
-            }}
-          >
-            {repeatedReviews.map((r, idx) => (
-              <ReviewCard
-                key={`r1-${r.id}-${idx}`}
-                review={r}
-                onHoverChange={setIsHovered}
-              />
-            ))}
-            {repeatedReviews.map((r, idx) => (
-              <ReviewCard
-                key={`r2-${r.id}-${idx}`}
-                review={r}
-                ariaHidden
-                onHoverChange={setIsHovered}
-              />
-            ))}
-          </div>
+        {/* Single Sliding Stream */}
+        <div
+          className="animate-continuous-scroll-reverse flex items-stretch gap-5 sm:gap-6 py-4 px-4 sm:px-6 select-none"
+          style={{
+            animationPlayState: isHovered ? 'paused' : 'running',
+          }}
+        >
+          {repeatedReviews.map((r, idx) => (
+            <ReviewCard
+              key={`r1-${r.id}-${idx}`}
+              review={r}
+              onHoverChange={setIsHovered}
+            />
+          ))}
+          {repeatedReviews.map((r, idx) => (
+            <ReviewCard
+              key={`r2-${r.id}-${idx}`}
+              review={r}
+              ariaHidden
+              onHoverChange={setIsHovered}
+            />
+          ))}
         </div>
+      </div>
 
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="mt-10 bg-white rounded-2xl border border-brand-border p-6 sm:p-7 shadow-2xs">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="flex flex-col items-center space-y-1">
@@ -1835,7 +1842,7 @@ const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
 
   return (
     <section id="why-us" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+      <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 order-2 lg:order-1">
             <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-brand-border/80 shadow-card aspect-[16/10] sm:aspect-[4/3] lg:aspect-[4/5] bg-white">
@@ -2034,7 +2041,7 @@ export const HomePage: React.FC = () => {
 
       {/* 5. Dynamic EMI & FOIR Calculator Banner */}
       <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           <div className="p-6 sm:p-10 lg:p-12 rounded-2xl sm:rounded-3xl bg-white border border-brand-border/80 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 shadow-card">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
@@ -2079,7 +2086,7 @@ export const HomePage: React.FC = () => {
 
       {/* 9. Consultation Invitation CTA */}
       <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           <div className="bg-gradient-to-br from-[#12263a] to-[#183247] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
             
