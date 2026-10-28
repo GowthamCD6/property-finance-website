@@ -109,7 +109,7 @@ const AnimatedHeadline: React.FC = () => {
       }}
       className="will-change-transform inline-block"
     >
-      <h1 className="text-[23px] xs:text-[27px] sm:text-[38px] md:text-[48px] lg:text-[58px] font-extrabold text-white tracking-tight leading-[1.2] sm:leading-[1.15] font-heading drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)] max-w-4xl mx-auto select-none px-2">
+      <h1 className="text-[23px] xs:text-[27px] sm:text-[38px] md:text-[48px] lg:text-[58px] font-extrabold text-white tracking-tight leading-[1.2] sm:leading-[1.15] font-heading max-w-4xl mx-auto select-none px-2">
         <span
           className="relative inline-block overflow-hidden"
           style={{
@@ -290,20 +290,14 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
   return (
     <section
       id="hero"
-      className="relative min-h-[620px] lg:min-h-[700px] flex items-center justify-center bg-slate-950 overflow-hidden"
+      className="relative min-h-[580px] lg:min-h-[660px] flex items-center justify-center bg-[#091522] text-white overflow-hidden border-b border-brand-teal/20"
     >
-      <div className="absolute inset-0 z-0">
-        <img
-          src={heroBgImage}
-          alt="Institutional Property Finance Architecture"
-          className="w-full h-full object-cover object-center scale-[1.01] brightness-[0.80] transform motion-safe:transition-transform motion-safe:duration-1000"
-          loading="eager"
-        />
-        <div className="absolute inset-0 bg-black/28" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/70" />
-      </div>
+      {/* Subtle Atmospheric Light Orbs (Institutional Theme) */}
+      <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-brand-teal/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[550px] h-[550px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none" />
 
-      <div className="relative z-10 w-full pt-12 pb-24 sm:pt-16 sm:pb-28 lg:pt-16 lg:pb-32">
+      <div className="relative z-10 w-full pt-12 pb-20 sm:pt-16 sm:pb-24 lg:pt-16 lg:pb-28">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto text-center space-y-6 sm:space-y-7">
           <div
             style={{
@@ -311,9 +305,12 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(-14px)',
               transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
             }}
-            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm"
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm"
           >
-            <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
             <span>{content?.heroEyebrow || 'Institutional Property Finance Advisory • 40+ Partner Lenders'}</span>
           </div>
 
@@ -325,7 +322,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s',
             }}
-            className="text-sm xs:text-base sm:text-lg lg:text-[19px] text-white/95 font-medium leading-relaxed max-w-3xl mx-auto drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)] px-2"
+            className="text-sm xs:text-base sm:text-lg lg:text-[19px] text-slate-300 font-normal leading-relaxed max-w-3xl mx-auto px-2"
           >
             {content?.heroSubtitle ||
               'Unlock institutional funding for high-value residential, commercial, and industrial properties. We partner with 40+ leading PSU & private banks and NBFCs across India to secure lowest benchmark interest rates, maximized borrowing eligibility, and zero advance fees.'}
@@ -370,25 +367,25 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.85s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.85s',
             }}
-            className="mt-6 sm:mt-8 pt-3.5 pb-3.5 px-4 sm:px-8 rounded-xl bg-slate-950/65 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-200"
+            className="mt-6 sm:mt-8 p-3.5 sm:px-8 rounded-2xl bg-white/[0.05] backdrop-blur-xl border border-white/10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-200"
           >
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span className="font-semibold text-white">Zero Advance Fees</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span className="font-semibold text-white">40+ Partner Lenders</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span className="font-semibold text-white">24–48h Rapid Sanction</span>
               </div>
             </div>
 
             <div className="flex items-center gap-2 text-slate-300 text-xs justify-center mx-auto sm:mx-0">
-              <ShieldCheck className="w-4 h-4 text-[#20B2AA]" />
+              <ShieldCheck className="w-4 h-4 text-teal-300" />
               <span>Institutional Banking Partners: <strong className="text-white">SBI • HDFC • ICICI • AXIS • KOTAK</strong></span>
             </div>
           </div>
