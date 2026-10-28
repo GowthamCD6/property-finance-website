@@ -247,13 +247,7 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Executive Two-Column Layout)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0B1E2E] via-[#0D2437] to-[#081521] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
-        {/* Subtle Ambient Grids & Atmospheric Orbs */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(20,184,166,0.15),transparent)] pointer-events-none" />
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-sky-500/10 rounded-full blur-[110px] pointer-events-none" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(56,189,248,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(56,189,248,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
-
+      <section className="relative overflow-hidden bg-[#183247] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
@@ -294,7 +288,7 @@ export const HowItWorksPage: React.FC = () => {
               >
                 <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
                   From Algorithmic Pre-Audit to{' '}
-                  <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-200 to-sky-300">
+                  <span className="relative inline-block text-teal-300">
                     Direct Account Credit
                   </span>.
                 </h1>
@@ -437,11 +431,7 @@ export const HowItWorksPage: React.FC = () => {
 
             {/* ── RIGHT COLUMN: Interactive Live Loan Syndication Console & Simulator ── */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-3xl bg-slate-900/85 backdrop-blur-xl border border-teal-500/30 p-5 sm:p-6 shadow-2xl shadow-teal-950/60 overflow-hidden">
-                {/* Decorative Ambient Aura */}
-                <div className="absolute -top-16 -right-16 w-44 h-44 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-sky-500/20 rounded-full blur-3xl pointer-events-none" />
-
+              <div className="relative rounded-3xl bg-[#112332] border border-white/15 p-5 sm:p-6 shadow-xl overflow-hidden">
                 {/* Console Header */}
                 <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/10">
                   <div className="flex items-center gap-2">
@@ -478,7 +468,7 @@ export const HowItWorksPage: React.FC = () => {
                           onClick={() => setSimLoanType(facility.id)}
                           className={`py-2 px-1 rounded-lg text-center transition-all cursor-pointer ${
                             isSel
-                              ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white font-extrabold shadow-sm'
+                              ? 'bg-brand-teal text-white font-extrabold shadow-sm'
                               : 'text-slate-400 hover:text-white hover:bg-white/5 font-medium'
                           }`}
                         >
@@ -631,9 +621,9 @@ export const HowItWorksPage: React.FC = () => {
                 <div className="relative z-10 pt-4">
                   <Link
                     to="/enquire"
-                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-500 via-teal-400 to-sky-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
+                    className="w-full py-3 px-4 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-teal-950/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
                   >
-                    <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
+                    <Zap className="w-4 h-4 text-white fill-white" />
                     <span>Fast-Track Pre-Approval for ₹{simAmountLakhs} Lakhs</span>
                   </Link>
                 </div>
@@ -648,7 +638,7 @@ export const HowItWorksPage: React.FC = () => {
             <div className="hidden lg:block relative mb-4">
               <div className="h-1 bg-white/10 rounded-full w-full">
                 <div
-                  className="h-1 bg-gradient-to-r from-teal-400 to-sky-400 rounded-full transition-all duration-500"
+                  className="h-1 bg-teal-400 rounded-full transition-all duration-500"
                   style={{ width: `${(activePhase / 4) * 100}%` }}
                 />
               </div>
@@ -663,7 +653,7 @@ export const HowItWorksPage: React.FC = () => {
                     onClick={() => setActivePhase(phase.phase)}
                     className={`relative p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all duration-300 text-left group ${
                       isActive
-                        ? 'bg-gradient-to-b from-teal-500/25 to-teal-900/30 border-teal-400 shadow-xl shadow-teal-950/50 scale-[1.02]'
+                        ? 'bg-[#1f3f58] border-teal-400 shadow-xl scale-[1.02]'
                         : 'bg-white/[0.05] border-white/10 text-slate-300 hover:bg-white/[0.09] hover:border-white/20'
                     }`}
                   >
@@ -1026,7 +1016,7 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           6. CONVERSION CTA BANNER
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-[#0B1E2E] via-[#0E2437] to-[#081521] text-white">
+      <section className="py-16 sm:py-20 bg-[#183247] text-white">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 text-xs font-bold uppercase tracking-wider">
@@ -1036,7 +1026,7 @@ export const HowItWorksPage: React.FC = () => {
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-heading leading-tight">
               Ready to Secure Institutional Financing <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-200 to-sky-300">
+              <span className="text-teal-300">
                 Without the Standard Bank Hassle?
               </span>
             </h2>
