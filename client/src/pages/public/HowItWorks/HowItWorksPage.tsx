@@ -693,7 +693,7 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. DETAILED ACTIVE PHASE COCKPIT & INTERACTIVE ENGINE
           ──────────────────────────────────────────────────────────── */}
-      <section id="cockpit-breakdown" className="py-14 sm:py-20 bg-[#f8f8f4] border-b border-brand-border">
+      <section id="cockpit-breakdown" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           {advisoryPhases
             .filter((p) => p.phase === activePhase)
@@ -842,67 +842,71 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           3. COMPARISON MATRIX: TRADITIONAL QUEUE VS PRIME ASSOCIATES (Glassmorphism Table)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-[#091522] text-white border-b border-brand-teal/20 relative overflow-hidden">
-        {/* Subtle Ambient Background Atmosphere */}
-        <div className="absolute top-1/4 left-10 w-96 h-96 bg-brand-teal/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-sky-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="bg-[#091522] text-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-xl border border-white/10">
+            {/* Subtle Ambient Background Atmosphere */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
-          <div className="max-w-3xl mx-auto text-center space-y-3 mb-12 sm:mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <Scale className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Comparative Advantage</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight font-heading">
-              Traditional Branch Queues vs.{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
-                Institutional Syndication
-              </span>
-            </h2>
-            <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-sans">
-              Why prospective homeowners, promoters, and corporate borrowers choose Prime Associates over standard walk-in branch applications.
-            </p>
-          </div>
+            <div className="relative z-10">
+              <div className="max-w-3xl mx-auto text-center space-y-3 mb-8 sm:mb-10">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+                  <Scale className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Comparative Advantage</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight font-heading">
+                  Traditional Branch Queues vs.{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
+                    Institutional Syndication
+                  </span>
+                </h2>
+                <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-sans">
+                  Why prospective homeowners, promoters, and corporate borrowers choose Prime Associates over standard walk-in branch applications.
+                </p>
+              </div>
 
-          {/* Glassmorphism Table Container */}
-          <div className="max-w-4xl mx-auto rounded-3xl border border-white/20 bg-white/[0.04] backdrop-blur-2xl shadow-2xl ring-1 ring-white/10 overflow-hidden">
-            <div className="grid grid-cols-12 bg-white/[0.08] backdrop-blur-xl border-b border-white/15 p-4 sm:p-5 text-xs font-extrabold uppercase tracking-wider text-slate-200 font-heading">
-              <div className="col-span-4 sm:col-span-4 flex items-center gap-2 text-white">
-                <span>Evaluation Metric</span>
-              </div>
-              <div className="col-span-4 sm:col-span-4 text-slate-400 font-semibold">
-                Retail Branch Walk-In
-              </div>
-              <div className="col-span-4 sm:col-span-4 text-emerald-400 font-bold flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Prime Associates Desk</span>
-              </div>
-            </div>
-
-            <div className="divide-y divide-white/10 text-xs sm:text-sm font-sans">
-              {comparisonData.map((row, idx) => (
-                <div
-                  key={idx}
-                  className={`grid grid-cols-12 p-4 sm:p-5 items-center transition-all duration-200 hover:bg-white/[0.07] ${
-                    row.highlight ? 'bg-white/[0.03]' : ''
-                  }`}
-                >
-                  <div className="col-span-4 font-bold text-white font-heading pr-2">
-                    {row.metric}
+              {/* Glassmorphism Table Container */}
+              <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl border border-white/20 bg-white/[0.04] backdrop-blur-2xl shadow-2xl ring-1 ring-white/10 overflow-hidden">
+                <div className="grid grid-cols-12 bg-white/[0.08] backdrop-blur-xl border-b border-white/15 p-4 sm:p-5 text-xs font-extrabold uppercase tracking-wider text-slate-200 font-heading">
+                  <div className="col-span-4 sm:col-span-4 flex items-center gap-2 text-white">
+                    <span>Evaluation Metric</span>
                   </div>
-                  <div className="col-span-4 text-slate-400 pr-3">
-                    <span className="inline-block p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200/90 text-xs font-medium line-through opacity-85">
-                      {row.traditional}
-                    </span>
+                  <div className="col-span-4 sm:col-span-4 text-slate-400 font-semibold">
+                    Retail Branch Walk-In
                   </div>
-                  <div className="col-span-4 font-bold text-emerald-300 flex items-center gap-2">
-                    <div className="inline-flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shadow-sm font-semibold">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                      <span>{row.prime}</span>
-                    </div>
+                  <div className="col-span-4 sm:col-span-4 text-emerald-400 font-bold flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Prime Associates Desk</span>
                   </div>
                 </div>
-              ))}
+
+                <div className="divide-y divide-white/10 text-xs sm:text-sm font-sans">
+                  {comparisonData.map((row, idx) => (
+                    <div
+                      key={idx}
+                      className={`grid grid-cols-12 p-4 sm:p-5 items-center transition-all duration-200 hover:bg-white/[0.07] ${
+                        row.highlight ? 'bg-white/[0.03]' : ''
+                      }`}
+                    >
+                      <div className="col-span-4 font-bold text-white font-heading pr-2">
+                        {row.metric}
+                      </div>
+                      <div className="col-span-4 text-slate-400 pr-3">
+                        <span className="inline-block p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200/90 text-xs font-medium line-through opacity-85">
+                          {row.traditional}
+                        </span>
+                      </div>
+                      <div className="col-span-4 font-bold text-emerald-300 flex items-center gap-2">
+                        <div className="inline-flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 shadow-sm font-semibold">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                          <span>{row.prime}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -911,17 +915,17 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           4. 40+ CHANNEL PARTNER NETWORK (FROM MASTER PAGE 1)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-brand-ivory/60 border-b border-brand-border">
+      <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="max-w-3xl mx-auto text-center space-y-3 mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold uppercase tracking-wider border border-teal-200">
+          <div className="max-w-3xl mx-auto text-center space-y-3 mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider border border-brand-teal/20 font-heading">
               <Landmark className="w-3.5 h-3.5 text-brand-teal" />
               <span>Page 1 Channel Partners</span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
               Our Regulated Lending Partner Ecosystem
             </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <p className="text-brand-slate text-sm sm:text-base leading-relaxed">
               We benchmark interest rates and negotiate sanction approvals directly across India's leading Public Sector, Private Commercial, and Housing Finance institutions.
             </p>
 
@@ -984,45 +988,48 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           5. INTERACTIVE FREQUENTLY ASKED QUESTIONS (FAQS)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-white border-b border-brand-border">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="max-w-3xl mx-auto text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold uppercase tracking-wider border border-teal-200 font-heading">
+      <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-4xl mx-auto">
+          <div className="max-w-2xl mx-auto text-center space-y-3 mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider border border-brand-teal/20 font-heading">
               <HelpCircle className="w-3.5 h-3.5 text-brand-teal" />
               <span>Borrower Queries</span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
               Frequently Asked Questions About the 4 Phases
             </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <p className="text-brand-slate text-sm sm:text-base leading-relaxed">
               Clear answers to the most common queries regarding bureau audits, title verification, and disbursement procedures.
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto space-y-3">
+          <div className="space-y-3.5">
             {faqs.map((faq, idx) => {
               const isOpen = openFaq === idx;
               return (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-brand-border overflow-hidden transition-all bg-white shadow-2xs"
+                  className="border border-brand-border rounded-xl overflow-hidden bg-brand-ivory/40 transition-colors"
                 >
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold font-heading text-sm sm:text-base text-brand-navy hover:text-brand-teal transition-colors"
+                    className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-brand-ivory/60 transition-colors focus:outline-none font-bold font-heading text-sm sm:text-base text-brand-navy hover:text-brand-teal"
                   >
-                    <span>{faq.q}</span>
+                    <span className="pr-4 flex items-center gap-3">
+                      <HelpCircle className="w-4 h-4 text-brand-teal flex-shrink-0" />
+                      <span>{faq.q}</span>
+                    </span>
                     <ChevronRight
-                      className={`w-5 h-5 text-slate-400 transition-transform duration-200 shrink-0 ${
+                      className={`w-5 h-5 text-brand-slate transition-transform duration-200 shrink-0 ${
                         isOpen ? 'rotate-90 text-brand-teal' : ''
                       }`}
                     />
                   </button>
 
                   {isOpen && (
-                    <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-                      {faq.a}
+                    <div className="p-5 pt-2 text-xs sm:text-sm text-brand-slate bg-white leading-relaxed border-t border-brand-border/40 animate-in fade-in duration-150">
+                      <p className="pl-7">{faq.a}</p>
                     </div>
                   )}
                 </div>
@@ -1035,41 +1042,46 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           6. CONVERSION CTA BANNER
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-[#091522] text-white border-t border-brand-teal/20">
+      <section className="py-12 sm:py-16 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
-              <span>Fast-Track Pre-Underwriting</span>
-            </span>
+          <div className="bg-gradient-to-br from-[#091522] to-[#102235] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-14 relative overflow-hidden shadow-xl text-center">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-heading leading-tight">
-              Ready to Secure Institutional Financing <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
-                Without the Standard Bank Hassle?
+            <div className="max-w-4xl mx-auto space-y-6 relative z-10">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <span>Fast-Track Pre-Underwriting</span>
               </span>
-            </h2>
 
-            <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Book a confidential Phase 1 consultation or submit your property loan dossier with attached reference documents for preliminary 24–48h review.
-            </p>
+              <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-heading leading-tight">
+                Ready to Secure Institutional Financing <br className="hidden sm:inline" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
+                  Without the Standard Bank Hassle?
+                </span>
+              </h2>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-              <Link
-                to="/enquire"
-                className="w-full sm:w-auto px-8 py-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm rounded-corporate shadow-xl shadow-teal-950/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-              >
-                <span>Initiate Phase 1 Consultation</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                Book a confidential Phase 1 consultation or submit your property loan dossier with attached reference documents for preliminary 24–48h review.
+              </p>
 
-              <a
-                href="tel:+919655566613"
-                className="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/15 text-white font-semibold text-sm rounded-corporate border border-white/20 backdrop-blur-sm transition-all flex items-center justify-center gap-2"
-              >
-                <PhoneCall className="w-4 h-4 text-teal-300" />
-                <span>Call Advisory Desk: +91 96555 66613</span>
-              </a>
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
+                <Link
+                  to="/enquire"
+                  className="w-full sm:w-auto px-8 py-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm rounded-corporate shadow-xl shadow-teal-950/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Initiate Phase 1 Consultation</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <a
+                  href="tel:+919655566613"
+                  className="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/15 text-white font-semibold text-sm rounded-corporate border border-white/20 backdrop-blur-sm transition-all flex items-center justify-center gap-2"
+                >
+                  <PhoneCall className="w-4 h-4 text-teal-300" />
+                  <span>Call Advisory Desk: +91 96555 66613</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
