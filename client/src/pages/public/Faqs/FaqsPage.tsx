@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Sparkles,
   PhoneCall,
+  Phone,
+  Shield,
   Tag,
 } from 'lucide-react';
 import { Faq } from '../../../types';
@@ -165,10 +167,50 @@ export const FaqsPage: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [mounted, setMounted] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [counterValues, setCounterValues] = useState({
+    verified: 0,
+    lenders: 0,
+    sanction: 0,
+    capital: 0,
+  });
 
   React.useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(timer);
+  }, []);
+
+  React.useEffect(() => {
+    let animationFrameId: number;
+    let startTime: number | null = null;
+    const duration = 1400; // 1.4s smooth easing
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Silky Quartic ease out
+      const eased = 1 - Math.pow(1 - progress, 4);
+
+      setCounterValues({
+        verified: Math.round(100 * eased),
+        lenders: Math.round(40 * eased),
+        sanction: Number((98.4 * eased).toFixed(1)),
+        capital: Math.round(120 * eased), // 120 Cr (one zero removed)
+      });
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      animationFrameId = requestAnimationFrame(step);
+    }, 180);
+
+    return () => {
+      clearTimeout(timer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   React.useEffect(() => {
@@ -209,20 +251,19 @@ export const FaqsPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: SEARCHABLE KNOWLEDGE REPOSITORY
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-slate-950 text-white pt-16 pb-16 lg:pt-24 lg:pb-20 border-b border-brand-teal/20">
-        {/* Background Photographic Image with Professional Contrast Overlays */}
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
+        {/* Background Architectural Photographic Image: Brighter, Fixed & Stable */}
         <div className="absolute inset-0 z-0">
           <img
             src={faqsHeroImage}
             alt="Property Finance & Title Diligence Encyclopedia"
-            className={`w-full h-full object-cover object-center brightness-[0.88] transition-transform duration-1000 ease-out ${
-              mounted ? 'scale-100' : 'scale-105'
-            }`}
+            className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
           />
-          {/* Calibrated lightweight overlay stack so image is clearly visible while text is crisp */}
-          <div className="absolute inset-0 bg-black/25" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-950/45 to-slate-950/90" />
+          {/* Calibrated lightweight translucent overlays so image is clearly visible and bright while text remains crisp */}
+          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/30 to-slate-950/65" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-transparent to-slate-950/60" />
 
           {/* Ambient atmospheric pulse glows */}
           <div
@@ -233,79 +274,244 @@ export const FaqsPage: React.FC = () => {
         </div>
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
-          <div
-            style={{
-              transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-              transition: 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
-              transformStyle: 'preserve-3d',
-            }}
-            className="max-w-4xl mx-auto text-center space-y-6 will-change-transform"
-          >
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-              </span>
-              <span>Property Finance &amp; Title Diligence Encyclopedia</span>
+          {/* Container stays firmly in place with staggered entrance */}
+          <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-7">
+            
+            {/* Institutional Header Tag with Live Status Beacon - Fixed in place */}
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s',
+              }}
+              className="flex flex-wrap items-center justify-center gap-3"
+            >
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/15 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm font-heading">
+                <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
+                <span>Regulatory Property Finance &amp; Title Scrutiny Repository</span>
+              </div>
+              <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10 font-sans">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>RBI &amp; RERA Framework Aligned</span>
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight text-white">
-              Instant Answers on Land, <br />
-              <span className="text-[#38bdf8] drop-shadow-[0_4px_22px_rgba(56,189,248,0.65)] font-extrabold">
-                Home Loans &amp; Title Verification.
-              </span>
-            </h1>
+            {/* Display Headline - ONLY THIS HEADLINE TEXT RESPONDS TO CURSOR TILT */}
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted
+                  ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`
+                  : 'translateY(28px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+                transformStyle: 'preserve-3d',
+              }}
+              className="space-y-3 will-change-transform"
+            >
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+                The Definitive Legal &amp; Financial{' '}
+                <span className="shimmer-headline-text text-[#38bdf8] block sm:inline">
+                  Due Diligence Repository.
+                </span>
+              </h1>
+            </div>
 
-            <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto">
-              Find factual answers regarding municipal layout approvals (BDA/DTCP), Khata classifications, composite plot loan rules, banking FOIR formulas, and legal documentation.
+            {/* Comprehensive Authority Description - Stays firmly in place */}
+            <p
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+              }}
+              className="text-sm sm:text-base md:text-lg text-slate-200 font-sans font-normal leading-relaxed max-w-3xl mx-auto"
+            >
+              Forensic clarity on 30-year mother deed title scrutiny, municipal layout sanctions (BDA/DTCP/PMRDA), Khata mutations, banking FOIR thresholds, composite plot construction rules, and non-salaried promoter credit underwriting.
             </p>
 
-            {/* Prominent Knowledge Search Bar inside Hero */}
-            <div className="pt-2 max-w-2xl mx-auto relative">
-              <Search className="w-5 h-5 absolute left-4.5 top-1/2 -translate-y-1/2 text-teal-400 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search topics (e.g. A-Khata, CIBIL, Pre-EMI, Plot Loan, MODT, LRD)..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white/[0.08] backdrop-blur-xl border border-white/20 rounded-2xl text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white/[0.14] transition-all shadow-2xl"
-              />
-              {searchTerm && (
-                <button
-                  type="button"
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white bg-white/10 px-2 py-1 rounded-md"
-                >
-                  Clear
-                </button>
-              )}
+            {/* 4 Interactive Institutional Metrics Grid - Silky Smooth Numbers Without Glitch */}
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
+              }}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1 max-w-3xl mx-auto text-left"
+            >
+              <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    Pre-Screened
+                  </span>
+                </div>
+                <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums">
+                  {counterValues.verified}%
+                </div>
+                <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  Verified Solutions
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  Statutory Banking Norms
+                </div>
+              </div>
+
+              <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    Zonal Panel
+                  </span>
+                </div>
+                <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[50px]">
+                  {counterValues.lenders}+
+                </div>
+                <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  Partner Banks
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  PSU, Private &amp; NBFCs
+                </div>
+              </div>
+
+              <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    Pre-Audit
+                  </span>
+                </div>
+                <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono tabular-nums min-w-[70px]">
+                  {counterValues.sanction}%
+                </div>
+                <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  Sanction Precision
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  30-Yr Legal Due Diligence
+                </div>
+              </div>
+
+              <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    Volume
+                  </span>
+                </div>
+                <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[70px]">
+                  ₹{counterValues.capital}+ Cr
+                </div>
+                <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  Facilitated Capital
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  15-Year Practice
+                </div>
+              </div>
             </div>
 
-            {/* Trending Topic Quick Pills */}
-            <div className="pt-2 flex flex-wrap justify-center items-center gap-2 text-xs text-slate-300">
-              <span className="text-slate-400 font-medium">Trending Queries:</span>
-              {trendingTopics.map((topic) => (
-                <button
-                  key={topic}
-                  type="button"
-                  onClick={() => setSearchTerm(topic)}
-                  className="px-3 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.15] border border-white/10 transition-colors text-teal-300 cursor-pointer"
-                >
-                  #{topic}
-                </button>
-              ))}
+            {/* Prominent Knowledge Search Bar inside Hero */}
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.5s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.5s',
+              }}
+              className="pt-2 max-w-2xl mx-auto space-y-3"
+            >
+              <div className="relative">
+                <Search className="w-5 h-5 absolute left-4.5 top-1/2 -translate-y-1/2 text-teal-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search topics (e.g. A-Khata, CIBIL, Pre-EMI, Plot Loan, MODT, LRD)..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-12 pr-16 py-4 bg-white/[0.1] backdrop-blur-xl border border-white/20 rounded-2xl text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white/[0.16] transition-all shadow-2xl font-sans"
+                />
+                {searchTerm && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-md transition-colors cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              {/* Trending Topic Quick Pills */}
+              <div className="flex flex-wrap justify-center items-center gap-2 text-xs text-slate-300">
+                <span className="text-slate-400 font-semibold font-heading">Trending Legal Queries:</span>
+                {trendingTopics.map((topic) => (
+                  <button
+                    key={topic}
+                    type="button"
+                    onClick={() => setSearchTerm(topic)}
+                    className="px-3 py-1 rounded-full bg-white/[0.08] hover:bg-white/[0.2] border border-white/15 transition-colors text-teal-300 font-mono text-xs cursor-pointer shadow-xs"
+                  >
+                    #{topic}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Action CTA Buttons & Direct Hotline Pill */}
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.58s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.58s',
+              }}
+              className="pt-2 flex flex-wrap justify-center items-center gap-3 sm:gap-4"
+            >
+              <Link
+                to="/enquire"
+                className="px-6 py-3.5 rounded-full bg-gradient-to-r from-teal-500 to-[#20B2AA] hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-emerald-200" />
+                <span>Initiate Confidential Inquiry</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+
+              <a
+                href="tel:+919655566613"
+                className="px-5 py-3.5 rounded-full bg-slate-900/85 hover:bg-slate-800/90 text-white font-bold text-xs sm:text-sm border border-white/20 hover:border-teal-400/50 backdrop-blur-md shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2.5 font-heading cursor-pointer"
+              >
+                <Phone className="w-4 h-4 text-emerald-400" />
+                <span>Direct Hotline: +91 96555 66613</span>
+              </a>
+            </div>
+
+            {/* Bottom Safety & Compliance Indicators */}
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.65s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.65s',
+              }}
+              className="pt-4 flex flex-wrap justify-center items-center gap-4 sm:gap-6 text-xs text-slate-300 font-sans"
+            >
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>RBI Fair Practice Code Compliant</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Shield className="w-4 h-4 text-teal-400" />
+                <span>Zero Unauthorized Bureau Enquiries</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Scale className="w-4 h-4 text-cyan-400" />
+                <span>Zero Cash Collection Policy</span>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          2. CATEGORY FILTER TABS
+          2. CATEGORY FILTER TABS (Static in position - does not stop at top while rolling)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-4 border-b border-brand-border/60 bg-[#f8f8f4]/90 sticky top-16 sm:top-20 z-20 backdrop-blur-xl shadow-2xs">
+      <section className="py-5 border-b border-brand-border/60 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mr-2 hidden sm:inline font-heading">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-600 mr-2 hidden sm:inline font-heading">
               Filter by Category:
             </span>
             {categories.map((cat) => (
@@ -319,7 +525,7 @@ export const FaqsPage: React.FC = () => {
                 className={`px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-brand-teal text-white shadow-sm border border-brand-teal'
-                    : 'bg-white text-slate-600 border border-brand-border/80 hover:bg-slate-50 hover:text-brand-navy'
+                    : 'bg-white text-slate-600 border border-brand-border/80 hover:bg-slate-50 hover:text-brand-navy shadow-xs'
                 }`}
               >
                 {cat === 'ALL' ? 'All Questions' : cat}
