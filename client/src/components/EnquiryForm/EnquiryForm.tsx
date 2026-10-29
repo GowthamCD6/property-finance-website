@@ -27,11 +27,13 @@ interface EnquiryFormProps {
   services: Service[];
   selectedService: Service | null;
   onClearSelectedService: () => void;
+  hideHeader?: boolean;
 }
 
 export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   services,
   selectedService,
+  hideHeader = false,
 }) => {
   // Form State
   const [fullName, setFullName] = useState('');
@@ -300,18 +302,20 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   return (
     <section id="enquiry-form" className="py-12 sm:py-16 bg-brand-teal-light/40 border-t border-brand-border">
       <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-        {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
-          <div className="inline-block px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3 border border-brand-teal/20">
-            Confidential Consultation &amp; Document Intake
+        {/* Section Heading - Conditionally rendered */}
+        {!hideHeader && (
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+            <div className="inline-block px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-3 border border-brand-teal/20">
+              Confidential Consultation &amp; Document Intake
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
+              Schedule a Confidential Consultation
+            </h2>
+            <p className="mt-2.5 text-brand-slate text-sm sm:text-base leading-relaxed">
+              Select your financing plan, attach reference documents for fast-track 24–48h underwriting, and book your consultation with our senior advisory team.
+            </p>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
-            Schedule a Confidential Consultation
-          </h2>
-          <p className="mt-2.5 text-brand-slate text-sm sm:text-base leading-relaxed">
-            Select your financing plan, attach reference documents for fast-track 24–48h underwriting, and book your consultation with our senior advisory team.
-          </p>
-        </div>
+        )}
 
         {/* Confirmation Screen on Success */}
         {submissionSuccess ? (
