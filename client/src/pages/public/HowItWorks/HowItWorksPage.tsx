@@ -32,12 +32,28 @@ import {
   Wallet,
 } from 'lucide-react';
 import { CHANNEL_PARTNERS, ChannelPartnersGroup } from '../../../constants/loanDocuments';
+import howItsWorkHero from '../../../assets/images/how-its-work.avif';
+import faqVisualImage from '../../../assets/images/how-its-work-faq.webp';
+import consultationVisualImage from '../../../assets/images/contact-consultation-desk.webp';
 
 export const HowItWorksPage: React.FC = () => {
   const [activePhase, setActivePhase] = useState<number>(1);
   const [activeBankCategory, setActiveBankCategory] = useState<string>('ALL');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [mounted, setMounted] = useState<boolean>(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 6;
+      const y = -(e.clientY / innerHeight - 0.5) * 6;
+      setTilt({ x: y, y: x });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   // Interactive Hero Loan Simulator States
   const [simLoanType, setSimLoanType] = useState<'home' | 'lap' | 'car' | 'project'>('home');
@@ -277,12 +293,42 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Matching Calculator Suite Palette)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#091522] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
+        {/* Background Architectural Photographic Image with Professional Contrast Overlays */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={howItsWorkHero}
+            alt="Institutional Property Finance Architecture & Workflow"
+            className={`w-full h-full object-cover object-center brightness-[0.88] transition-transform duration-1000 ease-out ${
+              mounted ? 'scale-100' : 'scale-105'
+            }`}
+            loading="eager"
+          />
+          {/* Calibrated lightweight overlay stack so image is clearly visible while text has crisp contrast */}
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-slate-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/75" />
+
+          {/* Ambient atmospheric lighting pulses */}
+          <div
+            className="absolute -top-24 -left-20 w-80 sm:w-96 h-80 sm:h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"
+            style={{ animationDuration: '6s' }}
+          />
+          <div className="absolute top-1/3 -right-20 w-80 sm:w-96 h-80 sm:h-96 bg-sky-500/12 rounded-full blur-3xl pointer-events-none" />
+        </div>
+
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
-            {/* ── LEFT COLUMN: Authority Narrative, Animated Counters & CTA ── */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-7">
+            {/* ── LEFT COLUMN: Authority Narrative, Animated Counters & CTA with 3D Tilt ── */}
+            <div
+              style={{
+                transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                transition: 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
+                transformStyle: 'preserve-3d',
+              }}
+              className="lg:col-span-7 space-y-6 sm:space-y-7 will-change-transform"
+            >
               {/* Institutional Header Tag with Live Status Beacon */}
               <div
                 style={{
@@ -292,16 +338,13 @@ export const HowItWorksPage: React.FC = () => {
                 }}
                 className="flex flex-wrap items-center gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light shadow-sm backdrop-blur-md">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light">
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-white/15 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
+                  <span className="font-heading">
                     Institutional Lending Pipeline &amp; FOIR Engine
                   </span>
                 </div>
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-gray-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10 font-sans">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Fast-Track Zonal Desk • Est. 2011</span>
                 </div>
@@ -318,12 +361,12 @@ export const HowItWorksPage: React.FC = () => {
               >
                 <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
                   From Algorithmic Pre-Audit to{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
+                  <span className="shimmer-headline-text text-[#38bdf8]">
                     Direct Account Credit.
                   </span>
                 </h1>
 
-                <p className="text-xs sm:text-sm md:text-base text-gray-300 font-normal leading-relaxed max-w-2xl pt-1">
+                <p className="text-xs sm:text-sm md:text-base text-slate-200 font-sans font-normal leading-relaxed max-w-2xl pt-1">
                   Eliminate 45-day branch queues, arbitrary credit rejections, and hidden broker markups. Our fiduciary 4-stage lending architecture transitions your file from preliminary FOIR assessment to Sub-Registrar MODT registration in <strong className="text-white font-semibold">8 to 12 business days</strong> across 40+ empanelled banks.
                 </p>
               </div>
@@ -337,70 +380,70 @@ export const HowItWorksPage: React.FC = () => {
                 }}
                 className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
               >
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Fast-Track
                     </span>
                   </div>
                   <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
                     {counterValues.turnaround}–12d
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
                     Sanction to Credit
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     vs 45d Branch Queue
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Zonal Panel
                     </span>
                   </div>
                   <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
                     {counterValues.lenders}+
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
                     Partner Banks
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     PSU, Private &amp; NBFCs
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Pre-Audited
                     </span>
                   </div>
                   <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-emerald-400 font-heading">
                     {counterValues.sanction}%
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
                     Sanction Ratio
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     30-Yr Legal Due Diligence
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-teal/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Volume
                     </span>
                   </div>
                   <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
                     ₹{counterValues.capital}+ Cr
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1">
+                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
                     Capital Facilitated
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1">
+                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     15-Year Practice
                   </div>
                 </div>
@@ -417,16 +460,16 @@ export const HowItWorksPage: React.FC = () => {
               >
                 <Link
                   to="/enquire"
-                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-lg shadow-teal-900/40 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group text-center cursor-pointer"
+                  className="hero-btn-primary inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 text-white font-bold text-xs sm:text-sm font-heading shadow-lg shadow-teal-900/40 text-center cursor-pointer tracking-wide"
                 >
                   <Sparkles className="w-4 h-4 text-teal-100" />
                   <span>Initiate Pre-Approval Application</span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ArrowRight className="w-4 h-4 hero-btn-arrow" />
                 </Link>
 
                 <a
                   href="#cockpit-breakdown"
-                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-corporate bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-xs sm:text-sm shadow-sm backdrop-blur-sm transition-all duration-200 text-center cursor-pointer"
+                  className="hero-btn-secondary inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 text-white font-semibold text-xs sm:text-sm font-heading shadow-sm backdrop-blur-sm text-center cursor-pointer"
                 >
                   <FileCheck2 className="w-4 h-4 text-teal-300" />
                   <span>Explore 4-Stage Protocol</span>
@@ -435,15 +478,15 @@ export const HowItWorksPage: React.FC = () => {
 
                 <a
                   href="tel:+919655566613"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-corporate bg-teal-500/15 hover:bg-teal-500/25 text-teal-200 border border-teal-400/30 text-xs font-semibold backdrop-blur-sm transition-colors shadow-sm text-center"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-teal-300 border border-white/15 text-xs font-semibold font-heading backdrop-blur-sm transition-colors shadow-sm text-center"
                 >
                   <PhoneCall className="w-3.5 h-3.5 text-teal-300" />
-                  <span>Direct Hotline: +91 96555 66613</span>
+                  <span>+91 96555 66613</span>
                 </a>
               </div>
 
               {/* Institutional Safety Pillars Strip */}
-              <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-medium">
+              <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-sans font-medium">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-teal-400" />
                   <span>RBI Fair Practice Code Compliant</span>
@@ -461,16 +504,16 @@ export const HowItWorksPage: React.FC = () => {
 
             {/* ── RIGHT COLUMN: Interactive Live Loan Syndication Console & Simulator ── */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-3xl bg-gradient-to-br from-[#102235] to-[#0a1826] border border-white/15 p-6 sm:p-7 shadow-2xl overflow-hidden space-y-4">
+              <div className="relative rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/15 p-6 sm:p-7 shadow-2xl space-y-4">
                 {/* Console Header */}
                 <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/10">
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
-                    <span className="text-xs uppercase font-bold tracking-wider text-brand-teal-light">
+                    <span className="text-xs uppercase font-bold tracking-wider text-teal-200 font-heading">
                       Live Syndication Simulator
                     </span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-mono text-emerald-400">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-mono font-bold text-emerald-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
                     <span>Live Benchmarks</span>
                   </div>
@@ -478,7 +521,7 @@ export const HowItWorksPage: React.FC = () => {
 
                 {/* Loan Archetype Switcher Pills */}
                 <div className="relative z-10 pt-4">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-2">
+                  <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider block mb-2">
                     Select Credit Facility
                   </span>
                   <div className="grid grid-cols-4 gap-1.5 p-1 bg-black/40 rounded-xl border border-white/10">
@@ -496,14 +539,14 @@ export const HowItWorksPage: React.FC = () => {
                           key={facility.id}
                           type="button"
                           onClick={() => setSimLoanType(facility.id)}
-                          className={`py-2 px-1 rounded-lg text-center transition-all cursor-pointer ${
+                          className={`py-2 px-1 rounded-lg text-center transition-all cursor-pointer font-heading ${
                             isSel
-                              ? 'bg-brand-teal text-white font-extrabold shadow-sm'
-                              : 'text-slate-400 hover:text-white hover:bg-white/5 font-medium'
+                              ? 'bg-gradient-to-r from-brand-teal to-teal-700 text-white font-bold shadow-sm'
+                              : 'text-slate-300 hover:text-white hover:bg-white/5 font-medium'
                           }`}
                         >
                           <span className="text-[11px] block leading-tight">{facility.label}</span>
-                          <span className="text-[9px] block text-teal-200 opacity-90">{facility.rate}</span>
+                          <span className="text-[9px] block text-teal-200 opacity-90 font-mono">{facility.rate}</span>
                         </button>
                       );
                     })}
@@ -514,7 +557,7 @@ export const HowItWorksPage: React.FC = () => {
                 <div className="relative z-10 space-y-4 pt-4">
                   <div>
                     <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-slate-300 font-medium flex items-center gap-1.5">
+                      <span className="text-slate-200 font-medium font-sans flex items-center gap-1.5">
                         <Wallet className="w-3.5 h-3.5 text-teal-400" /> Loan Quantum Required:
                       </span>
                       <span className="text-sm font-extrabold text-teal-300 font-mono">
@@ -530,7 +573,7 @@ export const HowItWorksPage: React.FC = () => {
                       onChange={(e) => setSimAmountLakhs(Number(e.target.value))}
                       className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
                     />
-                    <div className="flex justify-between text-[10px] text-slate-500 pt-1 font-mono">
+                    <div className="flex justify-between text-[10px] text-slate-400 pt-1 font-mono font-medium">
                       <span>₹15 Lakhs</span>
                       <span>₹1.50 Crore</span>
                       <span>₹3.00 Crore</span>
@@ -539,7 +582,7 @@ export const HowItWorksPage: React.FC = () => {
 
                   <div>
                     <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-slate-300 font-medium flex items-center gap-1.5">
+                      <span className="text-slate-200 font-medium font-sans flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5 text-sky-400" /> Repayment Tenure:
                       </span>
                       <span className="text-sm font-extrabold text-sky-300 font-mono">
@@ -552,10 +595,10 @@ export const HowItWorksPage: React.FC = () => {
                           key={yr}
                           type="button"
                           onClick={() => setSimTenureYears(yr)}
-                          className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          className={`flex-1 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
                             simTenureYears === yr
                               ? 'bg-sky-500 text-white shadow-sm'
-                              : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10'
+                              : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10'
                           }`}
                         >
                           {yr}y
@@ -568,37 +611,37 @@ export const HowItWorksPage: React.FC = () => {
                 {/* Dynamic Computation Result Cards */}
                 <div className="relative z-10 grid grid-cols-3 gap-2 pt-4">
                   <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">
+                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading block">
                       Estimated EMI
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-white font-mono block mt-0.5">
                       ₹{estimatedEmi.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[9px] text-teal-300 font-medium block">
+                    <span className="text-[9px] text-teal-300 font-medium font-mono block">
                       @{currentRate}% Benchmark
                     </span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-teal-500/10 border border-teal-400/30 text-center">
-                    <span className="text-[10px] text-teal-300 uppercase font-semibold block">
+                  <div className="p-2.5 rounded-xl bg-teal-500/15 border border-teal-400/30 text-center">
+                    <span className="text-[10px] text-teal-200 uppercase font-bold font-heading block">
                       Fee Waiver Saved
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-teal-200 font-mono block mt-0.5">
+                    <span className="text-xs sm:text-sm font-extrabold text-teal-100 font-mono block mt-0.5">
                       ₹{estimatedFeeSaved.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[9px] text-teal-300/80 font-medium block">
+                    <span className="text-[9px] text-teal-200/90 font-medium font-sans block">
                       Direct Zonal Benefit
                     </span>
                   </div>
 
                   <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">
+                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading block">
                       Turnaround
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-white font-mono block mt-0.5">
                       8–12 Days
                     </span>
-                    <span className="text-[9px] text-emerald-400 font-medium block">
+                    <span className="text-[9px] text-emerald-400 font-medium font-sans block">
                       35d Faster vs Branch
                     </span>
                   </div>
@@ -607,7 +650,7 @@ export const HowItWorksPage: React.FC = () => {
                 {/* Interactive 4-Phase Stepper Inside Console */}
                 <div className="relative z-10 pt-4 border-t border-white/10 mt-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                    <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider">
                       Interactive Stage Synchronization
                     </span>
                     <span className="text-[10px] font-mono font-bold text-teal-300">
@@ -622,14 +665,14 @@ export const HowItWorksPage: React.FC = () => {
                           key={p.phase}
                           type="button"
                           onClick={() => setActivePhase(p.phase)}
-                          className={`py-2 px-1 rounded-xl text-center transition-all cursor-pointer border ${
+                          className={`py-2 px-1 rounded-xl text-center transition-all cursor-pointer border font-heading ${
                             isAct
                               ? 'bg-teal-500/25 border-teal-400 text-white shadow-sm'
-                              : 'bg-black/30 border-white/10 text-slate-400 hover:text-white hover:bg-white/5'
+                              : 'bg-black/30 border-white/10 text-slate-300 hover:text-white hover:bg-white/5'
                           }`}
                         >
                           <span
-                            className={`w-5 h-5 mx-auto rounded-full flex items-center justify-center text-[10px] font-extrabold mb-1 ${
+                            className={`w-5 h-5 mx-auto rounded-full flex items-center justify-center text-[10px] font-extrabold font-mono mb-1 ${
                               isAct ? 'bg-teal-400 text-slate-950' : 'bg-white/10 text-slate-300'
                             }`}
                           >
@@ -1107,21 +1150,46 @@ export const HowItWorksPage: React.FC = () => {
           5. INTERACTIVE FREQUENTLY ASKED QUESTIONS (FAQS)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-4xl mx-auto">
-          <div className="max-w-2xl mx-auto text-center space-y-3 mb-8 sm:mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider border border-brand-teal/20 font-heading">
-              <HelpCircle className="w-3.5 h-3.5 text-brand-teal" />
-              <span>Borrower Queries</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
-              Frequently Asked Questions About the 4 Phases
-            </h2>
-            <p className="text-brand-slate text-sm sm:text-base leading-relaxed">
-              Clear answers to the most common queries regarding bureau audits, title verification, and disbursement procedures.
-            </p>
-          </div>
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            {/* Left FAQ Visual & Description Card */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider border border-brand-teal/20 font-heading">
+                  <HelpCircle className="w-3.5 h-3.5 text-brand-teal" />
+                  <span>Borrower Queries</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
+                  Frequently Asked Questions About the 4 Phases
+                </h2>
+                <p className="text-brand-slate text-sm sm:text-base leading-relaxed">
+                  Clear answers to the most common queries regarding bureau audits, title verification, and disbursement procedures.
+                </p>
+              </div>
 
-          <div className="space-y-3.5">
+              {/* FAQ Visual Card */}
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-brand-border/80 shadow-card bg-slate-900 group">
+                <img
+                  src={faqVisualImage}
+                  alt="Frequently Asked Questions Assistance Desk"
+                  className="w-full h-56 sm:h-64 object-cover object-center group-hover:scale-105 transition-transform duration-700 brightness-95"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 space-y-1">
+                  <div className="text-white text-sm font-bold font-heading">
+                    Have a specific collateral or eligibility query?
+                  </div>
+                  <p className="text-slate-300 text-xs">
+                    Our credit underwriting and title diligence panel provides one-on-one consultation.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Accordion List */}
+            <div className="lg:col-span-7 space-y-3.5">
             {faqs.map((faq, idx) => {
               const isOpen = openFaq === idx;
               return (
@@ -1153,6 +1221,7 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
       </section>
@@ -1163,6 +1232,16 @@ export const HowItWorksPage: React.FC = () => {
       <section className="py-12 sm:py-16 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="bg-gradient-to-br from-[#091522] to-[#102235] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-14 relative overflow-hidden shadow-xl text-center">
+            {/* Visual Background Integration */}
+            <div className="absolute inset-0 z-0">
+              <img
+                src={consultationVisualImage}
+                alt="Direct Advisory & Underwriting Consultation Desk"
+                className="w-full h-full object-cover object-right opacity-25 mix-blend-luminosity brightness-110"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#091522] via-[#091522]/90 to-[#102235]/80" />
+            </div>
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 

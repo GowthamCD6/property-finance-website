@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Calculator as CalcIcon,
@@ -19,10 +19,235 @@ import {
   FileText,
   BadgeAlert,
   Sliders,
+  PhoneCall,
+  Clock,
+  Landmark,
+  Shield,
+  Award,
+  Wallet,
+  Scale,
+  Lock,
+  ArrowDownCircle,
+  BadgePercent,
+  ChevronRight,
 } from 'lucide-react';
+import defaultHeroImage from '../../../assets/images/hero-property-finance.jpg';
 
+/* ────────────────────────────────────────────────────────────
+   1. ANIMATED KINETIC HEADLINE (Matching Home Page Signature)
+   ──────────────────────────────────────────────────────────── */
+const ROTATING_WORDS = [
+  'Lowest 7.25% EMI.',
+  'Maximum FOIR.',
+  'Composite Plot Loans.',
+  'Zero Advance Fee.',
+  'Instant Sanctions.',
+];
+
+const AnimatedHeadline: React.FC = () => {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [currentWord, setCurrentWord] = useState(ROTATING_WORDS[0]);
+  const [exitingWord, setExitingWord] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWordIndex((prevIdx) => {
+        const nextIdx = (prevIdx + 1) % ROTATING_WORDS.length;
+        setExitingWord(ROTATING_WORDS[prevIdx]);
+        setCurrentWord(ROTATING_WORDS[nextIdx]);
+        setIsTransitioning(true);
+
+        setTimeout(() => {
+          setExitingWord(null);
+          setIsTransitioning(false);
+        }, 900);
+
+        return nextIdx;
+      });
+    }, 3600);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 8;
+      const y = -(e.clientY / innerHeight - 0.5) * 8;
+      setTilt({ x: y, y: x });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: 'transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+        transformStyle: 'preserve-3d',
+      }}
+      className="will-change-transform block w-full"
+    >
+      <h1 className="text-[23px] xs:text-[27px] sm:text-[38px] md:text-[48px] lg:text-[56px] font-extrabold text-white tracking-tight leading-[1.2] sm:leading-[1.15] font-heading drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)] max-w-5xl mx-auto select-none px-2">
+        <span
+          className="relative inline-block overflow-hidden"
+          style={{
+            display: 'inline-block',
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? 'translateY(0)' : 'translateY(32px)',
+            transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s',
+          }}
+        >
+          <span className="shimmer-headline-text">Institutional Mortgage Analytics,</span>
+        </span>
+        <br className="hidden sm:inline" />{' '}
+        <span
+          className="inline-flex items-center justify-center flex-wrap gap-x-2"
+          style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? 'translateY(0)' : 'translateY(32px)',
+            transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
+          }}
+        >
+          <span>Anchored in</span>{' '}
+          <span
+            className="inline-block relative overflow-visible"
+            style={{
+              minWidth: '170px',
+              textAlign: 'left',
+              verticalAlign: 'baseline',
+            }}
+          >
+            {exitingWord && (
+              <span
+                className="absolute left-0 top-0 pointer-events-none whitespace-nowrap select-none text-[#38bdf8] drop-shadow-[0_4px_22px_rgba(56,189,248,0.65)] font-extrabold"
+                aria-hidden="true"
+              >
+                {exitingWord.split('').map((char, idx) => {
+                  const scatterX = (idx % 2 === 0 ? -1 : 1) * (5 + (idx % 3) * 3);
+                  const scatterRot = (idx % 2 === 0 ? -1 : 1) * (10 + (idx % 4) * 4);
+                  return (
+                    <span
+                      key={`exit-${idx}`}
+                      className="animate-letter-break"
+                      style={
+                        {
+                          '--char-index': idx,
+                          '--scatter-x': `${scatterX}px`,
+                          '--scatter-rot': `${scatterRot}deg`,
+                        } as React.CSSProperties
+                      }
+                    >
+                      {char === ' ' ? '\u00A0' : char}
+                    </span>
+                  );
+                })}
+              </span>
+            )}
+
+            <span className="relative inline-block whitespace-nowrap text-[#38bdf8] drop-shadow-[0_4px_22px_rgba(56,189,248,0.65)] font-extrabold">
+              {currentWord.split('').map((char, idx) => {
+                const enterX = (idx % 2 === 0 ? 1 : -1) * (4 + (idx % 3) * 2);
+                const enterRot = (idx % 2 === 0 ? 1 : -1) * (6 + (idx % 3) * 2);
+                return (
+                  <span
+                    key={`enter-${wordIndex}-${idx}`}
+                    className={isTransitioning ? 'animate-letter-assemble' : 'inline-block'}
+                    style={
+                      {
+                        '--char-index': idx,
+                        '--enter-x': `${enterX}px`,
+                        '--enter-rot': `${enterRot}deg`,
+                      } as React.CSSProperties
+                    }
+                  >
+                    {char === ' ' ? '\u00A0' : char}
+                  </span>
+                );
+              })}
+            </span>
+          </span>
+        </span>
+      </h1>
+      <style>{`
+        @keyframes letterBreakOut {
+          0% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+            filter: blur(0px);
+          }
+          35% {
+            opacity: 0.85;
+            transform: translate3d(var(--scatter-x, 0px), -12px, 0) rotate(var(--scatter-rot, 0deg)) scale(1.06);
+            filter: blur(2px);
+          }
+          100% {
+            opacity: 0;
+            transform: translate3d(calc(var(--scatter-x, 0px) * 2.2), -34px, 0) rotate(calc(var(--scatter-rot, 0deg) * 2)) scale(0.65);
+            filter: blur(10px);
+          }
+        }
+
+        @keyframes letterAssembleIn {
+          0% {
+            opacity: 0;
+            transform: translate3d(var(--enter-x, 0px), 30px, 0) rotate(var(--enter-rot, 0deg)) scale(0.72);
+            filter: blur(10px);
+          }
+          65% {
+            opacity: 1;
+            transform: translate3d(0, -3px, 0) rotate(0deg) scale(1.05);
+            filter: blur(0px);
+          }
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+            filter: blur(0px);
+          }
+        }
+
+        .animate-letter-break {
+          display: inline-block;
+          animation: letterBreakOut 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          animation-delay: calc(var(--char-index, 0) * 26ms);
+          will-change: transform, opacity, filter;
+        }
+
+        .animate-letter-assemble {
+          display: inline-block;
+          animation: letterAssembleIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation-delay: calc(100ms + var(--char-index, 0) * 32ms);
+          will-change: transform, opacity, filter;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+/* ────────────────────────────────────────────────────────────
+   2. MAIN CALCULATOR PAGE COMPONENT
+   ──────────────────────────────────────────────────────────── */
 export const CalculatorPage: React.FC = () => {
   const [calcMode, setCalcMode] = useState<'emi' | 'eligibility' | 'composite'>('emi');
+  const [mounted, setMounted] = useState<boolean>(false);
+  const dashboardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 60);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Mode 1: Standard EMI States
   const [loanAmount, setLoanAmount] = useState<number>(5000000); // ₹50 Lakhs
@@ -112,126 +337,211 @@ export const CalculatorPage: React.FC = () => {
     return `₹ ${num.toLocaleString('en-IN')}`;
   };
 
+  const handleSelectMode = (mode: 'emi' | 'eligibility' | 'composite') => {
+    setCalcMode(mode);
+    if (dashboardRef.current) {
+      dashboardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
+    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
       {/* ────────────────────────────────────────────────────────────
-          1. CONTENT-SPECIFIC HERO: FINANCIAL INSTRUMENT SUITE
+          1. DISTINCTIVE HERO: CENTERED KINETIC LAUNCHPAD WITH 3-INSTRUMENT DECK
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#091522] text-white pt-16 pb-16 lg:pt-24 lg:pb-20 border-b border-brand-teal/20">
-        {/* Subtle Atmospheric Light Orbs */}
-        <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-brand-teal/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[550px] h-[550px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none" />
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
+        {/* Background Architectural Photographic Image with Professional Contrast Overlays */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={defaultHeroImage}
+            alt="Institutional Property Finance Architecture"
+            className="w-full h-full object-cover object-center scale-[1.01] brightness-[0.70] transform motion-safe:transition-transform motion-safe:duration-1000"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-slate-950/75" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/70 to-slate-950/95" />
+          <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+        </div>
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* Left Column: Heading */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                </span>
-                <span>Interactive Mortgage Analytics &amp; FOIR Engine</span>
-              </div>
+          {/* Top Centered Section: Eyebrow + Kinetic Animated Headline + Subtitle */}
+          <div className="flex flex-col items-center text-center space-y-5 sm:space-y-6 max-w-4xl mx-auto">
+            {/* Live Eyebrow Beacon */}
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(-14px)',
+                transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
+              }}
+              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
+              <span className="font-heading">Institutional Financial Engineering • RBI EBLR Linked Suite</span>
+            </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight font-heading leading-tight text-white">
-                Mortgage, FOIR &amp; <br />
-                <span className="text-[#38bdf8] drop-shadow-[0_4px_22px_rgba(56,189,248,0.65)] font-extrabold">
-                  Composite Plot Loan Calculator.
-                </span>
-              </h1>
+            {/* Kinetic Animated Headline with 3D Tilt */}
+            <div className="w-full">
+              <AnimatedHeadline />
+            </div>
 
-              <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl">
-                Simulate exact monthly repayment schedules, test your borrowing ceiling against banking FOIR thresholds, or model interest-only pre-EMIs during phased villa construction.
-              </p>
+            {/* Authority Subtitle */}
+            <p
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s',
+              }}
+              className="text-sm xs:text-base sm:text-lg text-slate-200 font-sans font-normal leading-relaxed max-w-3xl mx-auto px-2"
+            >
+              Simulate exact monthly repayment schedules, stress-test your borrowing ceiling against banking FOIR guidelines, or model tranche-based pre-EMI interest during staged property construction across 40+ empanelled banks.
+            </p>
+          </div>
 
-              {/* Mode Switcher Tabs inside Hero */}
-              <div className="pt-2 flex flex-wrap gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setCalcMode('emi')}
-                  className={`px-5 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
+          {/* ────────────────────────────────────────────────────────────
+              2. UNIQUE 3-INSTRUMENT COMMAND DECK
+              ──────────────────────────────────────────────────────────── */}
+          <div
+            style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+              transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.60s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.60s',
+            }}
+            className="mt-8 sm:mt-10 grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4.5"
+          >
+            {/* Instrument 1: Standard EMI */}
+            <button
+              type="button"
+              onClick={() => handleSelectMode('emi')}
+              className={`p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
+                calcMode === 'emi'
+                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70 scale-[1.01]'
+                  : 'bg-slate-900/60 hover:bg-slate-900/80 border-white/15 hover:border-white/30 backdrop-blur-md'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/20 border border-teal-400/40 flex items-center justify-center text-teal-300 group-hover:scale-105 transition-transform">
+                  <CalcIcon className="w-5 h-5 text-teal-300" />
+                </div>
+                <span
+                  className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
                     calcMode === 'emi'
-                      ? 'bg-brand-teal text-white shadow-lg shadow-teal-500/30 border border-teal-400/50 scale-102'
-                      : 'bg-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.12] border border-white/10 backdrop-blur-md'
+                      ? 'bg-teal-500/25 text-teal-200 border-teal-400/50'
+                      : 'bg-white/5 text-slate-400 border-white/10'
                   }`}
                 >
-                  <CalcIcon className="w-4 h-4 text-emerald-300" />
-                  <span>1. Standard EMI Outflow</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCalcMode('eligibility')}
-                  className={`px-5 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
-                    calcMode === 'eligibility'
-                      ? 'bg-brand-teal text-white shadow-lg shadow-teal-500/30 border border-teal-400/50 scale-102'
-                      : 'bg-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.12] border border-white/10 backdrop-blur-md'
-                  }`}
-                >
-                  <UserCheck className="w-4 h-4 text-emerald-300" />
-                  <span>2. FOIR &amp; Max Borrowing</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCalcMode('composite')}
-                  className={`px-5 py-3 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
-                    calcMode === 'composite'
-                      ? 'bg-brand-teal text-white shadow-lg shadow-teal-500/30 border border-teal-400/50 scale-102'
-                      : 'bg-white/[0.06] text-slate-300 hover:text-white hover:bg-white/[0.12] border border-white/10 backdrop-blur-md'
-                  }`}
-                >
-                  <Building2 className="w-4 h-4 text-emerald-300" />
-                  <span>3. Composite Plot + Construction</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Right Column: Live Banking Benchmark Cards */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-[#102235]/90 to-[#0a1826]/90 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <span className="text-xs uppercase font-bold tracking-wider text-brand-teal-light font-heading">
-                  Active Banking Guidelines (RBI EBLR)
+                  {calcMode === 'emi' ? '● Active Mode' : 'Mode 01'}
                 </span>
-                <span className="text-[10px] text-emerald-400 font-mono font-bold">Live Benchmarks</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span className="text-gray-400 block text-[11px]">RBI Repo Rate:</span>
-                  <span className="font-mono text-white text-base font-bold">6.50%</span>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span className="text-gray-400 block text-[11px]">Starting Home Loan ROI:</span>
-                  <span className="font-mono text-emerald-400 text-base font-bold">7.25%*</span>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span className="text-gray-400 block text-[11px]">Standard Bank FOIR:</span>
-                  <span className="font-mono text-sky-300 text-base font-bold">50% – 65%</span>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span className="text-gray-400 block text-[11px]">Prepayment Penalty:</span>
-                  <span className="font-mono text-white text-base font-bold">Zero (Floating)</span>
-                </div>
-              </div>
-
-              <p className="text-[11px] text-gray-300 leading-relaxed pt-1">
-                Repo-Linked Lending Rates (RLLR) ensure that external rate changes automatically pass through to you on scheduled quarterly resets.
+              <h3 className="text-base sm:text-lg font-bold text-white font-heading group-hover:text-teal-300 transition-colors">
+                Standard Monthly EMI Outflow
+              </h3>
+              <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+                Model exact monthly payments, total interest amortization, and loan horizons starting from 7.25% p.a.
               </p>
-            </div>
+
+              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <span className="font-mono text-teal-300 font-semibold">From 7.25% p.a.</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-white group-hover:translate-x-1 transition-transform">
+                  <span>Simulate Outflow</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-teal-300" />
+                </span>
+              </div>
+            </button>
+
+            {/* Instrument 2: FOIR & Max Borrowing */}
+            <button
+              type="button"
+              onClick={() => handleSelectMode('eligibility')}
+              className={`p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
+                calcMode === 'eligibility'
+                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70 scale-[1.01]'
+                  : 'bg-slate-900/60 hover:bg-slate-900/80 border-white/15 hover:border-white/30 backdrop-blur-md'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 group-hover:scale-105 transition-transform">
+                  <UserCheck className="w-5 h-5 text-sky-300" />
+                </div>
+                <span
+                  className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
+                    calcMode === 'eligibility'
+                      ? 'bg-sky-500/25 text-sky-200 border-sky-400/50'
+                      : 'bg-white/5 text-slate-400 border-white/10'
+                  }`}
+                >
+                  {calcMode === 'eligibility' ? '● Active Mode' : 'Mode 02'}
+                </span>
+              </div>
+
+              <h3 className="text-base sm:text-lg font-bold text-white font-heading group-hover:text-sky-300 transition-colors">
+                Banking FOIR &amp; Max Borrowing
+              </h3>
+              <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+                Stress-test net disposable income against obligations to compute maximum eligible borrowing ceiling.
+              </p>
+
+              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <span className="font-mono text-sky-300 font-semibold">50% – 65% Bank FOIR</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-white group-hover:translate-x-1 transition-transform">
+                  <span>Test Debt Ceiling</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
+                </span>
+              </div>
+            </button>
+
+            {/* Instrument 3: Composite Plot + Construction */}
+            <button
+              type="button"
+              onClick={() => handleSelectMode('composite')}
+              className={`p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
+                calcMode === 'composite'
+                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70 scale-[1.01]'
+                  : 'bg-slate-900/60 hover:bg-slate-900/80 border-white/15 hover:border-white/30 backdrop-blur-md'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform">
+                  <Building2 className="w-5 h-5 text-emerald-300" />
+                </div>
+                <span
+                  className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
+                    calcMode === 'composite'
+                      ? 'bg-emerald-500/25 text-emerald-200 border-emerald-400/50'
+                      : 'bg-white/5 text-slate-400 border-white/10'
+                  }`}
+                >
+                  {calcMode === 'composite' ? '● Active Mode' : 'Mode 03'}
+                </span>
+              </div>
+
+              <h3 className="text-base sm:text-lg font-bold text-white font-heading group-hover:text-emerald-300 transition-colors">
+                Composite Plot + Villa Build
+              </h3>
+              <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+                Simulate dual-tranche funding for land acquisition (70% LTV) and stage-wise civil construction (80% LTV).
+              </p>
+
+              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <span className="font-mono text-emerald-400 font-semibold">70:80 Split Tranches</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-white group-hover:translate-x-1 transition-transform">
+                  <span>Model Pre-EMIs</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-emerald-300" />
+                </span>
+              </div>
+            </button>
           </div>
         </div>
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          2. INTERACTIVE SLIDER DASHBOARD
+          4. INTERACTIVE SLIDER DASHBOARD (Anchored via ref)
           ──────────────────────────────────────────────────────────── */}
-      <section className="pt-12 sm:pt-16 pb-16 bg-[#f8f8f4]">
+      <section ref={dashboardRef} className="pt-12 sm:pt-16 pb-16 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           {calcMode === 'emi' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-              <div className="lg:col-span-7 bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
+              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
                     <CalcIcon className="w-3.5 h-3.5" />
@@ -240,7 +550,7 @@ export const CalculatorPage: React.FC = () => {
                   <h2 className="text-xl sm:text-2xl font-bold text-brand-navy font-heading">
                     Standard Monthly EMI Simulation
                   </h2>
-                  <p className="text-xs sm:text-sm text-brand-slate mt-1">
+                  <p className="text-xs sm:text-sm text-brand-slate font-sans mt-1">
                     Adjust loan principal, interest rates, and loan horizons to inspect your repayment schedule.
                   </p>
                 </div>
@@ -260,9 +570,9 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setLoanAmount(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 5 Lakhs</span>
-                    <span className="font-bold text-brand-navy">{getVerbalAmount(loanAmount)}</span>
+                    <span className="font-bold text-brand-navy font-heading">{getVerbalAmount(loanAmount)}</span>
                     <span>₹ 10 Crores</span>
                   </div>
                   {/* Quick Preset Buttons */}
@@ -279,9 +589,9 @@ export const CalculatorPage: React.FC = () => {
                         key={chip.val}
                         type="button"
                         onClick={() => setLoanAmount(chip.val)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
                           loanAmount === chip.val
-                            ? 'bg-brand-teal text-white shadow-2xs'
+                            ? 'bg-brand-teal text-white shadow-sm'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -306,7 +616,7 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setInterestRate(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>7.25% (Prime Home Loan)</span>
                     <span>9.25% (Standard LAP)</span>
                     <span>16.00%</span>
@@ -324,9 +634,9 @@ export const CalculatorPage: React.FC = () => {
                         key={chip.val}
                         type="button"
                         onClick={() => setInterestRate(chip.val)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
                           interestRate === chip.val
-                            ? 'bg-brand-teal text-white shadow-2xs'
+                            ? 'bg-brand-teal text-white shadow-sm'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -351,7 +661,7 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setTenureYears(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>1 Year</span>
                     <span>15 Years (Standard Mortgage)</span>
                     <span>30 Years (Max Home Loan)</span>
@@ -363,9 +673,9 @@ export const CalculatorPage: React.FC = () => {
                         key={yr}
                         type="button"
                         onClick={() => setTenureYears(yr)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
                           tenureYears === yr
-                            ? 'bg-brand-teal text-white shadow-2xs'
+                            ? 'bg-brand-teal text-white shadow-sm'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -377,11 +687,11 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Right Cockpit Card: Outflow Analytics */}
-              <div className="lg:col-span-5 bg-gradient-to-br from-[#091522] via-[#0d2238] to-[#122e4a] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light font-heading block">Estimated Monthly Outflow</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">Estimated Monthly Outflow</span>
                   <div className="mt-2 text-3xl sm:text-4xl font-extrabold text-white font-mono">
                     {formatINR(emi)}
                     <span className="text-xs font-normal text-slate-300 block sm:inline sm:ml-2 font-sans">/ month</span>
@@ -389,11 +699,11 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs font-semibold">
+                  <div className="flex justify-between text-xs font-semibold font-heading">
                     <span className="text-emerald-400">Principal: {principalPercent}%</span>
                     <span className="text-sky-300">Interest: {interestPercent}%</span>
                   </div>
-                  <div className="h-3.5 w-full bg-white/10 rounded-full overflow-hidden flex border border-white/10">
+                  <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden flex border border-white/10">
                     <div style={{ width: `${principalPercent}%` }} className="bg-emerald-500 h-full transition-all duration-300" />
                     <div style={{ width: `${interestPercent}%` }} className="bg-sky-400 h-full transition-all duration-300" />
                   </div>
@@ -401,15 +711,15 @@ export const CalculatorPage: React.FC = () => {
 
                 <div className="space-y-3 pt-2 text-xs sm:text-sm">
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-medium">Principal Borrowed:</span>
+                    <span className="text-slate-300 font-sans font-medium">Principal Borrowed:</span>
                     <span className="font-bold text-white font-mono">{formatINR(loanAmount)}</span>
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-medium">Total Interest Over Tenure:</span>
+                    <span className="text-slate-300 font-sans font-medium">Total Interest Over Tenure:</span>
                     <span className="font-bold text-sky-300 font-mono">{formatINR(totalInterest)}</span>
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.08] border border-white/20 backdrop-blur-md">
-                    <span className="text-white font-bold">Total Repayment Amount:</span>
+                    <span className="text-white font-bold font-heading">Total Repayment Amount:</span>
                     <span className="font-black text-emerald-400 font-mono">{formatINR(totalPayment)}</span>
                   </div>
                 </div>
@@ -417,10 +727,10 @@ export const CalculatorPage: React.FC = () => {
                 <div className="pt-2">
                   <Link
                     to="/enquire"
-                    className="w-full py-4 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-teal-950/40 flex items-center justify-center gap-2 transition-all text-center cursor-pointer"
+                    className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
                   >
                     <span>Apply with this Repayment Quote</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 hero-btn-arrow" />
                   </Link>
                 </div>
               </div>
@@ -429,7 +739,7 @@ export const CalculatorPage: React.FC = () => {
 
           {calcMode === 'eligibility' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-              <div className="lg:col-span-7 bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
+              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
                     <UserCheck className="w-3.5 h-3.5" />
@@ -438,7 +748,7 @@ export const CalculatorPage: React.FC = () => {
                   <h2 className="text-xl sm:text-2xl font-bold text-brand-navy font-heading">
                     Maximum Borrowing Capacity &amp; Banking FOIR
                   </h2>
-                  <p className="text-xs sm:text-sm text-brand-slate mt-1">
+                  <p className="text-xs sm:text-sm text-brand-slate font-sans mt-1">
                     Banks restrict maximum loan sanctions based on your Fixed Obligation to Income Ratio (FOIR).
                   </p>
                 </div>
@@ -457,9 +767,9 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setMonthlyIncome(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 30,000 / mo</span>
-                    <span className="font-bold text-brand-navy">{getVerbalAmount(monthlyIncome)}</span>
+                    <span className="font-bold text-brand-navy font-heading">{getVerbalAmount(monthlyIncome)}</span>
                     <span>₹ 10 Lakhs / mo</span>
                   </div>
                 </div>
@@ -478,19 +788,19 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setExistingEmis(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 0 (Debt Free)</span>
-                    <span className="font-bold text-brand-navy">{getVerbalAmount(existingEmis)}</span>
+                    <span className="font-bold text-brand-navy font-heading">{getVerbalAmount(existingEmis)}</span>
                     <span>₹ 3 Lakhs / mo</span>
                   </div>
                 </div>
 
-                <div className="p-4 bg-slate-50/80 rounded-2xl border border-brand-border space-y-2">
-                  <div className="flex items-center justify-between text-xs font-bold text-brand-navy">
+                <div className="p-4 bg-slate-50 rounded-2xl border border-brand-border space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
                     <span>Lender FOIR Benchmark Norm:</span>
                     <span className="text-brand-teal font-mono">{foirPercentage}% of Net Income</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 pt-1 text-xs font-semibold">
+                  <div className="grid grid-cols-3 gap-2 pt-1 text-xs font-semibold font-heading">
                     {[50, 55, 65].map((pct) => (
                       <button
                         key={pct}
@@ -510,28 +820,28 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Right Cockpit Card: Eligibility Analytics */}
-              <div className="lg:col-span-5 bg-gradient-to-br from-[#091522] via-[#0d2238] to-[#122e4a] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light font-heading block">
+                  <span className="text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">
                     Estimated Maximum Loan Capacity
                   </span>
                   <div className="mt-2 text-3xl sm:text-4xl font-extrabold text-white font-mono">
                     {formatINR(maxLoanEligible)}
                   </div>
-                  <span className="text-xs font-medium text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
+                  <span className="text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
                     Governed by {foirPercentage}% banking FOIR threshold
                   </span>
                 </div>
 
                 <div className="space-y-3 pt-2 text-xs sm:text-sm">
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-medium">Permissible Monthly EMI:</span>
+                    <span className="text-slate-300 font-sans font-medium">Permissible Monthly EMI:</span>
                     <span className="font-bold text-white font-mono">{formatINR(permissibleEmi)} / mo</span>
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-medium">Current Obligation Drain:</span>
+                    <span className="text-slate-300 font-sans font-medium">Current Obligation Drain:</span>
                     <span className="font-bold text-amber-400 font-mono">{formatINR(existingEmis)} / mo</span>
                   </div>
                 </div>
@@ -539,10 +849,10 @@ export const CalculatorPage: React.FC = () => {
                 <div className="pt-2">
                   <Link
                     to="/enquire"
-                    className="w-full py-4 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-teal-950/40 flex items-center justify-center gap-2 transition-all text-center cursor-pointer"
+                    className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
                   >
                     <span>Request Full Multi-Bank Assessment</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 hero-btn-arrow" />
                   </Link>
                 </div>
               </div>
@@ -551,7 +861,7 @@ export const CalculatorPage: React.FC = () => {
 
           {calcMode === 'composite' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-              <div className="lg:col-span-7 bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
+              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
                     <Building2 className="w-3.5 h-3.5" />
@@ -560,7 +870,7 @@ export const CalculatorPage: React.FC = () => {
                   <h2 className="text-xl sm:text-2xl font-bold text-brand-navy font-heading">
                     Plot Purchase + House Construction Financing
                   </h2>
-                  <p className="text-xs sm:text-sm text-brand-slate mt-1">
+                  <p className="text-xs sm:text-sm text-brand-slate font-sans mt-1">
                     Calculate funding split between land acquisition and phased civil construction disbursements.
                   </p>
                 </div>
@@ -579,9 +889,9 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setPlotCost(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 15 Lakhs</span>
-                    <span className="font-bold text-brand-navy">70% Max LTV: {formatINR(maxPlotLoan)}</span>
+                    <span className="font-bold text-brand-navy font-heading">70% Max LTV: {formatINR(maxPlotLoan)}</span>
                     <span>₹ 5 Crores</span>
                   </div>
                 </div>
@@ -600,15 +910,15 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setConstructionCost(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 20 Lakhs</span>
-                    <span className="font-bold text-brand-navy">80% Max LTV: {formatINR(maxConstructionLoan)}</span>
+                    <span className="font-bold text-brand-navy font-heading">80% Max LTV: {formatINR(maxConstructionLoan)}</span>
                     <span>₹ 5 Crores</span>
                   </div>
                 </div>
 
-                <div className="space-y-3 p-4 bg-slate-50/80 rounded-2xl border border-brand-border">
-                  <div className="flex justify-between items-center">
+                <div className="space-y-3 p-4 bg-slate-50 rounded-2xl border border-brand-border">
+                  <div className="flex justify-between items-center font-heading">
                     <label className="text-xs font-bold text-brand-navy">Simulated Construction Stage Drawdown:</label>
                     <span className="text-sm font-black text-brand-teal font-mono">{disbursedTranchePercent}% Disbursed</span>
                   </div>
@@ -621,7 +931,7 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setDisbursedTranchePercent(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[10px] text-brand-slate font-medium">
+                  <div className="flex justify-between text-[10px] text-brand-slate font-sans font-medium">
                     <span>0% (Plot Only)</span>
                     <span>25% (Foundation)</span>
                     <span>50% (Slab Complete)</span>
@@ -632,39 +942,39 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Right Cockpit Card: Composite Project Analytics */}
-              <div className="lg:col-span-5 bg-gradient-to-br from-[#091522] via-[#0d2238] to-[#122e4a] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light font-heading block">
+                  <span className="text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">
                     Total Project Debt Sanction
                   </span>
                   <div className="mt-2 text-3xl sm:text-4xl font-extrabold text-white font-mono">
                     {formatINR(totalCompositeLoan)}
                   </div>
-                  <span className="text-xs font-medium text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
+                  <span className="text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
                     Total Outlay: {formatINR(totalProjectCost)} (Self: {formatINR(selfContribution)})
                   </span>
                 </div>
 
                 <div className="space-y-3 pt-2 text-xs sm:text-sm">
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-medium">Plot Loan Sanction (70%):</span>
+                    <span className="text-slate-300 font-sans font-medium">Plot Loan Sanction (70%):</span>
                     <span className="font-bold text-white font-mono">{formatINR(maxPlotLoan)}</span>
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-medium">Construction Sanction (80%):</span>
+                    <span className="text-slate-300 font-sans font-medium">Construction Sanction (80%):</span>
                     <span className="font-bold text-white font-mono">{formatINR(maxConstructionLoan)}</span>
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
                     <div>
-                      <span className="text-amber-300 font-bold block">Active Pre-EMI (Interest Only):</span>
-                      <span className="text-[10px] text-slate-300">At {disbursedTranchePercent}% construction stage</span>
+                      <span className="text-amber-300 font-bold font-heading block">Active Pre-EMI (Interest Only):</span>
+                      <span className="text-[10px] text-slate-300 font-sans">At {disbursedTranchePercent}% construction stage</span>
                     </div>
                     <span className="font-black text-amber-300 font-mono text-base">{formatINR(preEmiInterestOnly)} / mo</span>
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.08] border border-white/20">
-                    <span className="text-white font-bold">Full EMI (Upon Handover):</span>
+                    <span className="text-white font-bold font-heading">Full EMI (Upon Handover):</span>
                     <span className="font-black text-emerald-400 font-mono text-base">{formatINR(fullCompositeEmi)} / mo</span>
                   </div>
                 </div>
@@ -672,10 +982,10 @@ export const CalculatorPage: React.FC = () => {
                 <div className="pt-2">
                   <Link
                     to="/enquire"
-                    className="w-full py-4 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-teal-950/40 flex items-center justify-center gap-2 transition-all text-center cursor-pointer"
+                    className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
                   >
                     <span>Consult on Composite Plot Loan</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 hero-btn-arrow" />
                   </Link>
                 </div>
               </div>
@@ -687,20 +997,20 @@ export const CalculatorPage: React.FC = () => {
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span className="font-semibold text-brand-navy">RBI EBLR Benchmark Pegged</span>
+                <span className="font-semibold text-brand-navy font-heading">RBI EBLR Benchmark Pegged</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span className="font-semibold text-brand-navy">Zero Prepayment Penalty on Floating Rates</span>
+                <span className="font-semibold text-brand-navy font-heading">Zero Prepayment Penalty on Floating Rates</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span className="font-semibold text-brand-navy">Direct Zonal Processing Desk</span>
+                <span className="font-semibold text-brand-navy font-heading">Direct Zonal Processing Desk</span>
               </div>
             </div>
             <div className="flex items-center gap-2 text-slate-500 text-xs justify-center mx-auto sm:mx-0">
               <ShieldCheck className="w-4 h-4 text-brand-teal" />
-              <span>Certified Multi-Bank Loan Syndication Desk</span>
+              <span className="font-sans">Certified Multi-Bank Loan Syndication Desk</span>
             </div>
           </div>
         </div>

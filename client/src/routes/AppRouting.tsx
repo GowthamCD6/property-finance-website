@@ -12,6 +12,8 @@ import { CalculatorPage } from '../pages/public/Calculator/CalculatorPage';
 import { FaqsPage } from '../pages/public/Faqs/FaqsPage';
 import { ContactPage } from '../pages/public/Contact/ContactPage';
 import { EnquiryPage } from '../pages/public/Enquiry/EnquiryPage';
+import { PrivacyPolicyPage } from '../pages/public/Privacy/PrivacyPolicyPage';
+import { TermsConditionsPage } from '../pages/public/Terms/TermsConditionsPage';
 
 import { AdminLayout } from '../layouts/AdminLayout';
 import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
@@ -43,6 +45,12 @@ export const AppRouting: React.FC = () => {
         <Route path="faqs" element={<FaqsPage />} />
         <Route path="contact" element={<ContactPage />} />
         <Route path="enquire" element={<EnquiryPage />} />
+
+        {/* Legal & Governance Pages */}
+        <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="privacy" element={<PrivacyPolicyPage />} />
+        <Route path="terms-and-conditions" element={<TermsConditionsPage />} />
+        <Route path="terms" element={<TermsConditionsPage />} />
       </Route>
 
       {/* ADMIN LOGIN */}

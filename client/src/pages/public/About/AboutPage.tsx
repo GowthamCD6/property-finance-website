@@ -13,6 +13,7 @@ import {
   TrendingUp,
   FileSearch,
   Lock,
+  ChevronLeft,
   ChevronRight,
   PhoneCall,
   Sparkles,
@@ -34,6 +35,7 @@ import {
 } from 'lucide-react';
 import { SiteContent } from '../../../types';
 import { AboutHero3D, SceneMode } from './AboutHero3D';
+import aboutHeroImage from '../../../assets/images/about-hero-team.jpg';
 
 export const AboutPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();
@@ -48,13 +50,27 @@ export const AboutPage: React.FC = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<'home' | 'lap' | 'lrd' | 'construction'>('home');
   const [activePillar, setActivePillar] = useState<number>(0);
   const [mounted, setMounted] = useState<boolean>(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [isLeaderHovered, setIsLeaderHovered] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 6;
+      const y = -(e.clientY / innerHeight - 0.5) * 6;
+      setTilt({ x: y, y: x });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 60);
     return () => clearTimeout(timer);
   }, []);
 
-  // Animated counter effect for hero stats
+  // Animated counter effect for hero stats - silky smooth 60fps requestAnimationFrame without glitch
   const [counterValues, setCounterValues] = useState({
     capital: 0,
     lenders: 0,
@@ -63,22 +79,37 @@ export const AboutPage: React.FC = () => {
   });
 
   useEffect(() => {
-    let step = 0;
-    const interval = setInterval(() => {
-      step++;
-      const progress = Math.min(step / 30, 1);
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
+    let animationFrameId: number;
+    let startTime: number | null = null;
+    const duration = 1400; // 1.4s smooth easing
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Silky Quartic ease out
+      const eased = 1 - Math.pow(1 - progress, 4);
+
       setCounterValues({
-        capital: Math.round(1200 * eased),
+        capital: Math.round(120 * eased), // 120 Cr (one zero removed)
         lenders: Math.round(40 * eased),
         sanction: Number((98.4 * eased).toFixed(1)),
         turnaround: 24,
       });
-      if (progress >= 1) clearInterval(interval);
-    }, 40);
 
-    return () => clearInterval(interval);
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      animationFrameId = requestAnimationFrame(step);
+    }, 180);
+
+    return () => {
+      clearTimeout(timer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   // Institutional proof points
@@ -283,7 +314,32 @@ export const AboutPage: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
       badge: 'Commercial Specialist',
     },
+    {
+      name: 'R. Natarajan, M.Tech',
+      role: 'Chief Technical Valuer – Collateral Assessment',
+      experience: '20+ Years Valuation Practice',
+      credentials: 'Govt. Approved Registered Valuer (IBBI), Panel Engineer for PSU & Tier-1 Banks',
+      bio: 'Oversees structural asset viability, guideline vs real-market valuation arbitrage, and municipal approval forensic checks for multi-unit commercial and residential collaterals.',
+      tag: 'Structural & Asset Valuation',
+      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
+      badge: 'Senior Valuer',
+    },
+    {
+      name: 'Dr. Meera Krishnan',
+      role: 'Head – NRI Property Finance & Cross-Border Wealth',
+      experience: '16+ Years Wealth Syndication',
+      credentials: 'Ph.D. in Financial Economics, ex-Standard Chartered Private Wealth',
+      bio: 'Spearheads high-value NRI housing syndications, FEMA-compliant repatriation structures, and multi-lender consortium debt placements for premium Indian real estate portfolios.',
+      tag: 'NRI & Cross-Border Finance',
+      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+      badge: 'NRI Desk Head',
+    },
   ];
+
+  // Memoized double array for seamless infinite looping marquee
+  const repeatedLeadership = React.useMemo(() => {
+    return [...leadership, ...leadership];
+  }, [leadership]);
 
   // Institutional Milestones
   const milestones = [
@@ -317,91 +373,118 @@ export const AboutPage: React.FC = () => {
     },
     {
       year: '2026',
-      title: '₹1,200+ Cr Advisory Milestone',
+      title: '₹120+ Cr Advisory Milestone',
       desc: 'Recognized as South India’s trusted property loan practice with state-of-the-art algorithmic FOIR modeling and zero-inquiry bureau safety.',
-      volume: '₹1,200+ Cr Cumulative',
+      volume: '₹120+ Cr Cumulative',
       focus: 'Fiduciary-Grade Leadership',
     },
   ];
 
   return (
-    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
+    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
       {/* ────────────────────────────────────────────────────────────
-          1. 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Executive Professional Navy Theme)
+          1. 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Brighter & Fixed Image, Home-Page Animation)
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#091522] text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
+        {/* Background Image: Brighter, Crisp, and Stable (Fixed Position without Jumping) */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={aboutHeroImage}
+            alt="Prime Associates Advisory Team"
+            className="w-full h-full object-cover object-left md:object-center brightness-[1.05] contrast-[1.02]"
+            loading="eager"
+          />
+          {/* Calibrated lightweight translucent overlays to maximize image visibility while keeping text crisp */}
+          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/25 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-slate-950/50" />
+
+          {/* Ambient atmospheric pulse glows */}
+          <div
+            className="absolute -top-24 -left-20 w-80 sm:w-96 h-80 sm:h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"
+            style={{ animationDuration: '6s' }}
+          />
+          <div className="absolute top-1/3 -right-20 w-80 sm:w-96 h-80 sm:h-96 bg-sky-500/12 rounded-full blur-3xl pointer-events-none" />
+        </div>
+
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
-            {/* ── LEFT COLUMN: Authority Narrative & Interactive Statistics ── */}
+            {/* ── LEFT COLUMN: Stays firmly in place with staggered entrance ── */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-7">
               
-              {/* Institutional Header Tag with Live Status Beacon */}
+              {/* Institutional Header Tag with Live Status Beacon - Stays in its place */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(-12px)',
-                  transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
+                  transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s',
                 }}
                 className="flex flex-wrap items-center gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light shadow-sm backdrop-blur-md">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light">
-                    Institutional Property Advisory Desk
-                  </span>
+                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm font-heading">
+                  <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
+                  <span>Institutional Property Advisory Desk</span>
                 </div>
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-gray-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-gray-300 font-medium bg-slate-950/50 px-3 py-1 rounded-full border border-white/15 backdrop-blur-md font-heading">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Est. 2011 • Regulated Bank Syndication</span>
                 </div>
               </div>
 
-              {/* Display Headline with High-End Calculator Palette */}
+              {/* Display Headline - ONLY THIS HEADLINE TEXT RESPONDS TO CURSOR TILT */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+                  transform: mounted
+                    ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`
+                    : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+                  transformStyle: 'preserve-3d',
                 }}
-                className="space-y-3"
+                className="space-y-3 will-change-transform"
               >
-                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
                   The Architecture of{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
+                  <span className="shimmer-headline-text text-[#38bdf8]">
                     Institutional Capital
                   </span>{' '}
                   &amp; Collateral Precision.
                 </h1>
-
-                <p className="text-xs sm:text-sm md:text-base text-gray-300 font-normal leading-relaxed max-w-2xl pt-1">
-                  <strong className="text-white font-bold">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
-                </p>
               </div>
 
-              {/* 4 Key Interactive Metrics Grid */}
+              {/* Description Paragraph - Stays firmly in its place */}
+              <p
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+                }}
+                className="text-xs sm:text-sm md:text-base text-gray-200 font-normal leading-relaxed max-w-2xl pt-1"
+              >
+                <strong className="text-white font-bold">{businessName}</strong> was founded to eliminate the conflict of interest in property financing. Combining forensic 30-year mother deed title scrutiny, algorithmic balance sheet optimization, and direct zonal credit access, we structure fiduciary-grade debt solutions for homeowners, promoters, and real estate developers.
+              </p>
+
+              {/* 4 Key Interactive Metrics Grid - Silky Smooth Numbers Without Glitch */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+                  transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
                 }}
                 className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
               >
                 {kpis.map((kpi, idx) => (
                   <div
                     key={idx}
-                    className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.12] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-default"
+                    className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-default"
                   >
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
                         {kpi.badge}
                       </span>
                     </div>
-                    <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                    <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[70px]">
                       {kpi.value}
                     </div>
                     <div className="text-xs font-bold text-slate-200 mt-1">
@@ -418,40 +501,40 @@ export const AboutPage: React.FC = () => {
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s',
+                  transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.58s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.58s',
                 }}
                 className="pt-1 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3"
               >
                 <Link
                   to="/enquire"
-                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-lg shadow-teal-900/40 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group text-center"
+                  className="hero-btn-primary inline-flex items-center justify-center gap-2.5 px-6 sm:px-9 py-3.5 sm:py-4 text-xs sm:text-sm font-bold text-white text-center cursor-pointer tracking-wide"
                 >
                   <Sparkles className="w-4 h-4 text-teal-100" />
                   <span>Initiate Confidential Advisory</span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ArrowRight className="w-4 h-4 hero-btn-arrow" />
                 </Link>
 
                 <a
                   href="#diligence-matrix"
-                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-corporate bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-xs sm:text-sm shadow-sm backdrop-blur-sm transition-all duration-200 text-center"
+                  className="hero-btn-secondary inline-flex items-center justify-center gap-2.5 px-6 sm:px-8.5 py-3.5 sm:py-4 text-xs sm:text-sm font-bold text-white text-center cursor-pointer tracking-wide"
                 >
                   <FileSearch className="w-4 h-4 text-teal-300" />
                   <span>Explore Diligence Protocol</span>
                   <ChevronRight className="w-4 h-4 text-slate-400" />
                 </a>
 
-                <a
-                  href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-corporate bg-teal-500/15 hover:bg-teal-500/25 text-teal-200 border border-teal-400/30 text-xs font-semibold backdrop-blur-sm transition-colors shadow-sm text-center"
-                >
-                  <PhoneCall className="w-3.5 h-3.5 text-teal-300" />
-                  <span>Direct Hotline: {businessPhone.split(',')[0]}</span>
-                </a>
               </div>
 
               {/* Institutional Safety Pillars Strip */}
-              <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-medium">
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.72s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.72s',
+                }}
+                className="pt-2 border-t border-white/10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-medium"
+              >
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-teal-400" />
                   <span>RBI Fair Practice Code Compliant</span>
@@ -1015,16 +1098,22 @@ export const AboutPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          6. LEADERSHIP & ADVISORY COUNCIL (Profiles)
+          6. LEADERSHIP & ADVISORY COUNCIL (Continuous Infinite Looping Stream - Like Customer Feedback on Home Page)
           ──────────────────────────────────────────────────────────── */}
-      <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
+      <section className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4] overflow-hidden">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-6">
             <div className="max-w-2xl space-y-3">
-              <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal block">
-                Executive Leadership
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-[0.08em] text-brand-teal">
+                  Executive Leadership
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  {isLeaderHovered ? 'Paused (Hover)' : 'Continuous Infinite Loop Active'}
+                </span>
+              </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
                 Senior Banking &amp; Legal Practitioners
               </h2>
@@ -1035,71 +1124,166 @@ export const AboutPage: React.FC = () => {
 
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-brand-teal hover:text-brand-teal-hover transition-colors shrink-0 group"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-brand-teal hover:text-brand-teal-hover transition-colors group shrink-0"
             >
               <span>Connect with our leadership team</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {/* Continuous Looping Stream with Left & Right Gradient Masking (Matches Home Page Testimonials) */}
+        <div className="relative w-full overflow-hidden my-4 sm:my-6">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#f8f8f4] via-[#f8f8f4]/90 to-transparent z-20" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#f8f8f4] via-[#f8f8f4]/90 to-transparent z-20" />
+
+          <div
+            className="animate-continuous-scroll flex items-stretch gap-5 sm:gap-6 py-4 px-4 sm:px-6 select-none"
+            style={{
+              animationPlayState: isLeaderHovered ? 'paused' : 'running',
+              animationDuration: '36s',
+            }}
+            onMouseEnter={() => setIsLeaderHovered(true)}
+            onMouseLeave={() => setIsLeaderHovered(false)}
+          >
+            {/* First Set of Leadership Cards */}
             {leadership.map((member, idx) => (
               <div
-                key={idx}
-                className="card-hover bg-white rounded-3xl overflow-hidden border border-brand-border/80 group flex flex-col justify-between shadow-2xs hover:shadow-card"
+                key={`lead-1-${idx}`}
+                className="w-[280px] sm:w-[320px] lg:w-[340px] shrink-0 flex flex-col"
               >
-                <div>
-                  <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-brand-navy border border-brand-border/80">
-                      {member.experience}
+                <div className="card-hover bg-white rounded-3xl overflow-hidden border border-brand-border/80 group flex flex-col justify-between shadow-2xs hover:shadow-card h-full transition-all duration-300 hover:-translate-y-1.5">
+                  <div>
+                    <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-brand-navy border border-brand-border/80 shadow-2xs">
+                        {member.experience}
+                      </div>
+                      <div className="absolute bottom-3 left-3 bg-brand-navy/90 backdrop-blur-md px-2.5 py-0.5 rounded text-[10px] font-bold text-teal-300 border border-teal-500/20">
+                        {member.badge}
+                      </div>
                     </div>
-                    <div className="absolute bottom-3 left-3 bg-brand-navy/90 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold text-teal-300">
-                      {member.badge}
+
+                    <div className="p-5 sm:p-6 space-y-3">
+                      <div className="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-brand-teal-light text-brand-teal">
+                        {member.tag}
+                      </div>
+
+                      <h3 className="text-base font-bold text-brand-navy group-hover:text-brand-teal transition-colors font-heading line-clamp-1">
+                        {member.name}
+                      </h3>
+
+                      <p className="text-xs font-semibold text-brand-slate line-clamp-1">
+                        {member.role}
+                      </p>
+
+                      <p className="text-[11px] text-brand-slate/80 font-medium border-t border-brand-border/60 pt-2 line-clamp-2 min-h-[38px]">
+                        {member.credentials}
+                      </p>
+
+                      <p className="text-xs text-brand-slate leading-relaxed pt-1 line-clamp-4 min-h-[72px]">
+                        {member.bio}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="p-6 space-y-3">
-                    <div className="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-brand-teal-light text-brand-teal">
-                      {member.tag}
-                    </div>
-
-                    <h3 className="text-base font-bold text-brand-navy group-hover:text-brand-teal transition-colors font-heading">
-                      {member.name}
-                    </h3>
-
-                    <p className="text-xs font-semibold text-brand-slate">
-                      {member.role}
-                    </p>
-
-                    <p className="text-[11px] text-brand-slate/80 font-medium border-t border-brand-border/60 pt-2">
-                      {member.credentials}
-                    </p>
-
-                    <p className="text-xs text-brand-slate leading-relaxed pt-1">
-                      {member.bio}
-                    </p>
+                  <div className="p-5 sm:p-6 pt-0 mt-auto">
+                    <Link
+                      to="/enquire"
+                      className="w-full py-2.5 px-3 rounded-corporate border border-brand-border/80 text-xs font-semibold text-brand-navy hover:bg-brand-teal-light hover:text-brand-teal hover:border-brand-teal/40 transition-all flex items-center justify-center gap-1.5"
+                    >
+                      <span>Request Direct Consultation</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
                 </div>
+              </div>
+            ))}
 
-                <div className="p-6 pt-0">
-                  <Link
-                    to="/enquire"
-                    className="w-full py-2.5 px-3 rounded-corporate border border-brand-border/80 text-xs font-semibold text-brand-navy hover:bg-brand-teal-light hover:text-brand-teal hover:border-brand-teal/40 transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <span>Request Direct Consultation</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+            {/* Second Set of Leadership Cards for Seamless -50% Loop */}
+            {leadership.map((member, idx) => (
+              <div
+                key={`lead-2-${idx}`}
+                aria-hidden="true"
+                className="w-[280px] sm:w-[320px] lg:w-[340px] shrink-0 flex flex-col"
+              >
+                <div className="card-hover bg-white rounded-3xl overflow-hidden border border-brand-border/80 group flex flex-col justify-between shadow-2xs hover:shadow-card h-full transition-all duration-300 hover:-translate-y-1.5">
+                  <div>
+                    <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-brand-navy border border-brand-border/80 shadow-2xs">
+                        {member.experience}
+                      </div>
+                      <div className="absolute bottom-3 left-3 bg-brand-navy/90 backdrop-blur-md px-2.5 py-0.5 rounded text-[10px] font-bold text-teal-300 border border-teal-500/20">
+                        {member.badge}
+                      </div>
+                    </div>
+
+                    <div className="p-5 sm:p-6 space-y-3">
+                      <div className="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-brand-teal-light text-brand-teal">
+                        {member.tag}
+                      </div>
+
+                      <h3 className="text-base font-bold text-brand-navy group-hover:text-brand-teal transition-colors font-heading line-clamp-1">
+                        {member.name}
+                      </h3>
+
+                      <p className="text-xs font-semibold text-brand-slate line-clamp-1">
+                        {member.role}
+                      </p>
+
+                      <p className="text-[11px] text-brand-slate/80 font-medium border-t border-brand-border/60 pt-2 line-clamp-2 min-h-[38px]">
+                        {member.credentials}
+                      </p>
+
+                      <p className="text-xs text-brand-slate leading-relaxed pt-1 line-clamp-4 min-h-[72px]">
+                        {member.bio}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-5 sm:p-6 pt-0 mt-auto">
+                    <Link
+                      to="/enquire"
+                      className="w-full py-2.5 px-3 rounded-corporate border border-brand-border/80 text-xs font-semibold text-brand-navy hover:bg-brand-teal-light hover:text-brand-teal hover:border-brand-teal/40 transition-all flex items-center justify-center gap-1.5"
+                    >
+                      <span>Request Direct Consultation</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-
         </div>
+
+        {/* Dedicated high-performance CSS animation definition */}
+        <style>{`
+          @keyframes continuousScroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+          }
+          .animate-continuous-scroll {
+            display: flex !important;
+            width: max-content !important;
+            animation: continuousScroll 36s linear infinite !important;
+            will-change: transform;
+          }
+          .animate-continuous-scroll:hover,
+          .animate-continuous-scroll:active {
+            animation-play-state: paused !important;
+          }
+        `}</style>
       </section>
 
       {/* ────────────────────────────────────────────────────────────

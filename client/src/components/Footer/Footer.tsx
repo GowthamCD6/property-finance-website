@@ -137,18 +137,18 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-6">
-          <button
-            onClick={() => setModalType('privacy')}
+          <Link
+            to="/privacy-policy"
             className="hover:text-white transition-colors"
           >
             Privacy Policy
-          </button>
-          <button
-            onClick={() => setModalType('terms')}
+          </Link>
+          <Link
+            to="/terms-and-conditions"
             className="hover:text-white transition-colors"
           >
             Terms &amp; Disclaimers
-          </button>
+          </Link>
           <a
             href="/admin/login"
             className="inline-flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors"

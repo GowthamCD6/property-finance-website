@@ -16,6 +16,7 @@ import {
   Tag,
 } from 'lucide-react';
 import { Faq } from '../../../types';
+import faqsHeroImage from '../../../assets/images/faqs-hero.webp';
 
 export const FaqsPage: React.FC = () => {
   const context = useOutletContext<{ faqs?: Faq[] }>();
@@ -162,6 +163,25 @@ export const FaqsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [mounted, setMounted] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 80);
+    return () => clearTimeout(timer);
+  }, []);
+
+  React.useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 6;
+      const y = -(e.clientY / innerHeight - 0.5) * 6;
+      setTilt({ x: y, y: x });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const trendingTopics = [
     'A-Khata vs B-Khata',
@@ -189,14 +209,38 @@ export const FaqsPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: SEARCHABLE KNOWLEDGE REPOSITORY
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#091522] text-white pt-16 pb-16 lg:pt-24 lg:pb-20 border-b border-brand-teal/20">
-        {/* Subtle Atmospheric Light Orbs */}
-        <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-brand-teal/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[550px] h-[550px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none" />
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-16 pb-16 lg:pt-24 lg:pb-20 border-b border-brand-teal/20">
+        {/* Background Photographic Image with Professional Contrast Overlays */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={faqsHeroImage}
+            alt="Property Finance & Title Diligence Encyclopedia"
+            className={`w-full h-full object-cover object-center brightness-[0.88] transition-transform duration-1000 ease-out ${
+              mounted ? 'scale-100' : 'scale-105'
+            }`}
+            loading="eager"
+          />
+          {/* Calibrated lightweight overlay stack so image is clearly visible while text is crisp */}
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-950/45 to-slate-950/90" />
+
+          {/* Ambient atmospheric pulse glows */}
+          <div
+            className="absolute -top-24 -left-20 w-80 sm:w-96 h-80 sm:h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"
+            style={{ animationDuration: '6s' }}
+          />
+          <div className="absolute top-1/3 -right-20 w-80 sm:w-96 h-80 sm:h-96 bg-sky-500/12 rounded-full blur-3xl pointer-events-none" />
+        </div>
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div
+            style={{
+              transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+              transition: 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
+              transformStyle: 'preserve-3d',
+            }}
+            className="max-w-4xl mx-auto text-center space-y-6 will-change-transform"
+          >
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>

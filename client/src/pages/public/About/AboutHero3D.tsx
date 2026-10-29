@@ -94,7 +94,7 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.18;
     rendererRef.current = renderer;
@@ -1452,12 +1452,15 @@ export const AboutHero3D: React.FC<AboutHero3DProps> = ({ onModeChange }) => {
     // ─────────────────────────────────────────────────────────────
     // ANIMATION LOOP (Traffic, Clouds, Dynamic Bank Pulses, Vault Sequence)
     // ─────────────────────────────────────────────────────────────
-    let clock = new THREE.Clock();
+    let lastTime = performance.now();
+    const startTime = performance.now();
 
     const animate = () => {
       animationFrameId.current = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const elapsedTime = clock.getElapsedTime();
+      const currentTime = performance.now();
+      const delta = Math.min((currentTime - lastTime) / 1000, 0.1);
+      const elapsedTime = (currentTime - startTime) / 1000;
+      lastTime = currentTime;
 
       // Dynamic camera vantage adapting smoothly to mode
       const isVault = currentModeRef.current === 'vault';

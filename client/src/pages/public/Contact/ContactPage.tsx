@@ -17,6 +17,7 @@ import {
 import { SiteContent, Service } from '../../../types';
 import { EnquiryForm } from '../../../components/EnquiryForm/EnquiryForm';
 import { useOutletContext } from 'react-router-dom';
+import contactHeroImage from '../../../assets/images/contact-hero.webp';
 
 export const ContactPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null; services?: Service[] }>();
@@ -28,6 +29,25 @@ export const ContactPage: React.FC = () => {
   const businessEmail = content?.businessEmail || 'primeassociates2008@gmail.com';
   const officeAddress = content?.officeAddress || 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
   const businessHours = content?.businessHours || 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)';
+  const [mounted, setMounted] = React.useState(false);
+  const [tilt, setTilt] = React.useState({ x: 0, y: 0 });
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 80);
+    return () => clearTimeout(timer);
+  }, []);
+
+  React.useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 6;
+      const y = -(e.clientY / innerHeight - 0.5) * 6;
+      setTilt({ x: y, y: x });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const regionalDesks = [
     {
@@ -61,17 +81,42 @@ export const ContactPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: DIRECT ADVISORY & OFFICE CONNECT
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#091522] text-white pt-16 pb-16 lg:pt-24 lg:pb-20 border-b border-brand-teal/20">
-        {/* Subtle Atmospheric Light Orbs */}
-        <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-brand-teal/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[550px] h-[550px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none" />
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-16 pb-16 lg:pt-24 lg:pb-20 border-b border-brand-teal/20">
+        {/* Background Photographic Image with Professional Contrast Overlays */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={contactHeroImage}
+            alt="Direct Advisory & Office Connect"
+            className={`w-full h-full object-cover object-center brightness-[0.88] transition-transform duration-1000 ease-out ${
+              mounted ? 'scale-100' : 'scale-105'
+            }`}
+            loading="eager"
+          />
+          {/* Calibrated lightweight overlay stack so image is clearly visible while text is high contrast */}
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-slate-950/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/75" />
+
+          {/* Ambient atmospheric pulse glows */}
+          <div
+            className="absolute -top-24 -left-20 w-80 sm:w-96 h-80 sm:h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"
+            style={{ animationDuration: '6s' }}
+          />
+          <div className="absolute top-1/3 -right-20 w-80 sm:w-96 h-80 sm:h-96 bg-sky-500/12 rounded-full blur-3xl pointer-events-none" />
+        </div>
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             
-            {/* Left Column: Heading & Live Status */}
-            <div className="lg:col-span-7 space-y-6">
+            {/* Left Column: Heading & Live Status with 3D Tilt */}
+            <div
+              style={{
+                transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                transition: 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
+                transformStyle: 'preserve-3d',
+              }}
+              className="lg:col-span-7 space-y-6 will-change-transform"
+            >
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
