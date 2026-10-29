@@ -104,21 +104,37 @@ export const HowItWorksPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let step = 0;
-    const interval = setInterval(() => {
-      step++;
-      const progress = Math.min(step / 30, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+    let animationFrameId: number;
+    let startTime: number | null = null;
+    const duration = 1400; // 1.4s smooth easing
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Silky Quartic ease out
+      const eased = 1 - Math.pow(1 - progress, 4);
+
       setCounterValues({
         turnaround: 8,
         lenders: Math.round(40 * eased),
         sanction: Number((98.4 * eased).toFixed(1)),
-        capital: Math.round(1200 * eased),
+        capital: Math.round(120 * eased), // 120 Cr (one zero removed)
       });
-      if (progress >= 1) clearInterval(interval);
-    }, 40);
 
-    return () => clearInterval(interval);
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      animationFrameId = requestAnimationFrame(step);
+    }, 180);
+
+    return () => {
+      clearTimeout(timer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   // Simulator computations
@@ -294,20 +310,18 @@ export const HowItWorksPage: React.FC = () => {
           1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Matching Calculator Suite Palette)
           ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
-        {/* Background Architectural Photographic Image with Professional Contrast Overlays */}
+        {/* Background Architectural Photographic Image: Brighter, Fixed & Stable */}
         <div className="absolute inset-0 z-0">
           <img
             src={howItsWorkHero}
             alt="Institutional Property Finance Architecture & Workflow"
-            className={`w-full h-full object-cover object-center brightness-[0.88] transition-transform duration-1000 ease-out ${
-              mounted ? 'scale-100' : 'scale-105'
-            }`}
+            className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
           />
-          {/* Calibrated lightweight overlay stack so image is clearly visible while text has crisp contrast */}
-          <div className="absolute inset-0 bg-black/25" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-slate-950/20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/75" />
+          {/* Calibrated lightweight translucent overlays so image is clearly visible and bright while text remains crisp */}
+          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/25 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-slate-950/50" />
 
           {/* Ambient atmospheric lighting pulses */}
           <div
@@ -320,21 +334,14 @@ export const HowItWorksPage: React.FC = () => {
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
-            {/* ── LEFT COLUMN: Authority Narrative, Animated Counters & CTA with 3D Tilt ── */}
-            <div
-              style={{
-                transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-                transition: 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
-                transformStyle: 'preserve-3d',
-              }}
-              className="lg:col-span-7 space-y-6 sm:space-y-7 will-change-transform"
-            >
-              {/* Institutional Header Tag with Live Status Beacon */}
+            {/* ── LEFT COLUMN: Stays firmly in place with staggered entrance ── */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-7">
+              {/* Institutional Header Tag with Live Status Beacon - Fixed in place */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(-12px)',
-                  transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
+                  transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s',
                 }}
                 className="flex flex-wrap items-center gap-3"
               >
@@ -350,100 +357,111 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Display Headline with High-End Calculator Page Palette */}
+              {/* Display Headline - ONLY THIS HEADLINE TEXT RESPONDS TO CURSOR TILT */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+                  transform: mounted
+                    ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`
+                    : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+                  transformStyle: 'preserve-3d',
                 }}
-                className="space-y-3"
+                className="space-y-3 will-change-transform"
               >
-                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
                   From Algorithmic Pre-Audit to{' '}
                   <span className="shimmer-headline-text text-[#38bdf8]">
                     Direct Account Credit.
                   </span>
                 </h1>
-
-                <p className="text-xs sm:text-sm md:text-base text-slate-200 font-sans font-normal leading-relaxed max-w-2xl pt-1">
-                  Eliminate 45-day branch queues, arbitrary credit rejections, and hidden broker markups. Our fiduciary 4-stage lending architecture transitions your file from preliminary FOIR assessment to Sub-Registrar MODT registration in <strong className="text-white font-semibold">8 to 12 business days</strong> across 40+ empanelled banks.
-                </p>
               </div>
 
-              {/* 4 Interactive Institutional Metrics Grid */}
+              {/* Description Paragraph - Stays firmly in its place */}
+              <p
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+                }}
+                className="text-xs sm:text-sm md:text-base text-slate-200 font-sans font-normal leading-relaxed max-w-2xl pt-1"
+              >
+                Eliminate 45-day branch queues, arbitrary credit rejections, and hidden broker markups. Our fiduciary 4-stage lending architecture transitions your file from preliminary FOIR assessment to Sub-Registrar MODT registration in <strong className="text-white font-semibold">8 to 12 business days</strong> across 40+ empanelled banks.
+              </p>
+
+              {/* 4 Interactive Institutional Metrics Grid - Silky Smooth Numbers Without Glitch */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(16px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+                  transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
                 }}
                 className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
               >
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Fast-Track
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums">
                     {counterValues.turnaround}–12d
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
+                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
                     Sanction to Credit
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     vs 45d Branch Queue
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Zonal Panel
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[50px]">
                     {counterValues.lenders}+
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
+                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
                     Partner Banks
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     PSU, Private &amp; NBFCs
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Pre-Audited
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-emerald-400 font-heading">
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono tabular-nums min-w-[70px]">
                     {counterValues.sanction}%
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
+                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
                     Sanction Ratio
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     30-Yr Legal Due Diligence
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Volume
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[70px]">
                     ₹{counterValues.capital}+ Cr
                   </div>
-                  <div className="text-xs font-bold text-gray-200 mt-1 font-heading">
+                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
                     Capital Facilitated
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     15-Year Practice
                   </div>
                 </div>
@@ -504,12 +522,12 @@ export const HowItWorksPage: React.FC = () => {
 
             {/* ── RIGHT COLUMN: Interactive Live Loan Syndication Console & Simulator ── */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/15 p-6 sm:p-7 shadow-2xl space-y-4">
-                {/* Console Header */}
+              <div className="relative rounded-3xl bg-slate-900/85 backdrop-blur-xl border border-white/15 p-6 sm:p-7 shadow-2xl space-y-4 font-sans text-white">
+                {/* Console Header with Brand Heading & Mono Fonts */}
                 <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/10">
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
-                    <span className="text-xs uppercase font-bold tracking-wider text-teal-200 font-heading">
+                    <span className="text-xs uppercase font-extrabold tracking-wider text-teal-200 font-heading">
                       Live Syndication Simulator
                     </span>
                   </div>
@@ -520,7 +538,7 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Loan Archetype Switcher Pills */}
-                <div className="relative z-10 pt-4">
+                <div className="relative z-10 pt-3">
                   <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider block mb-2">
                     Select Credit Facility
                   </span>
@@ -542,11 +560,11 @@ export const HowItWorksPage: React.FC = () => {
                           className={`py-2 px-1 rounded-lg text-center transition-all cursor-pointer font-heading ${
                             isSel
                               ? 'bg-gradient-to-r from-brand-teal to-teal-700 text-white font-bold shadow-sm'
-                              : 'text-slate-300 hover:text-white hover:bg-white/5 font-medium'
+                              : 'text-slate-300 hover:text-white hover:bg-white/5 font-semibold'
                           }`}
                         >
-                          <span className="text-[11px] block leading-tight">{facility.label}</span>
-                          <span className="text-[9px] block text-teal-200 opacity-90 font-mono">{facility.rate}</span>
+                          <span className="text-[11px] block leading-tight font-heading font-bold">{facility.label}</span>
+                          <span className="text-[9px] block text-teal-200 opacity-90 font-mono font-bold">{facility.rate}</span>
                         </button>
                       );
                     })}
@@ -554,13 +572,13 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Interactive Sliders: Quantum & Tenure */}
-                <div className="relative z-10 space-y-4 pt-4">
+                <div className="relative z-10 space-y-4 pt-3">
                   <div>
                     <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-slate-200 font-medium font-sans flex items-center gap-1.5">
+                      <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
                         <Wallet className="w-3.5 h-3.5 text-teal-400" /> Loan Quantum Required:
                       </span>
-                      <span className="text-sm font-extrabold text-teal-300 font-mono">
+                      <span className="text-sm font-extrabold text-teal-300 font-mono tabular-nums">
                         ₹{simAmountLakhs} Lakhs
                       </span>
                     </div>
@@ -573,7 +591,7 @@ export const HowItWorksPage: React.FC = () => {
                       onChange={(e) => setSimAmountLakhs(Number(e.target.value))}
                       className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
                     />
-                    <div className="flex justify-between text-[10px] text-slate-400 pt-1 font-mono font-medium">
+                    <div className="flex justify-between text-[10px] text-slate-400 pt-1 font-mono font-semibold">
                       <span>₹15 Lakhs</span>
                       <span>₹1.50 Crore</span>
                       <span>₹3.00 Crore</span>
@@ -582,10 +600,10 @@ export const HowItWorksPage: React.FC = () => {
 
                   <div>
                     <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-slate-200 font-medium font-sans flex items-center gap-1.5">
+                      <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5 text-sky-400" /> Repayment Tenure:
                       </span>
-                      <span className="text-sm font-extrabold text-sky-300 font-mono">
+                      <span className="text-sm font-extrabold text-sky-300 font-mono tabular-nums">
                         {simTenureYears} Years
                       </span>
                     </div>
@@ -595,7 +613,7 @@ export const HowItWorksPage: React.FC = () => {
                           key={yr}
                           type="button"
                           onClick={() => setSimTenureYears(yr)}
-                          className={`flex-1 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                          className={`flex-1 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer ${
                             simTenureYears === yr
                               ? 'bg-sky-500 text-white shadow-sm'
                               : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10'
@@ -609,24 +627,24 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Dynamic Computation Result Cards */}
-                <div className="relative z-10 grid grid-cols-3 gap-2 pt-4">
+                <div className="relative z-10 grid grid-cols-3 gap-2 pt-3">
                   <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
-                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading block">
+                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading tracking-wider block">
                       Estimated EMI
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono block mt-0.5">
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono tabular-nums block mt-0.5">
                       ₹{estimatedEmi.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[9px] text-teal-300 font-medium font-mono block">
+                    <span className="text-[9px] text-teal-300 font-semibold font-mono block">
                       @{currentRate}% Benchmark
                     </span>
                   </div>
 
                   <div className="p-2.5 rounded-xl bg-teal-500/15 border border-teal-400/30 text-center">
-                    <span className="text-[10px] text-teal-200 uppercase font-bold font-heading block">
+                    <span className="text-[10px] text-teal-200 uppercase font-bold font-heading tracking-wider block">
                       Fee Waiver Saved
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-teal-100 font-mono block mt-0.5">
+                    <span className="text-xs sm:text-sm font-extrabold text-teal-100 font-mono tabular-nums block mt-0.5">
                       ₹{estimatedFeeSaved.toLocaleString('en-IN')}
                     </span>
                     <span className="text-[9px] text-teal-200/90 font-medium font-sans block">
@@ -635,20 +653,20 @@ export const HowItWorksPage: React.FC = () => {
                   </div>
 
                   <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
-                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading block">
+                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading tracking-wider block">
                       Turnaround
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono block mt-0.5">
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono tabular-nums block mt-0.5">
                       8–12 Days
                     </span>
-                    <span className="text-[9px] text-emerald-400 font-medium font-sans block">
+                    <span className="text-[9px] text-emerald-400 font-semibold font-sans block">
                       35d Faster vs Branch
                     </span>
                   </div>
                 </div>
 
                 {/* Interactive 4-Phase Stepper Inside Console */}
-                <div className="relative z-10 pt-4 border-t border-white/10 mt-4">
+                <div className="relative z-10 pt-3 border-t border-white/10 mt-3">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider">
                       Interactive Stage Synchronization
@@ -678,7 +696,7 @@ export const HowItWorksPage: React.FC = () => {
                           >
                             {p.number}
                           </span>
-                          <span className="text-[9px] block font-bold truncate">
+                          <span className="text-[9px] block font-bold font-heading truncate">
                             {p.phase === 1 && 'Pre-Audit'}
                             {p.phase === 2 && 'Syndication'}
                             {p.phase === 3 && 'TSR & Site'}
@@ -691,10 +709,10 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Console Fast-Track Action Button */}
-                <div className="relative z-10 pt-4">
+                <div className="relative z-10 pt-3">
                   <Link
                     to="/enquire"
-                    className="w-full py-3 px-4 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-teal-950/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
+                    className="w-full py-3.5 px-4 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-teal-950/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer font-heading tracking-wide"
                   >
                     <Zap className="w-4 h-4 text-white fill-white" />
                     <span>Fast-Track Pre-Approval for ₹{simAmountLakhs} Lakhs</span>
