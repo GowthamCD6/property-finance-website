@@ -332,7 +332,7 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
 
                 {item.sampleHint && (
                   <p className="text-[11px] text-teal-700 bg-teal-50/50 p-1.5 rounded border border-teal-100">
-                    💡 <span className="font-semibold">Tip:</span> {item.sampleHint}
+                    <Sparkles className="w-3.5 h-3.5 inline mr-1 text-amber-500" /><span className="font-semibold">Tip:</span> {item.sampleHint}
                   </p>
                 )}
               </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, X, Send, ShieldCheck, CheckCheck } from 'lucide-react';
+import { MessageSquare, X, Send, ShieldCheck, Lock, CheckCheck } from 'lucide-react';
 import { SiteContent } from '../../types';
 
 interface WhatsAppFloatingWidgetProps {
@@ -63,7 +63,7 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
           </a>
 
           <div className="mt-2 text-center text-[10px] text-brand-slate">
-            <span>🔒 Confidential &bull; Zero Spam &bull; No Upfront Fees</span>
+            <span className="inline-flex items-center gap-1.5"><Lock className="w-3 h-3 text-emerald-400" /> Confidential &bull; Zero Spam &bull; No Upfront Fees</span>
           </div>
         </div>
       )}

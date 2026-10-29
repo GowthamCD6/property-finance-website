@@ -3,6 +3,7 @@ import { Link, useOutletContext } from 'react-router-dom';
 import {
   Building2,
   ShieldCheck,
+  X,
   Target,
   Users,
   CheckCircle2,
@@ -1027,7 +1028,7 @@ export const AboutPage: React.FC = () => {
                   </div>
                   <div className="col-span-3 sm:col-span-4 text-center text-xs sm:text-sm text-slate-500">
                     <span className="hidden sm:inline">{row.broker}</span>
-                    <span className="sm:hidden text-red-500">✕</span>
+                    <X className="w-3.5 h-3.5 text-red-500 sm:hidden" />
                   </div>
                   <div className="col-span-4 sm:col-span-4 text-center text-xs sm:text-sm font-semibold text-brand-teal flex items-center justify-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-brand-teal shrink-0" />
@@ -1077,7 +1078,7 @@ export const AboutPage: React.FC = () => {
                   {row.metric}
                 </div>
                 <div className="flex items-start gap-2 text-xs text-slate-600 bg-red-50/70 p-2.5 rounded-xl border border-red-100/70">
-                  <span className="text-red-500 font-bold shrink-0 mt-0.5">✕</span>
+                  <X className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-slate-700 block text-[10.5px] uppercase tracking-wide">Traditional Broker:</span>
                     <span className="text-slate-600">{row.broker}</span>

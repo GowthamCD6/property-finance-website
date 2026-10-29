@@ -31,7 +31,7 @@ import {
   BadgePercent,
   ChevronRight,
 } from 'lucide-react';
-import defaultHeroImage from '../../../assets/images/hero-property-finance.jpg';
+import emiHeroImage from '../../../assets/images/emi.webp';
 
 /* ────────────────────────────────────────────────────────────
    1. ANIMATED KINETIC HEADLINE (Matching Home Page Signature)
@@ -350,17 +350,26 @@ export const CalculatorPage: React.FC = () => {
           1. DISTINCTIVE HERO: CENTERED KINETIC LAUNCHPAD WITH 3-INSTRUMENT DECK
           ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
-        {/* Background Architectural Photographic Image with Professional Contrast Overlays */}
+        {/* Background Photographic Image: Brighter, Fixed & Stable */}
         <div className="absolute inset-0 z-0">
           <img
-            src={defaultHeroImage}
-            alt="Institutional Property Finance Architecture"
-            className="w-full h-full object-cover object-center scale-[1.01] brightness-[0.70] transform motion-safe:transition-transform motion-safe:duration-1000"
+            src={emiHeroImage}
+            alt="Institutional Mortgage & EMI Financial Analytics"
+            className="w-full h-full object-cover object-center brightness-[1.12] contrast-[1.02]"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-slate-950/75" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/70 to-slate-950/95" />
+          {/* Calibrated lightweight translucent overlays so image is vividly visible and bright while text remains crisp */}
+          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-slate-950/25 to-slate-950/55" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-slate-950/70" />
           <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+
+          {/* Ambient atmospheric lighting pulses */}
+          <div
+            className="absolute -top-24 -left-20 w-80 sm:w-96 h-80 sm:h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"
+            style={{ animationDuration: '6s' }}
+          />
+          <div className="absolute top-1/3 -right-20 w-80 sm:w-96 h-80 sm:h-96 bg-sky-500/12 rounded-full blur-3xl pointer-events-none" />
         </div>
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
@@ -991,6 +1000,94 @@ export const CalculatorPage: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* Institutional EMI Breakdown & Amortization Architecture Section */}
+          <div className="mt-14 pt-12 border-t border-brand-border/70">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+              {/* Left Column: Visual EMI Card */}
+              <div className="lg:col-span-5">
+                <div className="relative rounded-3xl overflow-hidden border border-brand-border/80 shadow-card bg-slate-900 group">
+                  <img
+                    src={emiHeroImage}
+                    alt="EMI Financial Planning & Calculation"
+                    className="w-full h-72 sm:h-80 object-cover object-center group-hover:scale-105 transition-transform duration-700 brightness-110 contrast-[1.02]"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
+                  <div className="absolute bottom-5 left-5 right-5 space-y-1.5">
+                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-200 text-[10px] font-bold uppercase tracking-wider">
+                      <Sparkles className="w-3 h-3 text-teal-300" />
+                      <span>Financial Planning Desk</span>
+                    </div>
+                    <div className="text-white text-base sm:text-lg font-bold font-heading">
+                      Smart EMI Optimization &amp; Prepayment Planning
+                    </div>
+                    <p className="text-slate-300 text-xs font-sans leading-relaxed">
+                      Our institutional advisors help structure step-down EMI models and scheduled prepayments to save up to 40% on total interest outflow.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: 4 Key EMI Repayment Principles */}
+              <div className="lg:col-span-7 space-y-5">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Lender Economics &amp; Amortization</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-navy font-heading">
+                    Mastering Your Repayment Dynamics
+                  </h3>
+                  <p className="text-brand-slate text-xs sm:text-sm leading-relaxed mt-1 font-sans">
+                    An Equated Monthly Installment (EMI) consists of two shifting components: principal repayment and interest charge. In the initial tenure years, up to 70% of each EMI pays off interest. Here is how institutional borrowers optimize this curve:
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                    <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
+                      <BadgePercent className="w-4 h-4 text-brand-teal flex-shrink-0" />
+                      <span>EBLR Rate Reset Benefits</span>
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-brand-slate font-sans leading-relaxed">
+                      Floating loans linked to RBI Repo rate adjust automatically. We ensure your lender passes repo rate cuts without administrative delays.
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                    <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
+                      <Scale className="w-4 h-4 text-brand-teal flex-shrink-0" />
+                      <span>Zero Prepayment Penalty</span>
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-brand-slate font-sans leading-relaxed">
+                      Per RBI mandate, individual floating rate home &amp; mortgage loans attract 0% penalty on partial prepayments or balance transfers.
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                    <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
+                      <Wallet className="w-4 h-4 text-brand-teal flex-shrink-0" />
+                      <span>Annual 1-EMI Prepayment</span>
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-brand-slate font-sans leading-relaxed">
+                      Paying just one extra EMI each financial year cuts a 20-year home loan duration down to nearly 16 years, saving lakhs in interest.
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                    <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
+                      <FileCheck2 className="w-4 h-4 text-brand-teal flex-shrink-0" />
+                      <span>Tax Deductions Under 80C &amp; 24(b)</span>
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-brand-slate font-sans leading-relaxed">
+                      Claim up to ₹2 Lakhs annual deduction on home loan interest under Sec 24(b), plus up to ₹1.5 Lakhs principal repayment under Sec 80C.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Institutional Banking Benchmark Strip */}
           <div className="mt-12 p-4 sm:px-8 rounded-2xl bg-white border border-brand-border/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600">

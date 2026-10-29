@@ -2,10 +2,10 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { PublicLayout } from '../layouts/PublicLayout';
 import { HomePage } from '../pages/public/Home/HomePage';
-import { HomeLoansPage } from '../pages/public/HomeLoans/HomeLoansPage';
-import { LoanAgainstPropertyPage } from '../pages/public/LoanAgainstProperty/LoanAgainstPropertyPage';
-import { PropertyFundingPage } from '../pages/public/PropertyFunding/PropertyFundingPage';
-import { ConsultationPage } from '../pages/public/Consultation/ConsultationPage';
+import { HomeLoansPage } from '../pages/public/Loans/HomeLoans/HomeLoansPage';
+import { MortgageLoansPage, LoanAgainstPropertyPage } from '../pages/public/Loans/MortgageLoans/MortgageLoansPage';
+import { PropertyFundingPage } from '../pages/public/Loans/PropertyFunding/PropertyFundingPage';
+import { VehicleLoansPage, ConsultationPage } from '../pages/public/Loans/VehicleLoans/VehicleLoansPage';
 import { AboutPage } from '../pages/public/About/AboutPage';
 import { HowItWorksPage } from '../pages/public/HowItWorks/HowItWorksPage';
 import { CalculatorPage } from '../pages/public/Calculator/CalculatorPage';
@@ -34,10 +34,11 @@ export const AppRouting: React.FC = () => {
         
         {/* Specialized Loan Pages */}
         <Route path="services/home-loans" element={<HomeLoansPage />} />
-        <Route path="services/loan-against-property" element={<LoanAgainstPropertyPage />} />
+        <Route path="services/loan-against-property" element={<MortgageLoansPage />} />
+        <Route path="services/mortgage-loans" element={<MortgageLoansPage />} />
         <Route path="services/property-backed-funding" element={<PropertyFundingPage />} />
         <Route path="services/purchase-loans" element={<PropertyFundingPage />} />
-        <Route path="services/vehicle-loans" element={<ConsultationPage />} />
+        <Route path="services/vehicle-loans" element={<VehicleLoansPage />} />
         <Route path="services/loan-consultation" element={<ConsultationPage />} />
         
         {/* Company & Advisory Pages */}

@@ -15,6 +15,8 @@ import {
   IndianRupee,
   Briefcase,
   Car,
+  Sparkles,
+  RotateCcw,
   FileCheck,
   Landmark,
 } from 'lucide-react';
@@ -542,22 +544,22 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                       className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
                     >
                       <option value="Home Loans & Self Construction">
-                        🏠 Home Loans &amp; Self Construction (from 7.25%)
+                        Home Loans &amp; Self Construction (from 7.25%)
                       </option>
                       <option value="Mortgage Loans (LAP)">
-                        🏢 Mortgage Loans / LAP (from 8.50%)
+                        Mortgage Loans / LAP (from 8.50%)
                       </option>
                       <option value="Car Loans (New / Used / Refinance)">
-                        🚗 Car Loans &amp; Vehicle Refinance (Up to 90% On-Road)
+                        Car Loans &amp; Vehicle Refinance (Up to 90% On-Road)
                       </option>
                       <option value="Purchase Loans (Plot / Home / Commercial)">
-                        📐 Purchase Loans (Plot / House / Commercial Site)
+                        Purchase Loans (Plot / House / Commercial Site)
                       </option>
                       <option value="Private to Govt Bank Takeover">
-                        🔄 Private Bank to Govt Bank Takeover &amp; Top-Up
+                        Private Bank to Govt Bank Takeover &amp; Top-Up
                       </option>
                       <option value="Commercial Property & Project Funding">
-                        🏗️ Commercial Property &amp; Builder Project Funding
+                        Commercial Property &amp; Builder Project Funding
                       </option>
                     </select>
                   </div>
@@ -614,9 +616,9 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                                 : 'bg-white text-brand-slate border border-brand-border hover:bg-gray-50'
                             }`}
                           >
-                            {type === 'new' && '✨ New Car'}
-                            {type === 'used' && '🚗 Used Car'}
-                            {type === 'refinance' && '🔄 Car Re-Finance'}
+                            {type === 'new' && <span className="inline-flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-teal-300" /> New Car</span>}
+                            {type === 'used' && <span className="inline-flex items-center gap-1.5"><Car className="w-3.5 h-3.5 text-teal-300" /> Used Car</span>}
+                            {type === 'refinance' && <span className="inline-flex items-center gap-1.5"><RotateCcw className="w-3.5 h-3.5 text-teal-300" /> Car Re-Finance</span>}
                           </button>
                         ))}
                       </div>
@@ -812,16 +814,16 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                       onChange={(e) => setEmploymentType(e.target.value as any)}
                       className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
                     >
-                      <option value="salaried">💼 Salaried (Bank Transfer / Payslips / Form 16)</option>
-                      <option value="self_employed">🏢 Self-Employed Professional / Business (ITR / GST)</option>
-                      <option value="cash_salary">💵 Cash Salary (Hand Salary / Cash Income with 1-Yr Banking)</option>
-                      <option value="business_owner">🏭 Business Owner / Proprietor / MSME</option>
-                      <option value="other">🌐 NRI / Other Income Profile</option>
+                      <option value="salaried">Salaried (Bank Transfer / Payslips / Form 16)</option>
+                      <option value="self_employed">Self-Employed Professional / Business (ITR / GST)</option>
+                      <option value="cash_salary">Cash Salary (Hand Salary / Cash Income with 1-Yr Banking)</option>
+                      <option value="business_owner">Business Owner / Proprietor / MSME</option>
+                      <option value="other">NRI / Other Income Profile</option>
                     </select>
                     <span className="text-[11px] text-brand-slate mt-1 block">
-                      {employmentType === 'cash_salary' && '✨ Requires 1-Yr Bank Statement + Salary Certificate.'}
-                      {employmentType === 'salaried' && '✨ Requires 6-Mo Bank Statement + Payslips / Form 16.'}
-                      {employmentType === 'self_employed' && '✨ Requires 1-Yr Bank Statement + ITR (1-3 Yrs) / GST.'}
+                      {employmentType === 'cash_salary' && <span className="inline-flex items-center gap-1 text-brand-teal"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 1-Yr Bank Statement + Salary Certificate.</span>}
+                      {employmentType === 'salaried' && <span className="inline-flex items-center gap-1 text-brand-teal"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 6-Mo Bank Statement + Payslips / Form 16.</span>}
+                      {employmentType === 'self_employed' && <span className="inline-flex items-center gap-1 text-brand-teal"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 1-Yr Bank Statement + ITR (1-3 Yrs) / GST.</span>}
                     </span>
                   </div>
                 </div>
