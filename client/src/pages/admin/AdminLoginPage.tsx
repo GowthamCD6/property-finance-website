@@ -5,7 +5,6 @@ import {
   User,
   AlertCircle,
   Loader2,
-  ArrowLeft,
   Eye,
   EyeOff,
   ShieldCheck,
@@ -87,23 +86,7 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FB] flex flex-col justify-between items-center py-8 sm:py-12 px-4 sm:px-6 font-sans antialiased selection:bg-brand-teal selection:text-white">
-      {/* Top Navigation */}
-      <div className="w-full max-w-[420px] flex items-center justify-between mb-4">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-brand-teal transition-colors group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back to Website</span>
-        </Link>
-
-        <div className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-2.5 py-0.5 rounded-full">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span>256-Bit SSL</span>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-[#F7F9FB] flex flex-col justify-center items-center py-10 px-4 sm:px-6 font-sans antialiased selection:bg-brand-teal selection:text-white">
       {/* Main Executive Login Card */}
       <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-[0_4px_24px_-2px_rgba(24,50,71,0.08)] border border-slate-200/90 p-7 sm:p-9 space-y-6">
         
