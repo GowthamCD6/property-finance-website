@@ -36,6 +36,8 @@ export const AppRouting: React.FC = () => {
         <Route path="services/home-loans" element={<HomeLoansPage />} />
         <Route path="services/loan-against-property" element={<LoanAgainstPropertyPage />} />
         <Route path="services/property-backed-funding" element={<PropertyFundingPage />} />
+        <Route path="services/purchase-loans" element={<PropertyFundingPage />} />
+        <Route path="services/vehicle-loans" element={<ConsultationPage />} />
         <Route path="services/loan-consultation" element={<ConsultationPage />} />
         
         {/* Company & Advisory Pages */}
