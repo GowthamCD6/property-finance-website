@@ -20,11 +20,31 @@ CREATE TABLE `AdminUser` (
   `passwordHash` VARCHAR(255) NOT NULL,
   `name` VARCHAR(191) NOT NULL,
   `role` VARCHAR(50) NOT NULL DEFAULT 'admin',
+  `avatar` VARCHAR(500) NULL,
   `lastLoginAt` DATETIME(3) NULL,
   `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   UNIQUE KEY `AdminUser_email_key` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- 1B. Table: CustomerUser (Public Borrower Accounts via Google OAuth)
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `CustomerUser`;
+CREATE TABLE `CustomerUser` (
+  `id` VARCHAR(191) NOT NULL,
+  `googleId` VARCHAR(191) NULL,
+  `email` VARCHAR(191) NOT NULL,
+  `name` VARCHAR(191) NOT NULL,
+  `picture` VARCHAR(500) NULL,
+  `phone` VARCHAR(50) NULL,
+  `lastLoginAt` DATETIME(3) NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `CustomerUser_email_key` (`email`),
+  UNIQUE KEY `CustomerUser_googleId_key` (`googleId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
@@ -599,3 +619,4 @@ VALUES (
 -- =====================================================================
 SELECT 'Database prime_associates and all 10 tables initialized successfully!' AS `Status`;
 SHOW TABLES;
+

@@ -390,10 +390,25 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
             className="w-full mt-6 sm:mt-8 pt-3.5 pb-3.5 px-4 sm:px-8 rounded-xl bg-slate-950/65 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-200"
           >
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
-              {(content?.heroBadges
-                ? content.heroBadges.split(',').map((b: string) => b.trim()).filter(Boolean)
-                : ['Zero Advance Fees', '40+ Partner Lenders', '24–48h Rapid Sanction']
-              ).map((badgeText: string, bIdx: number) => (
+              {(() => {
+                if (!content?.heroBadges) {
+                  return ['Zero Advance Fees', '40+ Partner Lenders', '24–48h Rapid Sanction'];
+                }
+                try {
+                  const parsed = JSON.parse(content.heroBadges);
+                  if (Array.isArray(parsed)) {
+                    return parsed
+                      .map((item: any) => String(item).replace(/^["'\[\]\s]+|["'\[\]\s]+$/g, ''))
+                      .filter(Boolean);
+                  }
+                } catch {
+                  // Not JSON, fall through
+                }
+                return content.heroBadges
+                  .split(',')
+                  .map((b: string) => b.replace(/^["'\[\]\s]+|["'\[\]\s]+$/g, ''))
+                  .filter(Boolean);
+              })().map((badgeText: string, bIdx: number) => (
                 <div key={bIdx} className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
                   <span className="font-semibold text-white">{badgeText}</span>

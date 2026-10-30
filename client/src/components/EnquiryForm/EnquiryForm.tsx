@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Calendar,
   Clock,
@@ -20,6 +21,9 @@ import {
   FileCheck,
   Landmark,
 } from 'lucide-react';
+import { useGoogleLogin } from '@react-oauth/google';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
+import { GoogleIcon } from '../common/GoogleIcon';
 import { Service, UploadedDocument } from '../../types';
 import { submitLoanEnquiry, getPublicAvailability } from '../../services/api';
 import { InteractiveDocumentVault } from '../common/InteractiveDocumentVault';
@@ -74,6 +78,42 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<any | null>(null);
+  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+
+  // Customer Authentication Context
+  const { customer, isAuthenticated, loginWithGoogle } = useCustomerAuth();
+
+  // Auto-fill from authenticated customer profile
+  useEffect(() => {
+    if (customer) {
+      if (customer.name && (!fullName || fullName === '')) {
+        setFullName(customer.name);
+      }
+      if (customer.email && (!email || email === '')) {
+        setEmail(customer.email);
+      }
+    }
+  }, [customer]);
+
+  const triggerGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsGoogleSigningIn(true);
+      setFormError(null);
+      try {
+        const authedUser = await loginWithGoogle(tokenResponse.access_token);
+        if (authedUser.name) setFullName(authedUser.name);
+        if (authedUser.email) setEmail(authedUser.email);
+      } catch (err: any) {
+        setFormError(err.message || 'Google authentication failed.');
+      } finally {
+        setIsGoogleSigningIn(false);
+      }
+    },
+    onError: () => {
+      setFormError('Google sign-in was cancelled or encountered an issue.');
+      setIsGoogleSigningIn(false);
+    },
+  });
 
   // Update loan type when a service is selected from the services section
   useEffect(() => {
@@ -158,13 +198,21 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       return;
     }
 
+    // Google Sign-In Requirement check
+    if (!isAuthenticated || !customer) {
+      setFormError('Google Sign-In is required before submitting your loan enquiry so that our advisors can allot and send your appointment schedule directly to your account.');
+      triggerGoogleLogin();
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const payload: any = {
-        fullName: fullName.trim(),
+        fullName: fullName.trim() || customer.name,
         mobileNumber: cleanPhone,
-        email: email.trim() || undefined,
+        email: customer.email || email.trim() || undefined,
+        customerId: customer.id,
         preferredContactMethod,
         cityState: cityState.trim(),
         loanType,
@@ -349,6 +397,12 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
             </div>
 
             <div className="pt-6 flex flex-col sm:flex-row justify-center gap-3">
+              <Link
+                to="/my-enquiries"
+                className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-navy hover:bg-brand-navy/90 rounded-corporate transition-colors flex items-center justify-center gap-2"
+              >
+                <span>Track in My Enquiries Portal &rarr;</span>
+              </Link>
               <a
                 href={`https://wa.me/919655566613?text=${encodeURIComponent(
                   `Hello Prime Associates, I have submitted my loan enquiry ${submissionSuccess.referenceNumber || ''} for ${loanType} of ${formatAmountINR(loanAmount)}. Please allocate my consultation date and slot.`
@@ -362,16 +416,10 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-teal hover:bg-brand-teal-hover rounded-corporate transition-colors"
+                className="px-6 py-2.5 text-sm font-semibold text-brand-navy bg-brand-ivory border border-brand-border rounded-corporate hover:bg-gray-100 transition-colors"
               >
                 Submit Another Enquiry
               </button>
-              <a
-                href="#services"
-                className="px-6 py-2.5 text-sm font-semibold text-brand-navy bg-brand-ivory border border-brand-border rounded-corporate hover:bg-gray-100 transition-colors"
-              >
-                Return to Services
-              </a>
             </div>
           </div>
         ) : (
@@ -391,6 +439,65 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   <User className="w-5 h-5 text-brand-teal" />
                   <h3 className="text-base font-bold">1. Contact &amp; Personal Details</h3>
                 </div>
+
+                {customer ? (
+                  <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {customer.picture ? (
+                        <img
+                          src={customer.picture}
+                          alt={customer.name}
+                          className="w-10 h-10 rounded-full border border-emerald-300"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-emerald-700 text-white font-bold flex items-center justify-center text-xs">
+                          {customer.name.charAt(0)}
+                        </div>
+                      )}
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-emerald-950">Logged in with Google: {customer.name}</span>
+                          <span className="text-[10px] bg-emerald-200/70 text-emerald-900 px-2 py-0.5 rounded-full font-bold">Verified Account</span>
+                        </div>
+                        <p className="text-[11px] text-emerald-700 mt-0.5">
+                          {customer.email} • Your consultation date and allotted slot will be synchronized to this account.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mb-6 p-4 bg-slate-50 border border-slate-200/80 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-white rounded-lg border border-slate-200 shadow-xs">
+                        <GoogleIcon size={18} />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-brand-navy block">Sign in with Google to pre-fill &amp; track</span>
+                        <span className="text-[11px] text-brand-slate block">
+                          Required before submitting so advisors can allot and send your meeting schedule.
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => triggerGoogleLogin()}
+                      disabled={isGoogleSigningIn}
+                      className="px-4 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-semibold text-xs rounded-lg shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                    >
+                      {isGoogleSigningIn ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-teal" />
+                          <span>Connecting...</span>
+                        </>
+                      ) : (
+                        <>
+                          <GoogleIcon size={14} />
+                          <span>Sign in with Google</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
@@ -900,27 +1007,93 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                 </label>
               </div>
 
-              {/* SUBMIT BUTTON */}
+              {/* SUBMISSION / GOOGLE AUTHENTICATION STEP */}
               <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-4 px-6 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-base rounded-corporate shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Submitting Enquiry &amp; Attaching Documents...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      <span>
-                        Submit Loan Enquiry {documents.length > 0 ? `(${documents.length} Reference Docs Attached)` : ''}
-                      </span>
-                    </>
-                  )}
-                </button>
+                {!isAuthenticated || !customer ? (
+                  <div className="p-6 bg-gradient-to-br from-slate-50 via-white to-brand-teal/5 border-2 border-brand-teal/30 rounded-2xl shadow-xs space-y-4">
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center flex-shrink-0">
+                        <GoogleIcon size={20} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-brand-navy">
+                          Google Sign-In Required Before Submitting
+                        </h4>
+                        <p className="text-xs text-brand-slate mt-0.5 leading-relaxed">
+                          Prime Associates links consultation appointments and advisor calls directly to your Google account. You will receive real-time notifications as soon as an advisor allots your consultation slot.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => triggerGoogleLogin()}
+                      disabled={isGoogleSigningIn}
+                      className="w-full py-4 px-6 bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-300 hover:border-slate-400 text-slate-800 font-bold text-sm rounded-corporate shadow-xs hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60"
+                    >
+                      {isGoogleSigningIn ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-brand-teal" />
+                          <span>Connecting to Google...</span>
+                        </>
+                      ) : (
+                        <>
+                          <GoogleIcon size={18} />
+                          <span>Sign in with Google to Submit Loan Enquiry</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-xl flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {customer.picture ? (
+                          <img
+                            src={customer.picture}
+                            alt={customer.name}
+                            className="w-8 h-8 rounded-full border border-emerald-300 object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-emerald-700 text-white font-bold flex items-center justify-center text-xs">
+                            {customer.name.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <div className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                            <span>Ready to Submit as: {customer.name}</span>
+                            <span className="text-[10px] bg-emerald-200/70 text-emerald-900 px-1.5 py-0.5 rounded font-bold">
+                              Verified
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-emerald-700">
+                            {customer.email} • Consultation slot will be allotted to this account
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-4 px-6 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-base rounded-corporate shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Submitting Enquiry &amp; Attaching Documents...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>
+                            Submit Loan Enquiry as {customer.name.split(' ')[0]} {documents.length > 0 ? `(${documents.length} Reference Docs Attached)` : ''}
+                          </span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             </form>
           </div>

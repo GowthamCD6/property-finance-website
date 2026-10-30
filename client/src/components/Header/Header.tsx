@@ -14,7 +14,14 @@ import {
   Calculator,
   HelpCircle,
   Phone,
+  User,
+  LogOut,
+  FileText,
+  Loader2,
 } from 'lucide-react';
+import { useGoogleLogin } from '@react-oauth/google';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
+import { GoogleIcon } from '../common/GoogleIcon';
 import { SiteContent } from '../../types';
 import { WealthAnchorLogo } from '../common/WealthAnchorLogo';
 
@@ -29,6 +36,37 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Customer Auth
+  const { customer, isAuthenticated, loginWithGoogle, logout } = useCustomerAuth();
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+
+  const triggerHeaderGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsGoogleSigningIn(true);
+      try {
+        await loginWithGoogle(tokenResponse.access_token);
+      } catch (e) {
+        console.error('Customer login failed:', e);
+      } finally {
+        setIsGoogleSigningIn(false);
+      }
+    },
+    onError: () => setIsGoogleSigningIn(false),
+  });
+
+  // Close user dropdown on click outside
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, []);
 
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -405,8 +443,86 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
               </div>
             </nav>
 
-            {/* ─── CTA Button (Desktop) ─── */}
-            <div className="desktop-cta">
+            {/* ─── Customer Auth & CTA Button (Desktop) ─── */}
+            <div className="desktop-cta" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {!isAuthenticated || !customer ? (
+                <button
+                  type="button"
+                  onClick={() => triggerHeaderGoogleLogin()}
+                  disabled={isGoogleSigningIn}
+                  className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-700 font-semibold text-xs rounded-xl shadow-xs flex items-center gap-2 transition-all cursor-pointer disabled:opacity-60"
+                  title="Sign in with Google"
+                >
+                  {isGoogleSigningIn ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-teal" />
+                      <span>Connecting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <GoogleIcon size={16} />
+                      <span>Sign In</span>
+                    </>
+                  )}
+                </button>
+              ) : (
+                <div className="relative" ref={userDropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-xs rounded-xl shadow-xs flex items-center gap-2 transition-all cursor-pointer"
+                  >
+                    {customer.picture ? (
+                      <img src={customer.picture} alt={customer.name} className="w-6 h-6 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-brand-teal text-white text-[10px] font-bold flex items-center justify-center">
+                        {customer.name.charAt(0)}
+                      </div>
+                    )}
+                    <span className="max-w-[90px] truncate">{customer.name.split(' ')[0]}</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  </button>
+
+                  {userDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200/90 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                      <div className="px-4 py-2 border-b border-slate-100">
+                        <p className="text-xs font-bold text-brand-navy truncate">{customer.name}</p>
+                        <p className="text-[11px] text-slate-500 truncate">{customer.email}</p>
+                      </div>
+                      <Link
+                        to="/my-enquiries"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-brand-teal font-medium"
+                      >
+                        <FileText className="w-4 h-4 text-brand-teal" />
+                        <span>My Enquiries &amp; Slots</span>
+                      </Link>
+                      <Link
+                        to="/enquire"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-brand-teal font-medium"
+                      >
+                        <ArrowRight className="w-4 h-4 text-brand-teal" />
+                        <span>Apply for New Loan</span>
+                      </Link>
+                      <div className="pt-1 mt-1 border-t border-slate-100">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            logout();
+                          }}
+                          className="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs text-red-600 hover:bg-red-50 font-medium cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4 text-red-500" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <Link
                 to="/enquire"
                 className="cta-button"
@@ -643,11 +759,64 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             </div>
           </div>
 
-          {/* Mobile CTA */}
+          {/* Mobile Customer Auth & CTA */}
           <div style={{
             padding: '16px 20px',
             borderTop: '1px solid #f1f5f4',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
           }}>
+            {!isAuthenticated || !customer ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  triggerHeaderGoogleLogin();
+                }}
+                disabled={isGoogleSigningIn}
+                className="w-full py-3 px-4 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              >
+                <GoogleIcon size={16} />
+                <span>{isGoogleSigningIn ? 'Connecting...' : 'Sign in with Google'}</span>
+              </button>
+            ) : (
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                <div className="flex items-center gap-2.5">
+                  {customer.picture ? (
+                    <img src={customer.picture} alt={customer.name} className="w-8 h-8 rounded-full object-cover border border-slate-300" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-brand-teal text-white font-bold text-xs flex items-center justify-center">
+                      {customer.name.charAt(0)}
+                    </div>
+                  )}
+                  <div className="overflow-hidden">
+                    <p className="text-xs font-bold text-brand-navy truncate">{customer.name}</p>
+                    <p className="text-[10px] text-slate-500 truncate">{customer.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <Link
+                    to="/my-enquiries"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 py-1.5 px-2.5 bg-brand-teal text-white text-center font-semibold text-[11px] rounded-lg"
+                  >
+                    My Enquiries
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                    className="py-1.5 px-2.5 bg-slate-200 text-slate-700 font-semibold text-[11px] rounded-lg"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
+
             <Link
               to="/enquire"
               onClick={() => setMobileMenuOpen(false)}

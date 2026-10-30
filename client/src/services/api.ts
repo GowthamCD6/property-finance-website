@@ -6,6 +6,7 @@ import {
   Appointment,
   DashboardStats,
   AdminUser,
+  CustomerUser,
   WeeklyConfig,
   BlockedDate,
 } from '../types';
@@ -157,6 +158,59 @@ export async function loginAdminApi(email: string, password: string): Promise<{ 
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Authentication failed');
   return json.data;
+}
+
+export async function loginAdminWithGoogleApi(credential: string): Promise<{ token: string; admin: AdminUser }> {
+  const res = await fetch(`${API_BASE}/auth/google/admin`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ credential }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Google Administrator authentication failed');
+  return json.data;
+}
+
+export async function loginUserWithGoogleApi(credential: string): Promise<{ token: string; customer: CustomerUser }> {
+  const res = await fetch(`${API_BASE}/auth/google/user`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ credential }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Google User authentication failed');
+  return json.data;
+}
+
+export async function getCustomerProfileApi(): Promise<CustomerUser> {
+  const token = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}/auth/customer/me`, { headers });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to verify customer session');
+  return json.data;
+}
+
+export async function getCustomerEnquiriesApi(): Promise<Enquiry[]> {
+  const token = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}/auth/customer/enquiries`, { headers });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to load enquiries');
+  return json.data;
+}
+
+export async function logoutUserApi(): Promise<void> {
+  await fetch(`${API_BASE}/auth/logout`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  localStorage.removeItem('vpf_user_token');
+  localStorage.removeItem('vpf_user_profile');
 }
 
 export async function logoutAdminApi(): Promise<void> {

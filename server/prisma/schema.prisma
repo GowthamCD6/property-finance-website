@@ -15,9 +15,23 @@ model AdminUser {
   passwordHash String
   name         String
   role         String    @default("admin")
+  avatar       String?
   lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+}
+
+model CustomerUser {
+  id           String    @id @default(cuid())
+  googleId     String?   @unique
+  email        String    @unique
+  name         String
+  picture      String?
+  phone        String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  enquiries    Enquiry[]
 }
 
 model SiteContent {
@@ -149,6 +163,9 @@ model Enquiry {
   email                  String?
   preferredContactMethod String          @default("phone") // phone, email, whatsapp
   cityState              String
+  
+  customerId             String?
+  customer               CustomerUser?   @relation(fields: [customerId], references: [id])
   
   loanType               String          // Home Loan, Loan Against Property, etc.
   serviceId              String?

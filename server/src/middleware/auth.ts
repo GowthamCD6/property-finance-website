@@ -10,6 +10,12 @@ export interface AuthenticatedRequest extends Request {
     name: string;
     role: string;
   };
+  customer?: {
+    id: string;
+    email: string;
+    name: string;
+    picture?: string | null;
+  };
 }
 
 export async function requireAdminAuth(
@@ -60,7 +66,58 @@ export async function requireAdminAuth(
   } catch (err) {
     res.status(401).json({
       success: false,
-      message: 'Invalid or expired authentication credentials.',
+      message: 'Invalid or expired administrator authentication credentials.',
+    });
+  }
+}
+
+export async function requireCustomerAuth(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    let token: string | undefined;
+
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    } else if (req.cookies && req.cookies.customer_token) {
+      token = req.cookies.customer_token;
+    }
+
+    if (!token) {
+      res.status(401).json({
+        success: false,
+        message: 'Authentication required. Please sign in with Google.',
+      });
+      return;
+    }
+
+    const decoded = jwt.verify(token, config.jwtSecret) as {
+      id: string;
+      email: string;
+    };
+
+    const customer = await prisma.customerUser.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, email: true, name: true, picture: true },
+    });
+
+    if (!customer) {
+      res.status(401).json({
+        success: false,
+        message: 'User account not found or session has expired.',
+      });
+      return;
+    }
+
+    req.customer = customer;
+    next();
+  } catch (err) {
+    res.status(401).json({
+      success: false,
+      message: 'Invalid or expired user session.',
     });
   }
 }

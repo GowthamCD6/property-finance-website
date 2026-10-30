@@ -289,6 +289,15 @@ export interface AdminUser {
   email: string;
   name: string;
   role: string;
+  avatar?: string | null;
+}
+
+export interface CustomerUser {
+  id: string;
+  email: string;
+  name: string;
+  picture?: string | null;
+  phone?: string | null;
 }
 
 export interface DashboardStats {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 import {
   Lock,
   User,
@@ -15,7 +16,7 @@ import logoImg from '../../assets/images/logo.png';
 
 export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, loginWithGoogle, isAuthenticated } = useAuth();
 
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,22 +62,26 @@ export const AdminLoginPage: React.FC = () => {
     }
   };
 
-  // Google SSO Handler
-  const handleGoogleAuth = async () => {
-    setError(null);
-    setIsGoogleLoading(true);
-
-    try {
-      // Smooth verification handshake simulation
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      await login('admin@wealthanchor.in', 'Admin@123456');
-      navigate('/admin/dashboard', { replace: true });
-    } catch (err: any) {
-      setError('Google Workspace authentication failed. Please enter credentials below.');
-    } finally {
+  // Real Google SSO Handler via Google Identity Services
+  const triggerGoogleAdminLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setError(null);
+      setIsGoogleLoading(true);
+      try {
+        await loginWithGoogle(tokenResponse.access_token);
+        navigate('/admin/dashboard', { replace: true });
+      } catch (err: any) {
+        setError(err.message || 'Google Administrator authentication failed.');
+      } finally {
+        setIsGoogleLoading(false);
+      }
+    },
+    onError: (err) => {
+      console.warn('Google Sign-In cancelled or error:', err);
+      setError('Google Sign-In was cancelled or failed.');
       setIsGoogleLoading(false);
-    }
-  };
+    },
+  });
 
   const handleQuickFill = (accountEmail: string) => {
     setUsernameOrEmail(accountEmail);
@@ -121,7 +126,7 @@ export const AdminLoginPage: React.FC = () => {
         <div>
           <button
             type="button"
-            onClick={handleGoogleAuth}
+            onClick={() => triggerGoogleAdminLogin()}
             disabled={isGoogleLoading || isLoading}
             className="w-full h-11 px-4 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-700 font-medium text-xs sm:text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >

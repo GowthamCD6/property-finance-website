@@ -9,4 +9,6 @@ export const config = {
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
   adminEmail: process.env.ADMIN_EMAIL || 'admin@wealthanchor.in',
   timezone: process.env.TIMEZONE || 'Asia/Kolkata',
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
 };

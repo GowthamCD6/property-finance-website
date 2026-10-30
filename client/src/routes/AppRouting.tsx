@@ -12,6 +12,7 @@ import { CalculatorPage } from '../pages/public/Calculator/CalculatorPage';
 import { FaqsPage } from '../pages/public/Faqs/FaqsPage';
 import { ContactPage } from '../pages/public/Contact/ContactPage';
 import { EnquiryPage } from '../pages/public/Enquiry/EnquiryPage';
+import { MyEnquiriesPage } from '../pages/public/CustomerPortal/MyEnquiriesPage';
 import { PrivacyPolicyPage } from '../pages/public/Privacy/PrivacyPolicyPage';
 import { TermsConditionsPage } from '../pages/public/Terms/TermsConditionsPage';
 
@@ -51,6 +52,8 @@ export const AppRouting: React.FC = () => {
         <Route path="faqs" element={<FaqsPage />} />
         <Route path="contact" element={<ContactPage />} />
         <Route path="enquire" element={<EnquiryPage />} />
+        <Route path="my-enquiries" element={<MyEnquiriesPage />} />
+        <Route path="portal" element={<MyEnquiriesPage />} />
 
         {/* Legal & Governance Pages */}
         <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
