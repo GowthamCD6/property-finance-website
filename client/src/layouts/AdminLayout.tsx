@@ -69,20 +69,14 @@ export const AdminLayout: React.FC = () => {
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-brand-border h-screen flex-shrink-0 select-none z-30">
         
         {/* Exact h-16 Header matching top navbar baseline border line */}
-        <div className="h-16 px-4 border-b border-brand-border flex items-center gap-3 flex-shrink-0">
-          <img
-            src={logoImg}
-            alt="Prime Associate Loans"
-            className="h-9 w-auto object-contain flex-shrink-0"
-          />
-          <div className="overflow-hidden min-w-0">
-            <span className="font-extrabold text-xs text-brand-navy truncate block font-heading tracking-tight leading-tight">
-              Prime Associate Loans
-            </span>
-            <span className="text-[10px] uppercase tracking-wider text-brand-teal font-bold font-heading block mt-0.5">
-              Management Portal
-            </span>
-          </div>
+        <div className="h-16 px-5 border-b border-brand-border flex items-center flex-shrink-0">
+          <Link to="/admin/dashboard" className="flex items-center py-1">
+            <img
+              src={logoImg}
+              alt="Prime Associate Loans"
+              className="h-11 max-h-[46px] w-auto max-w-[210px] object-contain flex-shrink-0 transition-transform hover:scale-[1.02]"
+            />
+          </Link>
         </div>
 
         {/* Navigation Area: Scrollable internally ONLY if screen height is tiny */}
@@ -143,16 +137,13 @@ export const AdminLayout: React.FC = () => {
           <div className="w-72 bg-white h-full flex flex-col border-r border-brand-border shadow-xl animate-in slide-in-from-left duration-150">
             {/* Header */}
             <div className="h-16 px-4 border-b border-brand-border flex items-center justify-between flex-shrink-0">
-              <div className="flex items-center gap-2.5 min-w-0">
+              <Link to="/admin/dashboard" className="flex items-center" onClick={() => setMobileSidebarOpen(false)}>
                 <img
                   src={logoImg}
                   alt="Prime Associate Loans"
-                  className="h-8 w-auto object-contain flex-shrink-0"
+                  className="h-10 w-auto object-contain flex-shrink-0"
                 />
-                <span className="font-extrabold text-xs text-brand-navy font-heading truncate">
-                  Prime Associate Loans
-                </span>
-              </div>
+              </Link>
               <button
                 type="button"
                 onClick={() => setMobileSidebarOpen(false)}
