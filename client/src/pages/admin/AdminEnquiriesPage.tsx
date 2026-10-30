@@ -221,23 +221,23 @@ export const AdminEnquiriesPage: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'New':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-50 text-blue-700 border-blue-200';
       case 'Contacted':
-        return 'bg-amber-100 text-amber-800 border-amber-200';
+        return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'Follow-up Required':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
+        return 'bg-orange-50 text-orange-700 border-orange-200';
       case 'Appointment Requested':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return 'bg-purple-50 text-purple-700 border-purple-200';
       case 'Appointment Confirmed':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'In Review':
-        return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+        return 'bg-indigo-50 text-indigo-700 border-indigo-200';
       case 'Converted':
-        return 'bg-teal-100 text-teal-800 border-teal-200';
+        return 'bg-teal-50 text-teal-700 border-teal-200';
       case 'Closed':
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-slate-100 text-slate-600 border-slate-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-slate-100 text-slate-700 border-slate-200';
     }
   };
 
@@ -246,10 +246,10 @@ export const AdminEnquiriesPage: React.FC = () => {
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-brand-navy tracking-tight">
+          <h1 className="text-2xl font-extrabold text-brand-navy tracking-tight font-heading">
             Loan Enquiry Pipeline
           </h1>
-          <p className="text-xs sm:text-sm text-brand-slate mt-0.5">
+          <p className="text-xs sm:text-sm text-brand-slate mt-0.5 font-sans">
             Total {totalCount} records registered across all property loan products
           </p>
         </div>
@@ -259,7 +259,7 @@ export const AdminEnquiriesPage: React.FC = () => {
             href={getExportEnquiriesCsvUrl()}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-brand-ivory text-brand-navy border border-brand-border rounded-corporate text-xs font-semibold shadow-xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-brand-navy border border-slate-200 rounded-xl text-xs font-bold font-heading shadow-xs transition-colors"
           >
             <Download className="w-3.5 h-3.5 text-brand-teal" />
             <span>Export to CSV</span>
@@ -268,16 +268,16 @@ export const AdminEnquiriesPage: React.FC = () => {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white p-4 rounded-xl border border-brand-border shadow-subtle space-y-4">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-brand-border shadow-xs space-y-3.5">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-brand-slate" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search by Applicant Name, Phone, Reference Number or City..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-2 bg-brand-ivory/50 border border-brand-border rounded-lg text-xs sm:text-sm text-brand-navy focus:bg-white"
+              className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-brand-navy font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal transition-all"
             />
           </div>
 
@@ -288,7 +288,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                 setSelectedLoanType(e.target.value);
                 setPage(1);
               }}
-              className="px-3 py-2 bg-brand-ivory/50 border border-brand-border rounded-lg text-xs sm:text-sm text-brand-navy focus:bg-white"
+              className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-brand-navy focus:bg-white"
             >
               <option value="ALL">All Loan Types</option>
               <option value="Home Loan">Home Loan</option>
@@ -299,7 +299,7 @@ export const AdminEnquiriesPage: React.FC = () => {
 
             <button
               type="submit"
-              className="px-4 py-2 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-lg text-xs font-semibold transition-colors"
+              className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover active:scale-[0.99] text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-all cursor-pointer"
             >
               Search
             </button>
@@ -307,18 +307,19 @@ export const AdminEnquiriesPage: React.FC = () => {
         </form>
 
         {/* Status Tab Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-slate-100">
           {ALL_STATUSES.map((status) => (
             <button
               key={status}
+              type="button"
               onClick={() => {
                 setSelectedStatus(status);
                 setPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap transition-colors ${
+              className={`px-3 py-1.5 rounded-lg font-heading font-bold whitespace-nowrap transition-colors cursor-pointer ${
                 selectedStatus === status
                   ? 'bg-brand-navy text-white shadow-xs'
-                  : 'bg-brand-ivory text-brand-slate hover:bg-gray-200'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               {status === 'ALL' ? 'All Statuses' : status}
@@ -328,11 +329,11 @@ export const AdminEnquiriesPage: React.FC = () => {
       </div>
 
       {/* Main Table */}
-      <div className="bg-white rounded-xl border border-brand-border shadow-subtle overflow-hidden">
+      <div className="bg-white rounded-2xl border border-brand-border shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-brand-ivory/80 border-b border-brand-border text-brand-slate font-semibold uppercase tracking-wider text-[10px]">
+              <tr className="bg-slate-50/90 border-b border-brand-border text-slate-500 font-bold uppercase tracking-wider text-[10px] font-heading">
                 <th className="py-3.5 px-4">Ref Number</th>
                 <th className="py-3.5 px-4">Applicant &amp; Phone</th>
                 <th className="py-3.5 px-4">Location</th>
@@ -343,17 +344,17 @@ export const AdminEnquiriesPage: React.FC = () => {
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-brand-border">
+            <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-brand-slate">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto text-brand-teal mb-2" />
+                  <td colSpan={8} className="py-14 text-center text-slate-500 font-sans">
+                    <Loader2 className="w-7 h-7 animate-spin mx-auto text-brand-teal mb-2" />
                     <span>Loading pipeline records...</span>
                   </td>
                 </tr>
               ) : enquiries.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-brand-slate">
+                  <td colSpan={8} className="py-14 text-center text-slate-500 font-sans">
                     No enquiries match the current filters.
                   </td>
                 </tr>
@@ -362,48 +363,49 @@ export const AdminEnquiriesPage: React.FC = () => {
                   const appointment = enq.appointments && enq.appointments[0];
 
                   return (
-                    <tr key={enq.id} className="hover:bg-brand-ivory/40 transition-colors">
-                      <td className="py-3.5 px-4 font-mono font-bold text-brand-navy">
+                    <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3.5 px-4 font-mono font-bold text-brand-navy text-xs">
                         {enq.referenceNumber}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="font-semibold text-brand-navy block">
+                        <span className="font-bold text-brand-navy block font-heading text-xs sm:text-sm">
                           {enq.fullName}
                         </span>
-                        <span className="text-[11px] text-brand-slate">{enq.mobileNumber}</span>
+                        <span className="text-[11px] text-slate-500 font-sans">{enq.mobileNumber}</span>
                       </td>
-                      <td className="py-3.5 px-4 text-brand-slate">
+                      <td className="py-3.5 px-4 text-slate-600 font-sans">
                         {enq.cityState}
                       </td>
-                      <td className="py-3.5 px-4 font-medium text-brand-navy">
+                      <td className="py-3.5 px-4 font-semibold text-brand-navy font-heading">
                         {enq.loanType}
                       </td>
-                      <td className="py-3.5 px-4 font-semibold text-brand-navy">
+                      <td className="py-3.5 px-4 font-bold text-brand-teal font-mono">
                         {formatAmountINR(enq.loanAmount)}
                       </td>
-                      <td className="py-3.5 px-4 text-[11px] text-brand-navy">
+                      <td className="py-3.5 px-4 text-[11px]">
                         {appointment ? (
                           <div>
-                            <span className="font-semibold block">{appointment.date}</span>
-                            <span className="text-brand-slate">{appointment.timeSlot}</span>
+                            <span className="font-bold text-brand-navy block font-mono">{appointment.date}</span>
+                            <span className="text-slate-500 font-sans">{appointment.timeSlot}</span>
                           </div>
                         ) : (
-                          <span className="text-gray-400">Not set</span>
+                          <span className="text-slate-400 font-sans italic">Not set</span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4">
+                      <td className="py-3.5 px-4 whitespace-nowrap">
                         <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${getStatusBadge(
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border font-heading ${getStatusBadge(
                             enq.status
                           )}`}
                         >
                           {enq.status}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
                         <button
+                          type="button"
                           onClick={() => handleOpenDetail(enq.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-brand-teal-light text-brand-teal hover:bg-brand-teal hover:text-white rounded-md text-[11px] font-semibold transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 bg-brand-teal-light text-brand-teal hover:bg-brand-teal hover:text-white rounded-lg text-[11px] font-bold font-heading transition-colors cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>View Detail</span>

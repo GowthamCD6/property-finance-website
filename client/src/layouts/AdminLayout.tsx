@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   FileSpreadsheet,
@@ -12,9 +12,9 @@ import {
   ExternalLink,
   Menu,
   X,
-  Building2,
   Shield,
   Loader2,
+  CalendarCheck2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/images/logo.png';
@@ -33,10 +33,10 @@ export const AdminLayout: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-brand-ivory flex items-center justify-center">
+      <div className="h-screen bg-brand-ivory flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="w-8 h-8 animate-spin text-brand-teal" />
-          <span className="text-sm font-medium text-brand-slate">Validating admin session...</span>
+          <span className="text-xs font-semibold text-brand-slate font-sans">Validating administrative session...</span>
         </div>
       </div>
     );
@@ -47,13 +47,13 @@ export const AdminLayout: React.FC = () => {
   }
 
   const navLinks = [
-    { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
-    { name: 'Enquiries', path: '/admin/enquiries', icon: <FileSpreadsheet className="w-4 h-4" /> },
-    { name: 'Appointments', path: '/admin/appointments', icon: <Calendar className="w-4 h-4" /> },
-    { name: 'Services', path: '/admin/services', icon: <Layers className="w-4 h-4" /> },
-    { name: 'Website Content', path: '/admin/content', icon: <FileEdit className="w-4 h-4" /> },
-    { name: 'FAQs', path: '/admin/faqs', icon: <HelpCircle className="w-4 h-4" /> },
-    { name: 'Availability & Hours', path: '/admin/settings', icon: <Clock className="w-4 h-4" /> },
+    { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard className="w-4 h-4 flex-shrink-0" /> },
+    { name: 'Loan Enquiries', path: '/admin/enquiries', icon: <FileSpreadsheet className="w-4 h-4 flex-shrink-0" /> },
+    { name: 'Appointments & Slots', path: '/admin/appointments', icon: <CalendarCheck2 className="w-4 h-4 flex-shrink-0" /> },
+    { name: 'Loan Services', path: '/admin/services', icon: <Layers className="w-4 h-4 flex-shrink-0" /> },
+    { name: 'Website Content', path: '/admin/content', icon: <FileEdit className="w-4 h-4 flex-shrink-0" /> },
+    { name: 'Advisory FAQs', path: '/admin/faqs', icon: <HelpCircle className="w-4 h-4 flex-shrink-0" /> },
+    { name: 'Availability & Hours', path: '/admin/settings', icon: <Clock className="w-4 h-4 flex-shrink-0" /> },
   ];
 
   const handleLogout = async () => {
@@ -62,64 +62,72 @@ export const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-ivory flex">
-      {/* DESKTOP SIDEBAR */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-brand-border flex-shrink-0">
-        <div className="p-4 border-b border-brand-border flex items-center gap-3">
+    <div className="h-screen w-screen overflow-hidden bg-brand-ivory flex font-sans antialiased selection:bg-brand-teal selection:text-white">
+      {/* ────────────────────────────────────────────────────────────
+          1. DESKTOP SIDEBAR: FIXED h-screen (DOES NOT SCROLL WITH PAGE)
+          ──────────────────────────────────────────────────────────── */}
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-brand-border h-screen flex-shrink-0 select-none z-30">
+        
+        {/* Exact h-16 Header matching top navbar baseline border line */}
+        <div className="h-16 px-4 border-b border-brand-border flex items-center gap-3 flex-shrink-0">
           <img
             src={logoImg}
             alt="Prime Associate Loans"
             className="h-9 w-auto object-contain flex-shrink-0"
           />
-          <div className="overflow-hidden">
-            <span className="font-bold text-xs text-brand-navy truncate block">
+          <div className="overflow-hidden min-w-0">
+            <span className="font-extrabold text-xs text-brand-navy truncate block font-heading tracking-tight leading-tight">
               Prime Associate Loans
             </span>
-            <span className="text-[10px] uppercase tracking-wider text-brand-slate font-medium block">
+            <span className="text-[10px] uppercase tracking-wider text-brand-teal font-bold font-heading block mt-0.5">
               Management Portal
             </span>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
+        {/* Navigation Area: Scrollable internally ONLY if screen height is tiny */}
+        <nav className="p-3.5 space-y-1.5 flex-1 overflow-y-auto">
+          <div className="px-3 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 font-heading">
+            Operations Menu
+          </div>
           {navLinks.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-colors ${
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-heading font-bold transition-all ${
                   isActive
                     ? 'bg-brand-teal text-white shadow-xs'
-                    : 'text-brand-navy hover:bg-brand-teal-light hover:text-brand-teal'
+                    : 'text-slate-600 hover:text-brand-navy hover:bg-slate-100/80'
                 }`
               }
             >
               {item.icon}
-              <span>{item.name}</span>
+              <span className="truncate">{item.name}</span>
             </NavLink>
           ))}
         </nav>
 
-        {/* Authenticated user profile box & logout */}
-        <div className="p-4 border-t border-brand-border bg-brand-ivory/60 space-y-3">
+        {/* Authenticated user profile box & logout (Fixed at bottom of screen) */}
+        <div className="p-3.5 border-t border-brand-border bg-slate-50/70 space-y-3 flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-brand-teal/10 text-brand-teal flex items-center justify-center font-bold text-xs flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-brand-teal/15 text-brand-teal flex items-center justify-center font-extrabold text-xs font-heading flex-shrink-0">
               {admin?.name?.charAt(0) || 'A'}
             </div>
-            <div className="overflow-hidden">
-              <span className="text-xs font-bold text-brand-navy truncate block">
+            <div className="overflow-hidden min-w-0">
+              <span className="text-xs font-bold text-brand-navy truncate block font-heading">
                 {admin?.name || 'Administrator'}
               </span>
-              <span className="text-[10px] text-brand-slate truncate block">
+              <span className="text-[10px] text-brand-slate truncate block font-sans">
                 {admin?.email}
               </span>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold font-heading text-red-700 bg-red-50 hover:bg-red-100 border border-red-200/70 rounded-xl transition-colors cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -127,38 +135,45 @@ export const AdminLayout: React.FC = () => {
         </div>
       </aside>
 
-      {/* MOBILE SIDEBAR MODAL */}
+      {/* ────────────────────────────────────────────────────────────
+          2. MOBILE SIDEBAR DRAWER
+          ──────────────────────────────────────────────────────────── */}
       {mobileSidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden bg-brand-navy/60 backdrop-blur-xs flex">
-          <div className="w-72 bg-white h-full flex flex-col p-5 border-r border-brand-border shadow-xl animate-in slide-in-from-left duration-150">
-            <div className="flex items-center justify-between pb-4 border-b border-brand-border">
-              <div className="flex items-center gap-2.5">
+          <div className="w-72 bg-white h-full flex flex-col border-r border-brand-border shadow-xl animate-in slide-in-from-left duration-150">
+            {/* Header */}
+            <div className="h-16 px-4 border-b border-brand-border flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <img
                   src={logoImg}
                   alt="Prime Associate Loans"
                   className="h-8 w-auto object-contain flex-shrink-0"
                 />
-                <span className="font-bold text-xs text-brand-navy">Prime Associate Loans</span>
+                <span className="font-extrabold text-xs text-brand-navy font-heading truncate">
+                  Prime Associate Loans
+                </span>
               </div>
               <button
+                type="button"
                 onClick={() => setMobileSidebarOpen(false)}
-                className="p-1 text-brand-slate hover:text-brand-navy"
+                className="p-1.5 text-brand-slate hover:text-brand-navy hover:bg-slate-100 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <nav className="mt-4 space-y-1 flex-1 overflow-y-auto">
+            {/* Mobile Nav */}
+            <nav className="p-4 space-y-1.5 flex-1 overflow-y-auto">
               {navLinks.map((item) => (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileSidebarOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-colors ${
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-heading font-bold transition-all ${
                       isActive
-                        ? 'bg-brand-teal text-white'
-                        : 'text-brand-navy hover:bg-brand-teal-light hover:text-brand-teal'
+                        ? 'bg-brand-teal text-white shadow-xs'
+                        : 'text-slate-600 hover:text-brand-navy hover:bg-slate-100/80'
                     }`
                   }
                 >
@@ -168,46 +183,73 @@ export const AdminLayout: React.FC = () => {
               ))}
             </nav>
 
-            <div className="pt-4 border-t border-brand-border">
+            {/* Mobile Bottom Profile */}
+            <div className="p-4 border-t border-brand-border bg-slate-50 space-y-3 flex-shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-brand-teal/15 text-brand-teal flex items-center justify-center font-bold text-xs font-heading">
+                  {admin?.name?.charAt(0) || 'A'}
+                </div>
+                <div className="overflow-hidden min-w-0">
+                  <span className="text-xs font-bold text-brand-navy truncate block font-heading">
+                    {admin?.name || 'Administrator'}
+                  </span>
+                  <span className="text-[10px] text-brand-slate truncate block font-sans">
+                    {admin?.email}
+                  </span>
+                </div>
+              </div>
               <button
+                type="button"
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-red-700 bg-red-50 rounded-lg"
+                className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold font-heading text-red-700 bg-red-50 hover:bg-red-100 rounded-xl"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span>Sign Out</span>
               </button>
             </div>
           </div>
-          <div className="flex-1" onClick={() => setMobileSidebarOpen(false)}></div>
+          <div className="flex-1" onClick={() => setMobileSidebarOpen(false)} />
         </div>
       )}
 
-      {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Navbar */}
-        <header className="bg-white border-b border-brand-border h-16 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
+      {/* ────────────────────────────────────────────────────────────
+          3. MAIN CONTENT AREA (PAGES ROLL / SCROLL INDEPENDENTLY)
+          ──────────────────────────────────────────────────────────── */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        
+        {/* Top Navbar: Exact h-16 matching sidebar header baseline border line */}
+        <header className="h-16 bg-white border-b border-brand-border flex items-center justify-between px-4 sm:px-6 flex-shrink-0 z-20">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-2 rounded-lg text-brand-navy hover:bg-brand-teal-light"
+              className="md:hidden p-2 rounded-lg text-brand-navy hover:bg-slate-100 cursor-pointer"
               aria-label="Open Sidebar"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-brand-teal" />
-              <span className="text-xs font-semibold text-brand-slate uppercase tracking-wider hidden sm:inline">
+              <Shield className="w-4 h-4 text-brand-teal flex-shrink-0" />
+              <span className="text-xs font-extrabold text-brand-slate uppercase tracking-wider font-heading hidden sm:inline">
                 Admin Console
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/admin/appointments"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold font-heading text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Allotment Desk Active</span>
+            </Link>
+
             <a
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-navy bg-brand-ivory hover:bg-gray-100 border border-brand-border transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold font-heading text-brand-navy bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors shadow-xs"
             >
               <span>View Live Website</span>
               <ExternalLink className="w-3.5 h-3.5 text-brand-teal" />
@@ -215,7 +257,7 @@ export const AdminLayout: React.FC = () => {
           </div>
         </header>
 
-        {/* Page Content Viewport */}
+        {/* Page Content Viewport: THIS ALONE ROLLS / SCROLLS */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
@@ -223,3 +265,5 @@ export const AdminLayout: React.FC = () => {
     </div>
   );
 };
+
+export default AdminLayout;
