@@ -134,6 +134,15 @@ export async function getEnquiries(req: AuthenticatedRequest, res: Response, nex
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
+          customer: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              picture: true,
+              phone: true,
+            },
+          },
           appointments: {
             take: 1,
             orderBy: { createdAt: 'desc' },
@@ -168,6 +177,7 @@ export async function getEnquiryById(req: AuthenticatedRequest, res: Response, n
     const enquiry = await prisma.enquiry.findUnique({
       where: { id },
       include: {
+        customer: true,
         service: true,
         appointments: {
           orderBy: { createdAt: 'desc' },
@@ -432,7 +442,34 @@ export async function exportEnquiriesCsv(_req: AuthenticatedRequest, res: Respon
   }
 }
 
-// 3. Appointment Management
+// 3. Appointment Management & Allotment Queue
+export async function getPendingAllotmentEnquiries(_req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const enquiries = await prisma.enquiry.findMany({
+      where: {
+        OR: [
+          { status: { in: ['New', 'Contacted', 'Appointment Requested'] } },
+          { preferredDate: 'Pending Advisor Allotment' },
+        ],
+      },
+      include: {
+        customer: {
+          select: { id: true, email: true, name: true, picture: true, phone: true },
+        },
+        appointments: {
+          orderBy: { createdAt: 'desc' },
+        },
+        service: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json({ success: true, data: enquiries });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getAppointments(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
     const status = req.query.status as string | undefined;
@@ -460,6 +497,19 @@ export async function getAppointments(req: AuthenticatedRequest, res: Response, 
             loanType: true,
             loanAmount: true,
             cityState: true,
+            preferredContactMethod: true,
+            preferredTimeSlot: true,
+            meetingMode: true,
+            customerId: true,
+            customer: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+                picture: true,
+                phone: true,
+              },
+            },
           },
         },
       },

@@ -9,6 +9,7 @@ import {
   addEnquiryNote,
   exportEnquiriesCsv,
   getAppointments,
+  getPendingAllotmentEnquiries,
   updateAppointment,
   createAppointment,
   updateSiteContent,
@@ -45,6 +46,7 @@ router.post('/enquiries/:id/notes', addEnquiryNote);
 
 // Appointments
 router.get('/appointments', getAppointments);
+router.get('/appointments/pending-queue', getPendingAllotmentEnquiries);
 router.post('/appointments', createAppointment);
 router.patch('/appointments/:id', updateAppointment);
 

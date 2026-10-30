@@ -411,13 +411,46 @@ export const AdminEnquiriesPage: React.FC = () => {
                     <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors group">
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs">
-                            {initials}
-                          </div>
+                          {enq.customer?.picture ? (
+                            <div className="relative shrink-0">
+                              <img
+                                src={enq.customer.picture}
+                                alt={enq.fullName}
+                                className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-2xs"
+                              />
+                              <span
+                                className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+                                title="Google Authenticated"
+                              >
+                                ✓
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="relative shrink-0">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                                {initials}
+                              </div>
+                              {(enq.customer?.email || enq.customerId) && (
+                                <span
+                                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+                                  title="Google Authenticated"
+                                >
+                                  ✓
+                                </span>
+                              )}
+                            </div>
+                          )}
                           <div>
-                            <span className="font-bold text-[#0c1a26] block font-heading text-xs group-hover:text-teal-700 transition-colors">
-                              {enq.fullName}
-                            </span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-bold text-[#0c1a26] block font-heading text-xs group-hover:text-teal-700 transition-colors">
+                                {enq.fullName}
+                              </span>
+                              {(enq.customer?.email || enq.customerId) && (
+                                <span title="Google Verified Applicant">
+                                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                </span>
+                              )}
+                            </div>
                             <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
                               <a href={`tel:${enq.mobileNumber}`} className="hover:text-teal-700 hover:underline">
                                 {enq.mobileNumber}
@@ -459,25 +492,33 @@ export const AdminEnquiriesPage: React.FC = () => {
                         {formatAmountINR(enq.loanAmount)}
                       </td>
                       <td className="py-3.5 px-4 text-[11px]">
-                        {appointment ? (
+                        {appointment || enq.status === 'Appointment Confirmed' ? (
                           <div className="space-y-0.5">
                             <span className="font-bold text-[#0c1a26] block font-mono text-[11px]">
-                              {appointment.date}
+                              {appointment?.date || enq.preferredDate}
                             </span>
-                            <span className="text-slate-500 font-sans text-[10px]">
-                              {appointment.timeSlot}
+                            <span className="text-slate-500 font-sans text-[10px] block">
+                              {appointment?.timeSlot || enq.preferredTimeSlot}
+                            </span>
+                            <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-teal-50 text-teal-800 border border-teal-200 uppercase font-heading">
+                              {appointment?.meetingMode?.replace('_', ' ') || enq.meetingMode?.replace('_', ' ') || 'phone'}
                             </span>
                           </div>
                         ) : (
-                          <button
-                            type="button"
-                            onClick={() => handleOpenDetail(enq.id, 'appointment')}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[10px] font-bold font-heading shadow-2xs transition-colors cursor-pointer"
-                            title="Click to allot meeting date and time slot"
-                          >
-                            <Calendar className="w-3 h-3 text-amber-600" />
-                            <span>+ Allot Slot</span>
-                          </button>
+                          <div className="space-y-1">
+                            <span className="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold border border-amber-200 block w-fit">
+                              Awaiting Allotment
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenDetail(enq.id, 'appointment')}
+                              className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold font-heading shadow-2xs transition-colors cursor-pointer"
+                              title="Click to allot meeting date and time slot"
+                            >
+                              <Calendar className="w-3 h-3" />
+                              <span>+ Allot Slot</span>
+                            </button>
+                          </div>
                         )}
                       </td>
                       <td className="py-3.5 px-4 whitespace-nowrap">
@@ -939,6 +980,17 @@ export const AdminEnquiriesPage: React.FC = () => {
                           <span className="font-semibold">{allotSuccess}</span>
                         </div>
                       )}
+
+                      {/* Applicant Requested Preference Banner */}
+                      <div className="p-3.5 bg-amber-50/80 rounded-xl border border-amber-200 text-xs flex items-center gap-2.5">
+                        <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                        <div>
+                          <span className="font-bold text-amber-900 font-heading">Borrower Preference: </span>
+                          <span className="text-amber-800 font-sans">
+                            Requested <strong>{detailEnquiry.preferredTimeSlot || detailEnquiry.preferredContactMethod || 'Any Time'}</strong> window via <strong className="capitalize">{detailEnquiry.meetingMode?.replace('_', ' ') || 'phone'}</strong>
+                          </span>
+                        </div>
+                      </div>
 
                       {!isAllotting ? (
                         <>

@@ -192,6 +192,7 @@ export interface Faq {
 export interface Appointment {
   id: string;
   enquiryId: string;
+  enquiry?: Enquiry;
   date: string;
   timeSlot: string;
   timezone: string;
@@ -274,6 +275,14 @@ export interface Enquiry {
     | 'Converted'
     | 'Closed';
   consentGiven: boolean;
+  customerId?: string | null;
+  customer?: {
+    id: string;
+    email?: string | null;
+    name?: string | null;
+    picture?: string | null;
+    phone?: string | null;
+  } | null;
   createdAt: string;
   updatedAt: string;
   appointments?: Appointment[];

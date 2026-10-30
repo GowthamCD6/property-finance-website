@@ -403,6 +403,15 @@ export async function getAppointmentsApi(params?: { status?: string; date?: stri
   return json.data;
 }
 
+export async function getPendingAllotmentsApi(): Promise<Enquiry[]> {
+  const res = await fetch(`${API_BASE}/admin/appointments/pending-queue`, {
+    headers: getAuthHeaders(),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to load pending allotment queue');
+  return json.data;
+}
+
 export async function createAppointmentApi(data: {
   enquiryId: string;
   date: string;
