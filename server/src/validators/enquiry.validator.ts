@@ -53,21 +53,22 @@ export const createEnquirySchema = z.object({
 
   preferredDate: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Preferred date must be in YYYY-MM-DD format')
-    .refine((dateStr) => {
-      const selected = new Date(dateStr);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return selected >= today;
-    }, 'Preferred meeting date cannot be in the past'),
+    .optional()
+    .default('Pending Advisor Allotment'),
 
   preferredTimeSlot: z
     .string()
     .trim()
-    .min(3, 'Preferred time slot is required'),
-  meetingMode: z.enum(['phone', 'video', 'in_person'], {
-    errorMap: () => ({ message: 'Please select a meeting mode' }),
-  }),
+    .optional()
+    .default('Pending Advisor Allotment'),
+
+  preferredContactWindow: z.string().optional().nullable(),
+
+  meetingMode: z
+    .enum(['phone', 'video', 'in_person'], {
+      errorMap: () => ({ message: 'Please select a meeting mode' }),
+    })
+    .default('phone'),
   additionalNotes: z
     .string()
     .trim()

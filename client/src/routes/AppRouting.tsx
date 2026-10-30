@@ -24,10 +24,13 @@ import { AdminServicesPage } from '../pages/admin/AdminServicesPage';
 import { AdminContentPage } from '../pages/admin/AdminContentPage';
 import { AdminFaqsPage } from '../pages/admin/AdminFaqsPage';
 import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage';
+import { ScrollToTop } from '../components/common/ScrollToTop';
 
 export const AppRouting: React.FC = () => {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* PUBLIC CUSTOMER EXPERIENCE (MULTI-PAGE CORPORATE ARCHITECTURE) */}
       <Route path="/" element={<PublicLayout />}>
         <Route index element={<HomePage />} />
@@ -88,6 +91,7 @@ export const AppRouting: React.FC = () => {
         }
       />
     </Routes>
+    </>
   );
 };
 

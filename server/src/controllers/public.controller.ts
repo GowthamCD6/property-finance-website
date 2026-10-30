@@ -165,34 +165,41 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
   try {
     const validatedData = createEnquirySchema.parse(req.body);
 
-    // Check if the requested slot is already double-booked by a Confirmed appointment
-    const conflictingConfirmed = await prisma.appointment.findFirst({
-      where: {
-        date: validatedData.preferredDate,
-        timeSlot: validatedData.preferredTimeSlot,
-        status: 'Confirmed',
-      },
-    });
+    const isSpecificDate =
+      validatedData.preferredDate &&
+      validatedData.preferredDate !== 'Pending Advisor Allotment' &&
+      /^\d{4}-\d{2}-\d{2}$/.test(validatedData.preferredDate);
 
-    if (conflictingConfirmed) {
-      res.status(409).json({
-        success: false,
-        message: 'The requested appointment slot has just been confirmed for another applicant. Please choose a different time slot.',
+    // If specific date requested, verify conflict & blackout
+    if (isSpecificDate) {
+      const conflictingConfirmed = await prisma.appointment.findFirst({
+        where: {
+          date: validatedData.preferredDate,
+          timeSlot: validatedData.preferredTimeSlot,
+          status: 'Confirmed',
+        },
       });
-      return;
-    }
 
-    // Check blocked date
-    const isBlocked = await prisma.blockedDate.findUnique({
-      where: { date: validatedData.preferredDate },
-    });
+      if (conflictingConfirmed) {
+        res.status(409).json({
+          success: false,
+          message:
+            'The requested appointment slot has just been confirmed for another applicant. Please choose a different time slot.',
+        });
+        return;
+      }
 
-    if (isBlocked) {
-      res.status(400).json({
-        success: false,
-        message: `Consultations are unavailable on ${validatedData.preferredDate} (${isBlocked.reason}). Please select another date.`,
+      const isBlocked = await prisma.blockedDate.findUnique({
+        where: { date: validatedData.preferredDate },
       });
-      return;
+
+      if (isBlocked) {
+        res.status(400).json({
+          success: false,
+          message: `Consultations are unavailable on ${validatedData.preferredDate} (${isBlocked.reason}). Please select another date.`,
+        });
+        return;
+      }
     }
 
     const referenceNumber = await generateEnquiryReference();
@@ -214,9 +221,9 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
           propertyLocation: validatedData.propertyLocation,
           propertyOwnershipStatus: validatedData.propertyOwnershipStatus,
           employmentType: validatedData.employmentType,
-          preferredDate: validatedData.preferredDate,
-          preferredTimeSlot: validatedData.preferredTimeSlot,
-          meetingMode: validatedData.meetingMode,
+          preferredDate: validatedData.preferredDate || 'Pending Advisor Allotment',
+          preferredTimeSlot: validatedData.preferredTimeSlot || 'Pending Advisor Allotment',
+          meetingMode: validatedData.meetingMode || 'phone',
           additionalNotes: validatedData.additionalNotes || null,
           status: 'New',
           consentGiven: true,
@@ -230,21 +237,24 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
           fromStatus: 'None',
           toStatus: 'New',
           changedBy: 'System',
-          note: 'Customer enquiry registered through public website form',
+          note: 'Customer enquiry registered through public website form. Awaiting advisor slot allotment.',
         },
       });
 
-      // Create requested appointment
-      const appointment = await tx.appointment.create({
-        data: {
-          enquiryId: enquiry.id,
-          date: validatedData.preferredDate,
-          timeSlot: validatedData.preferredTimeSlot,
-          timezone: 'Asia/Kolkata',
-          meetingMode: validatedData.meetingMode,
-          status: 'Requested',
-        },
-      });
+      // If specific date was picked, create requested appointment; otherwise leave unallotted for admin
+      let appointment = null;
+      if (isSpecificDate && validatedData.preferredTimeSlot && validatedData.preferredTimeSlot !== 'Pending Advisor Allotment') {
+        appointment = await tx.appointment.create({
+          data: {
+            enquiryId: enquiry.id,
+            date: validatedData.preferredDate,
+            timeSlot: validatedData.preferredTimeSlot,
+            timezone: 'Asia/Kolkata',
+            meetingMode: validatedData.meetingMode,
+            status: 'Requested',
+          },
+        });
+      }
 
       return { enquiry, appointment };
     });
@@ -264,15 +274,16 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
 
     res.status(201).json({
       success: true,
-      message: 'Your enquiry has been successfully registered. Our advisory team will review your details and contact you.',
+      message:
+        'Your loan enquiry has been successfully registered. Our advisory desk will review your details and allocate your dedicated consultation meeting slot.',
       data: {
         referenceNumber: result.enquiry.referenceNumber,
         fullName: result.enquiry.fullName,
         loanType: result.enquiry.loanType,
         loanAmount: result.enquiry.loanAmount,
-        meetingDate: result.appointment.date,
-        meetingSlot: result.appointment.timeSlot,
-        appointmentStatus: result.appointment.status,
+        meetingDate: result.appointment?.date || 'Pending Advisor Allotment',
+        meetingSlot: result.appointment?.timeSlot || 'Pending Advisor Allotment',
+        appointmentStatus: result.appointment?.status || 'Awaiting Advisor Slot Allotment',
         createdAt: result.enquiry.createdAt,
       },
     });

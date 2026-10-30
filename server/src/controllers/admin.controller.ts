@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import prisma from '../database/client';
+import { generateEnquiryReference } from '../utils/reference';
 import {
   updateSiteContentSchema,
   serviceSchema,
@@ -186,6 +187,103 @@ export async function getEnquiryById(req: AuthenticatedRequest, res: Response, n
     }
 
     res.json({ success: true, data: enquiry });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// 2b. Admin Direct Enquiry / Borrower Registration
+export async function createAdminEnquiry(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const {
+      fullName,
+      mobileNumber,
+      email,
+      preferredContactMethod = 'phone',
+      cityState = 'Tirupur, Tamil Nadu',
+      loanType = 'Home Loan',
+      loanAmount = 2500000,
+      propertyType = 'residential',
+      propertyLocation = 'Tirupur',
+      propertyOwnershipStatus = 'owned',
+      employmentType = 'salaried',
+      preferredBank,
+      preferredDate,
+      preferredTimeSlot,
+      meetingMode = 'phone',
+      status = 'New',
+      additionalNotes,
+    } = req.body;
+
+    if (!fullName || !mobileNumber) {
+      res.status(400).json({ success: false, message: 'Applicant full name and mobile number are required.' });
+      return;
+    }
+
+    const referenceNumber = await generateEnquiryReference();
+    const adminName = req.admin?.name || 'Senior Advisor';
+
+    const result = await prisma.$transaction(async (tx) => {
+      const enquiry = await tx.enquiry.create({
+        data: {
+          referenceNumber,
+          fullName: fullName.trim(),
+          mobileNumber: mobileNumber.trim(),
+          email: email?.trim() || null,
+          preferredContactMethod,
+          cityState: cityState.trim(),
+          loanType,
+          loanAmount: Number(loanAmount),
+          propertyType,
+          propertyLocation: propertyLocation.trim(),
+          propertyOwnershipStatus,
+          employmentType,
+          preferredDate: preferredDate || null,
+          preferredTimeSlot: preferredTimeSlot || null,
+          meetingMode,
+          status,
+          additionalNotes: preferredBank
+            ? `[Preferred Bank: ${preferredBank.trim()}] ${additionalNotes?.trim() || ''}`.trim()
+            : additionalNotes?.trim() || null,
+          consentGiven: true,
+        },
+      });
+
+      // Status history entry
+      await tx.statusHistory.create({
+        data: {
+          enquiryId: enquiry.id,
+          fromStatus: 'None',
+          toStatus: status,
+          changedBy: adminName,
+          note: `Borrower case dossier registered manually by ${adminName} via Admin Console`,
+        },
+      });
+
+      // If appointment date & slot were provided, create appointment immediately
+      let appointment = null;
+      if (preferredDate && preferredTimeSlot) {
+        appointment = await tx.appointment.create({
+          data: {
+            enquiryId: enquiry.id,
+            date: preferredDate,
+            timeSlot: preferredTimeSlot,
+            timezone: 'Asia/Kolkata',
+            meetingMode,
+            status: status === 'Appointment Confirmed' ? 'Confirmed' : 'Requested',
+            adminNotes: `Scheduled during registration by ${adminName}`,
+          },
+        });
+      }
+
+      return { enquiry, appointment };
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Borrower dossier registered successfully with Reference ${referenceNumber}.`,
+      data: result,
+    });
   } catch (err) {
     next(err);
   }
@@ -686,18 +784,47 @@ export async function getAvailabilitySettings(_req: AuthenticatedRequest, res: R
 export async function updateWeeklyConfig(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
     const { id } = req.params;
-    const { isAvailable, startTime, endTime } = req.body;
+    const { isAvailable, startTime, endTime, slotDurationMinutes } = req.body;
 
     const updated = await prisma.availabilityConfig.update({
       where: { id },
       data: {
-        isAvailable: Boolean(isAvailable),
+        isAvailable: isAvailable !== undefined ? Boolean(isAvailable) : undefined,
         startTime: startTime || undefined,
         endTime: endTime || undefined,
+        slotDurationMinutes: slotDurationMinutes ? Number(slotDurationMinutes) : undefined,
       },
     });
 
-    res.json({ success: true, message: 'Schedule updated.', data: updated });
+    res.json({ success: true, message: 'Schedule updated successfully.', data: updated });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function bulkUpdateWeeklySchedule(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { configs } = req.body; // array of { id, isAvailable, startTime, endTime, slotDurationMinutes }
+    if (!Array.isArray(configs)) {
+      res.status(400).json({ success: false, message: 'Configs array required.' });
+      return;
+    }
+
+    const updates = await Promise.all(
+      configs.map((c: any) =>
+        prisma.availabilityConfig.update({
+          where: { id: c.id },
+          data: {
+            isAvailable: c.isAvailable !== undefined ? Boolean(c.isAvailable) : undefined,
+            startTime: c.startTime || undefined,
+            endTime: c.endTime || undefined,
+            slotDurationMinutes: c.slotDurationMinutes ? Number(c.slotDurationMinutes) : undefined,
+          },
+        })
+      )
+    );
+
+    res.json({ success: true, message: 'All weekly schedules updated successfully.', data: updates });
   } catch (err) {
     next(err);
   }

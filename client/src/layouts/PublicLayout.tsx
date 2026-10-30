@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Header } from '../components/Header/Header';
 import { Footer } from '../components/Footer/Footer';
@@ -12,10 +12,15 @@ export const PublicLayout: React.FC = () => {
   const [faqs, setFaqs] = useState<Faq[]>([]);
   const location = useLocation();
 
-  // Scroll to top on route change
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+  // Instant scroll to top (Hero section) before paint on every route change
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     getPublicSiteContent()

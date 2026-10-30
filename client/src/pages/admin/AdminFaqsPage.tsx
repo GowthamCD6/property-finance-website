@@ -4,10 +4,14 @@ import {
   Plus,
   Edit2,
   Trash2,
-  CheckCircle,
+  CheckCircle2,
   XCircle,
   Loader2,
   X,
+  Search,
+  Tag,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { Faq } from '../../types';
 import {
@@ -20,6 +24,9 @@ import {
 export const AdminFaqsPage: React.FC = () => {
   const [faqs, setFaqs] = useState<Faq[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -102,194 +109,265 @@ export const AdminFaqsPage: React.FC = () => {
     }
   };
 
+  const categories = ['ALL', ...Array.from(new Set(faqs.map((f) => f.category)))];
+
+  const filteredFaqs = faqs.filter((faq) => {
+    if (selectedCategory !== 'ALL' && faq.category !== selectedCategory) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return faq.question.toLowerCase().includes(q) || faq.answer.toLowerCase().includes(q);
+    }
+    return true;
+  });
+
   return (
     <div className="space-y-6">
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-brand-navy tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
             Frequently Asked Questions Management
           </h1>
-          <p className="text-xs sm:text-sm text-brand-slate mt-0.5">
-            Manage informative customer answers, regulatory questions, and categories
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
+            Manage informative customer answers, regulatory questions, and categorised banking advice
           </p>
         </div>
 
         <button
           onClick={openAddModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-semibold rounded-corporate shadow-xs transition-colors self-start sm:self-auto"
+          className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-xs sm:text-sm font-bold font-heading rounded-xl shadow-md shadow-teal-500/20 transition-all self-start sm:self-auto cursor-pointer active:scale-[0.98]"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
           <span>Add New FAQ</span>
         </button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-brand-border shadow-subtle overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-brand-ivory/80 border-b border-brand-border text-brand-slate font-semibold uppercase tracking-wider text-[10px]">
-                <th className="py-3.5 px-4">Order</th>
-                <th className="py-3.5 px-4">Category</th>
-                <th className="py-3.5 px-4">Question &amp; Answer</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-brand-border">
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center text-brand-slate">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto text-brand-teal mb-2" />
-                    <span>Loading FAQs...</span>
-                  </td>
-                </tr>
-              ) : faqs.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center text-brand-slate">
-                    No FAQs created yet.
-                  </td>
-                </tr>
-              ) : (
-                faqs.map((faq) => (
-                  <tr key={faq.id} className="hover:bg-brand-ivory/40 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-brand-navy">
-                      #{faq.displayOrder}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className="px-2.5 py-1 bg-brand-ivory border border-brand-border rounded font-semibold text-brand-slate text-[11px]">
-                        {faq.category}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 max-w-md">
-                      <span className="font-bold text-brand-navy block mb-1 text-xs sm:text-sm">
-                        {faq.question}
-                      </span>
-                      <p className="text-brand-slate text-[11px] line-clamp-2">
-                        {faq.answer}
-                      </p>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      {faq.isPublished ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
-                          <CheckCircle className="w-3 h-3" />
-                          <span>Published</span>
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-700">
-                          <XCircle className="w-3 h-3" />
-                          <span>Draft</span>
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
-                      <button
-                        onClick={() => openEditModal(faq)}
-                        className="px-2.5 py-1 text-[11px] font-semibold text-brand-teal hover:bg-brand-teal-light rounded transition-colors"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(faq.id, faq.question)}
-                        className="px-2.5 py-1 text-[11px] font-semibold text-red-600 hover:bg-red-50 rounded transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {/* Filter and Search Bar */}
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3.5">
+        <div className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search FAQs by question title or answer text..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+          />
         </div>
+
+        {/* Categories Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-2 border-t border-slate-100">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 rounded-xl font-heading font-bold whitespace-nowrap transition-all cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-[#0c1a26] text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              {cat === 'ALL' ? 'All Categories' : cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* FAQs List */}
+      <div className="space-y-3.5">
+        {loading ? (
+          <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center shadow-sm">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600 mb-2" />
+            <span className="text-xs text-slate-500">Loading FAQs...</span>
+          </div>
+        ) : filteredFaqs.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center shadow-sm space-y-3">
+            <HelpCircle className="w-10 h-10 text-slate-300 mx-auto" />
+            <h3 className="font-bold text-[#0c1a26] text-base font-heading">No FAQs Found</h3>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              No questions match your current search or category filter.
+            </p>
+          </div>
+        ) : (
+          filteredFaqs.map((faq) => {
+            const isExpanded = expandedFaqId === faq.id;
+
+            return (
+              <div
+                key={faq.id}
+                className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-slate-300 transition-all p-5 space-y-3"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3 flex-1">
+                    <span className="font-mono text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md mt-0.5">
+                      #{faq.displayOrder}
+                    </span>
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="px-2.5 py-0.5 rounded-md bg-teal-50 text-teal-800 text-[10px] font-bold font-heading border border-teal-200/60">
+                          {faq.category}
+                        </span>
+                        {faq.isPublished ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>Live</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200">
+                            <XCircle className="w-3 h-3" />
+                            <span>Draft</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <h3
+                        onClick={() => setExpandedFaqId(isExpanded ? null : faq.id)}
+                        className="text-sm sm:text-base font-extrabold text-[#0c1a26] font-heading cursor-pointer hover:text-teal-700 transition-colors pt-1"
+                      >
+                        {faq.question}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => openEditModal(faq)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold font-heading text-teal-700 bg-teal-50 hover:bg-teal-100 rounded-xl transition-colors border border-teal-200/60"
+                    >
+                      <Edit2 className="w-3 h-3" />
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(faq.id, faq.question)}
+                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                      title="Delete FAQ"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pl-10 text-xs sm:text-sm text-slate-600 font-sans leading-relaxed pt-1">
+                  <p className={isExpanded ? '' : 'line-clamp-2'}>{faq.answer}</p>
+                  {faq.answer.length > 140 && (
+                    <button
+                      type="button"
+                      onClick={() => setExpandedFaqId(isExpanded ? null : faq.id)}
+                      className="text-teal-700 hover:underline font-semibold text-xs mt-1 inline-flex items-center gap-0.5"
+                    >
+                      {isExpanded ? (
+                        <>
+                          <span>Show Less</span>
+                          <ChevronUp className="w-3 h-3" />
+                        </>
+                      ) : (
+                        <>
+                          <span>Read Full Answer</span>
+                          <ChevronDown className="w-3 h-3" />
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
       {/* CREATE / EDIT FAQ MODAL */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-brand-navy/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-lg w-full p-6 shadow-modal border border-brand-border animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
-              <h3 className="font-bold text-base text-brand-navy">
-                {editingFaq ? 'Edit FAQ' : 'Add New FAQ'}
-              </h3>
-              <button onClick={() => setModalOpen(false)} className="text-brand-slate hover:text-brand-navy">
+        <div className="fixed inset-0 z-50 bg-[#0c1a26]/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-150 my-6">
+            <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
+              <div>
+                <span className="text-[10px] font-bold text-teal-700 uppercase tracking-wider block font-heading">
+                  FAQ Knowledge Base
+                </span>
+                <h3 className="font-extrabold text-lg text-[#0c1a26] font-heading">
+                  {editingFaq ? 'Edit FAQ Item' : 'Add New FAQ Item'}
+                </h3>
+              </div>
+              <button onClick={() => setModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-700 rounded-xl">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs sm:text-sm">
               <div>
-                <label className="block text-xs font-semibold text-brand-navy mb-1">Question *</label>
+                <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">Question Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. What documents are required before a consultation?"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  className="w-full p-2.5 bg-brand-ivory border border-brand-border rounded-lg text-brand-navy"
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[#0c1a26] font-semibold focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-brand-navy mb-1">Answer *</label>
+                <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">Detailed Answer *</label>
                 <textarea
                   rows={4}
                   required
+                  placeholder="Provide comprehensive and helpful guidance..."
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
-                  className="w-full p-2.5 bg-brand-ivory border border-brand-border rounded-lg text-brand-navy"
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[#0c1a26] focus:bg-white resize-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-brand-navy mb-1">Category</label>
+                  <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">Category</label>
                   <input
                     type="text"
                     required
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     placeholder="General / Eligibility / Process"
-                    className="w-full p-2.5 bg-brand-ivory border border-brand-border rounded-lg text-brand-navy"
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[#0c1a26] focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-brand-navy mb-1">Display Order</label>
+                  <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">Display Order</label>
                   <input
                     type="number"
                     min="1"
                     value={displayOrder}
                     onChange={(e) => setDisplayOrder(parseInt(e.target.value, 10))}
-                    className="w-full p-2.5 bg-brand-ivory border border-brand-border rounded-lg text-brand-navy"
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[#0c1a26] font-mono focus:bg-white"
                   />
                 </div>
               </div>
 
               <div className="pt-2">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-brand-navy">
+                <label className="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-[#0c1a26]">
                   <input
                     type="checkbox"
                     checked={isPublished}
                     onChange={(e) => setIsPublished(e.target.checked)}
-                    className="w-4 h-4 rounded text-brand-teal"
+                    className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500"
                   />
                   <span>Publish to Public Website</span>
                 </label>
               </div>
 
-              <div className="pt-3 border-t border-brand-border flex justify-end gap-2">
+              <div className="pt-3 border-t border-slate-100 flex justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 border border-brand-border rounded-lg text-xs font-semibold text-brand-slate hover:bg-brand-ivory"
+                  className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 text-white rounded-lg text-xs font-semibold"
+                  className="px-5 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:bg-slate-300 text-white rounded-xl text-xs font-bold font-heading shadow-sm"
                 >
                   {saving ? 'Saving...' : 'Save FAQ'}
                 </button>
@@ -301,3 +379,5 @@ export const AdminFaqsPage: React.FC = () => {
     </div>
   );
 };
+
+export default AdminFaqsPage;

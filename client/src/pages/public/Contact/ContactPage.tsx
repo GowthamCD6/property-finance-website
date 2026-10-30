@@ -92,7 +92,7 @@ export const ContactPage: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const regionalDesks = [
+  const defaultRegionalDesks = [
     {
       region: 'Tirupur Central & Head Office',
       focus: 'Home Loans, Self-Construction, Plot Purchase & Government Subsidies',
@@ -118,6 +118,25 @@ export const ContactPage: React.FC = () => {
       phone: '+91 95144 66600',
     },
   ];
+
+  const regionalDesks = React.useMemo(() => {
+    if (content?.branchOffices) {
+      try {
+        const parsed = JSON.parse(content.branchOffices);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((b: any) => ({
+            region: b.name,
+            focus: b.address,
+            desk: b.timings || 'Active Regional Desk',
+            phone: b.phone,
+          }));
+        }
+      } catch (e) {
+        console.warn('Unable to parse dynamic branchOffices', e);
+      }
+    }
+    return defaultRegionalDesks;
+  }, [content?.branchOffices]);
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">

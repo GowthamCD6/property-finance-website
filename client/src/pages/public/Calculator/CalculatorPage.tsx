@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
+import { SiteContent } from '../../../types';
 import {
   Calculator as CalcIcon,
   IndianRupee,
@@ -240,6 +241,9 @@ const AnimatedHeadline: React.FC = () => {
    2. MAIN CALCULATOR PAGE COMPONENT
    ──────────────────────────────────────────────────────────── */
 export const CalculatorPage: React.FC = () => {
+  const context = useOutletContext<{ content?: SiteContent | null }>();
+  const content = context?.content || null;
+
   const [calcMode, setCalcMode] = useState<'emi' | 'eligibility' | 'composite'>('emi');
   const [mounted, setMounted] = useState<boolean>(false);
   const dashboardRef = useRef<HTMLDivElement>(null);
@@ -250,9 +254,15 @@ export const CalculatorPage: React.FC = () => {
   }, []);
 
   // Mode 1: Standard EMI States
-  const [loanAmount, setLoanAmount] = useState<number>(5000000); // ₹50 Lakhs
-  const [interestRate, setInterestRate] = useState<number>(7.25); // Starts from 7.25% p.a.
-  const [tenureYears, setTenureYears] = useState<number>(20); // 20 years
+  const [loanAmount, setLoanAmount] = useState<number>(content?.calcDefaultAmount || 5000000); // ₹50 Lakhs
+  const [interestRate, setInterestRate] = useState<number>(content?.calcDefaultHomeRate || 7.25); // Starts from 7.25% p.a.
+  const [tenureYears, setTenureYears] = useState<number>(content?.calcDefaultTenure || 20); // 20 years
+
+  useEffect(() => {
+    if (content?.calcDefaultAmount) setLoanAmount(content.calcDefaultAmount);
+    if (content?.calcDefaultHomeRate) setInterestRate(content.calcDefaultHomeRate);
+    if (content?.calcDefaultTenure) setTenureYears(content.calcDefaultTenure);
+  }, [content]);
 
   // Mode 2: Eligibility & FOIR States
   const [monthlyIncome, setMonthlyIncome] = useState<number>(150000); // ₹1.5 Lakhs net

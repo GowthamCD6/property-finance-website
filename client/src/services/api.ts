@@ -292,6 +292,35 @@ export async function updateEnquiryStatusApi(id: string, status: string, note?: 
   return json.data;
 }
 
+export async function createAdminEnquiryApi(payload: {
+  fullName: string;
+  mobileNumber: string;
+  email?: string;
+  preferredContactMethod?: string;
+  cityState?: string;
+  loanType?: string;
+  loanAmount?: number;
+  propertyType?: string;
+  propertyLocation?: string;
+  propertyOwnershipStatus?: string;
+  employmentType?: string;
+  preferredBank?: string;
+  preferredDate?: string;
+  preferredTimeSlot?: string;
+  meetingMode?: string;
+  status?: string;
+  additionalNotes?: string;
+}): Promise<{ enquiry: Enquiry; appointment?: Appointment }> {
+  const res = await fetch(`${API_BASE}/admin/enquiries`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to register borrower dossier');
+  return json.data;
+}
+
 export async function addEnquiryNoteApi(id: string, content: string): Promise<any> {
   const res = await fetch(`${API_BASE}/admin/enquiries/${id}/notes`, {
     method: 'POST',
@@ -449,7 +478,10 @@ export async function getAvailabilitySettingsApi(): Promise<{ weeklyConfigs: Wee
   return json.data;
 }
 
-export async function updateWeeklyScheduleApi(id: string, data: { isAvailable: boolean; startTime?: string; endTime?: string }): Promise<void> {
+export async function updateWeeklyScheduleApi(
+  id: string,
+  data: { isAvailable?: boolean; startTime?: string; endTime?: string; slotDurationMinutes?: number }
+): Promise<void> {
   const res = await fetch(`${API_BASE}/admin/availability/weekly/${id}`, {
     method: 'PUT',
     headers: getAuthHeaders(),
@@ -457,6 +489,16 @@ export async function updateWeeklyScheduleApi(id: string, data: { isAvailable: b
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to update weekly schedule');
+}
+
+export async function bulkUpdateWeeklyScheduleApi(configs: any[]): Promise<void> {
+  const res = await fetch(`${API_BASE}/admin/availability/weekly-bulk`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ configs }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to bulk update schedules');
 }
 
 export async function blockDateApi(date: string, reason: string): Promise<BlockedDate> {

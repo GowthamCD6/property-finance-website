@@ -64,30 +64,16 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   // Attached Document Images State
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
 
-  // Appointment & Date State
-  const [preferredDate, setPreferredDate] = useState('');
-  const [preferredTimeSlot, setPreferredTimeSlot] = useState('');
+  // Consultation & Callback State
   const [meetingMode, setMeetingMode] = useState<'phone' | 'video' | 'in_person'>('phone');
+  const [preferredCallbackWindow, setPreferredCallbackWindow] = useState('Any Time (Fastest Callback)');
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [consentGiven, setConsentGiven] = useState(false);
-
-  // Dynamic slot availability
-  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
-  const [loadingSlots, setLoadingSlots] = useState(false);
-  const [slotError, setSlotError] = useState<string | null>(null);
 
   // Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<any | null>(null);
-
-  // Set default preferred date to 2 days from today
-  useEffect(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 2);
-    const dateStr = d.toISOString().split('T')[0];
-    setPreferredDate(dateStr);
-  }, []);
 
   // Update loan type when a service is selected from the services section
   useEffect(() => {
@@ -106,47 +92,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       if (loanAmount === '5000000') setLoanAmount('1200000');
     }
   }, [loanType]);
-
-  // Fetch slots whenever preferredDate changes
-  useEffect(() => {
-    if (!preferredDate) return;
-
-    let isMounted = true;
-    setLoadingSlots(true);
-    setSlotError(null);
-
-    getPublicAvailability(preferredDate)
-      .then((data) => {
-        if (!isMounted) return;
-        if (!data.isAvailable) {
-          setAvailableSlots([]);
-          setSlotError(data.reason || 'No appointment slots available on this date.');
-          setPreferredTimeSlot('');
-        } else {
-          setAvailableSlots(data.availableSlots || []);
-          if (data.availableSlots && data.availableSlots.length > 0) {
-            setPreferredTimeSlot(data.availableSlots[0]);
-          } else {
-            setPreferredTimeSlot('');
-            setSlotError('All consultation slots on this date are fully booked. Please choose another date.');
-          }
-        }
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setSlotError('Unable to check slot availability. Using standard hours.');
-        const fallback = ['10:00 AM - 11:00 AM', '11:30 AM - 12:30 PM', '02:00 PM - 03:00 PM', '04:00 PM - 05:00 PM'];
-        setAvailableSlots(fallback);
-        setPreferredTimeSlot(fallback[0]);
-      })
-      .finally(() => {
-        if (isMounted) setLoadingSlots(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [preferredDate]);
 
   // Format currency display
   const formatAmountINR = (val: string | number) => {
@@ -208,16 +153,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       return;
     }
 
-    if (!preferredDate) {
-      setFormError('Please select a preferred meeting date.');
-      return;
-    }
-
-    if (!preferredTimeSlot) {
-      setFormError('Please select an available appointment time slot.');
-      return;
-    }
-
     if (!consentGiven) {
       setFormError('You must review and consent to the privacy policy to submit your enquiry.');
       return;
@@ -240,8 +175,9 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
         propertyOwnershipStatus: isCarLoan ? 'purchasing' : propertyOwnershipStatus,
         employmentType: employmentType === 'cash_salary' ? 'salaried' : employmentType,
         preferredBank,
-        preferredDate,
-        preferredTimeSlot,
+        preferredDate: 'Pending Advisor Allotment',
+        preferredTimeSlot: preferredCallbackWindow,
+        preferredContactWindow: preferredCallbackWindow,
         meetingMode,
         additionalNotes: additionalNotes.trim() || undefined,
         documents,
@@ -285,11 +221,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     setCarPurchaseValue('');
     setPreferredBank('Any (Best Market Rate Finder across 40+ Channel Partners)');
   };
-
-  // Get minimum date (tomorrow)
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDateString = tomorrow.toISOString().split('T')[0];
 
   const getMappedLoanType = (type?: string): 'home-loans' | 'loan-against-property' | 'property-backed-funding' | 'loan-consultation' => {
     if (!type) return 'home-loans';
@@ -363,9 +294,25 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-brand-slate">Requested Meeting:</span>
+                <span className="text-brand-slate">Consultation Status:</span>
+                <span className="font-bold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200 text-xs">
+                  Awaiting Slot Allotment by Advisor
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-brand-slate">Preferred Channel:</span>
                 <span className="font-semibold text-brand-navy">
-                  {preferredDate} ({preferredTimeSlot})
+                  {meetingMode === 'in_person'
+                    ? 'In-Person (Tirupur Office)'
+                    : meetingMode === 'video'
+                    ? 'Google Meet Video Call'
+                    : 'Direct Phone Call'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-brand-slate">Callback Window:</span>
+                <span className="font-semibold text-brand-navy">
+                  {preferredCallbackWindow}
                 </span>
               </div>
               {documents.length > 0 && (
@@ -402,6 +349,16 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
             </div>
 
             <div className="pt-6 flex flex-col sm:flex-row justify-center gap-3">
+              <a
+                href={`https://wa.me/919655566613?text=${encodeURIComponent(
+                  `Hello Prime Associates, I have submitted my loan enquiry ${submissionSuccess.referenceNumber || ''} for ${loanType} of ${formatAmountINR(loanAmount)}. Please allocate my consultation date and slot.`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-corporate transition-colors flex items-center justify-center gap-2"
+              >
+                <span>💬 Quick WhatsApp Connect</span>
+              </a>
               <button
                 type="button"
                 onClick={handleReset}
@@ -842,81 +799,73 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                 />
               </div>
 
-              {/* SECTION 4: APPOINTMENT PREFERENCES */}
+              {/* SECTION 4: CONSULTATION & CALLBACK PREFERENCES */}
               <div>
                 <div className="flex items-center gap-2 pb-3 mb-5 border-b border-brand-border text-brand-navy">
                   <Calendar className="w-5 h-5 text-brand-teal" />
-                  <h3 className="text-base font-bold">4. Schedule Your Advisory Meeting</h3>
+                  <div>
+                    <h3 className="text-base font-bold">4. Consultation &amp; Contact Preferences</h3>
+                    <p className="text-xs text-brand-slate font-sans mt-0.5">
+                      Our senior loan advisor will review your application and allocate your consultation meeting date &amp; time slot.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Preferred Date <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      min={minDateString}
-                      value={preferredDate}
-                      onChange={(e) => setPreferredDate(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                    />
+                {/* ADVISOR SLOT ALLOCATION NOTICE */}
+                <div className="p-4 mb-5 bg-teal-50/70 border border-teal-200/90 rounded-xl flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs">
+                    <Clock className="w-4 h-4" />
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Available Time Slot <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      {loadingSlots ? (
-                        <div className="flex items-center gap-2 py-2.5 px-3.5 border border-brand-border rounded-lg bg-gray-50 text-xs text-brand-slate">
-                          <Loader2 className="w-4 h-4 animate-spin text-brand-teal" />
-                          <span>Checking slot availability...</span>
-                        </div>
-                      ) : availableSlots.length > 0 ? (
-                        <select
-                          value={preferredTimeSlot}
-                          onChange={(e) => setPreferredTimeSlot(e.target.value)}
-                          className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                        >
-                          {availableSlots.map((slot) => (
-                            <option key={slot} value={slot}>
-                              {slot}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <div className="py-2.5 px-3 text-xs text-amber-700 bg-amber-50 rounded-lg border border-amber-200">
-                          {slotError || 'No slots available on this date'}
-                        </div>
-                      )}
-                    </div>
+                  <div className="text-xs space-y-1">
+                    <span className="font-bold text-[#0c1a26] font-heading block">
+                      Dedicated Meeting Slot Allocation by Senior Loan Advisor
+                    </span>
+                    <p className="text-slate-600 font-sans leading-relaxed">
+                      Once submitted, our Tirupur advisory desk will assess your profile across 40+ PSU and private banking partners to allocate your personalized consultation date and slot. You will receive direct slot confirmation via phone call and WhatsApp.
+                    </p>
                   </div>
+                </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Meeting Mode <span className="text-red-500">*</span>
+                      Preferred Meeting Mode <span className="text-red-500">*</span>
                     </label>
                     <select
                       value={meetingMode}
                       onChange={(e) => setMeetingMode(e.target.value as any)}
                       className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
                     >
-                      <option value="phone">Phone Discussion</option>
-                      <option value="video">Google Meet / Video Call</option>
-                      <option value="in_person">In-Person (Tirupur Office)</option>
+                      <option value="phone">📞 Direct Phone Discussion (Fastest)</option>
+                      <option value="in_person">🏢 In-Person (Tirupur Office — Binny Compound)</option>
+                      <option value="video">💻 Google Meet / Video Call</option>
                     </select>
                   </div>
 
-                  <div className="md:col-span-3">
+                  <div>
                     <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Specific Inquiries or Additional Context{' '}
+                      Best Time Window for Advisor to Reach You
+                    </label>
+                    <select
+                      value={preferredCallbackWindow}
+                      onChange={(e) => setPreferredCallbackWindow(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
+                    >
+                      <option value="Any Time (Fastest Callback)">⚡ Any Time (Fastest Callback)</option>
+                      <option value="Morning (10:00 AM – 01:00 PM)">🌅 Morning (10:00 AM – 01:00 PM)</option>
+                      <option value="Afternoon (01:00 PM – 04:00 PM)">☀️ Afternoon (01:00 PM – 04:00 PM)</option>
+                      <option value="Evening (04:00 PM – 07:00 PM)">🌆 Evening (04:00 PM – 07:00 PM)</option>
+                    </select>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
+                      Specific Inquiries, Existing Loan Transfer, or Notes{' '}
                       <span className="text-brand-slate font-normal">(Optional)</span>
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="e.g. Existing home loan balance transfer, query regarding co-applicant eligibility, or construction milestone stage..."
+                      placeholder="e.g. Existing home loan balance transfer, query regarding co-applicant eligibility, unapproved plot financing, or construction stage..."
                       value={additionalNotes}
                       onChange={(e) => setAdditionalNotes(e.target.value)}
                       className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors resize-none"
@@ -955,7 +904,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting || availableSlots.length === 0}
+                  disabled={isSubmitting}
                   className="w-full py-4 px-6 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-base rounded-corporate shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (

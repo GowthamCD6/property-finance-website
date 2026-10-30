@@ -39,7 +39,7 @@ export const TermsConditionsPage: React.FC = () => {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
     const timer = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(timer);
   }, []);

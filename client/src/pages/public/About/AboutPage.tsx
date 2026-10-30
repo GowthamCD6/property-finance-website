@@ -91,11 +91,16 @@ export const AboutPage: React.FC = () => {
       // Silky Quartic ease out
       const eased = 1 - Math.pow(1 - progress, 4);
 
+      const targetCapital = content?.statsCapital ? parseFloat(content.statsCapital) : 120;
+      const targetLenders = content?.statsLenders ? parseInt(content.statsLenders) : 40;
+      const targetSanction = content?.statsSanction ? parseFloat(content.statsSanction) : 98.4;
+      const targetTurnaround = content?.statsTurnaround ? parseInt(content.statsTurnaround) : 24;
+
       setCounterValues({
-        capital: Math.round(120 * eased), // 120 Cr (one zero removed)
-        lenders: Math.round(40 * eased),
-        sanction: Number((98.4 * eased).toFixed(1)),
-        turnaround: 24,
+        capital: Math.round(targetCapital * eased),
+        lenders: Math.round(targetLenders * eased),
+        sanction: Number((targetSanction * eased).toFixed(1)),
+        turnaround: targetTurnaround,
       });
 
       if (progress < 1) {
@@ -116,26 +121,26 @@ export const AboutPage: React.FC = () => {
   // Institutional proof points
   const kpis = [
     {
-      value: `₹${counterValues.capital}+ Cr`,
-      label: 'Facilitated Capital',
+      value: `₹${counterValues.capital} ${content?.statsCapitalSuffix || 'Cr+'}`,
+      label: content?.statsCapitalLabel || 'Facilitated Capital',
       subtext: 'Across High-Value Property Assets',
-      badge: 'Cumulative 15-Yr',
+      badge: 'Cumulative Portfolio',
     },
     {
-      value: `${counterValues.lenders}+`,
-      label: 'Partner Lending Desks',
+      value: `${counterValues.lenders}${content?.statsLendersSuffix || '+'}`,
+      label: content?.statsLendersLabel || 'Partner Lending Desks',
       subtext: 'PSU, Private Tier-1 Banks & NBFCs',
       badge: 'Direct Zonal Access',
     },
     {
-      value: `${counterValues.sanction}%`,
-      label: 'Sanction Ratio',
+      value: `${counterValues.sanction}${content?.statsSanctionSuffix || '%'}`,
+      label: content?.statsSanctionLabel || 'Sanction Ratio',
       subtext: 'Achieved via 30-Yr Legal Due Diligence',
       badge: 'Pre-Audit Protocol',
     },
     {
-      value: '24–48h',
-      label: 'Credit In-Principle',
+      value: `${counterValues.turnaround} ${content?.statsTurnaroundSuffix || 'Hours'}`,
+      label: content?.statsTurnaroundLabel || 'Credit In-Principle',
       subtext: 'Bypassing Branch Level Bottlenecks',
       badge: 'Fast-Track Desk',
     },
@@ -273,113 +278,128 @@ export const AboutPage: React.FC = () => {
     },
   };
 
-  // Leadership Team Profiles
-  const leadership = [
+  // Default Leadership Team Profiles
+  const defaultLeadership = [
     {
-      name: 'Vikramaditya Rao',
-      role: 'Managing Principal & Head of Structured Debt',
+      name: 'P. Shanmugasundaram',
+      role: 'Managing Director & Principal Consultant',
       experience: '18+ Years Banking Practice',
       credentials: 'ex-HDFC Capital & Standard Chartered Wholesale Banking',
       bio: 'Architected structured property financing arrangements and multi-crore syndications for institutional developers, family offices, and NRI investors across South India.',
       tag: 'Mortgage Syndication',
-      image: 'https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=600&q=80',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
       badge: 'Principal Member',
     },
     {
-      name: 'Adv. Sharada Sundaram',
-      role: 'Chief Legal Officer – Title Due Diligence',
-      experience: '22+ Years High Court Practice',
-      credentials: 'Specialist in Karnataka & Tamil Nadu Land Reforms, RERA Compliance',
+      name: 'R. Kalanithi',
+      role: 'Head of Credit Underwriting & Legal Review',
+      experience: '14+ Years Property Law & Title Verification',
+      credentials: 'Specialist in Land Reforms & Sub-Registrar MODT Registration',
       bio: 'Directs the 30-year mother deed audit, Khata/Patta mutation verification, and encumbrance validation division to ensure 100% dispute-free bank disbursements.',
       tag: 'Property Law & Clear Title',
       image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
       badge: 'Senior Counsel',
     },
     {
-      name: 'K. Chandrashekar, CA',
-      role: 'VP – Promoter Credit Assessment & FOIR Modeling',
-      experience: '15+ Years Corporate Finance',
-      credentials: 'Fellow Chartered Accountant (FCA), Former Bank Zonal Credit Committee Member',
-      bio: 'Authority in financial statement restructuring, corporate liquidity normalization, and non-salaried promoter credit evaluation for Tier-1 bank credit committees.',
-      tag: 'Balance Sheet Structuring',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
-      badge: 'Credit Underwriter',
-    },
-    {
-      name: 'Ananya Deshmukh',
-      role: 'Director – Lease Rental Discounting (LRD) & LAP',
-      experience: '13+ Years Banking Relations',
-      credentials: 'Master of Finance, ex-ICICI Wholesale Banking & Commercial Mortgages',
-      bio: 'Manages high-ticket commercial asset refinancing, escrow mechanism design, and tripartite lease structures for commercial retail complexes and warehousing portfolios.',
-      tag: 'LRD & Commercial LAP',
-      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
-      badge: 'Commercial Specialist',
-    },
-    {
-      name: 'R. Natarajan, M.Tech',
-      role: 'Chief Technical Valuer – Collateral Assessment',
-      experience: '20+ Years Valuation Practice',
-      credentials: 'Govt. Approved Registered Valuer (IBBI), Panel Engineer for PSU & Tier-1 Banks',
-      bio: 'Oversees structural asset viability, guideline vs real-market valuation arbitrage, and municipal approval forensic checks for multi-unit commercial and residential collaterals.',
-      tag: 'Structural & Asset Valuation',
+      name: 'S. Vignesh',
+      role: 'Senior Banking Liaison Officer',
+      experience: '10+ Years PSU & Private Bank Operations',
+      credentials: 'Fellow Credit Officer, Former Zonal Credit Committee Liaison',
+      bio: 'Liaises with chief managers and regional credit hubs to expedite file clearance and sanction letters.',
+      tag: 'Banking Liaison',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
-      badge: 'Senior Valuer',
-    },
-    {
-      name: 'Dr. Meera Krishnan',
-      role: 'Head – NRI Property Finance & Cross-Border Wealth',
-      experience: '16+ Years Wealth Syndication',
-      credentials: 'Ph.D. in Financial Economics, ex-Standard Chartered Private Wealth',
-      bio: 'Spearheads high-value NRI housing syndications, FEMA-compliant repatriation structures, and multi-lender consortium debt placements for premium Indian real estate portfolios.',
-      tag: 'NRI & Cross-Border Finance',
-      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
-      badge: 'NRI Desk Head',
+      badge: 'Credit Officer',
     },
   ];
+
+  // Dynamic Leadership from Admin or fallback
+  const leadership = React.useMemo(() => {
+    if (content?.aboutTeam) {
+      try {
+        const parsed = JSON.parse(content.aboutTeam);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((m: any) => ({
+            name: m.name,
+            role: m.role,
+            experience: m.experience || '',
+            credentials: m.experience || 'Senior Officer',
+            bio: m.bio || '',
+            tag: m.role || 'Advisory Lead',
+            image: m.imageUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+            badge: 'Key Member',
+          }));
+        }
+      } catch (e) {
+        console.warn('Unable to parse dynamic aboutTeam', e);
+      }
+    }
+    return defaultLeadership;
+  }, [content?.aboutTeam]);
 
   // Memoized double array for seamless infinite looping marquee
   const repeatedLeadership = React.useMemo(() => {
     return [...leadership, ...leadership];
   }, [leadership]);
 
-  // Institutional Milestones
-  const milestones = [
+  // Default Institutional Milestones
+  const defaultMilestones = [
     {
-      year: '2011',
-      title: 'Practice Inception',
-      desc: 'Founded in Tirupur, Tamil Nadu as an independent real estate title audit and private mortgage advisory desk with zero broker bias.',
-      volume: '₹25 Cr Facilitated',
-      focus: 'Forensic Mother Deed Audits',
+      year: '2008',
+      title: 'Foundation in Tirupur',
+      desc: 'Established as an independent loan consultancy catering to textile and manufacturing entrepreneurs.',
+      volume: 'Inception',
+      focus: 'Independent Advisory',
     },
     {
-      year: '2015',
-      title: 'Commercial LAP & LRD Desk',
-      desc: 'Formed dedicated institutional syndication pipelines for commercial asset discounting and high-ticket business mortgages exceeding ₹100 Cr.',
-      volume: '₹180 Cr Facilitated',
-      focus: 'Institutional LRD Pipelines',
+      year: '2014',
+      title: 'Branch Expansion',
+      desc: 'Extended services across Western Tamil Nadu covering Coimbatore, Erode, and Tirupur districts.',
+      volume: '3 Districts',
+      focus: 'Regional Coverage',
     },
     {
       year: '2019',
-      title: 'Multi-Metro Expansion',
-      desc: 'Expanded client advisory coverage across Coimbatore, Tirupur, Bengaluru, and Chennai across 30+ regulated lending partners.',
-      volume: '₹550 Cr Facilitated',
-      focus: '40+ Lending Desks Integrated',
+      title: 'Digital Syndication Desk',
+      desc: 'Partnered with 40+ leading public, private banks and NBFCs for automated eligibility screening.',
+      volume: '40+ Lenders',
+      focus: 'Multi-Lender Desk',
     },
     {
       year: '2023',
-      title: 'Institutional Desk Integration',
-      desc: 'Established priority direct underwriting pipelines across top public sector banks, private banking majors, and AAA housing finance corporations.',
-      volume: '₹950 Cr Facilitated',
-      focus: 'Direct Zonal Sanction Desks',
+      title: '₹100+ Crore Facilitation',
+      desc: 'Crossed landmark milestone of ₹100 Crore total cumulative property loan facilitations.',
+      volume: '₹100 Cr+',
+      focus: 'Portfolio Milestone',
     },
     {
       year: '2026',
       title: '₹120+ Cr Advisory Milestone',
-      desc: 'Recognized as South India’s trusted property loan practice with state-of-the-art algorithmic FOIR modeling and zero-inquiry bureau safety.',
+      desc: 'Recognized as South India’s trusted property loan practice with state-of-the-art algorithmic FOIR modeling and zero upfront fees.',
       volume: '₹120+ Cr Cumulative',
-      focus: 'Fiduciary-Grade Leadership',
+      focus: 'Fiduciary Leadership',
     },
   ];
+
+  // Dynamic Milestones from Admin or fallback
+  const milestones = React.useMemo(() => {
+    if (content?.aboutMilestones) {
+      try {
+        const parsed = JSON.parse(content.aboutMilestones);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((m: any) => ({
+            year: m.year,
+            title: m.title,
+            desc: m.description,
+            volume: m.stat || 'Milestone',
+            focus: m.title,
+          }));
+        }
+      } catch (e) {
+        console.warn('Unable to parse dynamic aboutMilestones', e);
+      }
+    }
+    return defaultMilestones;
+  }, [content?.aboutMilestones]);
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
@@ -793,7 +813,8 @@ export const AboutPage: React.FC = () => {
                   {activeTab === 'mission' && (
                     <div className="space-y-2">
                       <p className="font-bold text-brand-navy text-base font-heading">
-                        Empower property owners to secure lowest benchmark debt without predatory terms or CIBIL degradation.
+                        {content?.aboutMission ||
+                          'Empower property owners to secure lowest benchmark debt without predatory terms or CIBIL degradation.'}
                       </p>
                       <p>
                         We rigorously test each dossier against 40+ lending policy guidelines to identify the single most competitive institutional home for your mortgage.
@@ -804,7 +825,8 @@ export const AboutPage: React.FC = () => {
                   {activeTab === 'vision' && (
                     <div className="space-y-2">
                       <p className="font-bold text-brand-navy text-base font-heading">
-                        To be the gold-standard independent property finance advisory across India's metropolitan wealth corridors.
+                        {content?.aboutVision ||
+                          "To be the gold-standard independent property finance advisory across India's metropolitan wealth corridors."}
                       </p>
                       <p>
                         Setting the benchmark for transparency, zero-hidden commission structures, and forensic pre-sanction diligence.

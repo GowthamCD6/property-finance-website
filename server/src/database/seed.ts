@@ -34,20 +34,192 @@ async function main() {
 
   const updatedContentData = {
     businessName: 'Prime Associates — Loans & Constructions',
+    tagline: 'Your Trusted Property Finance & Loan Advisory Partner',
     businessPhone: '+91 96555 66613, +91 95144 66600',
     businessEmail: 'primeassociates2008@gmail.com',
     officeAddress: 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601',
     cityState: 'Tirupur, Tamil Nadu, India',
     businessHours: 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)',
+    announcementText: 'Special Home Loan Rates starting from 7.25% p.a. • Government Subsidy Assistance Available',
+    announcementActive: true,
+    announcementLink: '/services/home-loans',
+    whatsappNumber: '+919655566613',
+    whatsappMessage: 'Hello Prime Associates, I would like to enquire about a property loan.',
+    socialLinks: JSON.stringify({
+      facebook: 'https://facebook.com',
+      instagram: 'https://instagram.com',
+      linkedin: 'https://linkedin.com',
+      twitter: 'https://twitter.com',
+      youtube: 'https://youtube.com',
+      mapUrl: 'https://maps.google.com/?q=Prime+Associates+Tirupur'
+    }),
+    registrationDetails: 'GSTIN: 33ABCDE1234F1Z5 • Authorized Property Loan Facilitator & Direct Syndication Partner',
     heroEyebrow: 'PRIME ASSOCIATES • LOANS & CONSTRUCTIONS',
     heroHeadline: 'Get Your Home & Mortgage Loans at Lowest Rates with Government Subsidy.',
+    heroRotatingWords: 'Lowest Rates.,Govt. Subsidy.,7.25% Home Loans.,8.50% LAP.,Bank Takeover.',
     heroSubtitle: 'Expert loan facilitation across Government and Private Banks. Home Loans from 7.25% p.a., Mortgage Loans (LAP) from 8.50% p.a., Purchase Loans, Vehicle Loans, and Private-to-Government Bank Takeovers.',
     heroCtaText: 'Discuss Your Loan',
     heroSecondaryCtaText: 'Explore Loan Options',
     heroImageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    heroBadges: JSON.stringify([
+      'Direct Bank Syndication',
+      'Zero Upfront Charges',
+      'Doorstep Documentation',
+      'Fast 24-48h In-Principle Sanction'
+    ]),
+    statsCapital: '120',
+    statsCapitalSuffix: 'Cr+',
+    statsCapitalLabel: 'Capital Facilitated',
+    statsLenders: '40',
+    statsLendersSuffix: '+',
+    statsLendersLabel: 'Partner Banks & NBFCs',
+    statsSanction: '98.4',
+    statsSanctionSuffix: '%',
+    statsSanctionLabel: 'Sanction Success Rate',
+    statsTurnaround: '24',
+    statsTurnaroundSuffix: 'Hours',
+    statsTurnaroundLabel: 'Turnaround Time',
+    rateMatrix: JSON.stringify([
+      { id: '1', bankName: 'State Bank of India (SBI)', homeLoanRate: '8.40% - 9.15%', lapRate: '9.60% - 10.50%', maxTenure: '30 Years', processingFee: '0.35% + GST', ltv: 'Up to 85%', popularTag: 'Most Popular PSU' },
+      { id: '2', bankName: 'HDFC Bank', homeLoanRate: '8.50% - 9.40%', lapRate: '9.75% - 11.00%', maxTenure: '30 Years', processingFee: '0.50% + GST', ltv: 'Up to 80%', popularTag: 'Fastest Processing' },
+      { id: '3', bankName: 'ICICI Bank', homeLoanRate: '8.60% - 9.50%', lapRate: '9.85% - 11.25%', maxTenure: '30 Years', processingFee: '0.50% + GST', ltv: 'Up to 80%', popularTag: 'Digital In-Principle' },
+      { id: '4', bankName: 'Bank of Baroda', homeLoanRate: '8.40% - 9.25%', lapRate: '9.65% - 10.60%', maxTenure: '30 Years', processingFee: '0.25% + GST', ltv: 'Up to 85%', popularTag: 'Lowest Processing Fee' },
+      { id: '5', bankName: 'Kotak Mahindra Bank', homeLoanRate: '8.70% - 9.50%', lapRate: '9.90% - 11.20%', maxTenure: '25 Years', processingFee: '0.50% + GST', ltv: 'Up to 75%', popularTag: 'Flexible Terms' },
+      { id: '6', bankName: 'Bajaj Finserv', homeLoanRate: '8.85% - 10.50%', lapRate: '10.25% - 12.50%', maxTenure: '20 Years', processingFee: '0.75% + GST', ltv: 'Up to 75%', popularTag: 'High Eligibility Limit' }
+    ]),
+    whyChooseUsTitle: 'Why Property Owners & Investors Choose Prime Associates',
+    whyChooseUsSubtitle: 'We combine decades of on-ground property experience with institutional banking relationships.',
+    whyChooseUsPillars: JSON.stringify([
+      { title: 'Govt. Subsidy & Lowest Rate Arbitrage', description: 'We cross-compare 40+ nationalized and private banks to secure rates starting at 7.25% and maximize eligible PMAY/State interest subsidies.', metric: 'Save ₹3–8 Lakhs', icon: 'Award' },
+      { title: 'Unconventional Property Clearances', description: 'Specialized approval desks for tiled roofs, parent-deed issues, unapproved layout plots, and self-construction without plan approvals.', metric: '98.4% Approvals', icon: 'ShieldCheck' },
+      { title: 'Private to Govt. Bank Takeovers', description: 'Cut your monthly EMI by migrating high-interest loans from NBFCs/private financiers to public sector banks with top-up capital.', metric: 'Up to 3.5% Rate Drop', icon: 'TrendingUp' },
+      { title: 'Zero Upfront Consultant Charges', description: '100% transparent assistance with zero hidden advisory fees before bank in-principle sanction. We are your advocate.', metric: 'Zero Advance', icon: 'CheckCircle2' }
+    ]),
+    processTitle: 'End-to-End Loan Facilitation Process',
+    processSubtitle: 'From eligibility review to final bank disbursement, our consultants manage each phase.',
+    processSteps: JSON.stringify([
+      { stepNumber: '01', title: 'Property & Profile Evaluation', description: 'Initial meeting at our Tirupur office or via phone to evaluate title documents, guideline values, and income profile.', turnaround: 'Hour 1–4' },
+      { stepNumber: '02', title: 'Multi-Lender Syndication', description: 'We tailor your loan dossier and simultaneously syndicate it to 3–4 best-fit banks for competitive sanction.', turnaround: 'Day 1–2' },
+      { stepNumber: '03', title: 'Legal, Valuation & Sanction', description: 'Liaison with bank panel lawyers and technical valuers to resolve title queries and obtain sanction.', turnaround: 'Day 3–5' },
+      { stepNumber: '04', title: 'Documentation & Disbursal', description: 'Signing of bank agreements, MODT registration at Sub-Registrar office, and direct fund disbursement.', turnaround: 'Final Step' }
+    ]),
+    salariedDocs: JSON.stringify([
+      'PAN Card & Aadhaar Card (Applicant & Co-applicant)',
+      'Last 3 Months Salary Slips (with seal & signature)',
+      'Form 16 / ITR for last 2 assessment years',
+      'Last 6 Months Bank Statement (Salary Account)',
+      'Proof of Employment / Official ID Card'
+    ]),
+    selfEmployedDocs: JSON.stringify([
+      'PAN, Aadhaar & Business KYC Proof',
+      'ITR with Computation & Financials (last 3 years)',
+      'Last 12 Months Current Account Bank Statements',
+      'GST Registration Certificate & 3B Returns',
+      'Business Continuity Proof & Ownership Agreement'
+    ]),
+    propertyDocs: JSON.stringify([
+      'Parent Title Deeds & Registered Sale Deed (Chronological chain)',
+      'Patta, Chitta, Adangal & FMB Sketch',
+      'Approved Building Plan / Town & Country Planning Approval',
+      'Latest Property Tax Receipt & Encumbrance Certificate (EC) for 30 years',
+      'Construction Cost Estimate (from chartered engineer)'
+    ]),
+    testimonials: JSON.stringify([
+      {
+        id: '1',
+        name: 'K. Rangarajan',
+        location: 'Tirupur',
+        loanType: 'Home Construction Loan',
+        amount: '₹65 Lakhs',
+        rating: 5,
+        review: 'Prime Associates helped us get our home construction loan approved through SBI when other brokers refused due to land classification. Got 8.40% interest with complete subsidy guidance!',
+        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80'
+      },
+      {
+        id: '2',
+        name: 'S. Mohanraj & Kavitha',
+        location: 'Avinashi',
+        loanType: 'Mortgage Loan (LAP)',
+        amount: '₹1.20 Crores',
+        rating: 5,
+        review: 'We mortgaged our commercial godown in Tirupur for working capital expansion. Within 6 days, the takeover and top-up were completed seamlessly with zero hidden charges.',
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
+      },
+      {
+        id: '3',
+        name: 'V. Soundararajan',
+        location: 'Palladam',
+        loanType: 'Plot Purchase + Construction',
+        amount: '₹45 Lakhs',
+        rating: 5,
+        review: 'Excellent guidance on parent deeds and legal verification before purchasing the land. Transferred private finance loan to nationalized bank at much lower interest.',
+        avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80'
+      }
+    ]),
     aboutHeading: 'Prime Associates — Loans & Constructions',
     aboutText: 'Get your home loans and mortgage loans at the lowest interest rates with government subsidy across government and private banks. We provide complete advisory and syndication for self-construction, new/old home purchase, tiled houses, empty plots, commercial buildings, vehicle loans, and low-interest bank takeovers.',
     aboutImageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80',
+    aboutMission: 'To empower property owners, homebuyers, and entrepreneurs with transparent, optimal debt financing by navigating complex banking criteria with integrity, speed, and institutional precision.',
+    aboutVision: "To become Tamil Nadu's most trusted and technologically advanced property finance advisory, recognized for zero upfront commissions and exceptional client outcomes.",
+    aboutMilestones: JSON.stringify([
+      { year: '2008', title: 'Foundation in Tirupur', description: 'Established as an independent loan consultancy catering to textile and manufacturing entrepreneurs.', stat: 'Inception' },
+      { year: '2014', title: 'Branch Expansion', description: 'Extended services across Western Tamil Nadu covering Coimbatore, Erode, and Tirupur districts.', stat: '3 Districts' },
+      { year: '2019', title: 'Digital Syndication Desk', description: 'Partnered with 40+ leading public, private banks and NBFCs for automated eligibility screening.', stat: '40+ Lenders' },
+      { year: '2023', title: '₹100+ Crore Facilitation', description: 'Crossed landmark milestone of ₹100 Crore total cumulative property loan facilitations.', stat: '₹100 Cr+' },
+      { year: '2026', title: 'Next-Gen Advisory', description: 'Comprehensive end-to-end guidance from legal scrutiny to subsidized bank disbursements.', stat: 'Leading Firm' }
+    ]),
+    aboutTeam: JSON.stringify([
+      {
+        id: '1',
+        name: 'P. Shanmugasundaram',
+        role: 'Managing Director & Principal Consultant',
+        experience: '18+ Years Banking & Property Finance',
+        bio: 'Specialist in high-value mortgage syndication, commercial property funding, and bank takeover negotiations.',
+        imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+        linkedinUrl: 'https://linkedin.com'
+      },
+      {
+        id: '2',
+        name: 'R. Kalanithi',
+        role: 'Head of Credit Underwriting & Legal Review',
+        experience: '14+ Years Property Law & Title Verification',
+        bio: 'Expertise in ancestral property title deeds, patta/chitta rectification, and Sub-Registrar MODT registration.',
+        imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+        linkedinUrl: 'https://linkedin.com'
+      },
+      {
+        id: '3',
+        name: 'S. Vignesh',
+        role: 'Senior Banking Liaison Officer',
+        experience: '10+ Years PSU & Private Bank Operations',
+        bio: 'Liaises with chief managers and regional credit hubs to expedite file clearance and sanction letters.',
+        imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+        linkedinUrl: 'https://linkedin.com'
+      }
+    ]),
+    aboutPillars: JSON.stringify([
+      { title: 'Institutional Independence', desc: 'Direct access to 40+ lenders ensures unbiased recommendation solely aligned with lowest total cost of capital.', icon: 'Building2' },
+      { title: 'Rigorous Legal Due Diligence', desc: 'Pre-scrutiny of title chains and parent deeds eliminates rejection risks prior to formal bank filing.', icon: 'Scale' },
+      { title: 'Zero Hidden Retainers', desc: 'Complete transparency with no upfront consulting fees. Professional remuneration linked to successful sanctions.', icon: 'ShieldCheck' }
+    ]),
+    contactHeroTitle: 'Connect with Our Advisory Team',
+    contactHeroSubtitle: 'Schedule a confidential one-on-one consultation at our Tirupur office or request an instant phone evaluation.',
+    contactHeroImageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+    branchOffices: JSON.stringify([
+      {
+        id: '1',
+        name: 'Tirupur Main Office (HQ)',
+        address: 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601',
+        phone: '+91 96555 66613, +91 95144 66600',
+        email: 'primeassociates2008@gmail.com',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+        mapEmbedUrl: 'https://maps.google.com/?q=Prime+Associates+Tirupur'
+      }
+    ]),
+    calcDefaultHomeRate: 7.25,
+    calcDefaultLapRate: 8.50,
+    calcDefaultAmount: 5000000,
+    calcDefaultTenure: 20,
     disclaimerText: 'Prime Associates (Prime Associate Loans) is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.',
     privacyPolicy: 'We respect your confidentiality. The personal, financial, and property details shared in this enquiry are solely used for eligibility assessment and arranging consultation. We do not sell or distribute your data to unauthorized third parties.',
     termsConditions: 'Information provided on this website is for informational and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.',

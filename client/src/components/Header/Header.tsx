@@ -240,6 +240,19 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
           borderBottom: '1px solid rgba(229, 231, 235, 0.85)',
         }}
       >
+        {content?.announcementActive && content?.announcementText && (
+          <div className="bg-gradient-to-r from-brand-teal to-[#114b48] text-white py-1.5 px-4 text-center text-xs font-semibold tracking-wide flex items-center justify-center gap-2 border-b border-white/10 select-none">
+            <span className="truncate max-w-2xl">{content.announcementText}</span>
+            {content.announcementLink && (
+              <Link
+                to={content.announcementLink}
+                className="underline hover:text-white/80 text-[11px] font-bold flex-shrink-0"
+              >
+                Learn more &rarr;
+              </Link>
+            )}
+          </div>
+        )}
         <div
           className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto"
           style={{

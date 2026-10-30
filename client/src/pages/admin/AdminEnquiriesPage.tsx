@@ -10,9 +10,9 @@ import {
   Mail,
   MapPin,
   Calendar,
-  Building,
+  Building2,
   User,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Loader2,
   X,
@@ -26,8 +26,15 @@ import {
   Car,
   Landmark,
   Video,
+  FileSpreadsheet,
+  ChevronRight,
+  ChevronLeft,
+  CalendarCheck2,
+  Share2,
+  UserPlus,
 } from 'lucide-react';
 import { Enquiry, UploadedDocument } from '../../types';
+import { RegisterBorrowerModal } from '../../components/admin/RegisterBorrowerModal';
 import {
   getEnquiriesApi,
   getEnquiryByIdApi,
@@ -57,6 +64,7 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>(searchParams.get('status') || 'ALL');
   const [selectedLoanType, setSelectedLoanType] = useState<string>('ALL');
   const [page, setPage] = useState<number>(1);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   // Data state
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
@@ -68,6 +76,7 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [selectedEnquiryId, setSelectedEnquiryId] = useState<string | null>(null);
   const [detailEnquiry, setDetailEnquiry] = useState<Enquiry | null>(null);
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
+  const [detailTab, setDetailTab] = useState<'overview' | 'documents' | 'appointment' | 'notes' | 'history'>('overview');
   const [adminPreviewDoc, setAdminPreviewDoc] = useState<UploadedDocument | null>(null);
 
   // Status Change State
@@ -118,6 +127,12 @@ export const AdminEnquiriesPage: React.FC = () => {
     fetchList();
   }, [page, selectedStatus, selectedLoanType]);
 
+  useEffect(() => {
+    const handleNewEnquiry = () => fetchList();
+    window.addEventListener('enquiry-registered', handleNewEnquiry);
+    return () => window.removeEventListener('enquiry-registered', handleNewEnquiry);
+  }, []);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
@@ -125,8 +140,9 @@ export const AdminEnquiriesPage: React.FC = () => {
   };
 
   // Open Enquiry Detail
-  const handleOpenDetail = (id: string) => {
+  const handleOpenDetail = (id: string, initialTab: 'overview' | 'documents' | 'appointment' | 'notes' | 'history' = 'overview') => {
     setSelectedEnquiryId(id);
+    setDetailTab(initialTab);
     setDetailLoading(true);
     setIsAllotting(false);
     setAllotSuccess(null);
@@ -159,7 +175,6 @@ export const AdminEnquiriesPage: React.FC = () => {
         adminNotes: allotNotes.trim() || undefined,
       });
 
-      // Reload detail
       const refreshed = await getEnquiryByIdApi(detailEnquiry.id);
       setDetailEnquiry(refreshed);
       setNewStatus('Appointment Confirmed');
@@ -180,7 +195,6 @@ export const AdminEnquiriesPage: React.FC = () => {
     setStatusUpdating(true);
     try {
       await updateEnquiryStatusApi(detailEnquiry.id, newStatus, statusNote.trim() || undefined);
-      // Reload detail
       const refreshed = await getEnquiryByIdApi(detailEnquiry.id);
       setDetailEnquiry(refreshed);
       setStatusNote('');
@@ -200,7 +214,6 @@ export const AdminEnquiriesPage: React.FC = () => {
     try {
       await addEnquiryNoteApi(detailEnquiry.id, newNoteContent.trim());
       setNewNoteContent('');
-      // Reload detail
       const refreshed = await getEnquiryByIdApi(detailEnquiry.id);
       setDetailEnquiry(refreshed);
     } catch (err: any) {
@@ -211,6 +224,9 @@ export const AdminEnquiriesPage: React.FC = () => {
   };
 
   const formatAmountINR = (val: number) => {
+    if (!val) return '₹ 0';
+    if (val >= 10000000) return `₹ ${(val / 10000000).toFixed(2)} Cr`;
+    if (val >= 100000) return `₹ ${(val / 100000).toFixed(1)} Lakhs`;
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -221,64 +237,86 @@ export const AdminEnquiriesPage: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'New':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-blue-50 text-blue-700 border-blue-200/80 ring-1 ring-blue-500/10';
       case 'Contacted':
-        return 'bg-amber-50 text-amber-700 border-amber-200';
+        return 'bg-amber-50 text-amber-700 border-amber-200/80 ring-1 ring-amber-500/10';
       case 'Follow-up Required':
-        return 'bg-orange-50 text-orange-700 border-orange-200';
+        return 'bg-orange-50 text-orange-700 border-orange-200/80 ring-1 ring-orange-500/10';
       case 'Appointment Requested':
-        return 'bg-purple-50 text-purple-700 border-purple-200';
+        return 'bg-purple-50 text-purple-700 border-purple-200/80 ring-1 ring-purple-500/10';
       case 'Appointment Confirmed':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200/80 ring-1 ring-emerald-500/10';
       case 'In Review':
-        return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+        return 'bg-indigo-50 text-indigo-700 border-indigo-200/80 ring-1 ring-indigo-500/10';
       case 'Converted':
-        return 'bg-teal-50 text-teal-700 border-teal-200';
+        return 'bg-teal-50 text-teal-800 border-teal-200/80 ring-1 ring-teal-500/10';
       case 'Closed':
-        return 'bg-slate-100 text-slate-600 border-slate-200';
+        return 'bg-slate-100 text-slate-600 border-slate-200/80 ring-1 ring-slate-500/10';
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200';
+        return 'bg-slate-100 text-slate-700 border-slate-200/80 ring-1 ring-slate-500/10';
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Header and Controls */}
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-brand-navy tracking-tight font-heading">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
             Loan Enquiry Pipeline
           </h1>
-          <p className="text-xs sm:text-sm text-brand-slate mt-0.5 font-sans">
-            Total {totalCount} records registered across all property loan products
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
+            Total {totalCount} borrower applications registered across home loan, LAP, and business funding
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setIsRegisterModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs sm:text-sm font-bold font-heading shadow-md shadow-teal-500/20 transition-all active:scale-[0.98] cursor-pointer"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>+ Register Borrower</span>
+          </button>
+
           <a
             href={getExportEnquiriesCsvUrl()}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-brand-navy border border-slate-200 rounded-xl text-xs font-bold font-heading shadow-xs transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#0c1a26] border border-slate-200 rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs hover:border-teal-300 transition-all active:scale-[0.98]"
           >
-            <Download className="w-3.5 h-3.5 text-brand-teal" />
+            <Download className="w-4 h-4 text-teal-600" />
             <span>Export to CSV</span>
           </a>
         </div>
       </div>
 
-      {/* Search & Filter Bar */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-brand-border shadow-xs space-y-3.5">
+      {/* Filter and Search Bar */}
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Search by Applicant Name, Phone, Reference Number or City..."
+              placeholder="Search by Applicant Name, Mobile, Reference (e.g. MOR-2026-...) or City..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-brand-navy font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
             />
+            {search && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch('');
+                  setPage(1);
+                  fetchList();
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -288,9 +326,9 @@ export const AdminEnquiriesPage: React.FC = () => {
                 setSelectedLoanType(e.target.value);
                 setPage(1);
               }}
-              className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-brand-navy focus:bg-white"
+              className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
             >
-              <option value="ALL">All Loan Types</option>
+              <option value="ALL">All Loan Facilities</option>
               <option value="Home Loan">Home Loan</option>
               <option value="Loan Against Property">Loan Against Property</option>
               <option value="Property-Backed Funding">Property-Backed Funding</option>
@@ -299,15 +337,15 @@ export const AdminEnquiriesPage: React.FC = () => {
 
             <button
               type="submit"
-              className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover active:scale-[0.99] text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-all cursor-pointer"
+              className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs transition-all active:scale-[0.98] cursor-pointer"
             >
-              Search
+              Filter
             </button>
           </div>
         </form>
 
         {/* Status Tab Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-slate-100">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-2 border-t border-slate-100">
           {ALL_STATUSES.map((status) => (
             <button
               key={status}
@@ -316,9 +354,9 @@ export const AdminEnquiriesPage: React.FC = () => {
                 setSelectedStatus(status);
                 setPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg font-heading font-bold whitespace-nowrap transition-colors cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-xl font-heading font-bold whitespace-nowrap transition-all cursor-pointer ${
                 selectedStatus === status
-                  ? 'bg-brand-navy text-white shadow-xs'
+                  ? 'bg-[#0c1a26] text-white shadow-sm ring-2 ring-teal-500/30'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -329,67 +367,117 @@ export const AdminEnquiriesPage: React.FC = () => {
       </div>
 
       {/* Main Table */}
-      <div className="bg-white rounded-2xl border border-brand-border shadow-xs overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50/90 border-b border-brand-border text-slate-500 font-bold uppercase tracking-wider text-[10px] font-heading">
-                <th className="py-3.5 px-4">Ref Number</th>
-                <th className="py-3.5 px-4">Applicant &amp; Phone</th>
+              <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] font-heading">
+                <th className="py-3.5 px-4">Applicant &amp; Contact</th>
+                <th className="py-3.5 px-4">Reference</th>
                 <th className="py-3.5 px-4">Location</th>
-                <th className="py-3.5 px-4">Loan Type</th>
-                <th className="py-3.5 px-4">Amount</th>
-                <th className="py-3.5 px-4">Meeting Slot</th>
-                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4">Facility Type</th>
+                <th className="py-3.5 px-4">Sanction Requested</th>
+                <th className="py-3.5 px-4">Allotted Slot</th>
+                <th className="py-3.5 px-4">Pipeline Status</th>
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-14 text-center text-slate-500 font-sans">
-                    <Loader2 className="w-7 h-7 animate-spin mx-auto text-brand-teal mb-2" />
+                  <td colSpan={8} className="py-16 text-center text-slate-500 font-sans">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600 mb-2" />
                     <span>Loading pipeline records...</span>
                   </td>
                 </tr>
               ) : enquiries.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-14 text-center text-slate-500 font-sans">
-                    No enquiries match the current filters.
+                  <td colSpan={8} className="py-16 text-center text-slate-500 font-sans">
+                    <FileSpreadsheet className="w-9 h-9 mx-auto text-slate-300 mb-2" />
+                    <span>No enquiries match the current filters.</span>
                   </td>
                 </tr>
               ) : (
                 enquiries.map((enq) => {
                   const appointment = enq.appointments && enq.appointments[0];
+                  const initials = enq.fullName
+                    .split(' ')
+                    .map((n: string) => n[0])
+                    .slice(0, 2)
+                    .join('')
+                    .toUpperCase() || 'AP';
 
                   return (
-                    <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3.5 px-4 font-mono font-bold text-brand-navy text-xs">
-                        {enq.referenceNumber}
-                      </td>
+                    <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors group">
                       <td className="py-3.5 px-4">
-                        <span className="font-bold text-brand-navy block font-heading text-xs sm:text-sm">
-                          {enq.fullName}
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs">
+                            {initials}
+                          </div>
+                          <div>
+                            <span className="font-bold text-[#0c1a26] block font-heading text-xs group-hover:text-teal-700 transition-colors">
+                              {enq.fullName}
+                            </span>
+                            <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
+                              <a href={`tel:${enq.mobileNumber}`} className="hover:text-teal-700 hover:underline">
+                                {enq.mobileNumber}
+                              </a>
+                              {enq.mobileNumber && (
+                                <a
+                                  href={`https://wa.me/91${enq.mobileNumber.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(
+                                    enq.fullName
+                                  )},%20this%20is%20Prime%20Associates%20Loans%20regarding%20your%20property%20loan%20enquiry%20Ref:%20${enq.referenceNumber}.`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-[10px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.2 rounded font-bold border border-emerald-200"
+                                  title="Chat on WhatsApp"
+                                >
+                                  WA
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 font-mono font-bold text-teal-800 text-xs">
+                        <span className="bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
+                          {enq.referenceNumber}
                         </span>
-                        <span className="text-[11px] text-slate-500 font-sans">{enq.mobileNumber}</span>
                       </td>
                       <td className="py-3.5 px-4 text-slate-600 font-sans">
-                        {enq.cityState}
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-slate-400" />
+                          <span>{enq.cityState}</span>
+                        </div>
                       </td>
-                      <td className="py-3.5 px-4 font-semibold text-brand-navy font-heading">
-                        {enq.loanType}
+                      <td className="py-3.5 px-4 font-semibold text-[#0c1a26] font-heading">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px]">
+                          {enq.loanType}
+                        </span>
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-brand-teal font-mono">
+                      <td className="py-3.5 px-4 font-extrabold text-teal-700 font-mono text-xs">
                         {formatAmountINR(enq.loanAmount)}
                       </td>
                       <td className="py-3.5 px-4 text-[11px]">
                         {appointment ? (
-                          <div>
-                            <span className="font-bold text-brand-navy block font-mono">{appointment.date}</span>
-                            <span className="text-slate-500 font-sans">{appointment.timeSlot}</span>
+                          <div className="space-y-0.5">
+                            <span className="font-bold text-[#0c1a26] block font-mono text-[11px]">
+                              {appointment.date}
+                            </span>
+                            <span className="text-slate-500 font-sans text-[10px]">
+                              {appointment.timeSlot}
+                            </span>
                           </div>
                         ) : (
-                          <span className="text-slate-400 font-sans italic">Not set</span>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenDetail(enq.id, 'appointment')}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[10px] font-bold font-heading shadow-2xs transition-colors cursor-pointer"
+                            title="Click to allot meeting date and time slot"
+                          >
+                            <Calendar className="w-3 h-3 text-amber-600" />
+                            <span>+ Allot Slot</span>
+                          </button>
                         )}
                       </td>
                       <td className="py-3.5 px-4 whitespace-nowrap">
@@ -404,11 +492,11 @@ export const AdminEnquiriesPage: React.FC = () => {
                       <td className="py-3.5 px-4 text-right whitespace-nowrap">
                         <button
                           type="button"
-                          onClick={() => handleOpenDetail(enq.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 bg-brand-teal-light text-brand-teal hover:bg-brand-teal hover:text-white rounded-lg text-[11px] font-bold font-heading transition-colors cursor-pointer"
+                          onClick={() => handleOpenDetail(enq.id, 'overview')}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 bg-teal-50 text-teal-800 hover:bg-teal-600 hover:text-white rounded-xl text-xs font-bold font-heading transition-all border border-teal-200/80 cursor-pointer shadow-xs active:scale-[0.98]"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                          <span>View Detail</span>
+                          <span>Review File</span>
                         </button>
                       </td>
                     </tr>
@@ -421,24 +509,26 @@ export const AdminEnquiriesPage: React.FC = () => {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="p-4 border-t border-brand-border flex items-center justify-between text-xs text-brand-slate">
+          <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-slate-50/50">
             <span>
-              Page {page} of {totalPages}
+              Showing Page <span className="font-bold text-[#0c1a26]">{page}</span> of <span className="font-bold text-[#0c1a26]">{totalPages}</span> ({totalCount} total)
             </span>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <button
                 disabled={page <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="px-3 py-1.5 border border-brand-border rounded hover:bg-brand-ivory disabled:opacity-50"
+                className="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-white disabled:opacity-50 font-heading font-semibold text-xs"
               >
-                Previous
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Previous</span>
               </button>
               <button
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="px-3 py-1.5 border border-brand-border rounded hover:bg-brand-ivory disabled:opacity-50"
+                className="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-white disabled:opacity-50 font-heading font-semibold text-xs"
               >
-                Next
+                <span>Next</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -447,54 +537,122 @@ export const AdminEnquiriesPage: React.FC = () => {
 
       {/* DETAIL MODAL / SLIDE-OVER */}
       {selectedEnquiryId && (
-        <div className="fixed inset-0 z-50 bg-brand-navy/60 backdrop-blur-xs flex items-center justify-end">
-          <div className="w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
+        <div className="fixed inset-0 z-50 bg-[#0c1a26]/60 backdrop-blur-sm flex items-center justify-end animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
             {/* Modal Header */}
-            <div className="p-5 border-b border-brand-border flex items-center justify-between bg-brand-ivory/50">
-              <div>
-                <span className="text-[11px] uppercase tracking-wider font-bold text-brand-teal block">
-                  Enquiry Reference
-                </span>
-                <h2 className="text-xl font-mono font-extrabold text-brand-navy">
-                  {detailEnquiry?.referenceNumber || 'Loading...'}
-                </h2>
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-gradient-to-r from-slate-50 to-teal-50/30">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-extrabold text-[#0c1a26] text-lg sm:text-xl">
+                    {detailEnquiry?.referenceNumber || 'Loading...'}
+                  </span>
+                  {detailEnquiry && (
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${getStatusBadge(detailEnquiry.status)}`}>
+                      {detailEnquiry.status}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 font-sans">
+                  Borrower Case Dossier &amp; Operational Actions
+                </p>
               </div>
               <button
                 onClick={() => setSelectedEnquiryId(null)}
-                className="p-1.5 rounded-lg text-brand-slate hover:text-brand-navy hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Modal Segmented Tabs */}
+            <div className="flex items-center gap-1 px-5 pt-3 border-b border-slate-200 bg-white overflow-x-auto text-xs font-heading">
+              <button
+                type="button"
+                onClick={() => setDetailTab('overview')}
+                className={`pb-2.5 px-3 border-b-2 font-bold whitespace-nowrap transition-colors ${
+                  detailTab === 'overview'
+                    ? 'border-teal-600 text-teal-700'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Overview &amp; Loan
+              </button>
+              <button
+                type="button"
+                onClick={() => setDetailTab('documents')}
+                className={`pb-2.5 px-3 border-b-2 font-bold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  detailTab === 'documents'
+                    ? 'border-teal-600 text-teal-700'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <span>Documents</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600 text-[10px]">
+                  {detailEnquiry?.documents?.length || 0}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDetailTab('appointment')}
+                className={`pb-2.5 px-3 border-b-2 font-bold whitespace-nowrap transition-colors ${
+                  detailTab === 'appointment'
+                    ? 'border-teal-600 text-teal-700'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Appointment Slot
+              </button>
+              <button
+                type="button"
+                onClick={() => setDetailTab('notes')}
+                className={`pb-2.5 px-3 border-b-2 font-bold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  detailTab === 'notes'
+                    ? 'border-teal-600 text-teal-700'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <span>Case Notes</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600 text-[10px]">
+                  {detailEnquiry?.notes?.length || 0}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDetailTab('history')}
+                className={`pb-2.5 px-3 border-b-2 font-bold whitespace-nowrap transition-colors ${
+                  detailTab === 'history'
+                    ? 'border-teal-600 text-teal-700'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Audit Trail
+              </button>
+            </div>
+
             {/* Modal Content Viewport */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 text-xs sm:text-sm">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 text-xs sm:text-sm bg-slate-50/30">
               {detailLoading || !detailEnquiry ? (
                 <div className="py-24 text-center">
-                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-brand-teal" />
-                  <span className="text-xs text-brand-slate mt-2 block">Loading enquiry details...</span>
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600" />
+                  <span className="text-xs text-slate-500 mt-2 block">Loading enquiry details...</span>
                 </div>
               ) : (
                 <>
                   {/* Status Bar & Quick Updater */}
-                  <div className="p-4 bg-brand-ivory rounded-xl border border-brand-border space-y-3">
+                  <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-brand-navy">Current Status:</span>
-                      <span
-                        className={`px-3 py-0.5 rounded-full text-xs font-bold border ${getStatusBadge(
-                          detailEnquiry.status
-                        )}`}
-                      >
+                      <span className="font-bold text-[#0c1a26] font-heading">Pipeline Status:</span>
+                      <span className={`px-3 py-0.5 rounded-full text-xs font-bold border ${getStatusBadge(detailEnquiry.status)}`}>
                         {detailEnquiry.status}
                       </span>
                     </div>
 
-                    <form onSubmit={handleStatusUpdate} className="pt-2 border-t border-brand-border/60 space-y-2">
+                    <form onSubmit={handleStatusUpdate} className="pt-3 border-t border-slate-100 space-y-2">
                       <div className="flex gap-2">
                         <select
                           value={newStatus}
                           onChange={(e) => setNewStatus(e.target.value)}
-                          className="flex-1 px-3 py-1.5 bg-white border border-brand-border rounded-lg text-xs text-brand-navy font-semibold"
+                          className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0c1a26] font-semibold focus:bg-white"
                         >
                           {ALL_STATUSES.filter((s) => s !== 'ALL').map((s) => (
                             <option key={s} value={s}>
@@ -505,7 +663,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                         <button
                           type="submit"
                           disabled={statusUpdating || newStatus === detailEnquiry.status}
-                          className="px-3.5 py-1.5 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 text-white rounded-lg text-xs font-semibold transition-colors"
+                          className="px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors cursor-pointer"
                         >
                           {statusUpdating ? 'Updating...' : 'Update Status'}
                         </button>
@@ -513,492 +671,530 @@ export const AdminEnquiriesPage: React.FC = () => {
 
                       <input
                         type="text"
-                        placeholder="Add reason or remark for status update (recorded in audit trail)..."
+                        placeholder="Add reason or remark for status change (recorded in audit trail)..."
                         value={statusNote}
                         onChange={(e) => setStatusNote(e.target.value)}
-                        className="w-full px-3 py-1.5 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0c1a26] placeholder:text-slate-400 focus:bg-white"
                       />
                     </form>
                   </div>
 
-                  {/* Applicant Details Card */}
-                  <div className="border border-brand-border rounded-xl p-4 space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-brand-slate">
-                      Applicant Information
-                    </h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Full Name</span>
-                        <span className="font-bold text-brand-navy text-sm">{detailEnquiry.fullName}</span>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Mobile Number</span>
-                        <a
-                          href={`tel:${detailEnquiry.mobileNumber}`}
-                          className="font-bold text-brand-teal hover:underline text-sm"
-                        >
-                          {detailEnquiry.mobileNumber}
-                        </a>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Email</span>
-                        <span className="font-medium text-brand-navy">
-                          {detailEnquiry.email || 'Not provided'}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Preferred Contact Method</span>
-                        <span className="font-semibold text-brand-navy capitalize">
-                          {detailEnquiry.preferredContactMethod}
-                        </span>
-                      </div>
-                      <div className="col-span-2">
-                        <span className="text-brand-slate block text-[11px]">Applicant Location</span>
-                        <span className="font-medium text-brand-navy">{detailEnquiry.cityState}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Loan & Property Card */}
-                  <div className="border border-brand-border rounded-xl p-4 space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-brand-slate">
-                      Loan &amp; Property Specifications
-                    </h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Loan Type</span>
-                        <span className="font-bold text-brand-navy">{detailEnquiry.loanType}</span>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Approximate Amount</span>
-                        <span className="font-bold text-brand-teal text-base">
-                          {formatAmountINR(detailEnquiry.loanAmount)}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Property Type</span>
-                        <span className="font-medium text-brand-navy capitalize">
-                          {detailEnquiry.propertyType}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Ownership Status</span>
-                        <span className="font-medium text-brand-navy capitalize">
-                          {detailEnquiry.propertyOwnershipStatus.replace('_', ' ')}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Property Location</span>
-                        <span className="font-medium text-brand-navy">
-                          {detailEnquiry.propertyLocation}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Employment Type</span>
-                        <span className="font-medium text-brand-navy capitalize">
-                          {detailEnquiry.employmentType.replace('_', ' ')}
-                        </span>
-                      </div>
-
-                      {detailEnquiry.preferredBank && (
-                        <div className="col-span-2 pt-2 border-t border-brand-border/40">
-                          <span className="text-brand-slate block text-[11px]">Preferred Channel Partner / Bank</span>
-                          <span className="inline-flex items-center gap-1.5 font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-md border border-teal-200 mt-0.5">
-                            <Landmark className="w-3.5 h-3.5 text-brand-teal" />
-                            <span>{detailEnquiry.preferredBank}</span>
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* VEHICLE DETAILS (IF CAR LOAN - PAGE 4) */}
-                    {detailEnquiry.carLoanDetails && (
-                      <div className="p-3 bg-teal-50/60 rounded-lg border border-teal-200 space-y-2 mt-2">
-                        <div className="flex items-center gap-1.5 text-brand-navy font-bold text-xs">
-                          <Car className="w-3.5 h-3.5 text-brand-teal" />
-                          <span>Vehicle Specifications ({detailEnquiry.carLoanDetails.carType?.toUpperCase()})</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          {detailEnquiry.carLoanDetails.onRoadPrice && (
-                            <div>
-                              <span className="text-brand-slate block text-[10px]">On-Road Price</span>
-                              <span className="font-bold text-brand-navy">{formatAmountINR(detailEnquiry.carLoanDetails.onRoadPrice)}</span>
-                            </div>
-                          )}
-                          {detailEnquiry.carLoanDetails.showroomName && (
-                            <div>
-                              <span className="text-brand-slate block text-[10px]">Showroom / Financer</span>
-                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.showroomName}</span>
-                            </div>
-                          )}
-                          {detailEnquiry.carLoanDetails.area && (
-                            <div>
-                              <span className="text-brand-slate block text-[10px]">Area</span>
-                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.area}</span>
-                            </div>
-                          )}
-                          {detailEnquiry.carLoanDetails.modelYear && (
-                            <div>
-                              <span className="text-brand-slate block text-[10px]">Model &amp; Year</span>
-                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.modelYear}</span>
-                            </div>
-                          )}
-                          {detailEnquiry.carLoanDetails.ownersCount && (
-                            <div>
-                              <span className="text-brand-slate block text-[10px]">Ownership</span>
-                              <span className="font-semibold text-brand-navy">{detailEnquiry.carLoanDetails.ownersCount} Owner(s)</span>
-                            </div>
-                          )}
-                          {detailEnquiry.carLoanDetails.purchaseValue && (
-                            <div>
-                              <span className="text-brand-slate block text-[10px]">Purchase / Valuation Value</span>
-                              <span className="font-bold text-brand-navy">{formatAmountINR(detailEnquiry.carLoanDetails.purchaseValue)}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {detailEnquiry.additionalNotes && (
-                      <div className="pt-2 border-t border-brand-border/60">
-                        <span className="text-brand-slate block text-[11px] mb-1">Applicant Remarks:</span>
-                        <p className="bg-brand-ivory p-3 rounded-lg text-brand-navy italic">
-                          "{detailEnquiry.additionalNotes}"
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* SUBMITTED REFERENCE DOCUMENTS (REAL-DOCUMENT INTAKE) */}
-                  <div className="border border-brand-border rounded-xl p-4 space-y-3 bg-white">
-                    <div className="flex items-center justify-between pb-2 border-b border-brand-border">
-                      <div className="flex items-center gap-2">
-                        <FileCheck className="w-4 h-4 text-brand-teal" />
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-brand-navy">
-                          Submitted Reference Documents
+                  {/* TAB 1: OVERVIEW */}
+                  {detailTab === 'overview' && (
+                    <div className="space-y-4">
+                      {/* Applicant Details Card */}
+                      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3.5 shadow-sm">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 font-heading">
+                          Applicant Dossier
                         </h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Full Name</span>
+                            <span className="font-bold text-[#0c1a26] text-sm font-heading">{detailEnquiry.fullName}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Mobile Number</span>
+                            <a
+                              href={`tel:${detailEnquiry.mobileNumber}`}
+                              className="font-bold text-teal-700 hover:underline text-sm font-mono"
+                            >
+                              {detailEnquiry.mobileNumber}
+                            </a>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Email</span>
+                            <span className="font-medium text-[#0c1a26]">
+                              {detailEnquiry.email || 'Not provided'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Preferred Contact Method</span>
+                            <span className="font-semibold text-[#0c1a26] capitalize">
+                              {detailEnquiry.preferredContactMethod}
+                            </span>
+                          </div>
+                          <div className="col-span-2">
+                            <span className="text-slate-400 block text-[11px]">Applicant Location</span>
+                            <span className="font-medium text-[#0c1a26]">{detailEnquiry.cityState}</span>
+                          </div>
+                        </div>
                       </div>
-                      <span className="text-xs font-extrabold text-brand-teal bg-brand-teal-light px-2.5 py-0.5 rounded-full border border-brand-teal/20">
-                        {detailEnquiry.documents?.length || 0} File(s)
-                      </span>
-                    </div>
 
-                    {detailEnquiry.documents && detailEnquiry.documents.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                        {detailEnquiry.documents.map((doc) => (
-                          <div
-                            key={doc.id}
-                            className="p-2.5 rounded-xl border border-brand-border hover:border-brand-teal/50 bg-brand-ivory/40 transition-all flex items-start gap-3 group"
-                          >
-                            {doc.type.includes('image') ? (
-                              <img
-                                src={doc.previewUrl}
-                                alt={doc.name}
-                                onClick={() => setAdminPreviewDoc(doc)}
-                                className="w-14 h-14 object-cover rounded-lg border border-brand-border cursor-pointer hover:opacity-80 transition-opacity shrink-0 shadow-2xs"
-                              />
-                            ) : (
-                              <div className="w-14 h-14 rounded-lg bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs">
-                                <span>PDF</span>
-                              </div>
-                            )}
+                      {/* Loan & Property Card */}
+                      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3.5 shadow-sm">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 font-heading">
+                          Loan &amp; Property Specifications
+                        </h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Loan Facility</span>
+                            <span className="font-bold text-[#0c1a26]">{detailEnquiry.loanType}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Sanction Requested</span>
+                            <span className="font-extrabold text-teal-700 font-mono text-base">
+                              {formatAmountINR(detailEnquiry.loanAmount)}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Property Type</span>
+                            <span className="font-medium text-[#0c1a26] capitalize">
+                              {detailEnquiry.propertyType}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Ownership Status</span>
+                            <span className="font-medium text-[#0c1a26] capitalize">
+                              {detailEnquiry.propertyOwnershipStatus.replace('_', ' ')}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Property Location</span>
+                            <span className="font-medium text-[#0c1a26]">
+                              {detailEnquiry.propertyLocation}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px]">Employment Type</span>
+                            <span className="font-medium text-[#0c1a26] capitalize">
+                              {detailEnquiry.employmentType.replace('_', ' ')}
+                            </span>
+                          </div>
 
-                            <div className="min-w-0 flex-1 space-y-1">
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-teal bg-white px-1.5 py-0.5 rounded border border-brand-teal/20">
-                                {doc.category || 'Reference'}
+                          {detailEnquiry.preferredBank && (
+                            <div className="col-span-2 pt-2 border-t border-slate-100">
+                              <span className="text-slate-400 block text-[11px]">Preferred Channel Partner / Bank</span>
+                              <span className="inline-flex items-center gap-1.5 font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200/80 mt-1">
+                                <Landmark className="w-3.5 h-3.5 text-teal-600" />
+                                <span>{detailEnquiry.preferredBank}</span>
                               </span>
-                              <h5 className="text-xs font-bold text-brand-navy truncate block" title={doc.documentName}>
-                                {doc.documentName || doc.name}
-                              </h5>
-                              <div className="flex items-center justify-between pt-1 text-[10px] text-brand-slate">
-                                <span>{doc.size ? `${(doc.size / 1024).toFixed(0)} KB` : 'Verified'}</span>
-                                <div className="flex items-center gap-2">
-                                  {doc.type.includes('image') && (
-                                    <button
-                                      type="button"
-                                      onClick={() => setAdminPreviewDoc(doc)}
-                                      className="text-brand-teal hover:underline font-bold flex items-center gap-0.5"
+                            </div>
+                          )}
+                        </div>
+
+                        {/* VEHICLE DETAILS (IF CAR LOAN) */}
+                        {detailEnquiry.carLoanDetails && (
+                          <div className="p-3.5 bg-teal-50/60 rounded-xl border border-teal-200 space-y-2 mt-2">
+                            <div className="flex items-center gap-1.5 text-[#0c1a26] font-bold text-xs">
+                              <Car className="w-4 h-4 text-teal-600" />
+                              <span>Vehicle Specifications ({detailEnquiry.carLoanDetails.carType?.toUpperCase()})</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              {detailEnquiry.carLoanDetails.onRoadPrice && (
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">On-Road Price</span>
+                                  <span className="font-bold text-[#0c1a26]">{formatAmountINR(detailEnquiry.carLoanDetails.onRoadPrice)}</span>
+                                </div>
+                              )}
+                              {detailEnquiry.carLoanDetails.showroomName && (
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">Showroom / Financer</span>
+                                  <span className="font-semibold text-[#0c1a26]">{detailEnquiry.carLoanDetails.showroomName}</span>
+                                </div>
+                              )}
+                              {detailEnquiry.carLoanDetails.area && (
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">Area</span>
+                                  <span className="font-semibold text-[#0c1a26]">{detailEnquiry.carLoanDetails.area}</span>
+                                </div>
+                              )}
+                              {detailEnquiry.carLoanDetails.modelYear && (
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">Model &amp; Year</span>
+                                  <span className="font-semibold text-[#0c1a26]">{detailEnquiry.carLoanDetails.modelYear}</span>
+                                </div>
+                              )}
+                              {detailEnquiry.carLoanDetails.ownersCount && (
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">Ownership</span>
+                                  <span className="font-semibold text-[#0c1a26]">{detailEnquiry.carLoanDetails.ownersCount} Owner(s)</span>
+                                </div>
+                              )}
+                              {detailEnquiry.carLoanDetails.purchaseValue && (
+                                <div>
+                                  <span className="text-slate-400 block text-[10px]">Purchase / Valuation Value</span>
+                                  <span className="font-bold text-[#0c1a26]">{formatAmountINR(detailEnquiry.carLoanDetails.purchaseValue)}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {detailEnquiry.additionalNotes && (
+                          <div className="pt-3 border-t border-slate-100">
+                            <span className="text-slate-400 block text-[11px] mb-1">Applicant Remarks:</span>
+                            <p className="bg-slate-50 p-3 rounded-xl text-[#0c1a26] italic border border-slate-200/80">
+                              "{detailEnquiry.additionalNotes}"
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: DOCUMENTS */}
+                  {detailTab === 'documents' && (
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div className="flex items-center gap-2">
+                          <FileCheck className="w-4 h-4 text-teal-600" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading">
+                            Submitted Reference Documents
+                          </h4>
+                        </div>
+                        <span className="text-xs font-extrabold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                          {detailEnquiry.documents?.length || 0} Files
+                        </span>
+                      </div>
+
+                      {detailEnquiry.documents && detailEnquiry.documents.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                          {detailEnquiry.documents.map((doc) => (
+                            <div
+                              key={doc.id}
+                              className="p-3 rounded-xl border border-slate-200 hover:border-teal-400 bg-slate-50/50 hover:bg-white transition-all flex items-start gap-3 group"
+                            >
+                              {doc.type.includes('image') ? (
+                                <img
+                                  src={doc.previewUrl}
+                                  alt={doc.name}
+                                  onClick={() => setAdminPreviewDoc(doc)}
+                                  className="w-14 h-14 object-cover rounded-xl border border-slate-200 cursor-pointer hover:opacity-85 transition-opacity shrink-0 shadow-xs"
+                                />
+                              ) : (
+                                <div className="w-14 h-14 rounded-xl bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs">
+                                  <span>PDF</span>
+                                </div>
+                              )}
+
+                              <div className="min-w-0 flex-1 space-y-1">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
+                                  {doc.category || 'Reference'}
+                                </span>
+                                <h5 className="text-xs font-bold text-[#0c1a26] truncate block mt-1" title={doc.documentName}>
+                                  {doc.documentName || doc.name}
+                                </h5>
+                                <div className="flex items-center justify-between pt-1 text-[10px] text-slate-500">
+                                  <span>{doc.size ? `${(doc.size / 1024).toFixed(0)} KB` : 'Verified'}</span>
+                                  <div className="flex items-center gap-2">
+                                    {doc.type.includes('image') && (
+                                      <button
+                                        type="button"
+                                        onClick={() => setAdminPreviewDoc(doc)}
+                                        className="text-teal-700 hover:underline font-bold flex items-center gap-0.5"
+                                      >
+                                        <Eye className="w-3 h-3" /> View
+                                      </button>
+                                    )}
+                                    <a
+                                      href={doc.previewUrl}
+                                      download={doc.name}
+                                      className="text-slate-600 hover:text-[#0c1a26] font-bold flex items-center gap-0.5"
                                     >
-                                      <Eye className="w-3 h-3" /> View
-                                    </button>
-                                  )}
-                                  <a
-                                    href={doc.previewUrl}
-                                    download={doc.name}
-                                    className="text-slate-600 hover:text-brand-navy font-bold flex items-center gap-0.5"
-                                  >
-                                    <Download className="w-3 h-3" />
-                                  </a>
+                                      <Download className="w-3 h-3" />
+                                    </a>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-4 rounded-lg bg-brand-ivory/60 border border-dashed border-brand-border text-center space-y-1 text-xs text-brand-slate">
-                        <ImageIcon className="w-6 h-6 text-gray-400 mx-auto" />
-                        <p className="font-semibold text-brand-navy">No Document Images Uploaded Yet</p>
-                        <p className="text-[11px]">
-                          Applicant has opted to provide document copies during their in-person consultation or via WhatsApp.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Consultation / Appointment Allotment Center */}
-                  <div className="border border-brand-border rounded-2xl p-5 space-y-4 bg-slate-50/50">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-brand-teal" />
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-brand-navy font-heading">
-                          Consultation Scheduling &amp; Allotment
-                        </h4>
-                      </div>
-                      {!isAllotting && (
-                        <button
-                          type="button"
-                          onClick={() => setIsAllotting(true)}
-                          className="px-3 py-1.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-lg text-xs font-bold font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-                        >
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>{detailEnquiry.status === 'Appointment Confirmed' ? 'Change Allotted Slot' : 'Allot Time Slot'}</span>
-                        </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center space-y-2 text-xs text-slate-500">
+                          <ImageIcon className="w-8 h-8 text-slate-300 mx-auto" />
+                          <p className="font-bold text-[#0c1a26]">No Document Files Uploaded Yet</p>
+                          <p className="text-[11px] max-w-sm mx-auto">
+                            Applicant has chosen to submit document physical copies during the consultation or send them via WhatsApp.
+                          </p>
+                        </div>
                       )}
                     </div>
+                  )}
 
-                    {allotSuccess && (
-                      <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                        <span className="font-semibold">{allotSuccess}</span>
-                      </div>
-                    )}
-
-                    {!isAllotting ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-white rounded-xl border border-slate-200">
-                        <div>
-                          <span className="text-slate-400 block text-[11px] font-medium">Allotted Date &amp; Slot</span>
-                          <span className="font-bold text-brand-navy text-xs font-mono">
-                            {detailEnquiry.preferredDate || 'Not Set'} &bull; {detailEnquiry.preferredTimeSlot || 'Pending'}
-                          </span>
+                  {/* TAB 3: APPOINTMENT ALLOTMENT */}
+                  {detailTab === 'appointment' && (
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-teal-600" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading">
+                            Consultation Scheduling &amp; Allotment
+                          </h4>
                         </div>
-                        <div>
-                          <span className="text-slate-400 block text-[11px] font-medium">Channel Mode</span>
-                          <span className="font-semibold text-brand-navy capitalize text-xs">
-                            {detailEnquiry.meetingMode?.replace('_', ' ') || 'Phone Call'}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[11px] font-medium">Schedule Status</span>
-                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold mt-0.5 ${
-                            detailEnquiry.status === 'Appointment Confirmed'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-amber-100 text-amber-800'
-                          }`}>
-                            {detailEnquiry.status === 'Appointment Confirmed' ? '● Confirmed Slot' : 'Awaiting Allotment'}
-                          </span>
-                        </div>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleAllotAppointmentSubmit} className="space-y-3.5 p-4 bg-white rounded-xl border border-teal-300 ring-2 ring-teal-500/10">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
-                              Select Date
-                            </label>
-                            <input
-                              type="date"
-                              required
-                              value={allotDate}
-                              onChange={(e) => setAllotDate(e.target.value)}
-                              className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-brand-navy focus:bg-white"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
-                              Allot Time Slot
-                            </label>
-                            <select
-                              value={allotSlot}
-                              onChange={(e) => setAllotSlot(e.target.value)}
-                              className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-brand-navy focus:bg-white"
-                            >
-                              {STANDARD_SLOTS.map((slot) => (
-                                <option key={slot} value={slot}>
-                                  {slot}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
-                            Consultation Channel
-                          </label>
-                          <div className="grid grid-cols-3 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setAllotMode('phone')}
-                              className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
-                                allotMode === 'phone'
-                                  ? 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold'
-                                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                              }`}
-                            >
-                              <Phone className="w-3.5 h-3.5 mx-auto mb-0.5 text-emerald-600" />
-                              <span className="text-[10px] block">Direct Phone</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setAllotMode('video')}
-                              className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
-                                allotMode === 'video'
-                                  ? 'bg-sky-50 text-sky-900 border-sky-400 font-bold'
-                                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                              }`}
-                            >
-                              <Video className="w-3.5 h-3.5 mx-auto mb-0.5 text-sky-600" />
-                              <span className="text-[10px] block">Google Meet</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setAllotMode('in_person')}
-                              className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
-                                allotMode === 'in_person'
-                                  ? 'bg-purple-50 text-purple-900 border-purple-400 font-bold'
-                                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                              }`}
-                            >
-                              <Building className="w-3.5 h-3.5 mx-auto mb-0.5 text-purple-600" />
-                              <span className="text-[10px] block">Tirupur Office</span>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
-                            Administrative Note / Google Meet Link
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="e.g. Google Meet: meet.google.com/xyz-abcd-efg or applicant to bring land patta..."
-                            value={allotNotes}
-                            onChange={(e) => setAllotNotes(e.target.value)}
-                            className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-brand-navy"
-                          />
-                        </div>
-
-                        <div className="flex items-center justify-end gap-2 pt-1">
+                        {!isAllotting && (
                           <button
                             type="button"
-                            onClick={() => setIsAllotting(false)}
-                            className="px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-50"
+                            onClick={() => setIsAllotting(true)}
+                            className="px-3.5 py-1.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
-                            Cancel
+                            <Calendar className="w-3.5 h-3.5" />
+                            <span>{detailEnquiry.status === 'Appointment Confirmed' ? 'Change Allotted Slot' : 'Allot Time Slot'}</span>
                           </button>
-                          <button
-                            type="submit"
-                            disabled={allotSubmitting}
-                            className="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-lg text-xs font-bold font-heading flex items-center gap-1.5"
-                          >
-                            {allotSubmitting ? (
-                              <>
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                <span>Saving Slot...</span>
-                              </>
-                            ) : (
-                              <>
-                                <CheckCircle className="w-3.5 h-3.5" />
-                                <span>Confirm &amp; Allot Slot</span>
-                              </>
-                            )}
-                          </button>
+                        )}
+                      </div>
+
+                      {allotSuccess && (
+                        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                          <span className="font-semibold">{allotSuccess}</span>
                         </div>
+                      )}
+
+                      {!isAllotting ? (
+                        <>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50/70 rounded-xl border border-slate-200">
+                            <div>
+                              <span className="text-slate-400 block text-[11px] font-medium">Allotted Date &amp; Slot</span>
+                              <span className="font-bold text-[#0c1a26] text-xs font-mono">
+                                {detailEnquiry.preferredDate || 'Not Set'} &bull; {detailEnquiry.preferredTimeSlot || 'Pending'}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 block text-[11px] font-medium">Channel Mode</span>
+                              <span className="font-semibold text-[#0c1a26] capitalize text-xs">
+                                {detailEnquiry.meetingMode?.replace('_', ' ') || 'Phone Call'}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 block text-[11px] font-medium">Schedule Status</span>
+                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold mt-1 ${
+                                detailEnquiry.status === 'Appointment Confirmed'
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                  : 'bg-amber-100 text-amber-800 border border-amber-200'
+                              }`}>
+                                {detailEnquiry.status === 'Appointment Confirmed' ? '● Confirmed Slot' : 'Awaiting Allotment'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {detailEnquiry.status === 'Appointment Confirmed' && (
+                            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                              <div className="space-y-0.5">
+                                <span className="font-bold text-emerald-900 font-heading block">
+                                  Meeting Slot Confirmed: {detailEnquiry.preferredDate} ({detailEnquiry.preferredTimeSlot})
+                                </span>
+                                <p className="text-emerald-700 text-[11px] font-sans">
+                                  Send the confirmed consultation time, mode, and Tirupur office venue details directly to the borrower.
+                                </p>
+                              </div>
+                              <a
+                                href={`https://wa.me/91${detailEnquiry.mobileNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
+                                  `Dear ${detailEnquiry.fullName}, greetings from Prime Associates.\n\nYour loan consultation meeting for ${detailEnquiry.loanType} (Ref: ${detailEnquiry.referenceNumber}) has been confirmed:\n📅 Date: ${detailEnquiry.preferredDate}\n⏰ Time: ${detailEnquiry.preferredTimeSlot}\n📍 Mode: ${detailEnquiry.meetingMode === 'in_person' ? 'In-Person at No. 48, 49, P.R. Complex, Kumaran Road, Tirupur' : detailEnquiry.meetingMode === 'video' ? 'Google Meet Video Call' : 'Direct Phone Call'}\n\nPlease keep your reference KYC & bank statements ready. For questions, call +91 96555 66613.`
+                                )}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+                              >
+                                <span>Send WhatsApp Confirmation</span>
+                              </a>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <form onSubmit={handleAllotAppointmentSubmit} className="space-y-4 p-4 bg-white rounded-xl border border-teal-300 ring-2 ring-teal-500/10">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">
+                                Consultation Date
+                              </label>
+                              <input
+                                type="date"
+                                required
+                                value={allotDate}
+                                onChange={(e) => setAllotDate(e.target.value)}
+                                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-[#0c1a26] focus:bg-white"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">
+                                Allot Time Slot
+                              </label>
+                              <select
+                                value={allotSlot}
+                                onChange={(e) => setAllotSlot(e.target.value)}
+                                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-[#0c1a26] focus:bg-white"
+                              >
+                                {STANDARD_SLOTS.map((slot) => (
+                                  <option key={slot} value={slot}>
+                                    {slot}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
+                              Consultation Channel
+                            </label>
+                            <div className="grid grid-cols-3 gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setAllotMode('phone')}
+                                className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                                  allotMode === 'phone'
+                                    ? 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold ring-1 ring-emerald-400'
+                                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                                }`}
+                              >
+                                <Phone className="w-4 h-4 mx-auto mb-1 text-emerald-600" />
+                                <span className="text-[11px] block">Direct Phone</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setAllotMode('video')}
+                                className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                                  allotMode === 'video'
+                                    ? 'bg-sky-50 text-sky-900 border-sky-400 font-bold ring-1 ring-sky-400'
+                                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                                }`}
+                              >
+                                <Video className="w-4 h-4 mx-auto mb-1 text-sky-600" />
+                                <span className="text-[11px] block">Google Meet</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setAllotMode('in_person')}
+                                className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                                  allotMode === 'in_person'
+                                    ? 'bg-purple-50 text-purple-900 border-purple-400 font-bold ring-1 ring-purple-400'
+                                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                                }`}
+                              >
+                                <Building2 className="w-4 h-4 mx-auto mb-1 text-purple-600" />
+                                <span className="text-[11px] block">Tirupur Office</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">
+                              Administrative Note / Google Meet Link
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Google Meet: meet.google.com/xyz or bring original land patta document..."
+                              value={allotNotes}
+                              onChange={(e) => setAllotNotes(e.target.value)}
+                              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0c1a26]"
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-end gap-2 pt-2">
+                            <button
+                              type="button"
+                              onClick={() => setIsAllotting(false)}
+                              className="px-3.5 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              disabled={allotSubmitting}
+                              className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading flex items-center gap-1.5 shadow-sm"
+                            >
+                              {allotSubmitting ? (
+                                <>
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                  <span>Saving Slot...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  <span>Confirm &amp; Allot Slot</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </div>
+                  )}
+
+                  {/* TAB 4: CASE NOTES */}
+                  {detailTab === 'notes' && (
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 font-heading">
+                          Internal Advisory Case Notes
+                        </h4>
+                        <span className="text-[11px] text-slate-500">
+                          {detailEnquiry.notes?.length || 0} recorded
+                        </span>
+                      </div>
+
+                      {/* Add note form */}
+                      <form onSubmit={handleAddNote} className="space-y-2.5">
+                        <textarea
+                          rows={3}
+                          placeholder="Record confidential notes on borrower CIBIL score, bank sanction eligibility, appraisal visits..."
+                          value={newNoteContent}
+                          onChange={(e) => setNewNoteContent(e.target.value)}
+                          className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0c1a26] focus:bg-white resize-none"
+                        />
+                        <button
+                          type="submit"
+                          disabled={noteSubmitting || !newNoteContent.trim()}
+                          className="px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-200 text-white rounded-xl text-xs font-bold font-heading transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>{noteSubmitting ? 'Saving Note...' : 'Post Case Note'}</span>
+                        </button>
                       </form>
-                    )}
-                  </div>
 
-                  {/* Internal Consultant Notes */}
-                  <div className="border border-brand-border rounded-xl p-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-brand-slate">
-                        Internal Case Notes
-                      </h4>
-                      <span className="text-[11px] text-brand-slate">
-                        {detailEnquiry.notes?.length || 0} note(s)
-                      </span>
-                    </div>
-
-                    {/* Add note input */}
-                    <form onSubmit={handleAddNote} className="space-y-2">
-                      <textarea
-                        rows={2}
-                        placeholder="Add internal notes on CIBIL, property valuation, lender submission..."
-                        value={newNoteContent}
-                        onChange={(e) => setNewNoteContent(e.target.value)}
-                        className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-xs text-brand-navy focus:bg-white resize-none"
-                      />
-                      <button
-                        type="submit"
-                        disabled={noteSubmitting || !newNoteContent.trim()}
-                        className="px-3.5 py-1.5 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5"
-                      >
-                        <Send className="w-3 h-3" />
-                        <span>{noteSubmitting ? 'Recording...' : 'Add Note'}</span>
-                      </button>
-                    </form>
-
-                    {/* Notes timeline */}
-                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                      {detailEnquiry.notes && detailEnquiry.notes.length > 0 ? (
-                        detailEnquiry.notes.map((note) => (
-                          <div key={note.id} className="p-3 bg-brand-ivory rounded-lg text-xs space-y-1">
-                            <div className="flex justify-between items-center text-[10px] text-brand-slate">
-                              <span className="font-semibold text-brand-navy">{note.authorName}</span>
-                              <span>{new Date(note.createdAt).toLocaleString('en-IN')}</span>
+                      {/* Notes timeline */}
+                      <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1 pt-2">
+                        {detailEnquiry.notes && detailEnquiry.notes.length > 0 ? (
+                          detailEnquiry.notes.map((note) => (
+                            <div key={note.id} className="p-3 bg-slate-50 rounded-xl text-xs space-y-1.5 border border-slate-100">
+                              <div className="flex justify-between items-center text-[10px] text-slate-500">
+                                <span className="font-bold text-[#0c1a26] font-heading">{note.authorName}</span>
+                                <span>{new Date(note.createdAt).toLocaleString('en-IN')}</span>
+                              </div>
+                              <p className="text-[#0c1a26] leading-relaxed font-sans">{note.content}</p>
                             </div>
-                            <p className="text-brand-navy">{note.content}</p>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-xs text-brand-slate italic text-center py-2">
-                          No internal notes recorded yet.
-                        </p>
-                      )}
+                          ))
+                        ) : (
+                          <p className="text-xs text-slate-400 italic text-center py-4">
+                            No internal case notes recorded yet.
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Audit Trail / Status History */}
-                  <div className="border border-brand-border rounded-xl p-4 space-y-3">
-                    <div className="flex items-center gap-2 text-brand-navy">
-                      <History className="w-4 h-4 text-brand-teal" />
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-brand-slate">
-                        Status Transition Audit History
-                      </h4>
-                    </div>
+                  {/* TAB 5: AUDIT TRAIL */}
+                  {detailTab === 'history' && (
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                      <div className="flex items-center gap-2 pb-3 border-b border-slate-100 text-[#0c1a26]">
+                        <History className="w-4 h-4 text-teal-600" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 font-heading">
+                          Status Transition Audit History
+                        </h4>
+                      </div>
 
-                    <div className="space-y-2 max-h-40 overflow-y-auto pr-1 text-[11px]">
-                      {detailEnquiry.statusHistory && detailEnquiry.statusHistory.length > 0 ? (
-                        detailEnquiry.statusHistory.map((hist) => (
-                          <div key={hist.id} className="p-2.5 bg-gray-50 rounded border border-gray-100 space-y-0.5">
-                            <div className="flex justify-between items-center text-brand-slate">
-                              <span className="font-semibold text-brand-navy">{hist.changedBy}</span>
-                              <span className="text-[10px]">{new Date(hist.createdAt).toLocaleString('en-IN')}</span>
+                      <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1 text-[11px]">
+                        {detailEnquiry.statusHistory && detailEnquiry.statusHistory.length > 0 ? (
+                          detailEnquiry.statusHistory.map((hist) => (
+                            <div key={hist.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                              <div className="flex justify-between items-center text-slate-500">
+                                <span className="font-bold text-[#0c1a26] font-heading">{hist.changedBy}</span>
+                                <span className="text-[10px]">{new Date(hist.createdAt).toLocaleString('en-IN')}</span>
+                              </div>
+                              <div className="text-[#0c1a26]">
+                                {hist.fromStatus} &rarr; <span className="font-bold text-teal-700">{hist.toStatus}</span>
+                              </div>
+                              {hist.note && <p className="text-slate-600 italic">"{hist.note}"</p>}
                             </div>
-                            <div className="text-brand-navy">
-                              {hist.fromStatus} &rarr; <span className="font-semibold text-brand-teal">{hist.toStatus}</span>
-                            </div>
-                            {hist.note && <p className="text-gray-500 italic">"{hist.note}"</p>}
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-gray-400 italic">No history logged.</p>
-                      )}
+                          ))
+                        ) : (
+                          <p className="text-slate-400 italic py-4 text-center">No history logged.</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </>
               )}
             </div>
@@ -1008,22 +1204,22 @@ export const AdminEnquiriesPage: React.FC = () => {
 
       {/* ADMIN DOCUMENT IMAGE LIGHTBOX MODAL */}
       {adminPreviewDoc && (
-        <div className="fixed inset-0 z-60 bg-black/85 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="p-4 border-b border-brand-border flex items-center justify-between bg-brand-ivory">
+        <div className="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div>
-                <span className="text-[10px] uppercase font-bold text-brand-teal tracking-wider block">
+                <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block">
                   Reference Document Verification
                 </span>
-                <h4 className="text-base font-bold text-brand-navy flex items-center gap-2">
-                  <FileCheck className="w-4 h-4 text-brand-teal" />
+                <h4 className="text-base font-bold text-[#0c1a26] flex items-center gap-2">
+                  <FileCheck className="w-4 h-4 text-teal-600" />
                   <span>{adminPreviewDoc.documentName || adminPreviewDoc.name}</span>
                 </h4>
               </div>
               <button
                 type="button"
                 onClick={() => setAdminPreviewDoc(null)}
-                className="p-1.5 rounded-lg text-brand-slate hover:text-brand-navy hover:bg-gray-200"
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1032,15 +1228,15 @@ export const AdminEnquiriesPage: React.FC = () => {
               <img
                 src={adminPreviewDoc.previewUrl}
                 alt={adminPreviewDoc.name}
-                className="max-h-[76vh] object-contain rounded"
+                className="max-h-[74vh] object-contain rounded-lg"
               />
             </div>
-            <div className="p-3.5 border-t border-brand-border flex items-center justify-between text-xs text-brand-slate bg-white">
+            <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-white">
               <span>{adminPreviewDoc.name} ({adminPreviewDoc.size ? `${(adminPreviewDoc.size / 1024).toFixed(0)} KB` : 'Verified'})</span>
               <a
                 href={adminPreviewDoc.previewUrl}
                 download={adminPreviewDoc.name}
-                className="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5"
+                className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download Document</span>
@@ -1049,6 +1245,17 @@ export const AdminEnquiriesPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Admin Register Borrower Modal */}
+      <RegisterBorrowerModal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        onSuccess={() => {
+          fetchList();
+        }}
+      />
     </div>
   );
 };
+
+export default AdminEnquiriesPage;

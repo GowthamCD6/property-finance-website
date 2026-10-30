@@ -1,20 +1,168 @@
+export interface RateMatrixItem {
+  id: string;
+  bankName: string;
+  homeLoanRate: string;
+  lapRate: string;
+  maxTenure: string;
+  processingFee: string;
+  ltv: string;
+  popularTag?: string;
+}
+
+export interface WhyChooseUsPillar {
+  title: string;
+  description: string;
+  metric: string;
+  icon?: string;
+}
+
+export interface ProcessStep {
+  stepNumber: string;
+  title: string;
+  description: string;
+  turnaround: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  location: string;
+  loanType: string;
+  amount: string;
+  review: string;
+  rating: number;
+  avatarUrl?: string;
+}
+
+export interface AboutMilestone {
+  year: string;
+  title: string;
+  description: string;
+  stat?: string;
+}
+
+export interface AboutTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  experience: string;
+  bio: string;
+  imageUrl?: string;
+  linkedinUrl?: string;
+}
+
+export interface AboutPillar {
+  title: string;
+  desc: string;
+  icon?: string;
+}
+
+export interface BranchOffice {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  timings?: string;
+  mapEmbedUrl?: string;
+}
+
+export interface SocialLinks {
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  twitter?: string;
+  youtube?: string;
+  mapUrl?: string;
+}
+
 export interface SiteContent {
   id: string;
   businessName: string;
+  tagline?: string | null;
   businessPhone: string;
   businessEmail: string;
   officeAddress: string;
   cityState: string;
   businessHours: string;
+  
+  // Header & Floating
+  announcementText?: string | null;
+  announcementActive?: boolean;
+  announcementLink?: string | null;
+  whatsappNumber?: string | null;
+  whatsappMessage?: string | null;
+  socialLinks?: string | null;
+  registrationDetails?: string | null;
+
+  // Homepage Hero
   heroEyebrow: string;
   heroHeadline: string;
+  heroRotatingWords?: string | null;
   heroSubtitle: string;
   heroCtaText: string;
   heroSecondaryCtaText: string;
   heroImageUrl: string;
+  heroBadges?: string | null;
+  
+  // Stats Counters
+  statsCapital?: string | null;
+  statsCapitalSuffix?: string | null;
+  statsCapitalLabel?: string | null;
+  statsLenders?: string | null;
+  statsLendersSuffix?: string | null;
+  statsLendersLabel?: string | null;
+  statsSanction?: string | null;
+  statsSanctionSuffix?: string | null;
+  statsSanctionLabel?: string | null;
+  statsTurnaround?: string | null;
+  statsTurnaroundSuffix?: string | null;
+  statsTurnaroundLabel?: string | null;
+
+  // Multi-Lender Rate Comparison Matrix
+  rateMatrix?: string | null;
+
+  // Why Choose Us
+  whyChooseUsTitle?: string | null;
+  whyChooseUsSubtitle?: string | null;
+  whyChooseUsPillars?: string | null;
+
+  // Process Steps
+  processTitle?: string | null;
+  processSubtitle?: string | null;
+  processSteps?: string | null;
+
+  // Document Checklist
+  salariedDocs?: string | null;
+  selfEmployedDocs?: string | null;
+  propertyDocs?: string | null;
+
+  // Client Testimonials
+  testimonials?: string | null;
+
+  // About Page
   aboutHeading: string;
   aboutText: string;
   aboutImageUrl: string;
+  aboutMission?: string | null;
+  aboutVision?: string | null;
+  aboutMilestones?: string | null;
+  aboutTeam?: string | null;
+  aboutPillars?: string | null;
+
+  // Contact Page & Branches
+  contactHeroTitle?: string | null;
+  contactHeroSubtitle?: string | null;
+  contactHeroImageUrl?: string | null;
+  branchOffices?: string | null;
+
+  // Calculator Parameters
+  calcDefaultHomeRate?: number | null;
+  calcDefaultLapRate?: number | null;
+  calcDefaultAmount?: number | null;
+  calcDefaultTenure?: number | null;
+
+  // Legal & Regulatory
   disclaimerText: string;
   privacyPolicy: string;
   termsConditions: string;

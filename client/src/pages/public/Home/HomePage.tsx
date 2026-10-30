@@ -53,14 +53,21 @@ const ROTATING_WORDS = [
   'Bank Takeover.',
 ];
 
-const AnimatedHeadline: React.FC = () => {
+const AnimatedHeadline: React.FC<{ words?: string[] }> = ({ words }) => {
+  const activeWords = words && words.length > 0 ? words : ROTATING_WORDS;
   const [wordIndex, setWordIndex] = useState(0);
-  const [currentWord, setCurrentWord] = useState(ROTATING_WORDS[0]);
+  const [currentWord, setCurrentWord] = useState(activeWords[0]);
   const [exitingWord, setExitingWord] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (activeWords.length > 0) {
+      setCurrentWord(activeWords[0]);
+    }
+  }, [activeWords]);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 120);
@@ -70,9 +77,9 @@ const AnimatedHeadline: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setWordIndex((prevIdx) => {
-        const nextIdx = (prevIdx + 1) % ROTATING_WORDS.length;
-        setExitingWord(ROTATING_WORDS[prevIdx]);
-        setCurrentWord(ROTATING_WORDS[nextIdx]);
+        const nextIdx = (prevIdx + 1) % activeWords.length;
+        setExitingWord(activeWords[prevIdx % activeWords.length]);
+        setCurrentWord(activeWords[nextIdx]);
         setIsTransitioning(true);
 
         setTimeout(() => {
@@ -85,7 +92,7 @@ const AnimatedHeadline: React.FC = () => {
     }, 3600);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [activeWords]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -315,12 +322,18 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm"
             >
               <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
-              <span>{content?.heroEyebrow || 'Institutional Property Finance Advisory • 40+ Partner Lenders'}</span>
+              <span>{content?.heroEyebrow || 'PRIME ASSOCIATES • LOANS & CONSTRUCTIONS'}</span>
             </div>
           </div>
 
           <div className="w-full flex justify-center">
-            <AnimatedHeadline />
+            <AnimatedHeadline
+              words={
+                content?.heroRotatingWords
+                  ? content.heroRotatingWords.split(',').map((s: string) => s.trim()).filter(Boolean)
+                  : undefined
+              }
+            />
           </div>
 
           <p
@@ -377,18 +390,15 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
             className="w-full mt-6 sm:mt-8 pt-3.5 pb-3.5 px-4 sm:px-8 rounded-xl bg-slate-950/65 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-200"
           >
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
-                <span className="font-semibold text-white">Zero Advance Fees</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
-                <span className="font-semibold text-white">40+ Partner Lenders</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
-                <span className="font-semibold text-white">24–48h Rapid Sanction</span>
-              </div>
+              {(content?.heroBadges
+                ? content.heroBadges.split(',').map((b: string) => b.trim()).filter(Boolean)
+                : ['Zero Advance Fees', '40+ Partner Lenders', '24–48h Rapid Sanction']
+              ).map((badgeText: string, bIdx: number) => (
+                <div key={bIdx} className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
+                  <span className="font-semibold text-white">{badgeText}</span>
+                </div>
+              ))}
             </div>
 
             <div className="flex items-center gap-2 text-slate-300 text-xs justify-center mx-auto sm:mx-0">
@@ -534,29 +544,37 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
 /* ────────────────────────────────────────────────────────────
    3. STATS BAR SECTION
    ──────────────────────────────────────────────────────────── */
-const StatsBar: React.FC = () => {
+const StatsBar: React.FC<{ content?: SiteContent | null }> = ({ content }) => {
   const stats = [
     {
-      value: 'From 7.25%*',
-      label: 'Home Loans & Subsidy',
+      value: content?.statsCapital
+        ? `₹${content.statsCapital} ${content.statsCapitalSuffix || 'Cr+'}`
+        : 'From 7.25%*',
+      label: content?.statsCapitalLabel || 'Home Loans & Subsidy',
       sub: 'Self-construction, plots & tiled houses',
       icon: <TrendingUp className="w-5 h-5 text-brand-teal" />,
     },
     {
-      value: 'From 8.50%*',
-      label: 'Mortgage Loans (LAP)',
+      value: content?.statsLenders
+        ? `${content.statsLenders}${content.statsLendersSuffix || '+'}`
+        : 'From 8.50%*',
+      label: content?.statsLendersLabel || 'Mortgage Loans (LAP)',
       sub: 'Concrete, tiled house, empty land & commercial',
       icon: <Award className="w-5 h-5 text-brand-teal" />,
     },
     {
-      value: 'Govt. & Private',
-      label: 'Banking Network',
+      value: content?.statsSanction
+        ? `${content.statsSanction}${content.statsSanctionSuffix || '%'}`
+        : 'Govt. & Private',
+      label: content?.statsSanctionLabel || 'Banking Network',
       sub: 'Leading PSU & commercial private banks',
       icon: <Clock className="w-5 h-5 text-brand-teal" />,
     },
     {
-      value: 'Low ROI Switch',
-      label: 'Bank Takeover Desk',
+      value: content?.statsTurnaround
+        ? `${content.statsTurnaround} ${content.statsTurnaroundSuffix || 'Hours'}`
+        : 'Low ROI Switch',
+      label: content?.statsTurnaroundLabel || 'Bank Takeover Desk',
       sub: 'Private to Govt. bank lowest rate transfer',
       icon: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
     },
@@ -1065,11 +1083,11 @@ interface LenderRateRow {
   processingFee: string;
 }
 
-const RateComparisonMatrix: React.FC = () => {
+const RateComparisonMatrix: React.FC<{ content?: SiteContent | null }> = ({ content }) => {
   const [filterCategory, setFilterCategory] = useState<'All' | 'Public Bank' | 'Private Bank' | 'HFC / NBFC'>('All');
   const [activeTab, setActiveTab] = useState<'home' | 'lap'>('home');
 
-  const rateData: LenderRateRow[] = [
+  const defaultRateData: LenderRateRow[] = [
     {
       lender: 'State Bank of India (SBI)',
       category: 'Public Bank',
@@ -1171,6 +1189,40 @@ const RateComparisonMatrix: React.FC = () => {
       processingFee: 'Up to 1.25% + GST',
     },
   ];
+
+  const rateData = useMemo(() => {
+    if (content?.rateMatrix) {
+      try {
+        const parsed = JSON.parse(content.rateMatrix);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((item: any) => ({
+            lender: item.bankName,
+            category:
+              item.bankName.includes('SBI') ||
+              item.bankName.includes('State Bank') ||
+              item.bankName.includes('PNB') ||
+              item.bankName.includes('Baroda') ||
+              item.bankName.includes('Canara')
+                ? 'Public Bank'
+                : item.bankName.includes('Bajaj') ||
+                  item.bankName.includes('Tata') ||
+                  item.bankName.includes('LIC')
+                ? 'HFC / NBFC'
+                : 'Private Bank',
+            homeLoanRate: item.homeLoanRate,
+            lapRate: item.lapRate,
+            maxTenureHL: item.maxTenure || '30 Years',
+            maxTenureLAP: item.maxTenure || '15 Years',
+            maxLtv: item.ltv || 'Up to 80%',
+            processingFee: item.processingFee || '0.50% + GST',
+          }));
+        }
+      } catch (e) {
+        console.warn('Unable to parse rateMatrix', e);
+      }
+    }
+    return defaultRateData;
+  }, [content?.rateMatrix]);
 
   const filtered = filterCategory === 'All'
     ? rateData
@@ -1377,8 +1429,8 @@ const RateComparisonMatrix: React.FC = () => {
 /* ────────────────────────────────────────────────────────────
    6. HOW IT WORKS SECTION
    ──────────────────────────────────────────────────────────── */
-const HowItWorks: React.FC = () => {
-  const steps = [
+const HowItWorks: React.FC<{ content?: SiteContent | null }> = ({ content }) => {
+  const defaultSteps = [
     {
       number: '01',
       title: '3-Minute Digital Application',
@@ -1409,6 +1461,32 @@ const HowItWorks: React.FC = () => {
     },
   ];
 
+  const steps = useMemo(() => {
+    if (content?.processSteps) {
+      try {
+        const parsed = JSON.parse(content.processSteps);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const icons = [
+            <Smartphone className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />,
+            <FileText className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />,
+            <ShieldCheck className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />,
+            <Zap className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />,
+          ];
+          return parsed.map((p: any, i: number) => ({
+            number: p.stepNumber || `0${i + 1}`,
+            title: p.title,
+            desc: p.description,
+            tag: p.turnaround || 'Step',
+            icon: icons[i % icons.length],
+          }));
+        }
+      } catch (e) {
+        console.warn('Unable to parse processSteps', e);
+      }
+    }
+    return defaultSteps;
+  }, [content?.processSteps]);
+
   return (
     <section id="how-it-works" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
       <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
@@ -1418,10 +1496,11 @@ const HowItWorks: React.FC = () => {
             <span>Digital-First Processing</span>
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
-            How Your Loan Gets Approved in 4 Simple Steps
+            {content?.processTitle || 'How Your Loan Gets Approved in 4 Simple Steps'}
           </h2>
           <p className="mt-2.5 text-sm sm:text-base text-brand-slate leading-relaxed">
-            A structured advisory workflow that fast-tracks your loan from initial eligibility check to direct fund disbursement.
+            {content?.processSubtitle ||
+              'A structured advisory workflow that fast-tracks your loan from initial eligibility check to direct fund disbursement.'}
           </p>
         </div>
 
@@ -1664,12 +1743,37 @@ const ReviewCard: React.FC<{
   );
 };
 
-const TestimonialsSection: React.FC = () => {
+const TestimonialsSection: React.FC<{ content?: SiteContent | null }> = ({ content }) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  const activeReviews = useMemo(() => {
+    if (content?.testimonials) {
+      try {
+        const parsed = JSON.parse(content.testimonials);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((t: any) => ({
+            id: t.id || Math.random().toString(),
+            name: t.name,
+            role: `${t.location || 'Client'}`,
+            location: t.location || 'India',
+            product: t.loanType || 'Home Loan',
+            rating: t.rating || 5,
+            content: t.review,
+            amount: `${t.amount || 'Loan'} Sanctioned`,
+            highlight: `${t.loanType || 'Loan'} Approved`,
+            lenderTag: 'Verified Customer',
+          }));
+        }
+      } catch (e) {
+        console.warn('Unable to parse testimonials', e);
+      }
+    }
+    return REVIEWS;
+  }, [content?.testimonials]);
+
   const repeatedReviews = useMemo(() => {
-    return [...REVIEWS, ...REVIEWS];
-  }, []);
+    return [...activeReviews, ...activeReviews];
+  }, [activeReviews]);
 
   return (
     <section className="pt-12 sm:pt-16 pb-0 bg-transparent overflow-hidden">
@@ -2033,13 +2137,13 @@ export const HomePage: React.FC = () => {
       <Hero content={content} />
 
       {/* 2. Live Key Stats Counter */}
-      <StatsBar />
+      <StatsBar content={content} />
 
       {/* 3. Premier Lender Partners Network */}
       <LenderPartners />
 
       {/* 4. Live Multi-Lender Rate Comparison Matrix */}
-      <RateComparisonMatrix />
+      <RateComparisonMatrix content={content} />
 
       {/* 5. Dynamic EMI & FOIR Calculator Banner */}
       <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
@@ -2078,10 +2182,10 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 6. 4-Step Digital Application Journey */}
-      <HowItWorks />
+      <HowItWorks content={content} />
 
       {/* 7. Customer Testimonials & Reviews */}
-      <TestimonialsSection />
+      <TestimonialsSection content={content} />
 
       {/* 8. Why Work With Us & Advisory Principles */}
       <WhyWorkWithUs content={content} />

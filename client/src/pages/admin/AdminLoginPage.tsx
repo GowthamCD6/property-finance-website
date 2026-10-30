@@ -8,7 +8,6 @@ import {
   Eye,
   EyeOff,
   ShieldCheck,
-  Sparkles,
   KeyRound,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -279,7 +278,7 @@ export const AdminLoginPage: React.FC = () => {
           <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-1.5">
             <div className="flex items-center justify-between text-[11px] font-semibold text-slate-700 font-heading">
               <span className="flex items-center gap-1.5 text-brand-navy">
-                <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
+                <KeyRound className="w-3.5 h-3.5 text-teal-600" />
                 <span>Test Accounts</span>
               </span>
               <span className="text-[10px] text-brand-slate font-mono">1-Click</span>

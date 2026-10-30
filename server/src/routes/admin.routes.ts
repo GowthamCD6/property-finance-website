@@ -3,6 +3,7 @@ import { requireAdminAuth } from '../middleware/auth';
 import {
   getDashboardStats,
   getEnquiries,
+  createAdminEnquiry,
   getEnquiryById,
   updateEnquiryStatus,
   addEnquiryNote,
@@ -21,6 +22,7 @@ import {
   deleteFaq,
   getAvailabilitySettings,
   updateWeeklyConfig,
+  bulkUpdateWeeklySchedule,
   blockDate,
   unblockDate,
 } from '../controllers/admin.controller';
@@ -35,6 +37,7 @@ router.get('/dashboard-stats', getDashboardStats);
 
 // Enquiries
 router.get('/enquiries', getEnquiries);
+router.post('/enquiries', createAdminEnquiry);
 router.get('/enquiries/export', exportEnquiriesCsv);
 router.get('/enquiries/:id', getEnquiryById);
 router.patch('/enquiries/:id/status', updateEnquiryStatus);
@@ -62,6 +65,7 @@ router.delete('/faqs/:id', deleteFaq);
 
 // Availability & Schedule Management
 router.get('/availability', getAvailabilitySettings);
+router.put('/availability/weekly-bulk', bulkUpdateWeeklySchedule);
 router.put('/availability/weekly/:id', updateWeeklyConfig);
 router.post('/availability/block-date', blockDate);
 router.delete('/availability/block-date/:date', unblockDate);

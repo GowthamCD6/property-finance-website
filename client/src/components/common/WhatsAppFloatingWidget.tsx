@@ -8,11 +8,12 @@ interface WhatsAppFloatingWidgetProps {
 
 export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ content }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const phone = content?.businessPhone || '+91 96555 66613';
-  const cleanPhone = phone.split(',')[0].replace(/[^0-9]/g, '') || '919655566613';
+  const rawPhone = content?.whatsappNumber || content?.businessPhone || '+91 96555 66613';
+  const cleanPhone = rawPhone.split(',')[0].replace(/[^0-9]/g, '') || '919655566613';
 
   const defaultMessage = encodeURIComponent(
-    'Hello Prime Associates, I would like to consult with an advisor regarding a Home Loan / Mortgage Loan / Subsidy requirement.'
+    content?.whatsappMessage ||
+      'Hello Prime Associates, I would like to consult with an advisor regarding a Home Loan / Mortgage Loan / Subsidy requirement.'
   );
 
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${defaultMessage}`;
@@ -59,7 +60,7 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
             className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-corporate text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>Chat on WhatsApp ({phone})</span>
+            <span>Chat on WhatsApp ({rawPhone.split(',')[0].trim()})</span>
           </a>
 
           <div className="mt-2 text-center text-[10px] text-brand-slate">
