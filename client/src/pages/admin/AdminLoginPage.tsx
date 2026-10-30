@@ -85,7 +85,7 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FB] flex flex-col justify-center items-center py-10 px-4 sm:px-6 font-sans antialiased selection:bg-brand-teal selection:text-white">
+    <div className="admin-portal min-h-screen bg-[#F7F9FB] flex flex-col justify-center items-center py-10 px-4 sm:px-6 font-sans antialiased selection:bg-brand-teal selection:text-white">
       {/* Main Executive Login Card */}
       <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-[0_4px_24px_-2px_rgba(24,50,71,0.08)] border border-slate-200/90 p-7 sm:p-9 space-y-6">
         

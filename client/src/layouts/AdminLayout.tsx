@@ -170,7 +170,7 @@ export const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#f4f6f8] flex font-sans antialiased text-slate-800">
+    <div className="admin-portal h-screen w-screen overflow-hidden bg-[#f4f6f8] flex font-sans antialiased text-slate-800">
       {/* ────────────────────────────────────────────────────────────
           1. FIXED DESKTOP SIDEBAR WITH CENTERED LOGO (NO COLLAPSE TOGGLE)
           ──────────────────────────────────────────────────────────── */}
