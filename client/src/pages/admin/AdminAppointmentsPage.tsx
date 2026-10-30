@@ -323,10 +323,29 @@ export const AdminAppointmentsPage: React.FC = () => {
   };
 
   const formatAmountINR = (val?: number) => {
-    if (!val) return '₹ 0';
-    if (val >= 10000000) return `₹ ${(val / 10000000).toFixed(2)} Cr`;
-    if (val >= 100000) return `₹ ${(val / 100000).toFixed(1)} Lakhs`;
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(val);
+    if (!val) return '₹0';
+    if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
+    if (val >= 100000) return `₹${(val / 100000).toFixed(1)} Lakhs`;
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0,
+    }).format(val);
+  };
+
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr || dateStr === 'Pending Advisor Allotment') return 'Pending';
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+    } catch {
+      return dateStr;
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -933,9 +952,11 @@ export const AdminAppointmentsPage: React.FC = () => {
                           {/* Slot Column */}
                           <td className="py-4 px-4 whitespace-nowrap">
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-[#0c1a26] text-xs font-mono">{appt.date}</span>
+                              <span className="font-extrabold text-[#0c1a26] text-xs font-heading">
+                                {formatDate(appt.date)}
+                              </span>
                               {isToday && (
-                                <span className="px-2 py-0.5 rounded-full bg-teal-600 text-white text-[9px] font-bold font-heading uppercase">
+                                <span className="px-2 py-0.5 rounded-full bg-teal-600 text-white text-[9px] font-bold font-heading uppercase tracking-wide">
                                   Today
                                 </span>
                               )}
@@ -1010,11 +1031,11 @@ export const AdminAppointmentsPage: React.FC = () => {
                           </td>
 
                           {/* Loan Column */}
-                          <td className="py-4 px-4">
-                            <span className="font-bold text-[#0c1a26] text-xs block">
+                          <td className="py-4 px-4 whitespace-nowrap">
+                            <span className="font-bold text-[#0c1a26] text-xs block font-heading">
                               {appt.enquiry?.loanType || 'Loan Facility'}
                             </span>
-                            <span className="font-mono text-xs font-extrabold text-teal-700">
+                            <span className="text-xs font-extrabold text-teal-700 font-heading tabular-nums">
                               {formatAmountINR(appt.enquiry?.loanAmount)}
                             </span>
                           </td>

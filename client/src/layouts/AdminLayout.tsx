@@ -377,30 +377,18 @@ export const AdminLayout: React.FC = () => {
           <div className="flex items-center gap-3">
             {/* Live IST Time */}
             {currentTime && (
-              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-600 text-xs font-mono font-medium border border-slate-200">
+              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-600 text-xs font-heading font-semibold border border-slate-200 shadow-2xs">
                 <Clock className="w-3.5 h-3.5 text-teal-600" />
                 <span>{currentTime} IST</span>
               </div>
             )}
-
-            {/* Register Borrower Button */}
-            <button
-              type="button"
-              onClick={() => setIsRegisterModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold font-heading text-white bg-teal-600 hover:bg-teal-700 transition-colors shadow-xs cursor-pointer active:scale-[0.98]"
-              title="Register a New Borrower Dossier"
-            >
-              <UserPlus className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Register Borrower</span>
-              <span className="sm:hidden">Register</span>
-            </button>
 
             {/* View Live Public Site */}
             <a
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-[#0c1a26] bg-white hover:bg-slate-50 border border-slate-200 shadow-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold font-heading text-[#0c1a26] bg-white hover:bg-slate-50 border border-slate-200 shadow-xs hover:border-teal-300 transition-colors"
               title="Open Public User Website in New Tab"
             >
               <Globe className="w-3.5 h-3.5 text-teal-600" />

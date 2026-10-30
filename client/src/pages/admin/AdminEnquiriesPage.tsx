@@ -223,10 +223,10 @@ export const AdminEnquiriesPage: React.FC = () => {
     }
   };
 
-  const formatAmountINR = (val: number) => {
-    if (!val) return '₹ 0';
-    if (val >= 10000000) return `₹ ${(val / 10000000).toFixed(2)} Cr`;
-    if (val >= 100000) return `₹ ${(val / 100000).toFixed(1)} Lakhs`;
+  const formatAmountINR = (val?: number) => {
+    if (!val) return '₹0';
+    if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
+    if (val >= 100000) return `₹${(val / 100000).toFixed(1)} Lakhs`;
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -234,26 +234,112 @@ export const AdminEnquiriesPage: React.FC = () => {
     }).format(val);
   };
 
-  const getStatusBadge = (status: string) => {
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr || dateStr === 'Pending Advisor Allotment') return 'Pending';
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const getFacilityBadge = (loanType?: string) => {
+    const type = (loanType || 'Home Loan').toLowerCase();
+    if (type.includes('lap') || type.includes('property')) {
+      return 'bg-indigo-50 text-indigo-700 border-indigo-200/90';
+    }
+    if (type.includes('vehicle') || type.includes('car')) {
+      return 'bg-purple-50 text-purple-700 border-purple-200/90';
+    }
+    if (type.includes('business') || type.includes('commercial')) {
+      return 'bg-amber-50 text-amber-800 border-amber-200/90';
+    }
+    return 'bg-teal-50 text-teal-800 border-teal-200/90';
+  };
+
+  const getStatusBadgeConfig = (status: string) => {
     switch (status) {
       case 'New':
-        return 'bg-blue-50 text-blue-700 border-blue-200/80 ring-1 ring-blue-500/10';
+        return {
+          badge: 'bg-sky-50 text-sky-800 border-sky-200/90',
+          dot: 'bg-sky-500',
+        };
       case 'Contacted':
-        return 'bg-amber-50 text-amber-700 border-amber-200/80 ring-1 ring-amber-500/10';
+        return {
+          badge: 'bg-amber-50 text-amber-800 border-amber-200/90',
+          dot: 'bg-amber-500',
+        };
       case 'Follow-up Required':
-        return 'bg-orange-50 text-orange-700 border-orange-200/80 ring-1 ring-orange-500/10';
+        return {
+          badge: 'bg-orange-50 text-orange-800 border-orange-200/90',
+          dot: 'bg-orange-500',
+        };
       case 'Appointment Requested':
-        return 'bg-purple-50 text-purple-700 border-purple-200/80 ring-1 ring-purple-500/10';
+        return {
+          badge: 'bg-purple-50 text-purple-800 border-purple-200/90',
+          dot: 'bg-purple-500',
+        };
       case 'Appointment Confirmed':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200/80 ring-1 ring-emerald-500/10';
+        return {
+          badge: 'bg-emerald-50 text-emerald-800 border-emerald-200/90',
+          dot: 'bg-emerald-500',
+        };
       case 'In Review':
-        return 'bg-indigo-50 text-indigo-700 border-indigo-200/80 ring-1 ring-indigo-500/10';
+        return {
+          badge: 'bg-indigo-50 text-indigo-800 border-indigo-200/90',
+          dot: 'bg-indigo-500',
+        };
       case 'Converted':
-        return 'bg-teal-50 text-teal-800 border-teal-200/80 ring-1 ring-teal-500/10';
+        return {
+          badge: 'bg-teal-50 text-teal-900 border-teal-300',
+          dot: 'bg-teal-600',
+        };
       case 'Closed':
-        return 'bg-slate-100 text-slate-600 border-slate-200/80 ring-1 ring-slate-500/10';
+        return {
+          badge: 'bg-slate-100 text-slate-700 border-slate-200',
+          dot: 'bg-slate-400',
+        };
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200/80 ring-1 ring-slate-500/10';
+        return {
+          badge: 'bg-slate-100 text-slate-700 border-slate-200',
+          dot: 'bg-slate-400',
+        };
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    return getStatusBadgeConfig(status).badge;
+  };
+
+  const getModeBadge = (mode?: string) => {
+    switch (mode) {
+      case 'video':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold font-heading bg-sky-50 text-sky-800 border border-sky-200">
+            <Video className="w-3 h-3 text-sky-600" />
+            <span>Google Meet</span>
+          </span>
+        );
+      case 'in_person':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold font-heading bg-purple-50 text-purple-800 border border-purple-200">
+            <Building2 className="w-3 h-3 text-purple-600" />
+            <span>Tirupur Desk</span>
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold font-heading bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <Phone className="w-3 h-3 text-emerald-600" />
+            <span>Direct Call</span>
+          </span>
+        );
     }
   };
 
@@ -371,7 +457,7 @@ export const AdminEnquiriesPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] font-heading">
+              <tr className="bg-slate-50/80 border-b border-slate-200/90 text-slate-500 font-extrabold uppercase tracking-wider text-[10px] font-heading">
                 <th className="py-3.5 px-4">Applicant &amp; Contact</th>
                 <th className="py-3.5 px-4">Reference</th>
                 <th className="py-3.5 px-4">Location</th>
@@ -382,44 +468,47 @@ export const AdminEnquiriesPage: React.FC = () => {
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 font-sans">
               {loading ? (
                 <tr>
                   <td colSpan={8} className="py-16 text-center text-slate-500 font-sans">
                     <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600 mb-2" />
-                    <span>Loading pipeline records...</span>
+                    <span className="text-xs">Loading pipeline records...</span>
                   </td>
                 </tr>
               ) : enquiries.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-16 text-center text-slate-500 font-sans">
                     <FileSpreadsheet className="w-9 h-9 mx-auto text-slate-300 mb-2" />
-                    <span>No enquiries match the current filters.</span>
+                    <span className="text-xs font-semibold">No enquiries match the current filters.</span>
                   </td>
                 </tr>
               ) : (
                 enquiries.map((enq) => {
                   const appointment = enq.appointments && enq.appointments[0];
-                  const initials = enq.fullName
-                    .split(' ')
-                    .map((n: string) => n[0])
-                    .slice(0, 2)
-                    .join('')
-                    .toUpperCase() || 'AP';
+                  const initials =
+                    enq.fullName
+                      .split(' ')
+                      .map((n: string) => n[0])
+                      .slice(0, 2)
+                      .join('')
+                      .toUpperCase() || 'AP';
+                  const statusCfg = getStatusBadgeConfig(enq.status);
 
                   return (
                     <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors group">
-                      <td className="py-3.5 px-4">
+                      {/* Applicant & Contact */}
+                      <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
                           {enq.customer?.picture ? (
                             <div className="relative shrink-0">
                               <img
                                 src={enq.customer.picture}
                                 alt={enq.fullName}
-                                className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-2xs"
+                                className="w-9 h-9 rounded-full object-cover border border-slate-200 shadow-2xs"
                               />
                               <span
-                                className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+                                className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
                                 title="Google Authenticated"
                               >
                                 ✓
@@ -427,12 +516,12 @@ export const AdminEnquiriesPage: React.FC = () => {
                             </div>
                           ) : (
                             <div className="relative shrink-0">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-teal-600 to-teal-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs font-heading">
                                 {initials}
                               </div>
                               {(enq.customer?.email || enq.customerId) && (
                                 <span
-                                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+                                  className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
                                   title="Google Authenticated"
                                 >
                                   ✓
@@ -440,19 +529,22 @@ export const AdminEnquiriesPage: React.FC = () => {
                               )}
                             </div>
                           )}
-                          <div>
+                          <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <span className="font-bold text-[#0c1a26] block font-heading text-xs group-hover:text-teal-700 transition-colors">
+                              <span className="font-extrabold text-[#0c1a26] block font-heading text-xs sm:text-[13px] group-hover:text-teal-700 transition-colors truncate">
                                 {enq.fullName}
                               </span>
                               {(enq.customer?.email || enq.customerId) && (
-                                <span title="Google Verified Applicant">
-                                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                <span title="Google Verified Applicant" className="shrink-0">
+                                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
-                              <a href={`tel:${enq.mobileNumber}`} className="hover:text-teal-700 hover:underline">
+                            <div className="flex items-center gap-2 text-[11px] text-slate-500 font-sans mt-0.5">
+                              <a
+                                href={`tel:${enq.mobileNumber}`}
+                                className="hover:text-teal-700 hover:underline font-semibold text-slate-600"
+                              >
                                 {enq.mobileNumber}
                               </a>
                               {enq.mobileNumber && (
@@ -462,58 +554,78 @@ export const AdminEnquiriesPage: React.FC = () => {
                                   )},%20this%20is%20Prime%20Associates%20Loans%20regarding%20your%20property%20loan%20enquiry%20Ref:%20${enq.referenceNumber}.`}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="text-[10px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.2 rounded font-bold border border-emerald-200"
+                                  className="inline-flex items-center gap-0.5 text-[10px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.5 rounded-md font-extrabold border border-emerald-200 transition-colors"
                                   title="Chat on WhatsApp"
                                 >
-                                  WA
+                                  <span>WA</span>
                                 </a>
                               )}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-bold text-teal-800 text-xs">
-                        <span className="bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
+
+                      {/* Reference Badge */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold font-heading text-slate-700 bg-slate-100/90 hover:bg-slate-200 border border-slate-200/90 transition-colors tracking-wide">
                           {enq.referenceNumber}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-600 font-sans">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-slate-400" />
-                          <span>{enq.cityState}</span>
+
+                      {/* Location */}
+                      <td className="py-4 px-4 text-slate-600">
+                        <div className="flex items-center gap-1.5 text-xs font-medium">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="truncate max-w-[120px]">{enq.cityState || 'Tamil Nadu'}</span>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 font-semibold text-[#0c1a26] font-heading">
-                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px]">
+
+                      {/* Facility Type */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <span
+                          className={`inline-block px-2.5 py-1 rounded-lg text-[11px] font-bold font-heading border ${getFacilityBadge(
+                            enq.loanType
+                          )}`}
+                        >
                           {enq.loanType}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 font-extrabold text-teal-700 font-mono text-xs">
-                        {formatAmountINR(enq.loanAmount)}
+
+                      {/* Sanction Requested Amount */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <div className="font-heading font-extrabold text-[13px] sm:text-sm text-[#0c1a26] tracking-tight tabular-nums">
+                          {formatAmountINR(enq.loanAmount)}
+                        </div>
+                        <span className="text-[10px] text-slate-400 font-sans block">Requested</span>
                       </td>
-                      <td className="py-3.5 px-4 text-[11px]">
+
+                      {/* Allotted Slot Column */}
+                      <td className="py-4 px-4 text-xs whitespace-nowrap">
                         {appointment || enq.status === 'Appointment Confirmed' ? (
-                          <div className="space-y-0.5">
-                            <span className="font-bold text-[#0c1a26] block font-mono text-[11px]">
-                              {appointment?.date || enq.preferredDate}
-                            </span>
-                            <span className="text-slate-500 font-sans text-[10px] block">
-                              {appointment?.timeSlot || enq.preferredTimeSlot}
-                            </span>
-                            <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-teal-50 text-teal-800 border border-teal-200 uppercase font-heading">
-                              {appointment?.meetingMode?.replace('_', ' ') || enq.meetingMode?.replace('_', ' ') || 'phone'}
-                            </span>
+                          <div className="space-y-1">
+                            <div className="font-heading font-extrabold text-[#0c1a26] text-xs flex items-center gap-1.5">
+                              <Calendar className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                              <span>{formatDate(appointment?.date || enq.preferredDate)}</span>
+                            </div>
+                            <div className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                              <span>{appointment?.timeSlot || enq.preferredTimeSlot}</span>
+                            </div>
+                            <div className="pt-0.5">
+                              {getModeBadge(appointment?.meetingMode || enq.meetingMode)}
+                            </div>
                           </div>
                         ) : (
-                          <div className="space-y-1">
-                            <span className="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold border border-amber-200 block w-fit">
-                              Awaiting Allotment
+                          <div className="flex flex-col gap-1.5 items-start">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold font-heading bg-amber-50 text-amber-800 border border-amber-200">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                              <span>Awaiting Slot</span>
                             </span>
                             <button
                               type="button"
                               onClick={() => handleOpenDetail(enq.id, 'appointment')}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold font-heading shadow-2xs transition-colors cursor-pointer"
-                              title="Click to allot meeting date and time slot"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-lg text-[10px] font-extrabold font-heading shadow-xs hover:shadow-sm transition-all cursor-pointer active:scale-95"
+                              title="Allot consultation date and slot"
                             >
                               <Calendar className="w-3 h-3" />
                               <span>+ Allot Slot</span>
@@ -521,23 +633,26 @@ export const AdminEnquiriesPage: React.FC = () => {
                           </div>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 whitespace-nowrap">
+
+                      {/* Pipeline Status */}
+                      <td className="py-4 px-4 whitespace-nowrap">
                         <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border font-heading ${getStatusBadge(
-                            enq.status
-                          )}`}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold border font-heading ${statusCfg.badge}`}
                         >
-                          {enq.status}
+                          <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
+                          <span>{enq.status}</span>
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
+
+                      {/* Actions */}
+                      <td className="py-4 px-4 text-right whitespace-nowrap">
                         <button
                           type="button"
                           onClick={() => handleOpenDetail(enq.id, 'overview')}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 bg-teal-50 text-teal-800 hover:bg-teal-600 hover:text-white rounded-xl text-xs font-bold font-heading transition-all border border-teal-200/80 cursor-pointer shadow-xs active:scale-[0.98]"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#0c1a26] text-slate-700 hover:text-white rounded-xl text-xs font-extrabold font-heading transition-all border border-slate-200/90 cursor-pointer shadow-2xs hover:shadow-sm active:scale-95 group"
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>Review File</span>
+                          <Eye className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
+                          <span>Review Dossier</span>
                         </button>
                       </td>
                     </tr>

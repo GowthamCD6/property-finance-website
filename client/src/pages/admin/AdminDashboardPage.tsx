@@ -62,9 +62,9 @@ export const AdminDashboardPage: React.FC = () => {
   }, []);
 
   const formatAmountINR = (val: number) => {
-    if (!val) return '₹ 0';
-    if (val >= 10000000) return `₹ ${(val / 10000000).toFixed(2)} Cr`;
-    if (val >= 100000) return `₹ ${(val / 100000).toFixed(1)} Lakhs`;
+    if (!val) return '₹0';
+    if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
+    if (val >= 100000) return `₹${(val / 100000).toFixed(1)} Lakhs`;
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -409,15 +409,17 @@ export const AdminDashboardPage: React.FC = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="py-3.5 px-4 font-mono font-bold text-teal-800 text-xs">
-                          {enq.referenceNumber}
+                        <td className="py-3.5 px-4 font-bold font-heading text-slate-700 text-xs">
+                          <span className="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg border border-slate-200/90 tracking-wide">
+                            {enq.referenceNumber}
+                          </span>
                         </td>
                         <td className="py-3.5 px-4">
-                          <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-semibold">
+                          <span className="inline-block px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 text-[11px] font-bold font-heading border border-teal-200/80">
                             {enq.loanType}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-extrabold text-teal-700 font-mono text-xs">
+                        <td className="py-3.5 px-4 font-extrabold text-[#0c1a26] font-heading text-xs tabular-nums">
                           {formatAmountINR(enq.loanAmount)}
                         </td>
                         <td className="py-3.5 px-4">
