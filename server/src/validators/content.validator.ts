@@ -62,7 +62,17 @@ export const updateAppointmentSchema = z.object({
   status: z.enum(['Requested', 'Confirmed', 'Rescheduled', 'Cancelled', 'Completed']),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   timeSlot: z.string().min(3).optional(),
+  meetingMode: z.enum(['phone', 'video', 'in_person']).optional(),
   rescheduleReason: z.string().trim().max(500).optional(),
   cancellationReason: z.string().trim().max(500).optional(),
+  adminNotes: z.string().trim().max(1000).optional(),
+});
+
+export const createAppointmentSchema = z.object({
+  enquiryId: z.string().min(1, 'Enquiry ID is required'),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
+  timeSlot: z.string().min(3, 'Time slot is required'),
+  meetingMode: z.enum(['phone', 'video', 'in_person']).default('phone'),
+  status: z.enum(['Requested', 'Confirmed', 'Rescheduled', 'Completed']).default('Confirmed'),
   adminNotes: z.string().trim().max(1000).optional(),
 });

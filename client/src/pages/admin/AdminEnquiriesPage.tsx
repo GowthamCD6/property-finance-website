@@ -25,6 +25,7 @@ import {
   ExternalLink,
   Car,
   Landmark,
+  Video,
 } from 'lucide-react';
 import { Enquiry, UploadedDocument } from '../../types';
 import {
@@ -32,6 +33,7 @@ import {
   getEnquiryByIdApi,
   updateEnquiryStatusApi,
   addEnquiryNoteApi,
+  createAppointmentApi,
   getExportEnquiriesCsvUrl,
 } from '../../services/api';
 
@@ -77,6 +79,23 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [newNoteContent, setNewNoteContent] = useState<string>('');
   const [noteSubmitting, setNoteSubmitting] = useState<boolean>(false);
 
+  // Appointment Allotment State
+  const [isAllotting, setIsAllotting] = useState<boolean>(false);
+  const [allotDate, setAllotDate] = useState<string>('');
+  const [allotSlot, setAllotSlot] = useState<string>('11:30 AM - 12:30 PM');
+  const [allotMode, setAllotMode] = useState<'phone' | 'video' | 'in_person'>('phone');
+  const [allotNotes, setAllotNotes] = useState<string>('');
+  const [allotSubmitting, setAllotSubmitting] = useState<boolean>(false);
+  const [allotSuccess, setAllotSuccess] = useState<string | null>(null);
+
+  const STANDARD_SLOTS = [
+    '10:00 AM - 11:00 AM',
+    '11:30 AM - 12:30 PM',
+    '02:00 PM - 03:00 PM',
+    '03:30 PM - 04:30 PM',
+    '05:00 PM - 06:00 PM',
+  ];
+
   const fetchList = () => {
     setLoading(true);
     getEnquiriesApi({
@@ -109,14 +128,49 @@ export const AdminEnquiriesPage: React.FC = () => {
   const handleOpenDetail = (id: string) => {
     setSelectedEnquiryId(id);
     setDetailLoading(true);
+    setIsAllotting(false);
+    setAllotSuccess(null);
     getEnquiryByIdApi(id)
       .then((enq) => {
         setDetailEnquiry(enq);
         setNewStatus(enq.status);
         setStatusNote('');
+        setAllotDate(enq.preferredDate || new Date().toISOString().split('T')[0]);
+        setAllotSlot(enq.preferredTimeSlot || '11:30 AM - 12:30 PM');
+        setAllotMode(enq.meetingMode || 'phone');
+        setAllotNotes('');
       })
       .catch((err) => console.error('Error loading enquiry detail:', err))
       .finally(() => setDetailLoading(false));
+  };
+
+  const handleAllotAppointmentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!detailEnquiry || !allotDate || !allotSlot) return;
+
+    setAllotSubmitting(true);
+    setAllotSuccess(null);
+    try {
+      await createAppointmentApi({
+        enquiryId: detailEnquiry.id,
+        date: allotDate,
+        timeSlot: allotSlot,
+        meetingMode: allotMode,
+        adminNotes: allotNotes.trim() || undefined,
+      });
+
+      // Reload detail
+      const refreshed = await getEnquiryByIdApi(detailEnquiry.id);
+      setDetailEnquiry(refreshed);
+      setNewStatus('Appointment Confirmed');
+      setIsAllotting(false);
+      setAllotSuccess('Consultation appointment confirmed & allotted successfully!');
+      fetchList();
+    } catch (err: any) {
+      alert(err.message || 'Failed to allot appointment');
+    } finally {
+      setAllotSubmitting(false);
+    }
   };
 
   const handleStatusUpdate = async (e: React.FormEvent) => {
@@ -690,25 +744,179 @@ export const AdminEnquiriesPage: React.FC = () => {
                     )}
                   </div>
 
-                  {/* Consultation / Appointment Info */}
-                  <div className="border border-brand-border rounded-xl p-4 space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-brand-slate">
-                      Consultation Appointment
-                    </h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Date &amp; Slot</span>
-                        <span className="font-bold text-brand-navy">
-                          {detailEnquiry.preferredDate} ({detailEnquiry.preferredTimeSlot})
-                        </span>
+                  {/* Consultation / Appointment Allotment Center */}
+                  <div className="border border-brand-border rounded-2xl p-5 space-y-4 bg-slate-50/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-brand-teal" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-brand-navy font-heading">
+                          Consultation Scheduling &amp; Allotment
+                        </h4>
                       </div>
-                      <div>
-                        <span className="text-brand-slate block text-[11px]">Mode</span>
-                        <span className="font-semibold text-brand-navy capitalize">
-                          {detailEnquiry.meetingMode}
-                        </span>
-                      </div>
+                      {!isAllotting && (
+                        <button
+                          type="button"
+                          onClick={() => setIsAllotting(true)}
+                          className="px-3 py-1.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-lg text-xs font-bold font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{detailEnquiry.status === 'Appointment Confirmed' ? 'Change Allotted Slot' : 'Allot Time Slot'}</span>
+                        </button>
+                      )}
                     </div>
+
+                    {allotSuccess && (
+                      <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span className="font-semibold">{allotSuccess}</span>
+                      </div>
+                    )}
+
+                    {!isAllotting ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-white rounded-xl border border-slate-200">
+                        <div>
+                          <span className="text-slate-400 block text-[11px] font-medium">Allotted Date &amp; Slot</span>
+                          <span className="font-bold text-brand-navy text-xs font-mono">
+                            {detailEnquiry.preferredDate || 'Not Set'} &bull; {detailEnquiry.preferredTimeSlot || 'Pending'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[11px] font-medium">Channel Mode</span>
+                          <span className="font-semibold text-brand-navy capitalize text-xs">
+                            {detailEnquiry.meetingMode?.replace('_', ' ') || 'Phone Call'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[11px] font-medium">Schedule Status</span>
+                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold mt-0.5 ${
+                            detailEnquiry.status === 'Appointment Confirmed'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : 'bg-amber-100 text-amber-800'
+                          }`}>
+                            {detailEnquiry.status === 'Appointment Confirmed' ? '● Confirmed Slot' : 'Awaiting Allotment'}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleAllotAppointmentSubmit} className="space-y-3.5 p-4 bg-white rounded-xl border border-teal-300 ring-2 ring-teal-500/10">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
+                              Select Date
+                            </label>
+                            <input
+                              type="date"
+                              required
+                              value={allotDate}
+                              onChange={(e) => setAllotDate(e.target.value)}
+                              className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-brand-navy focus:bg-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
+                              Allot Time Slot
+                            </label>
+                            <select
+                              value={allotSlot}
+                              onChange={(e) => setAllotSlot(e.target.value)}
+                              className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-brand-navy focus:bg-white"
+                            >
+                              {STANDARD_SLOTS.map((slot) => (
+                                <option key={slot} value={slot}>
+                                  {slot}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
+                            Consultation Channel
+                          </label>
+                          <div className="grid grid-cols-3 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setAllotMode('phone')}
+                              className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
+                                allotMode === 'phone'
+                                  ? 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold'
+                                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                              }`}
+                            >
+                              <Phone className="w-3.5 h-3.5 mx-auto mb-0.5 text-emerald-600" />
+                              <span className="text-[10px] block">Direct Phone</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setAllotMode('video')}
+                              className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
+                                allotMode === 'video'
+                                  ? 'bg-sky-50 text-sky-900 border-sky-400 font-bold'
+                                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                              }`}
+                            >
+                              <Video className="w-3.5 h-3.5 mx-auto mb-0.5 text-sky-600" />
+                              <span className="text-[10px] block">Google Meet</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setAllotMode('in_person')}
+                              className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
+                                allotMode === 'in_person'
+                                  ? 'bg-purple-50 text-purple-900 border-purple-400 font-bold'
+                                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                              }`}
+                            >
+                              <Building className="w-3.5 h-3.5 mx-auto mb-0.5 text-purple-600" />
+                              <span className="text-[10px] block">Tirupur Office</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-brand-navy mb-1 font-heading">
+                            Administrative Note / Google Meet Link
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Google Meet: meet.google.com/xyz-abcd-efg or applicant to bring land patta..."
+                            value={allotNotes}
+                            onChange={(e) => setAllotNotes(e.target.value)}
+                            className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-brand-navy"
+                          />
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setIsAllotting(false)}
+                            className="px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-50"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={allotSubmitting}
+                            className="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-lg text-xs font-bold font-heading flex items-center gap-1.5"
+                          >
+                            {allotSubmitting ? (
+                              <>
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                <span>Saving Slot...</span>
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle className="w-3.5 h-3.5" />
+                                <span>Confirm &amp; Allot Slot</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </form>
+                    )}
                   </div>
 
                   {/* Internal Consultant Notes */}

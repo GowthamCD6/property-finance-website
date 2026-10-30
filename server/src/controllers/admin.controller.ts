@@ -8,6 +8,7 @@ import {
   updateEnquiryStatusSchema,
   addEnquiryNoteSchema,
   updateAppointmentSchema,
+  createAppointmentSchema,
 } from '../validators/content.validator';
 
 // 1. Dashboard Metrics & Stats
@@ -457,6 +458,105 @@ export async function updateAppointment(req: AuthenticatedRequest, res: Response
       success: true,
       message: `Appointment updated to ${parsed.status}.`,
       data: updated,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function createAppointment(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const parsed = createAppointmentSchema.parse(req.body);
+
+    const enquiry = await prisma.enquiry.findUnique({
+      where: { id: parsed.enquiryId },
+    });
+
+    if (!enquiry) {
+      res.status(404).json({ success: false, message: 'Enquiry not found' });
+      return;
+    }
+
+    // Check conflict if Confirmed
+    if (parsed.status === 'Confirmed') {
+      const conflict = await prisma.appointment.findFirst({
+        where: {
+          date: parsed.date,
+          timeSlot: parsed.timeSlot,
+          status: 'Confirmed',
+        },
+      });
+
+      if (conflict && conflict.enquiryId !== parsed.enquiryId) {
+        res.status(409).json({
+          success: false,
+          message: `Slot ${parsed.timeSlot} on ${parsed.date} is already confirmed for another applicant. Please choose another time slot.`,
+        });
+        return;
+      }
+    }
+
+    const appointment = await prisma.$transaction(async (tx) => {
+      // Find existing appointment for this enquiry
+      const existingAppt = await tx.appointment.findFirst({
+        where: { enquiryId: parsed.enquiryId },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      let appt;
+      if (existingAppt) {
+        appt = await tx.appointment.update({
+          where: { id: existingAppt.id },
+          data: {
+            date: parsed.date,
+            timeSlot: parsed.timeSlot,
+            meetingMode: parsed.meetingMode,
+            status: parsed.status,
+            adminNotes: parsed.adminNotes || existingAppt.adminNotes,
+          },
+        });
+      } else {
+        appt = await tx.appointment.create({
+          data: {
+            enquiryId: parsed.enquiryId,
+            date: parsed.date,
+            timeSlot: parsed.timeSlot,
+            meetingMode: parsed.meetingMode,
+            status: parsed.status,
+            adminNotes: parsed.adminNotes,
+          },
+        });
+      }
+
+      // Update enquiry status
+      await tx.enquiry.update({
+        where: { id: parsed.enquiryId },
+        data: {
+          status: 'Appointment Confirmed',
+          preferredDate: parsed.date,
+          preferredTimeSlot: parsed.timeSlot,
+          meetingMode: parsed.meetingMode,
+        },
+      });
+
+      // Record in status history
+      await tx.statusHistory.create({
+        data: {
+          enquiryId: parsed.enquiryId,
+          fromStatus: enquiry.status,
+          toStatus: 'Appointment Confirmed',
+          changedBy: req.admin?.name || 'Administrator',
+          note: `Appointment allotted for ${parsed.date} at ${parsed.timeSlot} (${parsed.meetingMode.toUpperCase()}). ${parsed.adminNotes ? 'Notes: ' + parsed.adminNotes : ''}`,
+        },
+      });
+
+      return appt;
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Consultation appointment allotted and confirmed.',
+      data: appointment,
     });
   } catch (err) {
     next(err);

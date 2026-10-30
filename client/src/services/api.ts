@@ -320,6 +320,24 @@ export async function getAppointmentsApi(params?: { status?: string; date?: stri
   return json.data;
 }
 
+export async function createAppointmentApi(data: {
+  enquiryId: string;
+  date: string;
+  timeSlot: string;
+  meetingMode?: string;
+  status?: string;
+  adminNotes?: string;
+}): Promise<Appointment> {
+  const res = await fetch(`${API_BASE}/admin/appointments`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to allot appointment');
+  return json.data;
+}
+
 export async function updateAppointmentApi(id: string, data: any): Promise<Appointment> {
   const res = await fetch(`${API_BASE}/admin/appointments/${id}`, {
     method: 'PATCH',

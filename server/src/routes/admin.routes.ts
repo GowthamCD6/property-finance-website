@@ -9,6 +9,7 @@ import {
   exportEnquiriesCsv,
   getAppointments,
   updateAppointment,
+  createAppointment,
   updateSiteContent,
   getAdminServices,
   createService,
@@ -41,6 +42,7 @@ router.post('/enquiries/:id/notes', addEnquiryNote);
 
 // Appointments
 router.get('/appointments', getAppointments);
+router.post('/appointments', createAppointment);
 router.patch('/appointments/:id', updateAppointment);
 
 // Content Management
