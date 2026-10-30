@@ -26,3 +26,4 @@ export const GoogleIcon: React.FC<{ size?: number; className?: string }> = ({ si
     />
   </svg>
 );
+

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGoogleLogin } from '@react-oauth/google';
 import {
   FileText,
   Calendar,
@@ -20,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useCustomerAuth } from '../../../context/CustomerAuthContext';
 import { GoogleIcon } from '../../../components/common/GoogleIcon';
+import { triggerGoogleOAuth } from '../../../utils/googleAuth';
 import { Enquiry } from '../../../types';
 
 export const MyEnquiriesPage: React.FC = () => {
@@ -34,23 +34,18 @@ export const MyEnquiriesPage: React.FC = () => {
     }
   }, [isAuthenticated, refreshEnquiries]);
 
-  const triggerGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setIsSigningIn(true);
-      setLoginError(null);
-      try {
-        await loginWithGoogle(tokenResponse.access_token);
-      } catch (err: any) {
-        setLoginError(err.message || 'Google authentication failed.');
-      } finally {
-        setIsSigningIn(false);
-      }
-    },
-    onError: () => {
-      setLoginError('Google Sign-In was cancelled or failed.');
+  const triggerGoogleLogin = async () => {
+    setIsSigningIn(true);
+    setLoginError(null);
+    try {
+      const accessToken = await triggerGoogleOAuth();
+      await loginWithGoogle(accessToken);
+    } catch (err: any) {
+      setLoginError(err.message || 'Google authentication failed.');
+    } finally {
       setIsSigningIn(false);
-    },
-  });
+    }
+  };
 
   const formatAmountINR = (num: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -380,3 +375,4 @@ export const MyEnquiriesPage: React.FC = () => {
 };
 
 export default MyEnquiriesPage;
+

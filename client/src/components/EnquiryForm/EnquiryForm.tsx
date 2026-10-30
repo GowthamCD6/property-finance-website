@@ -21,9 +21,9 @@ import {
   FileCheck,
   Landmark,
 } from 'lucide-react';
-import { useGoogleLogin } from '@react-oauth/google';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
+import { triggerGoogleOAuth } from '../../utils/googleAuth';
 import { Service, UploadedDocument } from '../../types';
 import { submitLoanEnquiry, getPublicAvailability } from '../../services/api';
 import { InteractiveDocumentVault } from '../common/InteractiveDocumentVault';
@@ -95,25 +95,20 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     }
   }, [customer]);
 
-  const triggerGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setIsGoogleSigningIn(true);
-      setFormError(null);
-      try {
-        const authedUser = await loginWithGoogle(tokenResponse.access_token);
-        if (authedUser.name) setFullName(authedUser.name);
-        if (authedUser.email) setEmail(authedUser.email);
-      } catch (err: any) {
-        setFormError(err.message || 'Google authentication failed.');
-      } finally {
-        setIsGoogleSigningIn(false);
-      }
-    },
-    onError: () => {
-      setFormError('Google sign-in was cancelled or encountered an issue.');
+  const triggerGoogleLogin = async () => {
+    setIsGoogleSigningIn(true);
+    setFormError(null);
+    try {
+      const accessToken = await triggerGoogleOAuth();
+      const authedUser = await loginWithGoogle(accessToken);
+      if (authedUser.name) setFullName(authedUser.name);
+      if (authedUser.email) setEmail(authedUser.email);
+    } catch (err: any) {
+      setFormError(err.message || 'Google authentication failed.');
+    } finally {
       setIsGoogleSigningIn(false);
-    },
-  });
+    }
+  };
 
   // Update loan type when a service is selected from the services section
   useEffect(() => {

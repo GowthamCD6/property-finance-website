@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useGoogleLogin } from '@react-oauth/google';
 import {
   Lock,
   User,
@@ -12,6 +11,7 @@ import {
   KeyRound,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { triggerGoogleOAuth } from '../../utils/googleAuth';
 import logoImg from '../../assets/images/logo.png';
 
 export const AdminLoginPage: React.FC = () => {
@@ -63,25 +63,20 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   // Real Google SSO Handler via Google Identity Services
-  const triggerGoogleAdminLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setError(null);
-      setIsGoogleLoading(true);
-      try {
-        await loginWithGoogle(tokenResponse.access_token);
-        navigate('/admin/dashboard', { replace: true });
-      } catch (err: any) {
-        setError(err.message || 'Google Administrator authentication failed.');
-      } finally {
-        setIsGoogleLoading(false);
-      }
-    },
-    onError: (err) => {
-      console.warn('Google Sign-In cancelled or error:', err);
-      setError('Google Sign-In was cancelled or failed.');
+  const triggerGoogleAdminLogin = async () => {
+    setError(null);
+    setIsGoogleLoading(true);
+    try {
+      const accessToken = await triggerGoogleOAuth();
+      await loginWithGoogle(accessToken);
+      navigate('/admin/dashboard', { replace: true });
+    } catch (err: any) {
+      console.warn('Google Sign-In error:', err);
+      setError(err.message || 'Google Administrator authentication failed.');
+    } finally {
       setIsGoogleLoading(false);
-    },
-  });
+    }
+  };
 
   const handleQuickFill = (accountEmail: string) => {
     setUsernameOrEmail(accountEmail);

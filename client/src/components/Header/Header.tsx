@@ -19,9 +19,9 @@ import {
   FileText,
   Loader2,
 } from 'lucide-react';
-import { useGoogleLogin } from '@react-oauth/google';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
+import { triggerGoogleOAuth } from '../../utils/googleAuth';
 import { SiteContent } from '../../types';
 import { WealthAnchorLogo } from '../common/WealthAnchorLogo';
 
@@ -43,19 +43,17 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
 
-  const triggerHeaderGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setIsGoogleSigningIn(true);
-      try {
-        await loginWithGoogle(tokenResponse.access_token);
-      } catch (e) {
-        console.error('Customer login failed:', e);
-      } finally {
-        setIsGoogleSigningIn(false);
-      }
-    },
-    onError: () => setIsGoogleSigningIn(false),
-  });
+  const triggerHeaderGoogleLogin = async () => {
+    setIsGoogleSigningIn(true);
+    try {
+      const accessToken = await triggerGoogleOAuth();
+      await loginWithGoogle(accessToken);
+    } catch (e) {
+      console.error('Customer login failed:', e);
+    } finally {
+      setIsGoogleSigningIn(false);
+    }
+  };
 
   // Close user dropdown on click outside
   useEffect(() => {
