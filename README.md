@@ -63,7 +63,7 @@ Built with strict visual identity guidelines (editorial corporate warm-white/ivo
 |---|---|
 | **Frontend** | React 18, TypeScript, Vite, Tailwind CSS (custom brand tokens), Lucide React, React Router v6 |
 | **Backend** | Node.js, Express, TypeScript, REST API, Zod Runtime Validation |
-| **Database** | Prisma ORM, SQLite (local zero-dependency development), PostgreSQL ready |
+| **Database** | TiDB Cloud Serverless (MySQL compatible) with TLS/SSL CA certificate, Prisma ORM |
 | **Security** | bcryptjs (salt rounds 10), JSON Web Tokens, Helmet security headers, Express Rate Limit, Cookie-parser |
 | **Testing** | Vitest, Supertest (16 comprehensive integration tests) |
 
