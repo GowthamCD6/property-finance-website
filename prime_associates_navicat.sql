@@ -178,6 +178,7 @@ CREATE TABLE `Enquiry` (
   `fullName` VARCHAR(191) NOT NULL,
   `mobileNumber` VARCHAR(50) NOT NULL,
   `email` VARCHAR(191) NULL,
+  `customerId` VARCHAR(191) NULL,
   `preferredContactMethod` VARCHAR(50) NOT NULL DEFAULT 'phone',
   `cityState` VARCHAR(191) NOT NULL,
   `loanType` VARCHAR(191) NOT NULL,
@@ -197,7 +198,9 @@ CREATE TABLE `Enquiry` (
   `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   UNIQUE KEY `Enquiry_referenceNumber_key` (`referenceNumber`),
+  KEY `Enquiry_customerId_fkey` (`customerId`),
   KEY `Enquiry_serviceId_fkey` (`serviceId`),
+  CONSTRAINT `Enquiry_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `CustomerUser` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `Enquiry_serviceId_fkey` FOREIGN KEY (`serviceId`) REFERENCES `Service` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
