@@ -730,7 +730,7 @@ export const AdminContentPage: React.FC = () => {
   const nextModule = currentIndex < CONTENT_MODULES.length - 1 ? CONTENT_MODULES[currentIndex + 1] : null;
 
   return (
-    <div className="space-y-6 max-w-7xl pb-16 font-sans">
+    <div className="space-y-6 max-w-7xl pb-1 font-sans">
       {/* ─── ALERTS ─── */}
       {successMessage && (
         <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs sm:text-sm flex items-center justify-between gap-2.5 animate-in fade-in shadow-2xs">
@@ -2848,7 +2848,7 @@ export const AdminContentPage: React.FC = () => {
           </div>
 
           {/* ─── BOTTOM SAVE BAR FOR DEDICATED SECTION ─── */}
-          <div className="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3 font-sans">
+          <div className="sticky bottom-1 z-20 bg-white/95 backdrop-blur-md py-2.5 px-4 rounded-xl border border-slate-200 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 font-sans mt-3">
             <div className="flex items-center gap-2 self-start sm:self-auto">
               <button
                 type="button"
