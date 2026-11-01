@@ -274,7 +274,7 @@ export const AdminTeamPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
               Admin Team & Access Control
             </h1>
@@ -282,9 +282,6 @@ export const AdminTeamPage: React.FC = () => {
               TiDB Secure Auth
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
-            Enroll authorized administrator Gmail accounts to grant Google SSO and portal credentials access
-          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -303,62 +300,65 @@ export const AdminTeamPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Critical Authentication Rule Banner */}
-      <div className="p-4 bg-gradient-to-r from-blue-50/90 to-indigo-50/60 border border-blue-200/90 rounded-2xl flex items-start gap-3.5 shadow-xs">
-        <div className="p-2 bg-blue-600 text-white rounded-xl flex-shrink-0 mt-0.5 shadow-xs">
-          <ShieldCheck className="w-5 h-5" />
-        </div>
-        <div className="space-y-1">
-          <h4 className="text-xs sm:text-sm font-bold text-blue-950 font-heading">
-            Strict Database-First Authentication Active
-          </h4>
-          <p className="text-xs text-blue-800 leading-relaxed font-sans">
-            Our authentication gateway <strong>only allows Google Sign-In if the user's Gmail is already present in this database</strong>. Any external or unlisted Gmail account attempting to log in is automatically rejected with access denied. To grant an advisor or manager access, enroll their Gmail address below.
-          </p>
-        </div>
-      </div>
-
       {/* KPI Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
-              Total Enrolled Admins
-            </p>
-            <h3 className="text-2xl font-black text-[#0c1a26] mt-1 font-heading">{totalAdmins}</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Persisted in TiDB Cloud</p>
-          </div>
-          <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-700">
-            <User className="w-6 h-6" />
-          </div>
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-pulse">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between"
+            >
+              <div className="space-y-2">
+                <div className="h-3 w-28 bg-slate-200 rounded" />
+                <div className="h-8 w-12 bg-slate-300 rounded-lg" />
+                <div className="h-2.5 w-32 bg-slate-100 rounded" />
+              </div>
+              <div className="w-12 h-12 bg-slate-100 rounded-xl" />
+            </div>
+          ))}
         </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-slate-300 transition-all">
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
+                Total Enrolled Admins
+              </p>
+              <h3 className="text-2xl font-black text-[#0c1a26] mt-1 font-heading">{totalAdmins}</h3>
+              <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Persisted in TiDB Cloud</p>
+            </div>
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-700">
+              <User className="w-6 h-6" />
+            </div>
+          </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
-              Active Authorized
-            </p>
-            <h3 className="text-2xl font-black text-emerald-600 mt-1 font-heading">{activeAdmins}</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Eligible for Google SSO</p>
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-emerald-200 transition-all">
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
+                Active Authorized
+              </p>
+              <h3 className="text-2xl font-black text-emerald-600 mt-1 font-heading">{activeAdmins}</h3>
+              <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Eligible for Google SSO</p>
+            </div>
+            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
           </div>
-          <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-            <CheckCircle2 className="w-6 h-6" />
-          </div>
-        </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
-              Super Administrators
-            </p>
-            <h3 className="text-2xl font-black text-indigo-600 mt-1 font-heading">{superAdmins}</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Full administrative control</p>
-          </div>
-          <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-            <Shield className="w-6 h-6" />
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-indigo-200 transition-all">
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
+                Super Administrators
+              </p>
+              <h3 className="text-2xl font-black text-indigo-600 mt-1 font-heading">{superAdmins}</h3>
+              <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Full administrative control</p>
+            </div>
+            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+              <Shield className="w-6 h-6" />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
@@ -378,7 +378,7 @@ export const AdminTeamPage: React.FC = () => {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium font-heading text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+              className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium font-heading text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer"
             >
               <option value="ALL">All Roles</option>
               <option value="superadmin">Super Admin</option>
@@ -390,7 +390,7 @@ export const AdminTeamPage: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium font-heading text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+              className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium font-heading text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer"
             >
               <option value="ALL">All Status</option>
               <option value="active">Active Only</option>
@@ -403,11 +403,72 @@ export const AdminTeamPage: React.FC = () => {
       {/* Admin Table Directory */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-12 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
-            <span className="text-xs font-semibold text-slate-500 font-sans">
-              Loading administrator directory from TiDB Cloud...
-            </span>
+          <div className="overflow-x-auto animate-pulse">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider font-heading">
+                  <th className="py-3.5 px-5">Administrator</th>
+                  <th className="py-3.5 px-4">Authorized Gmail / Email</th>
+                  <th className="py-3.5 px-4">Contact Phone</th>
+                  <th className="py-3.5 px-4">System Role</th>
+                  <th className="py-3.5 px-4">Account Status</th>
+                  <th className="py-3.5 px-4">Last Activity</th>
+                  <th className="py-3.5 px-5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {[1, 2, 3, 4].map((i) => (
+                  <tr key={i}>
+                    {/* Administrator Avatar + Name */}
+                    <td className="py-4 px-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-slate-200 flex-shrink-0" />
+                        <div className="space-y-1.5">
+                          <div className="h-4 w-32 bg-slate-200 rounded" />
+                          <div className="h-3 w-20 bg-slate-100 rounded" />
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Email */}
+                    <td className="py-4 px-4">
+                      <div className="space-y-1.5">
+                        <div className="h-3.5 w-44 bg-slate-200 rounded" />
+                        <div className="h-3 w-24 bg-slate-100 rounded" />
+                      </div>
+                    </td>
+
+                    {/* Contact Phone */}
+                    <td className="py-4 px-4">
+                      <div className="h-3.5 w-28 bg-slate-100 rounded" />
+                    </td>
+
+                    {/* Role */}
+                    <td className="py-4 px-4">
+                      <div className="h-6 w-24 bg-slate-100 rounded-lg" />
+                    </td>
+
+                    {/* Status */}
+                    <td className="py-4 px-4">
+                      <div className="h-6 w-20 bg-slate-100 rounded-full" />
+                    </td>
+
+                    {/* Last Activity */}
+                    <td className="py-4 px-4">
+                      <div className="h-3.5 w-24 bg-slate-100 rounded" />
+                    </td>
+
+                    {/* Actions */}
+                    <td className="py-4 px-5 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="w-7 h-7 bg-slate-100 rounded-lg" />
+                        <div className="w-7 h-7 bg-slate-100 rounded-lg" />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : filteredTeam.length === 0 ? (
           <div className="p-12 text-center space-y-3">
@@ -595,6 +656,12 @@ export const AdminTeamPage: React.FC = () => {
                 })}
               </tbody>
             </table>
+
+            {/* Table Footer */}
+            <div className="px-5 py-3 bg-slate-50/70 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500 font-sans">
+              <span>Showing {filteredTeam.length} of {team.length} administrators</span>
+              <span className="text-[11px] text-slate-400 font-mono">Real-time DB Sync</span>
+            </div>
           </div>
         )}
       </div>
