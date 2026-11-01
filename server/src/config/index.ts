@@ -5,7 +5,8 @@ export const config = {
   port: parseInt(process.env.PORT || '5000', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
   jwtSecret: process.env.JWT_SECRET || 'fallback-super-secret-key-change-in-production',
-  jwtExpiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
+  jwtExpiresIn: 8 * 60 * 60, // 8 hours in seconds for Administrator
+  adminJwtExpiresIn: 8 * 60 * 60, // 8 hours in seconds
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
   adminEmail: process.env.ADMIN_EMAIL || 'primeassociates2008@gmail.com',
   timezone: process.env.TIMEZONE || 'Asia/Kolkata',

@@ -55,11 +55,19 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       setCustomer(profile);
       localStorage.setItem('vpf_user_profile', JSON.stringify(profile));
       await fetchEnquiries();
-    } catch {
-      localStorage.removeItem('vpf_user_token');
-      localStorage.removeItem('vpf_user_profile');
-      setCustomer(null);
-      setEnquiries([]);
+    } catch (err: any) {
+      // Only clear if server explicitly returns 401 or not found
+      if (
+        err?.message &&
+        (err.message.includes('401') ||
+          err.message.toLowerCase().includes('not found') ||
+          err.message.toLowerCase().includes('authentication required'))
+      ) {
+        localStorage.removeItem('vpf_user_token');
+        localStorage.removeItem('vpf_user_profile');
+        setCustomer(null);
+        setEnquiries([]);
+      }
     } finally {
       setIsLoading(false);
     }

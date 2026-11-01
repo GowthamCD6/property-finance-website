@@ -145,7 +145,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
       return;
     }
 
-    // Generate JWT
+    // Generate JWT (8 hours session for Admin)
     const token = jwt.sign(
       {
         id: admin.id,
@@ -162,12 +162,12 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
       data: { lastLoginAt: new Date() },
     });
 
-    // Set secure cookie
+    // Set secure cookie (8 hours for Administrator)
     res.cookie('admin_token', token, {
       httpOnly: true,
       secure: config.nodeEnv === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 8 * 60 * 60 * 1000,
     });
 
     res.json({
@@ -253,7 +253,7 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
       httpOnly: true,
       secure: config.nodeEnv === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 8 * 60 * 60 * 1000,
     });
 
     res.json({
@@ -364,22 +364,21 @@ export async function googleUserLogin(req: Request, res: Response, next: NextFun
       // Non-blocking
     }
 
-    // Generate Customer JWT (30-day session)
+    // Generate Customer Perpetual Token (No expiration - user remains logged in permanently)
     const token = jwt.sign(
       {
         id: customer.id,
         email: customer.email,
         type: 'customer',
       },
-      config.jwtSecret,
-      { expiresIn: 30 * 24 * 60 * 60 }
+      config.jwtSecret
     );
 
     res.cookie('customer_token', token, {
       httpOnly: true,
       secure: config.nodeEnv === 'production',
       sameSite: 'lax',
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: 36500 * 24 * 60 * 60 * 1000, // Perpetual session (100 years)
     });
 
     res.json({

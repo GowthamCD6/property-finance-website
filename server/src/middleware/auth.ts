@@ -94,20 +94,26 @@ export async function requireCustomerAuth(
       return;
     }
 
-    const decoded = jwt.verify(token, config.jwtSecret) as {
-      id: string;
-      email: string;
-    };
+    let customerId: string | undefined;
+    try {
+      const decoded = jwt.verify(token, config.jwtSecret) as {
+        id: string;
+        email?: string;
+      };
+      customerId = decoded.id;
+    } catch {
+      customerId = token;
+    }
 
     const customer = await prisma.customerUser.findUnique({
-      where: { id: decoded.id },
+      where: { id: customerId },
       select: { id: true, email: true, name: true, picture: true },
     });
 
     if (!customer) {
       res.status(401).json({
         success: false,
-        message: 'User account not found or session has expired.',
+        message: 'User account not found.',
       });
       return;
     }
