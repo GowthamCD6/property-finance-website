@@ -1,22 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import {
-  Briefcase,
+  Building2,
   CheckCircle2,
   ArrowRight,
-  TrendingUp,
-  Building2,
-  Landmark,
-  ShieldCheck,
-  FileCheck2,
-  Percent,
-  Clock,
-  Coins,
-  ChevronRight,
-  Layers,
-  ArrowDownRight,
   Sparkles,
-  HelpCircle,
   FileSpreadsheet,
 } from 'lucide-react';
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
@@ -111,33 +99,6 @@ export const PropertyFundingPage: React.FC = () => {
   ];
 
   const currentSolution = fundingSolutions.find((s) => s.id === activeTab) || fundingSolutions[0];
-
-  const technicalChecklist = [
-    {
-      title: 'Approved Sanction Plan & OC',
-      desc: 'Valid building sanction from local urban body (BBMP, BDA, DTCP, etc.) along with Occupancy Certificate (OC) or completion clearances.',
-    },
-    {
-      title: 'Registered Long-Term Lease Deeds',
-      desc: 'Tripartite or registered lease agreements highlighting lock-in periods, security deposit details, and 3-year escalation clauses (typically 12-15%).',
-    },
-    {
-      title: '30-Year Chain of Title & Search Report',
-      desc: 'Flawless 30-year mother deed flow, EC Form 15 non-encumbrance verification, and zero pendency of title litigation in civil courts.',
-    },
-    {
-      title: 'Tenant Credit Standing & Rating',
-      desc: 'Credit rating of lessee entities (AAA / AA corporate ratings yield the lowest lender pricing spreads and maximum debt multipliers).',
-    },
-    {
-      title: 'Statutory Safety Clearances',
-      desc: 'Valid Fire NOC, Pollution Control Board (PCB) consent for operation (if applicable), and structural audit certificates by chartered engineers.',
-    },
-    {
-      title: 'DSCR & Cash Flow Feasibility',
-      desc: 'Debt Service Coverage Ratio (DSCR) verified at a minimum of 1.25x – 1.40x to ensure safe servicing buffer across the tenor.',
-    },
-  ];
 
   return (
     <div className="bg-brand-bg min-h-screen text-brand-navy">
@@ -418,3 +379,6 @@ export const PropertyFundingPage: React.FC = () => {
     </div>
   );
 };
+
+export const PurchaseLoansPage = PropertyFundingPage;
+export default PropertyFundingPage;
