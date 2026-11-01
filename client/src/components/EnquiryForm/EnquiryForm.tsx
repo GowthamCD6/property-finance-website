@@ -117,8 +117,11 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   useEffect(() => {
     if (selectedService) {
       setLoanType(selectedService.title);
-      const formEl = document.getElementById('enquiry-form');
-      if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+      // Only scroll down if the URL explicitly targets the #enquiry-form anchor
+      if (window.location.hash === '#enquiry-form') {
+        const formEl = document.getElementById('enquiry-form');
+        if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }, [selectedService]);
 

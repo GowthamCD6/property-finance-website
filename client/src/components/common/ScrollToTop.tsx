@@ -21,6 +21,11 @@ export const ScrollToTop: React.FC = () => {
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
     } else {
       // If a specific section hash is present (e.g. #calculator), scroll to that element
       const targetId = hash.replace('#', '');

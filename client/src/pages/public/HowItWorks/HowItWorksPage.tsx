@@ -33,8 +33,8 @@ import {
 } from 'lucide-react';
 import { CHANNEL_PARTNERS, ChannelPartnersGroup } from '../../../constants/loanDocuments';
 import howItsWorkHero from '../../../assets/images/how-its-work.avif';
-import faqVisualImage from '../../../assets/images/how-its-work-faq.webp';
-import consultationVisualImage from '../../../assets/images/contact-consultation-desk.webp';
+import faqVisualImage from '../../../assets/images/faqs-hero.webp';
+import consultationVisualImage from '../../../assets/images/contact-hero.webp';
 
 export const HowItWorksPage: React.FC = () => {
   const [activePhase, setActivePhase] = useState<number>(1);

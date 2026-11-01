@@ -153,7 +153,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
     {
       title: 'Vehicle Loans & Refinance',
       desc: 'New/used cars, used car refinance & commercial vehicles',
-      path: '/services/loan-consultation',
+      path: '/services/vehicle-loans',
       icon: <Briefcase className="w-4 h-4" />,
     },
   ];
@@ -393,6 +393,10 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
                     <Link
                       key={item.path}
                       to={item.path}
+                      onClick={() => {
+                        setServicesDropdownOpen(false);
+                        window.scrollTo(0, 0);
+                      }}
                       className="dropdown-item"
                     >
                       <div className="dropdown-item-icon">
@@ -418,6 +422,10 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
                     <span>Subject to lender criteria</span>
                     <Link
                       to="/services/home-loans"
+                      onClick={() => {
+                        setServicesDropdownOpen(false);
+                        window.scrollTo(0, 0);
+                      }}
                       style={{ color: '#187C78', fontWeight: 600, textDecoration: 'none' }}
                       className="dropdown-explore-link"
                     >
