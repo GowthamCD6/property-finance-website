@@ -42,7 +42,7 @@ export const PublicLayout: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8f8f4] w-full max-w-full overflow-x-clip relative">
+    <div className="min-h-screen flex flex-col bg-[#f7f7f3] w-full max-w-full overflow-x-clip relative">
       <Header content={content} />
       <main className="flex-grow w-full max-w-full">
         <Outlet context={{ content, setContent, services, faqs }} />

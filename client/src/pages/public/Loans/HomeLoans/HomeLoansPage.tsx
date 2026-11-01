@@ -212,7 +212,7 @@ export const HomeLoansPage: React.FC = () => {
   ];
 
   return (
-    <div className="bg-brand-bg min-h-screen text-brand-navy">
+    <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: LAND & HOME LOAN ARCHITECTURE
           ──────────────────────────────────────────────────────────── */}
@@ -513,7 +513,7 @@ export const HomeLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. SIX SPECIALIZED PATHWAYS (Interactive Grid)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
+      <section className="py-20 lg:py-24 bg-[#f7f7f3] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
@@ -532,7 +532,7 @@ export const HomeLoansPage: React.FC = () => {
             {fundingPathways.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-brand-ivory/50 rounded-2xl border border-brand-border p-7 hover:border-brand-teal/40 transition-all duration-300 hover:shadow-card flex flex-col justify-between group"
+                className="bg-white rounded-2xl border border-brand-border p-7 hover:border-brand-teal/40 transition-all duration-300 hover:shadow-card flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -570,7 +570,7 @@ export const HomeLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           3. CRITICAL LAND FINANCING ADVISORY (Must-Know Nuances)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-brand-ivory/60 border-b border-brand-border">
+      <section className="py-20 lg:py-24 bg-[#f7f7f3] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-3xl mb-12">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
@@ -609,7 +609,7 @@ export const HomeLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           5. PRELOADED CONSULTATION FORM
           ──────────────────────────────────────────────────────────── */}
-      <div id="enquiry-form">
+      <div id="enquiry-form" className="bg-[#f7f7f3]">
         <EnquiryForm
           services={services}
           selectedService={homeLoanService}

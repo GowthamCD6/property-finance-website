@@ -143,7 +143,7 @@ export const VehicleLoansPage: React.FC = () => {
   ];
 
   return (
-    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
+    <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
       <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
         <div className="absolute inset-0 z-0">
           <img
@@ -490,7 +490,7 @@ export const VehicleLoansPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 lg:py-20 bg-white border-b border-brand-border">
+      <section className="py-16 lg:py-20 bg-[#f7f7f3] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto space-y-16">
           {/* Note 4 - Car Loan Categories */}
           <div>
@@ -508,7 +508,7 @@ export const VehicleLoansPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Card 1: New Car Loan */}
-              <div className="bg-[#f8f8f4] rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold font-mono border border-emerald-300">
@@ -556,7 +556,7 @@ export const VehicleLoansPage: React.FC = () => {
               </div>
 
               {/* Card 2: Used Car Loan */}
-              <div className="bg-[#f8f8f4] rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold font-mono border border-teal-300">
@@ -612,7 +612,7 @@ export const VehicleLoansPage: React.FC = () => {
               </div>
 
               {/* Card 3: Used Car Refinance */}
-              <div className="bg-[#f8f8f4] rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-[11px] font-bold font-mono border border-cyan-300">
@@ -683,7 +683,7 @@ export const VehicleLoansPage: React.FC = () => {
               {consultationPillars.map((p, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#f8f8f4] rounded-2xl p-6 border border-brand-border/80 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-400 group space-y-4"
+                  className="bg-white rounded-2xl p-6 border border-brand-border/80 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-400 group space-y-4"
                 >
                   <div className="w-10 h-10 rounded-xl bg-brand-teal-light text-brand-teal flex items-center justify-center font-bold text-xs font-mono border border-brand-teal/20 group-hover:bg-brand-teal group-hover:text-white transition-colors">
                     {p.step}
@@ -705,13 +705,13 @@ export const VehicleLoansPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-[#f8f8f4] border-b border-brand-border">
+      <section className="py-16 bg-[#f7f7f3] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <InteractiveDocumentVault loanType="vehicle-loans" />
         </div>
       </section>
 
-      <div id="enquiry-form" className="bg-[#f8f8f4]">
+      <div id="enquiry-form" className="bg-[#f7f7f3]">
         <EnquiryForm
           services={services}
           selectedService={consultationService}

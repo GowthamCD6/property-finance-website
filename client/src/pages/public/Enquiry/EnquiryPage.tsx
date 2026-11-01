@@ -90,7 +90,7 @@ export const EnquiryPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. INTERACTIVE FORM COMPONENT
           ──────────────────────────────────────────────────────────── */}
-      <div id="enquiry-form">
+      <div id="enquiry-form" className="bg-[#f7f7f3]">
         <EnquiryForm
           services={services}
           selectedService={null}

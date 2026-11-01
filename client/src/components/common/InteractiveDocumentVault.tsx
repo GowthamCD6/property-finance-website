@@ -812,7 +812,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 isSelected
                   ? 'bg-brand-navy text-white border-brand-navy shadow-sm'
-                  : 'bg-brand-ivory text-brand-navy border-brand-border hover:border-brand-teal hover:bg-white'
+                  : 'bg-white text-brand-navy border-brand-border hover:border-brand-teal'
               }`}
             >
               {p.icon}
@@ -823,7 +823,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
       </div>
 
       {/* Checklist Container */}
-      <div className={`bg-brand-ivory/60 rounded-3xl border border-brand-border ${embedded ? 'p-5 sm:p-7' : 'p-6 sm:p-10'} shadow-sm max-w-4xl mx-auto`}>
+      <div className={`bg-white rounded-3xl border border-brand-border ${embedded ? 'p-5 sm:p-7' : 'p-6 sm:p-10'} shadow-sm max-w-4xl mx-auto`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 mb-5 border-b border-brand-border gap-4">
           <div>
             <h3 className="text-base sm:text-lg font-extrabold text-brand-navy tracking-tight font-heading">
@@ -905,7 +905,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
   }
 
   return (
-    <section className="py-16 sm:py-20 bg-white border-b border-brand-border">
+    <section className="py-16 sm:py-20 bg-[#f7f7f3] border-b border-brand-border">
       {contentBody}
     </section>
   );

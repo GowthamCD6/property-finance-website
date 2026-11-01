@@ -101,7 +101,7 @@ export const PropertyFundingPage: React.FC = () => {
   const currentSolution = fundingSolutions.find((s) => s.id === activeTab) || fundingSolutions[0];
 
   return (
-    <div className="bg-brand-bg min-h-screen text-brand-navy">
+    <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: COMMERCIAL REAL ESTATE & LRD DESK
           ──────────────────────────────────────────────────────────── */}
@@ -241,7 +241,7 @@ export const PropertyFundingPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. FOUR COMMERCIAL FUNDING SOLUTIONS (Interactive Tabs)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-brand-ivory/60 border-b border-brand-border">
+      <section className="py-20 lg:py-24 bg-[#f7f7f3] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-2">
@@ -303,7 +303,7 @@ export const PropertyFundingPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-4 bg-brand-ivory rounded-xl border border-brand-border/80 space-y-2 text-xs">
+                <div className="p-4 bg-[#f7f7f3] rounded-xl border border-brand-border/80 space-y-2 text-xs">
                   <div>
                     <span className="font-bold text-brand-navy">Target Borrower Profile: </span>
                     <span className="text-brand-slate">{currentSolution.idealFor}</span>
@@ -369,7 +369,7 @@ export const PropertyFundingPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           4. PRELOADED CONSULTATION FORM
           ──────────────────────────────────────────────────────────── */}
-      <div id="enquiry-form">
+      <div id="enquiry-form" className="bg-[#f7f7f3]">
         <EnquiryForm
           services={services}
           selectedService={fundingService}

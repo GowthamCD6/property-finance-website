@@ -3,8 +3,8 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --bg-primary: #f8f8f4;
-  --bg-alternate: #F7F7F2;
+  --bg-primary: #f7f7f3;
+  --bg-alternate: #f7f7f3;
   --text-primary: #183247;
   --text-secondary: #667085;
   --cta-primary: #187C78;

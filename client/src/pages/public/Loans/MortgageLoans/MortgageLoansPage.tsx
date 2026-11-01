@@ -142,7 +142,7 @@ export const MortgageLoansPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-brand-bg min-h-screen text-brand-navy">
+    <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: SECURED MORTGAGE & LIQUIDITY DESK
           ──────────────────────────────────────────────────────────── */}
@@ -436,7 +436,7 @@ export const MortgageLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. ACCEPTED COLLATERAL ASSETS
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-white border-b border-brand-border">
+      <section className="py-20 lg:py-24 bg-[#f7f7f3] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-3xl mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
@@ -454,7 +454,7 @@ export const MortgageLoansPage: React.FC = () => {
             {collateralTypes.map((col, idx) => (
               <div
                 key={idx}
-                className="p-7 bg-brand-ivory/50 rounded-2xl border border-brand-border shadow-subtle hover:border-brand-teal/40 transition-all flex flex-col justify-between space-y-4"
+                className="p-7 bg-white rounded-2xl border border-brand-border shadow-subtle hover:border-brand-teal/40 transition-all flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -491,7 +491,7 @@ export const MortgageLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           4. PRELOADED CONSULTATION FORM
           ──────────────────────────────────────────────────────────── */}
-      <div id="enquiry-form">
+      <div id="enquiry-form" className="bg-[#f7f7f3]">
         <EnquiryForm
           services={services}
           selectedService={lapService}
