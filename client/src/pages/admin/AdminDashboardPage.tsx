@@ -28,6 +28,7 @@ import {
   Filter,
   Sparkles,
   PieChart,
+  BarChart3,
   Layers,
   Check,
   ExternalLink,
@@ -127,19 +128,18 @@ export const AdminDashboardPage: React.FC = () => {
     return (
       <div className="space-y-7 animate-pulse">
         {/* Hero Banner Skeleton */}
-        <div className="rounded-2xl bg-[#0b1924] p-6 sm:p-7 border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-md">
-          <div className="space-y-3 max-w-xl">
-            <div className="h-5 w-40 bg-slate-800 rounded-md" />
-            <div className="h-8 w-72 bg-slate-700 rounded-xl" />
-            <div className="h-4 w-96 bg-slate-800 rounded" />
+        <div className="rounded-2xl bg-[#0b1924] p-6 sm:p-7 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
+          <div className="space-y-2.5">
+            <div className="h-4 w-36 bg-slate-800 rounded-md" />
+            <div className="h-7 w-64 bg-slate-700 rounded-xl" />
           </div>
-          <div className="flex gap-3">
-            <div className="h-10 w-36 bg-slate-800 border border-slate-700 rounded-xl" />
-            <div className="h-10 w-32 bg-slate-800 border border-slate-700 rounded-xl" />
+          <div className="flex gap-2.5">
+            <div className="h-9 w-32 bg-slate-800 border border-slate-700 rounded-xl" />
+            <div className="h-9 w-36 bg-slate-800 border border-slate-700 rounded-xl" />
           </div>
         </div>
 
-        {/* 5 KPI Cards Skeleton */}
+        {/* 5 KPI Cards Skeleton (Without left line color) */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-xs space-y-3">
@@ -154,6 +154,12 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Graph Bar Skeleton */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs space-y-4">
+          <div className="h-5 w-56 bg-slate-200 rounded-lg" />
+          <div className="h-44 bg-slate-100 rounded-xl" />
         </div>
 
         {/* Operational Queues & Tables Skeleton */}
@@ -233,6 +239,81 @@ export const AdminDashboardPage: React.FC = () => {
     return true;
   });
 
+  // Calculate Loan Type Portfolio Share for the Graph Bar
+  const allRecent = stats.recentEnquiries || [];
+  const totalCount = allRecent.length || 1;
+
+  const typeConfig: Record<string, { label: string; color: string; barGradient: string }> = {
+    'Home Loan': {
+      label: 'Home Loan',
+      color: 'text-teal-700 bg-teal-50 border-teal-200',
+      barGradient: 'from-teal-500 to-emerald-500',
+    },
+    'Loan Against Property': {
+      label: 'Mortgage / LAP',
+      color: 'text-blue-700 bg-blue-50 border-blue-200',
+      barGradient: 'from-blue-500 to-indigo-500',
+    },
+    'Property Funding': {
+      label: 'Property Funding',
+      color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      barGradient: 'from-indigo-500 to-purple-500',
+    },
+    'Vehicle Loan': {
+      label: 'Vehicle Loan',
+      color: 'text-amber-700 bg-amber-50 border-amber-200',
+      barGradient: 'from-amber-500 to-orange-500',
+    },
+  };
+
+  const loanStatsMap = allRecent.reduce(
+    (acc: Record<string, { count: number; totalAmt: number }>, item) => {
+      const key = item.loanType || 'Home Loan';
+      if (!acc[key]) acc[key] = { count: 0, totalAmt: 0 };
+      acc[key].count += 1;
+      acc[key].totalAmt += Number(item.loanAmount) || 0;
+      return acc;
+    },
+    {}
+  );
+
+  // Stage funnel statistics for the vertical bar chart
+  const funnelStages = [
+    {
+      label: 'New Submitted',
+      count: allRecent.filter((e) => e.status === 'New' || e.status === 'Appointment Requested').length,
+      gradient: 'from-amber-400 to-amber-500',
+      bgPill: 'bg-amber-50 text-amber-800 border-amber-200',
+    },
+    {
+      label: 'Contacted / Queue',
+      count: allRecent.filter((e) => e.status === 'Contacted').length,
+      gradient: 'from-sky-400 to-sky-500',
+      bgPill: 'bg-sky-50 text-sky-800 border-sky-200',
+    },
+    {
+      label: 'Slot Booked',
+      count: allRecent.filter((e) => e.status === 'Slot Booked' || e.status === 'Appointment Confirmed').length,
+      gradient: 'from-blue-500 to-indigo-500',
+      bgPill: 'bg-blue-50 text-blue-800 border-blue-200',
+    },
+    {
+      label: 'In Underwriting',
+      count: allRecent.filter((e) => e.status === 'Process Started' || e.status === 'In Review').length,
+      gradient: 'from-teal-500 to-teal-600',
+      bgPill: 'bg-teal-50 text-teal-800 border-teal-200',
+    },
+    {
+      label: 'Sanction Converted',
+      count: allRecent.filter((e) => e.status === 'Closed' || e.status === 'Converted').length,
+      gradient: 'from-emerald-500 to-emerald-600',
+      bgPill: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    },
+  ];
+
+  const maxStageCount = Math.max(...funnelStages.map((s) => s.count), 1);
+
+  // Clean KPI Cards: NO line color on left
   const kpis = [
     {
       title: 'Total Enquiries',
@@ -240,7 +321,6 @@ export const AdminDashboardPage: React.FC = () => {
       sub: 'All registered borrower dossiers',
       icon: <FileSpreadsheet className="w-5 h-5 text-teal-600" />,
       bgIcon: 'bg-teal-50 text-teal-600 border-teal-100',
-      borderAccent: 'border-l-4 border-l-teal-600',
       badge: 'All Time',
     },
     {
@@ -249,7 +329,6 @@ export const AdminDashboardPage: React.FC = () => {
       sub: 'Action required & unassigned',
       icon: <TrendingUp className="w-5 h-5 text-blue-600" />,
       bgIcon: 'bg-blue-50 text-blue-600 border-blue-100',
-      borderAccent: 'border-l-4 border-l-blue-600',
       badge: stats.newEnquiries > 0 ? `${stats.newEnquiries} Pending` : 'Up to date',
       badgeClass: stats.newEnquiries > 0 ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600',
     },
@@ -259,7 +338,6 @@ export const AdminDashboardPage: React.FC = () => {
       sub: 'Recent dossier sanction capital',
       icon: <Landmark className="w-5 h-5 text-emerald-600" />,
       bgIcon: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-      borderAccent: 'border-l-4 border-l-emerald-600',
       badge: 'Sanction Cap',
       badgeClass: 'bg-emerald-100 text-emerald-800',
     },
@@ -269,7 +347,6 @@ export const AdminDashboardPage: React.FC = () => {
       sub: 'Active borrower negotiations',
       icon: <Clock className="w-5 h-5 text-amber-600" />,
       bgIcon: 'bg-amber-50 text-amber-600 border-amber-100',
-      borderAccent: 'border-l-4 border-l-amber-600',
       badge: 'In Progress',
       badgeClass: 'bg-amber-100 text-amber-800',
     },
@@ -279,7 +356,6 @@ export const AdminDashboardPage: React.FC = () => {
       sub: 'Ready for advisory calls',
       icon: <CheckCircle2 className="w-5 h-5 text-indigo-600" />,
       bgIcon: 'bg-indigo-50 text-indigo-600 border-indigo-100',
-      borderAccent: 'border-l-4 border-l-indigo-600',
       badge: 'Verified',
       badgeClass: 'bg-indigo-100 text-indigo-800',
     },
@@ -293,10 +369,10 @@ export const AdminDashboardPage: React.FC = () => {
   return (
     <div className="space-y-7">
       {/* ────────────────────────────────────────────────────────────
-          1. EXECUTIVE COMMAND HERO BANNER
+          1. EXECUTIVE COMMAND HERO BANNER (SUBTITLE REMOVED)
           ──────────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl bg-[#0b1924] p-6 sm:p-7 text-white shadow-md border border-slate-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        <div className="space-y-2 max-w-2xl">
+      <div className="rounded-2xl bg-[#0b1924] p-5 sm:p-6 text-white shadow-md border border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-[11px] font-semibold font-mono border border-teal-500/30">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -314,12 +390,8 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-heading text-white">
-            {getGreeting()}, {admin?.name?.split(' ')[0] || 'Administrator'}
+            {admin?.name ? `Welcome, ${admin.name}` : `${getGreeting()}, Administrator`}
           </h1>
-
-          <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
-            Operations &amp; Loan Sanctions Command Hub. Manage borrower pipelines, allot expert consultation slots, and track underwriting throughput.
-          </p>
         </div>
 
         {/* Quick Action Tools */}
@@ -352,16 +424,16 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* ────────────────────────────────────────────────────────────
-          2. FIVE KEY PERFORMANCE INDICATOR CARDS
+          2. FIVE KEY PERFORMANCE INDICATOR CARDS (CLEAN - NO LINE COLOR)
           ──────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
         {kpis.map((k, idx) => (
           <div
             key={idx}
-            className={`group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-200 ${k.borderAccent} hover:-translate-y-0.5`}
+            className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 hover:-translate-y-0.5"
           >
             <div className="flex items-center justify-between mb-3">
-              <div className={`p-2 rounded-xl border ${k.bgIcon} transition-transform group-hover:scale-110 duration-200`}>
+              <div className={`p-2 rounded-xl border ${k.bgIcon} transition-transform group-hover:scale-105 duration-200`}>
                 {k.icon}
               </div>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md font-mono ${k.badgeClass || 'bg-slate-100 text-slate-600'}`}>
@@ -383,7 +455,114 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* ────────────────────────────────────────────────────────────
-          3. ACTION REQUIRED: UNALLOTTED ENQUIRIES QUEUE
+          3. PROPER GRAPH BAR SECTION: LOAN VELOCITY & PORTFOLIO MIX
+          ──────────────────────────────────────────────────────────── */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-100 gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center border border-teal-100">
+              <BarChart3 className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-extrabold text-[#0c1a26] font-heading">
+                Loan Pipeline Velocity &amp; Category Distribution
+              </h3>
+              <p className="text-xs text-slate-500 font-sans">
+                Real-time application stages and loan facility portfolio breakdown
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 font-mono text-xs text-slate-600">
+            <span className="font-bold text-[#0c1a26]">Active Portfolio:</span>
+            <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">
+              {formatAmountINR(totalPipelineAmount)}
+            </span>
+          </div>
+        </div>
+
+        {/* Graph Bar Layout: Stage Funnel Bars (Left) + Portfolio Mix Horizontal Bars (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          {/* Left: Vertical Pipeline Velocity Bars (7 cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700 font-heading uppercase tracking-wider">
+                Pipeline Stages (Dossier Volume)
+              </span>
+              <span className="text-[11px] text-slate-400 font-sans">Higher bar = greater throughput</span>
+            </div>
+
+            <div className="h-48 pt-4 pb-2 px-3 bg-slate-50/70 rounded-2xl border border-slate-200/80 flex items-end justify-between gap-3 sm:gap-4">
+              {funnelStages.map((stage, i) => {
+                const heightPercent = Math.max(Math.round((stage.count / maxStageCount) * 100), 12);
+
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center h-full justify-end group">
+                    {/* Count label pill */}
+                    <span className="text-[11px] font-mono font-bold text-slate-700 mb-1.5 transition-transform group-hover:-translate-y-0.5">
+                      {stage.count}
+                    </span>
+
+                    {/* The Visual Bar */}
+                    <div className="w-full max-w-[48px] bg-slate-200/70 rounded-t-xl overflow-hidden flex items-end h-full">
+                      <div
+                        style={{ height: `${heightPercent}%` }}
+                        className={`w-full rounded-t-xl bg-gradient-to-t ${stage.gradient} transition-all duration-500 shadow-sm group-hover:brightness-105`}
+                      />
+                    </div>
+
+                    {/* Stage Title Below */}
+                    <span className="text-[10px] sm:text-[11px] font-heading font-semibold text-slate-600 mt-2 text-center line-clamp-1 w-full" title={stage.label}>
+                      {stage.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right: Portfolio Category Mix Horizontal Graph Bars (5 cols) */}
+          <div className="lg:col-span-5 space-y-3.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700 font-heading uppercase tracking-wider">
+                Facility Portfolio Share
+              </span>
+              <span className="text-[11px] text-slate-400 font-mono">By dossier volume</span>
+            </div>
+
+            <div className="space-y-3 pt-1">
+              {Object.keys(typeConfig).map((typeKey) => {
+                const cfg = typeConfig[typeKey];
+                const data = loanStatsMap[typeKey] || { count: 0, totalAmt: 0 };
+                const pct = Math.round((data.count / totalCount) * 100) || 0;
+
+                return (
+                  <div key={typeKey} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[#0c1a26] font-heading">{cfg.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[11px] font-bold text-slate-700">{pct}% ({data.count})</span>
+                        <span className="font-mono text-[10px] text-slate-400">{formatAmountINR(data.totalAmt)}</span>
+                      </div>
+                    </div>
+
+                    {/* Progress Graph Bar */}
+                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        style={{ width: `${Math.max(pct, data.count > 0 ? 5 : 0)}%` }}
+                        className={`h-full rounded-full bg-gradient-to-r ${cfg.barGradient} transition-all duration-500`}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ────────────────────────────────────────────────────────────
+          4. ACTION REQUIRED: UNALLOTTED ENQUIRIES QUEUE
           ──────────────────────────────────────────────────────────── */}
       {unallottedEnquiries.length > 0 && (
         <div className="rounded-2xl bg-gradient-to-r from-amber-500/10 via-teal-500/5 to-white p-5 sm:p-6 border border-amber-300/70 shadow-sm space-y-4">
@@ -464,7 +643,7 @@ export const AdminDashboardPage: React.FC = () => {
       )}
 
       {/* ────────────────────────────────────────────────────────────
-          4. MAIN TWO-COLUMN LAYOUT: RECENT DOSSIERS & ACTIVITY FEED
+          5. MAIN TWO-COLUMN LAYOUT: RECENT DOSSIERS & ACTIVITY FEED
           ──────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
         {/* Left Column: Recent Enquiries Table (8 cols) */}
@@ -736,7 +915,7 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* ────────────────────────────────────────────────────────────
-          5. SYSTEM QUICK SHORTCUTS DOCK
+          6. SYSTEM QUICK SHORTCUTS DOCK
           ──────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-2">
         <Link
