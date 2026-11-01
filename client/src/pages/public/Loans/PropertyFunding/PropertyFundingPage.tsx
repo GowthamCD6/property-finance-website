@@ -150,13 +150,13 @@ export const PropertyFundingPage: React.FC = () => {
           <img
             src={purchaseLoanHeroImage}
             alt="Purchase Loans & Property Takeover Architecture"
-            className="w-full h-full object-cover object-center brightness-[0.70] contrast-[1.05]"
+            className="w-full h-full object-cover object-center brightness-[1.02] contrast-[1.05]"
             loading="eager"
           />
-          {/* Calibrated lightweight translucent overlays */}
-          <div className="absolute inset-0 bg-slate-950/75" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-slate-950/80" />
+          {/* Calibrated lightweight translucent overlays to keep image clearly visible */}
+          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-slate-950/65" />
         </div>
 
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/15 rounded-full blur-3xl pointer-events-none" />
