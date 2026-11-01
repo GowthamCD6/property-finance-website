@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import {
   Building2,
@@ -6,6 +6,7 @@ import {
   ArrowRight,
   Sparkles,
   FileSpreadsheet,
+  ShieldCheck,
 } from 'lucide-react';
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../../components/common/InteractiveDocumentVault';
@@ -18,6 +19,25 @@ export const PropertyFundingPage: React.FC = () => {
   const fundingService = services.find((s) => s.slug === 'property-backed-funding') || null;
 
   const [activeTab, setActiveTab] = useState<'bank-takeover' | 'plot-purchase' | 'home-purchase' | 'commercial-purchase'>('bank-takeover');
+  const [mounted, setMounted] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 80);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 6;
+      const y = -(e.clientY / innerHeight - 0.5) * 6;
+      setTilt({ x: y, y: x });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const fundingSolutions = [
     {
@@ -120,34 +140,76 @@ export const PropertyFundingPage: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-slate-950/70" />
         </div>
 
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+        {/* Ambient atmospheric pulse glows */}
+        <div
+          className="absolute -top-24 -left-20 w-80 sm:w-96 h-80 sm:h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"
+          style={{ animationDuration: '6s' }}
+        />
+        <div className="absolute top-1/3 -right-20 w-80 sm:w-96 h-80 sm:h-96 bg-sky-500/12 rounded-full blur-3xl pointer-events-none" />
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
             {/* Left Column: Commercial & Retail Mandate */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/85 border border-emerald-500/35 backdrop-blur-md shadow-sm">
-                <Building2 className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 font-heading">
-                  Purchase Loans &amp; Private to Govt. Bank Takeover Desk
-                </span>
+            <div className="lg:col-span-7 space-y-6 sm:space-y-7">
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s',
+                }}
+                className="flex flex-wrap items-center gap-3"
+              >
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-white/15 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm font-heading">
+                  <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
+                  <span>Purchase Loans &amp; Private to Govt. Bank Takeover Desk • Est. 2011</span>
+                </div>
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10 font-sans">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Lowest EBLR Benchmark</span>
+                </div>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight font-heading leading-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
-                Purchase Loans &amp; Takeovers, <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-amber-200 drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
-                  Engineered for Lowest Interest Rates.
-                </span>
-              </h1>
+              {/* Display Headline - ONLY THIS HEADLINE TEXT RESPONDS TO CURSOR TILT */}
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted
+                    ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`
+                    : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+                  transformStyle: 'preserve-3d',
+                }}
+                className="space-y-3 will-change-transform"
+              >
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+                  Purchase Loans, Takeover &amp;{' '}
+                  <span className="shimmer-headline-text text-[#38bdf8]">
+                    Property Financing Solutions.
+                  </span>
+                </h1>
+              </div>
 
-              <p className="text-sm sm:text-base lg:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+              <p
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(24px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+                }}
+                className="text-xs sm:text-sm md:text-base text-slate-200 font-sans font-normal leading-relaxed max-w-2xl pt-1 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+              >
                 Specialized purchase loans for plot acquisition, plot with construction, new/old homes, tiled houses, and commercial buildings. Plus our signature bank takeover desk transferring loans from private banks to government banks at lowest interest rates.
               </p>
 
               {/* CTAs */}
-              <div className="pt-2 flex flex-wrap items-center gap-3.5">
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
+                }}
+                className="pt-2 flex flex-wrap items-center gap-3.5"
+              >
                 <a
                   href="#enquiry-form"
                   className="px-6 sm:px-8 py-3.5 rounded-full bg-gradient-to-r from-teal-500 to-[#20B2AA] hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
@@ -166,7 +228,14 @@ export const PropertyFundingPage: React.FC = () => {
               </div>
 
               {/* Key Institutional Benchmarks */}
-              <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-300 font-sans">
+              <div
+                style={{
+                  opacity: mounted ? 1 : 0,
+                  transform: mounted ? 'translateY(0)' : 'translateY(28px)',
+                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.48s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.48s',
+                }}
+                className="pt-2 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-300 font-sans"
+              >
                 <span className="px-3 py-1 rounded-full bg-slate-900/85 border border-white/15 backdrop-blur-sm">
                   Plot &amp; Home: From 7.25%*
                 </span>
@@ -183,7 +252,14 @@ export const PropertyFundingPage: React.FC = () => {
             </div>
 
             {/* Right Column: Institutional Term Sheet Matrix Card */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-[#112334]/95 to-[#0c1b29]/95 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-7 shadow-2xl relative font-sans text-white">
+            <div
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'translateY(0)' : 'translateY(32px)',
+                transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s',
+              }}
+              className="lg:col-span-5 bg-gradient-to-br from-[#112334]/95 to-[#0c1b29]/95 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-7 shadow-2xl relative font-sans text-white"
+            >
               <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
