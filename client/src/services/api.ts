@@ -9,9 +9,11 @@ import {
   CustomerUser,
   WeeklyConfig,
   BlockedDate,
+  CreateAdminPayload,
+  UpdateAdminPayload,
 } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('vpf_admin_token');
@@ -101,10 +103,16 @@ export function saveLocalEnquiry(enq: any, docs: any[]): void {
 
 export async function submitLoanEnquiry(data: any): Promise<any> {
   const documents = data.documents || [];
+  const userToken = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (userToken) {
+    headers['Authorization'] = `Bearer ${userToken}`;
+  }
   try {
     const res = await fetch(`${API_BASE}/public/enquiries`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
+      credentials: 'include',
       body: JSON.stringify(data),
     });
     const json = await res.json();
@@ -153,6 +161,7 @@ export async function loginAdminApi(email: string, password: string): Promise<{ 
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ email, password }),
   });
   const json = await res.json();
@@ -164,6 +173,7 @@ export async function loginAdminWithGoogleApi(credential: string): Promise<{ tok
   const res = await fetch(`${API_BASE}/auth/google/admin`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ credential }),
   });
   const json = await res.json();
@@ -175,6 +185,7 @@ export async function loginUserWithGoogleApi(credential: string): Promise<{ toke
   const res = await fetch(`${API_BASE}/auth/google/user`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ credential }),
   });
   const json = await res.json();
@@ -187,7 +198,7 @@ export async function getCustomerProfileApi(): Promise<CustomerUser> {
   const headers: HeadersInit = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}/auth/customer/me`, { headers });
+  const res = await fetch(`${API_BASE}/auth/customer/me`, { headers, credentials: 'include' });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to verify customer session');
   return json.data;
@@ -198,7 +209,7 @@ export async function getCustomerEnquiriesApi(): Promise<Enquiry[]> {
   const headers: HeadersInit = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}/auth/customer/enquiries`, { headers });
+  const res = await fetch(`${API_BASE}/auth/customer/enquiries`, { headers, credentials: 'include' });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to load enquiries');
   return json.data;
@@ -582,4 +593,48 @@ export async function unblockDateApi(date: string): Promise<void> {
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to unblock date');
+}
+
+// ============================================================================
+// ADMIN TEAM & ACCESS MANAGEMENT API
+// ============================================================================
+
+export async function getAdminTeamApi(): Promise<AdminUser[]> {
+  const res = await fetch(`${API_BASE}/admin/team`, {
+    headers: getAuthHeaders(),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to fetch administrator team');
+  return json.data;
+}
+
+export async function createAdminMemberApi(data: CreateAdminPayload): Promise<AdminUser> {
+  const res = await fetch(`${API_BASE}/admin/team`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to enroll administrator');
+  return json.data;
+}
+
+export async function updateAdminMemberApi(id: string, data: UpdateAdminPayload): Promise<AdminUser> {
+  const res = await fetch(`${API_BASE}/admin/team/${id}`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to update administrator');
+  return json.data;
+}
+
+export async function deleteAdminMemberApi(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/admin/team/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to delete administrator');
 }

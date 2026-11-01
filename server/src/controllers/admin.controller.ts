@@ -1,6 +1,9 @@
 import { Response, NextFunction } from 'express';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import { AuthenticatedRequest } from '../middleware/auth';
 import prisma from '../database/client';
+import { config } from '../config';
 import { generateEnquiryReference } from '../utils/reference';
 import {
   updateSiteContentSchema,
@@ -11,6 +14,7 @@ import {
   updateAppointmentSchema,
   createAppointmentSchema,
 } from '../validators/content.validator';
+import { createAdminSchema, updateAdminSchema } from '../validators/auth.validator';
 
 // 1. Dashboard Metrics & Stats
 export async function getDashboardStats(_req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
@@ -905,6 +909,211 @@ export async function unblockDate(req: AuthenticatedRequest, res: Response, next
     const { date } = req.params;
     await prisma.blockedDate.deleteMany({ where: { date } });
     res.json({ success: true, message: 'Date unblocked.' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// ============================================================================
+// ADMIN TEAM & ACCESS MANAGEMENT
+// ============================================================================
+
+/**
+ * Get all registered administrators
+ */
+export async function getAdminTeam(_req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const team = await prisma.adminUser.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        avatar: true,
+        isActive: true,
+        lastLoginAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json({
+      success: true,
+      data: team,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Enroll a new administrator (pre-authorizes their Gmail/work email for login)
+ */
+export async function createAdminMember(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const data = createAdminSchema.parse(req.body);
+    const normalizedEmail = data.email.toLowerCase().trim();
+
+    // Check if email already exists
+    const existing = await prisma.adminUser.findUnique({
+      where: { email: normalizedEmail },
+    });
+
+    if (existing) {
+      res.status(400).json({
+        success: false,
+        message: `An administrator with email "${normalizedEmail}" is already registered.`,
+      });
+      return;
+    }
+
+    // Password: If provided, hash it. If not, generate a secure random password so they can log in via Google
+    const rawPassword =
+      data.password && data.password.trim().length >= 6
+        ? data.password.trim()
+        : crypto.randomBytes(16).toString('hex') + 'Aa1!';
+    const passwordHash = await bcrypt.hash(rawPassword, 10);
+
+    const newAdmin = await prisma.adminUser.create({
+      data: {
+        name: data.name.trim(),
+        email: normalizedEmail,
+        phone: data.phone?.trim() || null,
+        role: data.role || 'admin',
+        passwordHash,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        avatar: true,
+        isActive: true,
+        lastLoginAt: true,
+        createdAt: true,
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Administrator ${newAdmin.name} (${newAdmin.email}) enrolled successfully. They are now authorized to sign in.`,
+      data: newAdmin,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Update administrator details or toggle active status
+ */
+export async function updateAdminMember(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+    const data = updateAdminSchema.parse(req.body);
+
+    const targetAdmin = await prisma.adminUser.findUnique({
+      where: { id },
+    });
+
+    if (!targetAdmin) {
+      res.status(404).json({
+        success: false,
+        message: 'Administrator not found.',
+      });
+      return;
+    }
+
+    // Protect against self-deactivation
+    if (req.admin?.id === id && data.isActive === false) {
+      res.status(400).json({
+        success: false,
+        message: 'You cannot deactivate your own active administrator account.',
+      });
+      return;
+    }
+
+    let passwordHashUpdate: string | undefined;
+    if (data.password && data.password.trim().length >= 6) {
+      passwordHashUpdate = await bcrypt.hash(data.password.trim(), 10);
+    }
+
+    const updated = await prisma.adminUser.update({
+      where: { id },
+      data: {
+        name: data.name?.trim() || undefined,
+        phone: data.phone !== undefined ? (data.phone ? data.phone.trim() : null) : undefined,
+        role: data.role || undefined,
+        isActive: data.isActive !== undefined ? Boolean(data.isActive) : undefined,
+        passwordHash: passwordHashUpdate || undefined,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        avatar: true,
+        isActive: true,
+        lastLoginAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    res.json({
+      success: true,
+      message: 'Administrator account updated successfully.',
+      data: updated,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Delete / Remove administrator
+ */
+export async function deleteAdminMember(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+
+    if (req.admin?.id === id) {
+      res.status(400).json({
+        success: false,
+        message: 'You cannot delete your own active administrator account.',
+      });
+      return;
+    }
+
+    const target = await prisma.adminUser.findUnique({ where: { id } });
+    if (!target) {
+      res.status(404).json({
+        success: false,
+        message: 'Administrator not found.',
+      });
+      return;
+    }
+
+    // Protect default system admin
+    if (target.email.toLowerCase() === config.adminEmail.toLowerCase()) {
+      res.status(400).json({
+        success: false,
+        message: 'The primary system administrator account cannot be deleted.',
+      });
+      return;
+    }
+
+    await prisma.adminUser.delete({ where: { id } });
+
+    res.json({
+      success: true,
+      message: `Administrator "${target.name}" (${target.email}) deleted successfully.`,
+    });
   } catch (err) {
     next(err);
   }

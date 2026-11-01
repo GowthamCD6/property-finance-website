@@ -298,7 +298,28 @@ export interface AdminUser {
   email: string;
   name: string;
   role: string;
+  phone?: string | null;
   avatar?: string | null;
+  isActive?: boolean;
+  lastLoginAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateAdminPayload {
+  name: string;
+  email: string;
+  phone?: string | null;
+  role?: string;
+  password?: string | null;
+}
+
+export interface UpdateAdminPayload {
+  name?: string;
+  phone?: string | null;
+  role?: string;
+  isActive?: boolean;
+  password?: string | null;
 }
 
 export interface CustomerUser {

@@ -15,7 +15,9 @@ model AdminUser {
   passwordHash String
   name         String
   role         String    @default("admin")
-  avatar       String?
+  phone        String?
+  avatar       String?   @db.Text
+  isActive     Boolean   @default(true)
   lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

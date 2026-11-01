@@ -25,6 +25,7 @@ import { AdminServicesPage } from '../pages/admin/AdminServicesPage';
 import { AdminContentPage } from '../pages/admin/AdminContentPage';
 import { AdminFaqsPage } from '../pages/admin/AdminFaqsPage';
 import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage';
+import { AdminTeamPage } from '../pages/admin/AdminTeamPage';
 import { ScrollToTop } from '../components/common/ScrollToTop';
 
 export const AppRouting: React.FC = () => {
@@ -75,6 +76,7 @@ export const AppRouting: React.FC = () => {
         <Route path="content" element={<AdminContentPage />} />
         <Route path="faqs" element={<AdminFaqsPage />} />
         <Route path="settings" element={<AdminSettingsPage />} />
+        <Route path="team" element={<AdminTeamPage />} />
       </Route>
 
       {/* 404 FALLBACK */}

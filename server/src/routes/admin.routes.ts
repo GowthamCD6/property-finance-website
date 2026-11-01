@@ -26,6 +26,10 @@ import {
   bulkUpdateWeeklySchedule,
   blockDate,
   unblockDate,
+  getAdminTeam,
+  createAdminMember,
+  updateAdminMember,
+  deleteAdminMember,
 } from '../controllers/admin.controller';
 
 const router = Router();
@@ -71,5 +75,11 @@ router.put('/availability/weekly-bulk', bulkUpdateWeeklySchedule);
 router.put('/availability/weekly/:id', updateWeeklyConfig);
 router.post('/availability/block-date', blockDate);
 router.delete('/availability/block-date/:date', unblockDate);
+
+// Admin Team & Access Management
+router.get('/team', getAdminTeam);
+router.post('/team', createAdminMember);
+router.patch('/team/:id', updateAdminMember);
+router.delete('/team/:id', deleteAdminMember);
 
 export default router;

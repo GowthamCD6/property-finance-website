@@ -50,13 +50,13 @@ export async function requireAdminAuth(
 
     const admin = await prisma.adminUser.findUnique({
       where: { id: decoded.id },
-      select: { id: true, email: true, name: true, role: true },
+      select: { id: true, email: true, name: true, role: true, isActive: true },
     });
 
-    if (!admin) {
+    if (!admin || !admin.isActive) {
       res.status(401).json({
         success: false,
-        message: 'Administrator session is invalid or has expired.',
+        message: 'Administrator session is invalid, expired, or the account has been deactivated.',
       });
       return;
     }

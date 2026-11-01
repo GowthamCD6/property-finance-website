@@ -97,6 +97,14 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
       return;
     }
 
+    if (!admin.isActive) {
+      res.status(403).json({
+        success: false,
+        message: 'Administrator account has been deactivated. Please contact your primary administrator.',
+      });
+      return;
+    }
+
     const isMatch = await bcrypt.compare(password, admin.passwordHash);
     if (!isMatch) {
       res.status(401).json({
@@ -167,60 +175,44 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
     }
 
     const payload = await verifyGoogleToken(googleToken);
-    const googleEmail = payload.email.toLowerCase();
+    const googleEmail = payload.email.toLowerCase().trim();
 
-    // Check if an AdminUser exists with this email
-    let admin = await prisma.adminUser.findUnique({
+    // CRITICAL SECURITY ENFORCEMENT:
+    // Only allow authentication if this Gmail / email is ALREADY enrolled in the database (AdminUser table)
+    const admin = await prisma.adminUser.findUnique({
       where: { email: googleEmail },
     });
 
-    // Authorized emails or patterns
-    const isConfiguredAdmin =
-      googleEmail === config.adminEmail.toLowerCase() ||
-      googleEmail === 'admin@wealthanchor.in' ||
-      googleEmail === 'admin@primeassociateloans.in' ||
-      googleEmail.endsWith('@wealthanchor.in');
-
-    if (!admin && !isConfiguredAdmin) {
-      // Check if any admin exists at all in system (bootstrap mode)
-      const count = await prisma.adminUser.count();
-      if (count > 0) {
-        res.status(403).json({
-          success: false,
-          message: `Access Denied: The Google account (${googleEmail}) is not authorized for the Administrator Console. Please sign in with an authorized advisor account.`,
-        });
-        return;
-      }
-    }
-
-    // Auto-provision or update admin record
     if (!admin) {
-      const randomPassword = await bcrypt.hash(Math.random().toString(36), 10);
-      admin = await prisma.adminUser.create({
-        data: {
-          email: googleEmail,
-          passwordHash: randomPassword,
-          name: payload.name || 'Advisory Administrator',
-          role: 'admin',
-          avatar: payload.picture,
-          lastLoginAt: new Date(),
-        },
+      res.status(403).json({
+        success: false,
+        message: `Access Denied: The Google account (${googleEmail}) is not registered in our database as an authorized administrator. Please ask your primary administrator to enroll your email address first.`,
       });
-    } else {
-      admin = await prisma.adminUser.update({
-        where: { id: admin.id },
-        data: {
-          lastLoginAt: new Date(),
-          avatar: payload.picture || admin.avatar,
-        },
-      });
+      return;
     }
+
+    if (!admin.isActive) {
+      res.status(403).json({
+        success: false,
+        message: `Access Denied: The administrator account (${googleEmail}) has been deactivated. Please contact your primary administrator.`,
+      });
+      return;
+    }
+
+    // Update lastLoginAt and avatar from Google
+    const updatedAdmin = await prisma.adminUser.update({
+      where: { id: admin.id },
+      data: {
+        lastLoginAt: new Date(),
+        avatar: payload.picture || admin.avatar,
+      },
+    });
 
     const token = jwt.sign(
       {
-        id: admin.id,
-        email: admin.email,
-        role: admin.role,
+        id: updatedAdmin.id,
+        email: updatedAdmin.email,
+        role: updatedAdmin.role,
       },
       config.jwtSecret,
       { expiresIn: config.jwtExpiresIn }
@@ -239,11 +231,11 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
       data: {
         token,
         admin: {
-          id: admin.id,
-          name: admin.name,
-          email: admin.email,
-          role: admin.role,
-          avatar: admin.avatar,
+          id: updatedAdmin.id,
+          name: updatedAdmin.name,
+          email: updatedAdmin.email,
+          role: updatedAdmin.role,
+          avatar: updatedAdmin.avatar,
         },
       },
     });

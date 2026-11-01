@@ -15,6 +15,7 @@ import {
   Loader2,
   Globe,
   UserPlus,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/images/logo.png';
@@ -143,8 +144,15 @@ export const AdminLayout: React.FC = () => {
       ],
     },
     {
-      group: 'System Configuration',
+      group: 'Administration & Access',
       items: [
+        {
+          name: 'Admin Team & Roles',
+          path: '/admin/team',
+          icon: <ShieldCheck className="w-4 h-4 flex-shrink-0" />,
+          badge: 'Access',
+          badgeColor: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
+        },
         {
           name: 'Working Hours & Slots',
           path: '/admin/settings',

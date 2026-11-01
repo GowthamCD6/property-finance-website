@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { config } from '../config';
 import prisma from '../database/client';
 import { createEnquirySchema } from '../validators/enquiry.validator';
 import { generateEnquiryReference } from '../utils/reference';
@@ -204,11 +206,43 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
 
     const referenceNumber = await generateEnquiryReference();
 
+    // Auto-link CustomerUser if enquiry email matches an existing borrower account or user is authenticated
+    let matchedCustomerId: string | null = null;
+    if (validatedData.email) {
+      const existingBorrower = await prisma.customerUser.findUnique({
+        where: { email: validatedData.email.toLowerCase() },
+      });
+      if (existingBorrower) {
+        matchedCustomerId = existingBorrower.id;
+      }
+    }
+
+    if (!matchedCustomerId) {
+      let customerToken: string | undefined;
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        customerToken = authHeader.substring(7);
+      } else if (req.cookies && req.cookies.customer_token) {
+        customerToken = req.cookies.customer_token;
+      }
+      if (customerToken) {
+        try {
+          const decoded = jwt.verify(customerToken, config.jwtSecret) as any;
+          if (decoded?.id) {
+            matchedCustomerId = decoded.id;
+          }
+        } catch {
+          // Non-blocking
+        }
+      }
+    }
+
     // Persist in transaction
     const result = await prisma.$transaction(async (tx) => {
       const enquiry = await tx.enquiry.create({
         data: {
           referenceNumber,
+          customerId: matchedCustomerId,
           fullName: validatedData.fullName,
           mobileNumber: validatedData.mobileNumber,
           email: validatedData.email || null,
