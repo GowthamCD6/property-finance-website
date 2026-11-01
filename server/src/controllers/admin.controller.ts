@@ -1118,3 +1118,116 @@ export async function deleteAdminMember(req: AuthenticatedRequest, res: Response
     next(err);
   }
 }
+
+// ============================================================================
+// ENQUIRED CUSTOMERS / VERIFIED BORROWERS DIRECTORY
+// ============================================================================
+
+/**
+ * Retrieve verified borrowers who have logged in via User Panel AND submitted at least one loan enquiry
+ */
+export async function getEnquiredCustomers(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { search } = req.query;
+
+    // 1. Re-sync any orphan enquiries where enquiry.email matches customer.email
+    const existingCustomers = await prisma.customerUser.findMany({
+      select: { id: true, email: true },
+    });
+
+    for (const cust of existingCustomers) {
+      await prisma.enquiry.updateMany({
+        where: {
+          email: cust.email,
+          customerId: null,
+        },
+        data: {
+          customerId: cust.id,
+        },
+      });
+    }
+
+    // 2. Fetch CustomerUsers who have at least one submitted enquiry
+    const customers = await prisma.customerUser.findMany({
+      where: {
+        enquiries: {
+          some: {}, // Strict rule: only users who have submitted an enquiry
+        },
+        ...(search
+          ? {
+              OR: [
+                { name: { contains: String(search) } },
+                { email: { contains: String(search) } },
+                { phone: { contains: String(search) } },
+                {
+                  enquiries: {
+                    some: {
+                      OR: [
+                        { referenceNumber: { contains: String(search) } },
+                        { fullName: { contains: String(search) } },
+                        { mobileNumber: { contains: String(search) } },
+                        { cityState: { contains: String(search) } },
+                      ],
+                    },
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+      include: {
+        enquiries: {
+          include: {
+            appointments: true,
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+      orderBy: { lastLoginAt: 'desc' },
+    });
+
+    // 3. Format customer data for admin review
+    const formattedCustomers = customers.map((c) => {
+      const totalEnquiries = c.enquiries.length;
+      const totalLoanAmount = c.enquiries.reduce((sum, enq) => sum + (enq.loanAmount || 0), 0);
+      const latestEnquiry = c.enquiries[0] || null;
+      const phone = c.phone || latestEnquiry?.mobileNumber || null;
+
+      return {
+        id: c.id,
+        googleId: c.googleId,
+        name: c.name,
+        email: c.email,
+        phone,
+        picture: c.picture,
+        lastLoginAt: c.lastLoginAt,
+        createdAt: c.createdAt,
+        totalEnquiries,
+        totalLoanAmount,
+        latestEnquiry: latestEnquiry
+          ? {
+              id: latestEnquiry.id,
+              referenceNumber: latestEnquiry.referenceNumber,
+              loanType: latestEnquiry.loanType,
+              loanAmount: latestEnquiry.loanAmount,
+              status: latestEnquiry.status,
+              cityState: latestEnquiry.cityState,
+              preferredDate: latestEnquiry.preferredDate,
+              preferredTimeSlot: latestEnquiry.preferredTimeSlot,
+              meetingMode: latestEnquiry.meetingMode,
+              createdAt: latestEnquiry.createdAt,
+            }
+          : null,
+        enquiries: c.enquiries,
+      };
+    });
+
+    res.json({
+      success: true,
+      data: formattedCustomers,
+      totalCount: formattedCustomers.length,
+    });
+  } catch (err) {
+    next(err);
+  }
+}

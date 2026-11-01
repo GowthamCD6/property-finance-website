@@ -23,18 +23,15 @@ import {
   DollarSign,
   ChevronRight,
   Users,
-  UserPlus,
 } from 'lucide-react';
 import { DashboardStats } from '../../types';
 import { getDashboardStatsApi, getAppointmentsApi } from '../../services/api';
-import { RegisterBorrowerModal } from '../../components/admin/RegisterBorrowerModal';
 
 export const AdminDashboardPage: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [upcomingList, setUpcomingList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   const fetchDashboardData = () => {
     Promise.all([
@@ -204,21 +201,12 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIsRegisterModalOpen(true)}
+          <Link
+            to="/admin/customers"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-bold font-heading shadow-sm transition-all cursor-pointer active:scale-[0.98]"
           >
-            <UserPlus className="w-4 h-4" />
-            <span>+ Register Borrower</span>
-          </button>
-
-          <Link
-            to="/admin/appointments"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-semibold font-heading transition-colors"
-          >
-            <Plus className="w-4 h-4 text-teal-300" />
-            <span>Allot Appointment</span>
+            <UserCheck className="w-4 h-4" />
+            <span>Enquired Customers</span>
           </Link>
 
           <Link
@@ -226,7 +214,7 @@ export const AdminDashboardPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-semibold font-heading transition-colors"
           >
             <Users className="w-4 h-4 text-teal-300" />
-            <span>View All Pipeline</span>
+            <span>Loan Pipeline</span>
             <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
           </Link>
         </div>
@@ -561,14 +549,6 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <RegisterBorrowerModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        onSuccess={() => {
-          fetchDashboardData();
-        }}
-      />
     </div>
   );
 };

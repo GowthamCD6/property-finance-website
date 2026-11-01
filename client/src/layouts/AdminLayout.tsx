@@ -15,6 +15,7 @@ import {
   Loader2,
   Globe,
   ShieldCheck,
+  Users,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/images/logo.png';
@@ -107,6 +108,13 @@ export const AdminLayout: React.FC = () => {
           icon: <FileSpreadsheet className="w-4 h-4 flex-shrink-0" />,
           badge: pendingCount > 0 ? `${pendingCount} New` : null,
           badgeColor: 'bg-emerald-500 text-slate-950 font-bold',
+        },
+        {
+          name: 'Enquired Customers',
+          path: '/admin/customers',
+          icon: <Users className="w-4 h-4 flex-shrink-0" />,
+          badge: 'Google Auth',
+          badgeColor: 'bg-blue-500/20 text-blue-300 border border-blue-500/30',
         },
         {
           name: 'Appointments & Slots',

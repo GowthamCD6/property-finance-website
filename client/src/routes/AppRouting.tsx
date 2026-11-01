@@ -26,6 +26,7 @@ import { AdminContentPage } from '../pages/admin/AdminContentPage';
 import { AdminFaqsPage } from '../pages/admin/AdminFaqsPage';
 import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage';
 import { AdminTeamPage } from '../pages/admin/AdminTeamPage';
+import { AdminCustomersPage } from '../pages/admin/AdminCustomersPage';
 import { ScrollToTop } from '../components/common/ScrollToTop';
 
 export const AppRouting: React.FC = () => {
@@ -71,6 +72,7 @@ export const AppRouting: React.FC = () => {
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboardPage />} />
         <Route path="enquiries" element={<AdminEnquiriesPage />} />
+        <Route path="customers" element={<AdminCustomersPage />} />
         <Route path="appointments" element={<AdminAppointmentsPage />} />
         <Route path="services" element={<AdminServicesPage />} />
         <Route path="content" element={<AdminContentPage />} />

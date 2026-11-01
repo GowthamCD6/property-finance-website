@@ -30,6 +30,7 @@ import {
   createAdminMember,
   updateAdminMember,
   deleteAdminMember,
+  getEnquiredCustomers,
 } from '../controllers/admin.controller';
 
 const router = Router();
@@ -40,8 +41,9 @@ router.use(requireAdminAuth);
 // Dashboard
 router.get('/dashboard-stats', getDashboardStats);
 
-// Enquiries
+// Enquiries & Verified Customers
 router.get('/enquiries', getEnquiries);
+router.get('/customers', getEnquiredCustomers);
 router.post('/enquiries', createAdminEnquiry);
 router.get('/enquiries/export', exportEnquiriesCsv);
 router.get('/enquiries/:id', getEnquiryById);

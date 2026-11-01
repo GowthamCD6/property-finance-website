@@ -11,6 +11,7 @@ import {
   BlockedDate,
   CreateAdminPayload,
   UpdateAdminPayload,
+  EnquiredCustomer,
 } from '../types';
 
 const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
@@ -637,4 +638,20 @@ export async function deleteAdminMemberApi(id: string): Promise<void> {
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to delete administrator');
+}
+
+// ============================================================================
+// VERIFIED ENQUIRED CUSTOMERS API
+// ============================================================================
+
+export async function getEnquiredCustomersApi(search?: string): Promise<{ data: EnquiredCustomer[]; totalCount: number }> {
+  const url = search
+    ? `${API_BASE}/admin/customers?search=${encodeURIComponent(search)}`
+    : `${API_BASE}/admin/customers`;
+  const res = await fetch(url, {
+    headers: getAuthHeaders(),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to fetch enquired customers');
+  return json;
 }

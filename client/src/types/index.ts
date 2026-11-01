@@ -330,6 +330,32 @@ export interface CustomerUser {
   phone?: string | null;
 }
 
+export interface EnquiredCustomer {
+  id: string;
+  googleId?: string | null;
+  name: string;
+  email: string;
+  phone?: string | null;
+  picture?: string | null;
+  lastLoginAt?: string | null;
+  createdAt: string;
+  totalEnquiries: number;
+  totalLoanAmount: number;
+  latestEnquiry?: {
+    id: string;
+    referenceNumber: string;
+    loanType: string;
+    loanAmount: number;
+    status: string;
+    cityState: string;
+    preferredDate?: string | null;
+    preferredTimeSlot?: string | null;
+    meetingMode?: string | null;
+    createdAt: string;
+  } | null;
+  enquiries: Enquiry[];
+}
+
 export interface DashboardStats {
   totalEnquiries: number;
   newEnquiries: number;
