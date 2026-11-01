@@ -16,6 +16,11 @@ import {
   ShieldCheck,
   PhoneCall,
   MapPin,
+  Video,
+  Building2,
+  Copy,
+  Check,
+  Sparkles,
 } from 'lucide-react';
 import { useCustomerAuth } from '../../../context/CustomerAuthContext';
 import { GoogleIcon } from '../../../components/common/GoogleIcon';
@@ -26,6 +31,13 @@ export const MyEnquiriesPage: React.FC = () => {
   const { customer, isAuthenticated, isLoading, enquiries, loginWithGoogle, logout, refreshEnquiries } = useCustomerAuth();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
+
+  const handleCopyLink = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedLink(id);
+    setTimeout(() => setCopiedLink(null), 2500);
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -268,6 +280,21 @@ export const MyEnquiriesPage: React.FC = () => {
             <div className="grid grid-cols-1 gap-6">
               {enquiries.map((enq) => {
                 const latestAppointment = enq.appointments && enq.appointments.length > 0 ? enq.appointments[0] : null;
+                const effectiveMode = latestAppointment?.meetingMode || enq.meetingMode || 'phone';
+                const isAllotted = Boolean(latestAppointment && latestAppointment.date && latestAppointment.date !== 'Pending Advisor Allotment');
+
+                // Extract doorstep address from notes or location
+                const doorstepAddress = enq.additionalNotes?.includes('📍 Doorstep Meeting Address:')
+                  ? enq.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim()
+                  : (effectiveMode === 'in_person' ? (enq.propertyLocation || enq.cityState) : null);
+
+                // Extract Google Meet URL
+                const meetLinkMatch = latestAppointment?.adminNotes?.match(/(https:\/\/meet\.google\.com\/[a-zA-Z0-9_-]+)/i);
+                const meetUrl = meetLinkMatch
+                  ? meetLinkMatch[1]
+                  : (effectiveMode === 'video' && latestAppointment?.adminNotes?.startsWith('http')
+                      ? latestAppointment.adminNotes.trim()
+                      : null);
 
                 return (
                   <div
@@ -317,77 +344,298 @@ export const MyEnquiriesPage: React.FC = () => {
                       </div>
 
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                        <span className="text-slate-400 font-medium block font-sans">Preferred Mode</span>
+                        <span className="text-slate-400 font-medium block font-sans">Chosen Channel</span>
                         <span className="text-sm font-bold text-brand-navy mt-0.5 block capitalize font-heading">
-                          {enq.meetingMode?.replace('_', ' ') || 'Phone Call'}
+                          {effectiveMode === 'in_person'
+                            ? 'Offline Meeting'
+                            : effectiveMode === 'video'
+                            ? 'Google Meet'
+                            : 'Phone Call'}
                         </span>
                       </div>
                     </div>
 
-                    {/* APPOINTMENT / CONSULTATION SLOT ALLOTMENT BOX */}
-                    <div className="p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/40 border border-teal-100/90 rounded-2xl space-y-3 shadow-2xs">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-brand-teal font-extrabold text-xs uppercase tracking-wider font-heading">
-                          <Calendar className="w-4 h-4" />
-                          <span>Advisor Consultation Slot Allotment</span>
+                    {/* CONSULTATION SLOT ALLOTMENT BOX */}
+                    <div
+                      className={`p-5 sm:p-6 rounded-2xl border space-y-4 shadow-2xs transition-all ${
+                        isAllotted
+                          ? effectiveMode === 'video'
+                            ? 'bg-gradient-to-br from-sky-50/90 via-white to-blue-50/50 border-sky-200/90'
+                            : effectiveMode === 'in_person'
+                            ? 'bg-gradient-to-br from-purple-50/90 via-white to-teal-50/50 border-purple-200/90'
+                            : 'bg-gradient-to-br from-teal-50/90 via-white to-emerald-50/50 border-teal-200/90'
+                          : 'bg-gradient-to-br from-amber-50/60 via-white to-slate-50/50 border-amber-200/80'
+                      }`}
+                    >
+                      {/* Box Header */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200/70">
+                        <div className="flex items-center gap-2">
+                          {effectiveMode === 'video' ? (
+                            <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                              <Video className="w-4 h-4" />
+                            </div>
+                          ) : effectiveMode === 'in_person' ? (
+                            <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                              <Building2 className="w-4 h-4" />
+                            </div>
+                          ) : (
+                            <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
+                              <PhoneCall className="w-4 h-4" />
+                            </div>
+                          )}
+                          <div>
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 font-heading block">
+                              Consultation Service
+                            </span>
+                            <h4 className="text-sm font-extrabold text-slate-900 font-heading">
+                              {effectiveMode === 'video'
+                                ? 'Google Meet Video Call'
+                                : effectiveMode === 'in_person'
+                                ? 'Offline Meeting (Advisor Visits Your Area)'
+                                : 'Direct Advisor Phone Consultation'}
+                            </h4>
+                          </div>
                         </div>
-                        {latestAppointment?.status && (
-                          <span className="text-[10px] bg-teal-200/80 text-teal-900 font-extrabold px-2.5 py-0.5 rounded-full uppercase font-heading tracking-wide">
-                            {latestAppointment.status}
-                          </span>
-                        )}
+
+                        <div>
+                          {isAllotted ? (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold font-heading bg-emerald-100 text-emerald-800 border border-emerald-200">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                              <span>Slot Allotted &amp; Confirmed</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold font-heading bg-amber-100 text-amber-800 border border-amber-200">
+                              <Clock className="w-3.5 h-3.5 text-amber-600" />
+                              <span>Allotment in Progress</span>
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      {latestAppointment && latestAppointment.date && latestAppointment.date !== 'Pending Advisor Allotment' ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs">
-                          <div className="flex items-center gap-2.5">
-                            <Calendar className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                            <div>
-                              <span className="text-[11px] text-slate-500 block font-sans">Allotted Date</span>
-                              <span className="font-bold text-slate-900 font-heading">{latestAppointment.date}</span>
+                      {/* Content when slot is ALLOTTED */}
+                      {isAllotted ? (
+                        <div className="space-y-4">
+                          {/* Schedule summary tiles */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div className="p-3 bg-white/90 rounded-xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
+                              <Calendar className="w-4 h-4 text-teal-600 shrink-0" />
+                              <div>
+                                <span className="text-[10px] text-slate-400 block font-heading uppercase">Allotted Date</span>
+                                <span className="font-extrabold text-xs text-slate-900 font-heading">
+                                  {latestAppointment?.date}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="p-3 bg-white/90 rounded-xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
+                              <Clock className="w-4 h-4 text-teal-600 shrink-0" />
+                              <div>
+                                <span className="text-[10px] text-slate-400 block font-heading uppercase">Time Slot</span>
+                                <span className="font-extrabold text-xs text-slate-900 font-heading">
+                                  {latestAppointment?.timeSlot}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="p-3 bg-white/90 rounded-xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
+                              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                              <div>
+                                <span className="text-[10px] text-slate-400 block font-heading uppercase">Consultation Status</span>
+                                <span className="font-extrabold text-xs text-emerald-700 capitalize font-heading">
+                                  {latestAppointment?.status || 'Confirmed'}
+                                </span>
+                              </div>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-2.5">
-                            <Clock className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                            <div>
-                              <span className="text-[11px] text-slate-500 block font-sans">Time Slot</span>
-                              <span className="font-bold text-slate-900 font-heading">{latestAppointment.timeSlot}</span>
-                            </div>
-                          </div>
+                          {/* 1. GOOGLE MEET VIDEO CALL SPECIFIC CARD */}
+                          {effectiveMode === 'video' && (
+                            <div className="p-4 bg-sky-500/10 border border-sky-300/80 rounded-2xl space-y-3">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div>
+                                  <span className="text-xs font-bold text-sky-950 font-heading block flex items-center gap-1.5">
+                                    <Video className="w-4 h-4 text-sky-600" />
+                                    Google Meet Video Conference Room
+                                  </span>
+                                  <p className="text-[11px] text-sky-800 font-sans mt-0.5">
+                                    Join directly from your phone, laptop, or desktop browser. No sign-in required.
+                                  </p>
+                                </div>
 
-                          <div className="flex items-center gap-2.5">
-                            <MapPin className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                            <div>
-                              <span className="text-[11px] text-slate-500 block font-sans">Mode</span>
-                              <span className="font-bold text-slate-900 capitalize font-heading">
-                                {latestAppointment.meetingMode?.replace('_', ' ') || enq.meetingMode || 'Phone Call'}
-                              </span>
-                            </div>
-                          </div>
+                                {meetUrl && (
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCopyLink(meetUrl, enq.id)}
+                                      className="px-3 py-2 bg-white hover:bg-sky-50 text-sky-800 border border-sky-300 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer active:scale-95"
+                                    >
+                                      {copiedLink === enq.id ? (
+                                        <>
+                                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                          <span className="text-emerald-700">Link Copied!</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Copy className="w-3.5 h-3.5 text-sky-600" />
+                                          <span>Copy Link</span>
+                                        </>
+                                      )}
+                                    </button>
 
-                          {latestAppointment.adminNotes && (
-                            <div className="sm:col-span-3 p-3 bg-white/90 rounded-xl border border-teal-100 text-xs text-slate-700 mt-1 font-sans">
-                              <span className="font-bold text-brand-teal font-heading">Advisor Note: </span>
-                              {latestAppointment.adminNotes}
+                                    <a
+                                      href={meetUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 shadow-xs shadow-sky-600/30 transition-all cursor-pointer active:scale-95"
+                                    >
+                                      <Video className="w-3.5 h-3.5" />
+                                      <span>Join Google Meet</span>
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+
+                              {meetUrl ? (
+                                <div className="p-2.5 bg-white rounded-xl border border-sky-200 flex items-center justify-between text-xs font-mono text-sky-900 break-all">
+                                  <span>{meetUrl}</span>
+                                </div>
+                              ) : (
+                                <p className="text-xs text-slate-600 italic">
+                                  Your Google Meet link is being set up by the credit manager and will appear right here shortly before your call.
+                                </p>
+                              )}
+
+                              <div className="text-[11px] text-slate-500 font-sans flex items-start gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                                <span>
+                                  <strong>Pre-Call Tip:</strong> Keep soft copies of your PAN card, Aadhaar, bank statements, and property documents open on your screen for instant screen-share review.
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 2. OFFLINE DOORSTEP VISIT SPECIFIC CARD */}
+                          {effectiveMode === 'in_person' && (
+                            <div className="p-4 bg-purple-500/10 border border-purple-300/80 rounded-2xl space-y-3">
+                              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                                <div className="space-y-1">
+                                  <span className="text-xs font-bold text-purple-950 font-heading block flex items-center gap-1.5">
+                                    <Building2 className="w-4 h-4 text-purple-600" />
+                                    Advisor Doorstep Visit Location
+                                  </span>
+                                  <p className="text-xs font-bold text-purple-900 font-sans bg-white/90 p-2.5 rounded-xl border border-purple-200">
+                                    📍 {doorstepAddress || 'Your Registered Residence/Office Location'}
+                                  </p>
+                                </div>
+
+                                {doorstepAddress && (
+                                  <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(doorstepAddress)}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="px-3.5 py-2 bg-white hover:bg-purple-50 text-purple-800 border border-purple-300 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 shrink-0 shadow-2xs"
+                                  >
+                                    <MapPin className="w-3.5 h-3.5 text-purple-600" />
+                                    <span>View on Google Maps</span>
+                                    <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                )}
+                              </div>
+
+                              {latestAppointment?.adminNotes && (
+                                <div className="p-3 bg-white/90 rounded-xl border border-purple-200 text-xs text-slate-700 font-sans">
+                                  <span className="font-bold text-purple-900 font-heading">Field Officer Notes: </span>
+                                  {latestAppointment.adminNotes}
+                                </div>
+                              )}
+
+                              <div className="text-[11px] text-slate-500 font-sans flex items-start gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-purple-600 shrink-0 mt-0.5" />
+                                <span>
+                                  <strong>Doorstep Checklist:</strong> Our senior advisor will travel to your address with official bank dossiers. Please have original/photocopies of property title deeds, patta, chitta, and latest IT returns ready.
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 3. DIRECT PHONE CALL SPECIFIC CARD */}
+                          {effectiveMode === 'phone' && (
+                            <div className="p-4 bg-teal-500/10 border border-teal-300/80 rounded-2xl space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-teal-950 font-heading block flex items-center gap-1.5">
+                                  <PhoneCall className="w-4 h-4 text-teal-600" />
+                                  Direct Telephonic Consultation
+                                </span>
+                                <span className="text-xs font-bold font-mono text-teal-800 bg-white px-2.5 py-1 rounded-lg border border-teal-200">
+                                  Calling: +91 {enq.mobileNumber}
+                                </span>
+                              </div>
+
+                              <p className="text-xs text-teal-900 font-sans">
+                                Our senior credit specialist will call your registered phone number at the scheduled time ({latestAppointment?.timeSlot} on {latestAppointment?.date}).
+                              </p>
+
+                              {latestAppointment?.adminNotes && (
+                                <div className="p-3 bg-white/90 rounded-xl border border-teal-200 text-xs text-slate-700 font-sans">
+                                  <span className="font-bold text-teal-900 font-heading">Advisor Notes: </span>
+                                  {latestAppointment.adminNotes}
+                                </div>
+                              )}
+
+                              <div className="text-[11px] text-slate-500 font-sans flex items-start gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-teal-600 shrink-0 mt-0.5" />
+                                <span>
+                                  <strong>Tip:</strong> Keep your mobile phone active and reachable. Our team will present preliminary eligible loan amounts, interest rates, and subsidy benefits.
+                                </span>
+                              </div>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div className="flex items-start gap-3 text-xs text-slate-600">
-                          <Clock className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                          <p>
-                            Your loan request is queued with our Tirupur advisory desk. Once an advisor examines your requirements, your consultation date and time slot will appear here and will be confirmed via WhatsApp &amp; Email.
+                        /* Content when slot is PENDING ALLOTMENT */
+                        <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/90 space-y-2 text-xs">
+                          <div className="flex items-center gap-2 text-amber-950 font-bold font-heading">
+                            <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                            <span>
+                              {effectiveMode === 'video'
+                                ? 'Google Meet Video Call Requested'
+                                : effectiveMode === 'in_person'
+                                ? 'Offline Meeting (Advisor Visiting Your Area) Requested'
+                                : 'Direct Phone Consultation Requested'}
+                            </span>
+                          </div>
+
+                          <p className="text-amber-900/90 font-sans leading-relaxed text-[11px]">
+                            {effectiveMode === 'video' ? (
+                              <>
+                                Your request for a <strong>Google Meet video consultation</strong> is being reviewed by our Tirupur credit desk. An advisor is being allotted to create your official meeting link and confirm your slot. You will see the video link right here and receive a WhatsApp notification.
+                              </>
+                            ) : effectiveMode === 'in_person' ? (
+                              <>
+                                Your request for our loan advisor to <strong>travel to your area ({doorstepAddress || enq.cityState || 'your address'})</strong> is being routed to our field coordinator. We will allot an advisor and confirm your doorstep visit schedule here.
+                              </>
+                            ) : (
+                              <>
+                                Your request for a <strong>direct telephone consultation</strong> is queued with our senior credit manager. We will review your preliminary requirements and confirm your callback slot shortly.
+                              </>
+                            )}
                           </p>
+
+                          {doorstepAddress && effectiveMode === 'in_person' && (
+                            <div className="text-[11px] text-purple-900 font-medium bg-white/80 p-2 rounded-xl border border-amber-200/80">
+                              📍 <strong>Target Area:</strong> {doorstepAddress}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
 
-                    {/* Direct Contact Button */}
+                    {/* Direct Contact / Follow-up Action Bar */}
                     <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                       <a
                         href={`https://wa.me/919655566613?text=${encodeURIComponent(
-                          `Hello Prime Associates, this is ${customer.name}. I am following up on my loan enquiry ${enq.referenceNumber} for ${enq.loanType}.`
+                          `Hello Prime Associates, this is ${customer.name}. I am following up on my loan enquiry ${enq.referenceNumber} for ${enq.loanType} (${effectiveMode === 'video' ? 'Google Meet' : effectiveMode === 'in_person' ? 'Offline Doorstep Meeting' : 'Phone Call'}).`
                         )}`}
                         target="_blank"
                         rel="noreferrer"

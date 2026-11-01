@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
   Search,
   Filter,
@@ -1097,71 +1097,161 @@ export const AdminEnquiriesPage: React.FC = () => {
                   )}
 
                   {/* TAB 3: BORROWER REQUESTED CONSULTATION */}
-                  {detailTab === 'appointment' && (
-                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-                      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-teal-600" />
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading">
-                            Borrower Requested Consultation
-                          </h4>
-                        </div>
-                      </div>
+                  {detailTab === 'appointment' && (() => {
+                    const doorstepAddress = detailEnquiry.additionalNotes?.includes('📍 Doorstep Meeting Address:')
+                      ? detailEnquiry.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim()
+                      : (detailEnquiry.meetingMode === 'in_person' ? (detailEnquiry.propertyLocation || detailEnquiry.cityState) : null);
 
-                      {/* Applicant Requested Preference Banner */}
-                      <div className="p-3.5 bg-amber-50/80 rounded-xl border border-amber-200 text-xs flex items-center gap-2.5">
-                        <Clock className="w-4 h-4 text-amber-600 shrink-0" />
-                        <div>
-                          <span className="font-bold text-amber-900 font-heading">Borrower Preference: </span>
-                          <span className="text-amber-800 font-sans">
-                            Requested <strong>{detailEnquiry.preferredTimeSlot || detailEnquiry.preferredContactMethod || 'Any Time'}</strong> window via <strong className="capitalize">{detailEnquiry.meetingMode?.replace('_', ' ') || 'phone'}</strong>
-                          </span>
-                        </div>
-                      </div>
+                    return (
+                      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-teal-600" />
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading">
+                              Borrower Consultation Request &amp; Allotment
+                            </h4>
+                          </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50/70 rounded-xl border border-slate-200">
-                        <div>
-                          <span className="text-slate-400 block text-[11px] font-medium">Requested Date &amp; Slot</span>
-                          <span className="font-bold text-[#0c1a26] text-xs font-mono">
-                            {detailEnquiry.preferredDate || 'Not Set'} &bull; {detailEnquiry.preferredTimeSlot || 'Pending'}
-                          </span>
+                          <Link
+                            to={`/admin/appointments?allotEnquiryId=${detailEnquiry.id}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors"
+                          >
+                            <CalendarCheck2 className="w-3.5 h-3.5" />
+                            <span>Allot / Schedule Slot</span>
+                          </Link>
                         </div>
-                        <div>
-                          <span className="text-slate-400 block text-[11px] font-medium">Channel Mode</span>
-                          <span className="font-semibold text-[#0c1a26] capitalize text-xs">
-                            {detailEnquiry.meetingMode?.replace('_', ' ') || 'Phone Call'}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[11px] font-medium">Meeting Status</span>
-                          <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold mt-1 bg-teal-50 text-teal-800 border border-teal-200">
-                            ● Requested by Borrower
-                          </span>
-                        </div>
-                      </div>
 
-                      <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                        <div className="space-y-0.5">
-                          <span className="font-bold text-emerald-900 font-heading block">
-                            Send Meeting Details to Borrower
-                          </span>
-                          <p className="text-emerald-700 text-[11px] font-sans">
-                            Communicate consultation date, slot, and Tirupur office / Google Meet details via WhatsApp.
-                          </p>
+                        {/* Mode-Specific Highlight Banner */}
+                        {detailEnquiry.meetingMode === 'video' && (
+                          <div className="p-3.5 bg-sky-50 border border-sky-200 rounded-xl text-xs flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2.5">
+                              <Video className="w-4 h-4 text-sky-600 shrink-0" />
+                              <div>
+                                <span className="font-bold text-sky-950 font-heading block">Google Meet Video Consultation</span>
+                                <span className="text-sky-800 font-sans text-[11px]">
+                                  Borrower requested a video conference call. Generate an official Google Meet link during allotment.
+                                </span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold text-sky-800 bg-white px-2 py-0.5 rounded border border-sky-200 shrink-0">
+                              Google Meet
+                            </span>
+                          </div>
+                        )}
+
+                        {detailEnquiry.meetingMode === 'in_person' && (
+                          <div className="p-3.5 bg-purple-50 border border-purple-200 rounded-xl text-xs space-y-2">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-2.5">
+                                <Building2 className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="font-bold text-purple-950 font-heading block">
+                                    Offline Doorstep Meeting (Advisor Visits Borrower Area)
+                                  </span>
+                                  <span className="text-purple-800 font-sans text-[11px]">
+                                    Borrower requested an advisor to visit their area for in-person assessment and document pickup.
+                                  </span>
+                                </div>
+                              </div>
+
+                              {doorstepAddress && (
+                                <a
+                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(doorstepAddress)}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-purple-100 text-purple-800 border border-purple-200 rounded-lg text-[10px] font-bold font-heading shrink-0 shadow-2xs"
+                                >
+                                  <MapPin className="w-3 h-3 text-purple-600" />
+                                  <span>View on Google Maps</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              )}
+                            </div>
+
+                            {doorstepAddress && (
+                              <div className="p-2.5 bg-white/90 rounded-xl border border-purple-200 text-xs font-semibold text-purple-950 font-sans">
+                                📍 <strong>Customer Doorstep Location:</strong> {doorstepAddress}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {(!detailEnquiry.meetingMode || detailEnquiry.meetingMode === 'phone') && (
+                          <div className="p-3.5 bg-teal-50 border border-teal-200 rounded-xl text-xs flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2.5">
+                              <Phone className="w-4 h-4 text-teal-600 shrink-0" />
+                              <div>
+                                <span className="font-bold text-teal-950 font-heading block">Direct Telephonic Consultation</span>
+                                <span className="text-teal-800 font-sans text-[11px]">
+                                  Credit manager to call applicant directly at registered phone number: <strong>+91 {detailEnquiry.mobileNumber}</strong>.
+                                </span>
+                              </div>
+                            </div>
+                            <a
+                              href={`tel:${detailEnquiry.mobileNumber}`}
+                              className="text-[11px] font-bold text-teal-800 bg-white hover:bg-teal-100 px-2.5 py-1 rounded-lg border border-teal-200 shrink-0 shadow-2xs"
+                            >
+                              Call Applicant
+                            </a>
+                          </div>
+                        )}
+
+                        {/* Preferred Date & Slot Table */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50/70 rounded-xl border border-slate-200">
+                          <div>
+                            <span className="text-slate-400 block text-[11px] font-medium font-heading">Preferred Date &amp; Slot</span>
+                            <span className="font-bold text-[#0c1a26] text-xs font-mono">
+                              {detailEnquiry.preferredDate || 'Not Specified'} &bull; {detailEnquiry.preferredTimeSlot || 'Pending Allotment'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px] font-medium font-heading">Consultation Mode</span>
+                            <span className="font-semibold text-[#0c1a26] capitalize text-xs">
+                              {detailEnquiry.meetingMode === 'in_person'
+                                ? 'Doorstep Area Visit'
+                                : detailEnquiry.meetingMode === 'video'
+                                ? 'Google Meet Call'
+                                : 'Direct Phone Call'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[11px] font-medium font-heading">Queue Status</span>
+                            <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold mt-1 bg-amber-50 text-amber-800 border border-amber-200">
+                              ● Pending Advisor Allotment
+                            </span>
+                          </div>
                         </div>
-                        <a
-                          href={`https://wa.me/91${detailEnquiry.mobileNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
-                            `Dear ${detailEnquiry.fullName}, greetings from Prime Associates.\n\nYour loan consultation request for ${detailEnquiry.loanType} (Ref: ${detailEnquiry.referenceNumber}) has been reviewed:\n📅 Date: ${detailEnquiry.preferredDate}\n⏰ Time: ${detailEnquiry.preferredTimeSlot}\n📍 Mode: ${detailEnquiry.meetingMode === 'in_person' ? 'In-Person at No. 48, 49, P.R. Complex, Kumaran Road, Tirupur' : detailEnquiry.meetingMode === 'video' ? 'Google Meet Video Call' : 'Direct Phone Call'}\n\nPlease keep your reference KYC & bank statements ready. For questions, call +91 96555 66613.`
-                          )}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors flex-shrink-0 cursor-pointer"
-                        >
-                          <span>Send WhatsApp Message</span>
-                        </a>
+
+                        {/* WhatsApp Message Communication Box */}
+                        <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                          <div className="space-y-0.5">
+                            <span className="font-bold text-emerald-900 font-heading block">
+                              Send Consultation Details to Borrower
+                            </span>
+                            <p className="text-emerald-700 text-[11px] font-sans">
+                              Confirm consultation slot, Google Meet link, or Doorstep Visit details directly to their WhatsApp.
+                            </p>
+                          </div>
+                          <a
+                            href={`https://wa.me/91${detailEnquiry.mobileNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
+                              `Dear ${detailEnquiry.fullName}, greetings from Prime Associates.\n\nRegarding your loan enquiry for ${detailEnquiry.loanType} (Ref: ${detailEnquiry.referenceNumber}):\n📅 Preferred Date: ${detailEnquiry.preferredDate || 'To be confirmed'}\n⏰ Preferred Slot: ${detailEnquiry.preferredTimeSlot || 'To be confirmed'}\n📍 Consultation Mode: ${
+                                detailEnquiry.meetingMode === 'in_person'
+                                  ? `Doorstep Visit (Advisor Visiting Your Area: ${doorstepAddress || detailEnquiry.cityState})`
+                                  : detailEnquiry.meetingMode === 'video'
+                                  ? 'Google Meet Video Call'
+                                  : 'Direct Phone Call'
+                              }\n\nPlease keep your reference KYC & bank statements ready. For questions, call +91 96555 66613.`
+                            )}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+                          >
+                            <span>Send WhatsApp Message</span>
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
 
                   {/* TAB 4: CASE NOTES */}
                   {detailTab === 'notes' && (

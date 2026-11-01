@@ -9,6 +9,8 @@ import {
   ShieldCheck,
   Send,
   Building,
+  Building2,
+  Video,
   User,
   Phone,
   Mail,
@@ -70,6 +72,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
   // Consultation & Callback State
   const [meetingMode, setMeetingMode] = useState<'phone' | 'video' | 'in_person'>('phone');
+  const [offlineMeetingAddress, setOfflineMeetingAddress] = useState('');
   const [preferredCallbackWindow, setPreferredCallbackWindow] = useState('Any Time (Fastest Callback)');
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [consentGiven, setConsentGiven] = useState(false);
@@ -188,6 +191,11 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       return;
     }
 
+    if (meetingMode === 'in_person' && !offlineMeetingAddress.trim()) {
+      setFormError('Please enter your full meeting address/area so our loan advisor can visit you for the offline meeting.');
+      return;
+    }
+
     if (!consentGiven) {
       setFormError('You must review and consent to the privacy policy to submit your enquiry.');
       return;
@@ -203,6 +211,13 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     setIsSubmitting(true);
 
     try {
+      const combinedNotes = [
+        meetingMode === 'in_person' ? `📍 Doorstep Meeting Address: ${offlineMeetingAddress.trim()}` : null,
+        additionalNotes.trim() || null,
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
       const payload: any = {
         fullName: fullName.trim() || customer.name,
         mobileNumber: cleanPhone,
@@ -222,7 +237,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
         preferredTimeSlot: preferredCallbackWindow,
         preferredContactWindow: preferredCallbackWindow,
         meetingMode,
-        additionalNotes: additionalNotes.trim() || undefined,
+        additionalNotes: combinedNotes || undefined,
         documents,
         consentGiven: true,
       };
@@ -928,30 +943,162 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Preferred Meeting Mode <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={meetingMode}
-                      onChange={(e) => setMeetingMode(e.target.value as any)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
+                {/* 3 Interactive Meeting Mode Option Cards */}
+                <div className="space-y-4 mb-5">
+                  <label className="block text-xs font-bold text-brand-navy font-heading uppercase tracking-wider">
+                    Select Your Consultation Mode <span className="text-red-500">*</span>
+                  </label>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {/* Option 1: Offline Meeting / Doorstep Field Visit */}
+                    <div
+                      onClick={() => setMeetingMode('in_person')}
+                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                        meetingMode === 'in_person'
+                          ? 'border-brand-teal bg-teal-50/60 shadow-sm ring-2 ring-brand-teal/20'
+                          : 'border-brand-border bg-white hover:bg-slate-50'
+                      }`}
                     >
-                      <option value="phone">📞 Direct Phone Discussion (Fastest)</option>
-                      <option value="in_person">🏢 In-Person (Tirupur Office — Binny Compound)</option>
-                      <option value="video">💻 Google Meet / Video Call</option>
-                    </select>
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                            meetingMode === 'in_person'
+                              ? 'bg-brand-teal text-white shadow-xs'
+                              : 'bg-slate-100 text-slate-600'
+                          }`}
+                        >
+                          <Building2 className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs sm:text-sm font-heading text-brand-navy">
+                            Offline Meeting
+                          </h4>
+                          <span className="text-[10px] text-brand-teal font-extrabold uppercase">
+                            Advisor Visits Your Area
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-slate-600 font-sans mt-2.5 leading-relaxed">
+                        Our loan advisor travels directly to your home, office, or site location in your area to review property deeds in person.
+                      </p>
+                    </div>
+
+                    {/* Option 2: Google Meet Video Call */}
+                    <div
+                      onClick={() => setMeetingMode('video')}
+                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                        meetingMode === 'video'
+                          ? 'border-brand-teal bg-teal-50/60 shadow-sm ring-2 ring-brand-teal/20'
+                          : 'border-brand-border bg-white hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                            meetingMode === 'video'
+                              ? 'bg-brand-teal text-white shadow-xs'
+                              : 'bg-slate-100 text-slate-600'
+                          }`}
+                        >
+                          <Video className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs sm:text-sm font-heading text-brand-navy">
+                            Google Meet
+                          </h4>
+                          <span className="text-[10px] text-sky-700 font-extrabold uppercase">
+                            Video Conference
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-slate-600 font-sans mt-2.5 leading-relaxed">
+                        Online video consultation. Admin generates an official Google Meet link delivered directly to your portal and email.
+                      </p>
+                    </div>
+
+                    {/* Option 3: Direct Phone Call */}
+                    <div
+                      onClick={() => setMeetingMode('phone')}
+                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                        meetingMode === 'phone'
+                          ? 'border-brand-teal bg-teal-50/60 shadow-sm ring-2 ring-brand-teal/20'
+                          : 'border-brand-border bg-white hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                            meetingMode === 'phone'
+                              ? 'bg-brand-teal text-white shadow-xs'
+                              : 'bg-slate-100 text-slate-600'
+                          }`}
+                        >
+                          <Phone className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs sm:text-sm font-heading text-brand-navy">
+                            Direct Phone Call
+                          </h4>
+                          <span className="text-[10px] text-emerald-700 font-extrabold uppercase">
+                            Fastest Callback
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-slate-600 font-sans mt-2.5 leading-relaxed">
+                        Our credit manager dials your registered mobile number (+91 {mobileNumber || '...'}) directly at the confirmed slot time.
+                      </p>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
+                  {/* Mode-specific context box */}
+                  {meetingMode === 'in_person' && (
+                    <div className="p-4 bg-teal-50/80 border border-teal-200/90 rounded-2xl space-y-2 animate-in fade-in duration-200 shadow-2xs">
+                      <div className="flex items-center gap-2 text-brand-teal font-extrabold text-xs uppercase tracking-wide font-heading">
+                        <MapPin className="w-4 h-4 text-brand-teal" />
+                        <span>Meeting Address / Area for Advisor Doorstep Visit <span className="text-red-500">*</span></span>
+                      </div>
+                      <p className="text-xs text-slate-600 font-sans">
+                        Please provide your complete door number, building, street, and landmark in your area so the loan advisor can navigate and visit you in person:
+                      </p>
+                      <textarea
+                        rows={2}
+                        required
+                        placeholder="e.g. Door No. 42, 2nd Cross, Rayapuram, Kumaran Road, Tirupur - 641601 (Near Old Bus Stand)"
+                        value={offlineMeetingAddress}
+                        onChange={(e) => setOfflineMeetingAddress(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-white border border-teal-200 rounded-xl text-xs sm:text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal resize-none font-medium placeholder:text-slate-400"
+                      />
+                    </div>
+                  )}
+
+                  {meetingMode === 'video' && (
+                    <div className="p-4 bg-sky-50/80 border border-sky-200/90 rounded-2xl flex items-start gap-3 text-xs text-sky-950 animate-in fade-in duration-200 shadow-2xs">
+                      <Video className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                      <p className="font-sans leading-relaxed">
+                        <strong>Google Meet Video Flow:</strong> Once you submit, our advisory operations desk will verify available loan officers, schedule your slot, and generate your dedicated Google Meet conference link. This link will appear instantly in your <strong>Borrower Portal</strong> and be sent via WhatsApp &amp; Email.
+                      </p>
+                    </div>
+                  )}
+
+                  {meetingMode === 'phone' && (
+                    <div className="p-4 bg-emerald-50/80 border border-emerald-200/90 rounded-2xl flex items-start gap-3 text-xs text-emerald-950 animate-in fade-in duration-200 shadow-2xs">
+                      <Phone className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <p className="font-sans leading-relaxed">
+                        <strong>Direct Phone Call Flow:</strong> Our senior loan manager will initiate a priority phone consultation to your mobile number <strong>{mobileNumber ? `+91 ${mobileNumber}` : '(your number)'}</strong> at the confirmed slot.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-semibold text-brand-navy mb-1.5 font-heading">
                       Best Time Window for Advisor to Reach You
                     </label>
                     <select
                       value={preferredCallbackWindow}
                       onChange={(e) => setPreferredCallbackWindow(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
+                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
                     >
                       <option value="Any Time (Fastest Callback)">⚡ Any Time (Fastest Callback)</option>
                       <option value="Morning (10:00 AM – 01:00 PM)">🌅 Morning (10:00 AM – 01:00 PM)</option>

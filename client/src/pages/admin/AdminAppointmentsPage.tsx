@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -29,6 +30,7 @@ import {
   Sparkles,
   Inbox,
   Send,
+  MapPin,
 } from 'lucide-react';
 import { Appointment, Enquiry } from '../../types';
 import {
@@ -37,10 +39,12 @@ import {
   updateAppointmentApi,
   createAppointmentApi,
   getEnquiriesApi,
+  getEnquiryByIdApi,
   getPublicAvailability,
 } from '../../services/api';
 
 export const AdminAppointmentsPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   // Main Navigation Tab: 'pending' (Awaiting Allotment) vs 'scheduled' (Confirmed & Active)
   const [activeTab, setActiveTab] = useState<'pending' | 'scheduled'>('pending');
 
@@ -151,6 +155,20 @@ export const AdminAppointmentsPage: React.FC = () => {
     window.addEventListener('enquiry-registered', handleNewData);
     return () => window.removeEventListener('enquiry-registered', handleNewData);
   }, []);
+
+  // Handle direct allot route from enquiries page
+  useEffect(() => {
+    const allotEnquiryId = searchParams.get('allotEnquiryId');
+    if (allotEnquiryId) {
+      getEnquiryByIdApi(allotEnquiryId)
+        .then((enq) => {
+          if (enq) {
+            handleAllotForApplicant(enq);
+          }
+        })
+        .catch((err) => console.error('Error auto-allotting enquiry:', err));
+    }
+  }, [searchParams]);
 
   // Open Allot Modal with a specific applicant pre-selected
   const handleAllotForApplicant = (enquiry: Enquiry) => {
@@ -1322,7 +1340,10 @@ export const AdminAppointmentsPage: React.FC = () => {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
-                    onClick={() => setAllotMode('phone')}
+                    onClick={() => {
+                      setAllotMode('phone');
+                      if (allotNotes.includes('meet.google.com')) setAllotNotes('');
+                    }}
                     className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                       allotMode === 'phone'
                         ? 'bg-emerald-50 text-emerald-900 border-emerald-400 ring-2 ring-emerald-400/30 font-bold'
@@ -1330,12 +1351,18 @@ export const AdminAppointmentsPage: React.FC = () => {
                     }`}
                   >
                     <Phone className="w-4 h-4 mx-auto mb-1 text-emerald-600" />
-                    <span className="text-[11px] block">Direct Phone</span>
+                    <span className="text-[11px] block font-heading">Direct Phone</span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setAllotMode('video')}
+                    onClick={() => {
+                      setAllotMode('video');
+                      if (!allotNotes || !allotNotes.includes('meet.google.com')) {
+                        const randomCode = `${Math.random().toString(36).substring(2, 5)}-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
+                        setAllotNotes(`https://meet.google.com/vpf-${randomCode}`);
+                      }
+                    }}
                     className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                       allotMode === 'video'
                         ? 'bg-sky-50 text-sky-900 border-sky-400 ring-2 ring-sky-400/30 font-bold'
@@ -1343,12 +1370,15 @@ export const AdminAppointmentsPage: React.FC = () => {
                     }`}
                   >
                     <Video className="w-4 h-4 mx-auto mb-1 text-sky-600" />
-                    <span className="text-[11px] block">Google Meet</span>
+                    <span className="text-[11px] block font-heading">Google Meet</span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setAllotMode('in_person')}
+                    onClick={() => {
+                      setAllotMode('in_person');
+                      if (allotNotes.includes('meet.google.com')) setAllotNotes('');
+                    }}
                     className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                       allotMode === 'in_person'
                         ? 'bg-purple-50 text-purple-900 border-purple-400 ring-2 ring-purple-400/30 font-bold'
@@ -1356,24 +1386,109 @@ export const AdminAppointmentsPage: React.FC = () => {
                     }`}
                   >
                     <Building2 className="w-4 h-4 mx-auto mb-1 text-purple-600" />
-                    <span className="text-[11px] block">Tirupur Office</span>
+                    <span className="text-[11px] block font-heading">Doorstep Visit</span>
                   </button>
                 </div>
               </div>
 
-              {/* Meeting Notes / Google Meet Link */}
-              <div>
-                <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
-                  Administrative Instructions / Google Meet Link
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="e.g. Google Meet: meet.google.com/abc-defg-hij or Applicant to bring original Sale Agreement & salary slips..."
-                  value={allotNotes}
-                  onChange={(e) => setAllotNotes(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] placeholder:text-slate-400 focus:bg-white resize-none"
-                />
-              </div>
+              {/* Mode-Specific Allotment Details */}
+              {allotMode === 'video' && (
+                <div className="p-3.5 bg-sky-50/70 border border-sky-200/90 rounded-2xl space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-sky-950 font-heading">
+                      Google Meet Conference Link (Sent to Customer) <span className="text-red-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const randomCode = `${Math.random().toString(36).substring(2, 5)}-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`;
+                        setAllotNotes(`https://meet.google.com/vpf-${randomCode}`);
+                      }}
+                      className="text-[11px] text-sky-700 hover:text-sky-900 font-bold font-heading hover:underline cursor-pointer"
+                    >
+                      + Generate Instant Link
+                    </button>
+                  </div>
+                  <input
+                    type="url"
+                    required
+                    placeholder="e.g. https://meet.google.com/abc-defg-hij"
+                    value={allotNotes}
+                    onChange={(e) => setAllotNotes(e.target.value)}
+                    className="w-full p-2.5 bg-white border border-sky-200 rounded-xl text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  />
+                  <p className="text-[11px] text-slate-500 font-sans">
+                    This link will be delivered directly to the borrower's portal with a 1-click "Join Google Meet" button.
+                  </p>
+                </div>
+              )}
+
+              {allotMode === 'in_person' && (
+                <div className="p-3.5 bg-purple-50/70 border border-purple-200/90 rounded-2xl space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-bold text-purple-950 font-heading block">
+                        Customer Doorstep Meeting Location
+                      </span>
+                      <p className="text-xs text-purple-900 font-sans mt-0.5 font-medium">
+                        {selectedEnquiry?.additionalNotes?.includes('📍 Doorstep Meeting Address:')
+                          ? selectedEnquiry.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim()
+                          : selectedEnquiry?.propertyLocation || selectedEnquiry?.cityState || 'Customer Area / Residence'}
+                      </p>
+                    </div>
+                    {selectedEnquiry && (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          selectedEnquiry.additionalNotes?.includes('📍 Doorstep Meeting Address:')
+                            ? selectedEnquiry.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim() || selectedEnquiry.propertyLocation
+                            : selectedEnquiry.propertyLocation || selectedEnquiry.cityState
+                        )}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-purple-100 text-purple-800 border border-purple-200 rounded-lg text-[10px] font-bold font-heading shrink-0 shadow-2xs"
+                      >
+                        <MapPin className="w-3 h-3 text-purple-600" />
+                        <span>View on Maps</span>
+                      </a>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1 font-heading">
+                      Assigned Field Officer &amp; Doorstep Visit Instructions
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="e.g. Senior Advisor Mr. Karthik R will visit your location with physical bank loan application dossiers..."
+                      value={allotNotes}
+                      onChange={(e) => setAllotNotes(e.target.value)}
+                      className="w-full p-2.5 bg-white border border-purple-200 rounded-xl text-xs text-[#0c1a26] focus:bg-white resize-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {allotMode === 'phone' && (
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-[#0c1a26] font-heading">
+                      Direct Phone Consultation Notes
+                    </label>
+                    {selectedEnquiry?.mobileNumber && (
+                      <span className="text-[11px] text-emerald-700 font-bold font-mono">
+                        Calling: +91 {selectedEnquiry.mobileNumber}
+                      </span>
+                    )}
+                  </div>
+                  <textarea
+                    rows={2}
+                    placeholder="e.g. Credit Manager to review CIBIL score & call applicant on mobile with preliminary sanction figures..."
+                    value={allotNotes}
+                    onChange={(e) => setAllotNotes(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] placeholder:text-slate-400 focus:bg-white resize-none"
+                  />
+                </div>
+              )}
 
               {/* Modal Actions */}
               <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
@@ -1474,7 +1589,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                   confirmedAllotment.slot
                 )}%0A%F0%9F%93%8D%20Mode:%20${encodeURIComponent(
                   confirmedAllotment.mode === 'in_person'
-                    ? 'Tirupur Kumaran Road Office'
+                    ? 'Doorstep Meeting (Advisor Visiting Your Area Address)'
                     : confirmedAllotment.mode === 'video'
                     ? 'Google Meet Video Call'
                     : 'Direct Phone Call'
