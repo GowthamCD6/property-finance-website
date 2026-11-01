@@ -941,89 +941,84 @@ export const AdminContentPage: React.FC = () => {
       ) : (
         /* ─── WHEN A MODULE IS OPENED: RENDER DEDICATED SECTION EDITOR PAGE ─── */
         <div className="space-y-6 animate-in fade-in duration-150">
-          {/* Dedicated Section Top Header Bar */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4 font-sans">
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
-              <button
-                type="button"
-                onClick={() => selectModule(null)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold font-heading transition-all active:scale-95 cursor-pointer shadow-2xs"
-              >
-                <ArrowLeft className="w-4 h-4 text-slate-700" />
-                <span>Back to All Website Modules</span>
-              </button>
-
-              {/* Module Quick Switcher */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500 font-heading hidden sm:inline">
-                  Jump to Module:
-                </span>
-                <select
-                  value={activeTab}
-                  onChange={(e) => selectModule(e.target.value as TabType)}
-                  className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold font-heading text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 cursor-pointer shadow-2xs"
-                >
-                  {CONTENT_MODULES.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      #{m.number} {m.title} ({m.category})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Title, Category & Live Link */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-700 font-heading bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">
-                    {currentModule?.category}
-                  </span>
-                  <span className="text-xs text-slate-400 font-mono">
-                    Public Route: {currentModule?.publicRoute}
-                  </span>
-                </div>
-                <h1 className="text-xl sm:text-2xl font-black text-[#0c1a26] font-heading mt-1">
-                  {currentModule?.title}
-                </h1>
-                <p className="text-xs text-slate-500 mt-0.5 font-sans">
-                  {currentModule?.shortDesc}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2.5 self-start sm:self-auto">
-                {currentModule?.previewUrl && (
-                  <a
-                    href={currentModule.previewUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold font-heading rounded-xl border border-slate-200 flex items-center gap-1.5 transition-colors shadow-2xs"
-                  >
-                    <Eye className="w-3.5 h-3.5 text-teal-600" />
-                    <span>View Live</span>
-                    <ExternalLink className="w-3 h-3 text-slate-400" />
-                  </a>
-                )}
-
+          {/* Dedicated Section Top Header Bar - Clean Native Layout */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 font-sans pb-1">
+            <div>
+              {/* Breadcrumb Navigation Trail */}
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mb-1">
                 <button
                   type="button"
-                  onClick={() => handleSaveAll()}
-                  disabled={saving}
-                  className="px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs font-heading rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+                  onClick={() => selectModule(null)}
+                  className="inline-flex items-center gap-1.5 font-bold font-heading text-slate-700 hover:text-teal-700 hover:underline cursor-pointer transition-colors"
                 >
-                  {saving ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Publishing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4" />
-                      <span>Save &amp; Publish This Section</span>
-                    </>
-                  )}
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Website Content</span>
                 </button>
+                <span className="text-slate-300">•</span>
+                <span className="font-semibold text-slate-600 font-heading">{currentModule?.category}</span>
+                <span className="text-slate-300">•</span>
+                <span className="px-2 py-0.5 rounded-md bg-teal-50 border border-teal-200 text-teal-800 text-[10px] font-bold font-mono">
+                  {currentModule?.publicRoute}
+                </span>
               </div>
+
+              {/* Title & Description */}
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
+                {currentModule?.title}
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
+                {currentModule?.shortDesc}
+              </p>
+            </div>
+
+            {/* Quick Actions Strip */}
+            <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
+              {/* Quick Jump Dropdown */}
+              <select
+                value={activeTab}
+                onChange={(e) => selectModule(e.target.value as TabType)}
+                className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-heading text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 cursor-pointer shadow-2xs transition-all"
+                title="Jump to another section"
+              >
+                {CONTENT_MODULES.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    #{m.number} {m.title}
+                  </option>
+                ))}
+              </select>
+
+              {currentModule?.previewUrl && (
+                <a
+                  href={currentModule.previewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold font-heading rounded-xl border border-slate-200 flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                  title="Preview on Live Website"
+                >
+                  <Eye className="w-3.5 h-3.5 text-teal-600" />
+                  <span className="hidden sm:inline">Preview</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </a>
+              )}
+
+              <button
+                type="button"
+                onClick={() => handleSaveAll()}
+                disabled={saving}
+                className="px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs font-heading rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Publishing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save Changes</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
 
