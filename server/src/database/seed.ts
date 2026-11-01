@@ -5,7 +5,7 @@ async function main() {
   console.log('🌱 Starting database seed...');
 
   // 1. Seed Admin User
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@wealthanchor.in';
+  const adminEmail = process.env.ADMIN_EMAIL || 'primeassociates2008@gmail.com';
   const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@123456';
   const passwordHash = await bcrypt.hash(defaultPassword, 10);
 

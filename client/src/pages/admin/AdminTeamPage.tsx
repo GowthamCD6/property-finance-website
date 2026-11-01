@@ -461,7 +461,6 @@ export const AdminTeamPage: React.FC = () => {
                 {filteredTeam.map((member) => {
                   const roleConfig = getRoleBadge(member.role);
                   const isSelf = member.id === currentAdmin?.id;
-                  const isPrimary = member.email === 'admin@wealthanchor.in';
 
                   return (
                     <tr
@@ -565,12 +564,12 @@ export const AdminTeamPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleToggleActive(member)}
-                          disabled={isSelf || isPrimary}
+                          disabled={isSelf}
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold font-heading border transition-all ${
                             member.isActive !== false
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
                               : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
-                          } ${isSelf || isPrimary ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
+                          } ${isSelf ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                           title={isSelf ? 'Cannot deactivate self' : 'Click to toggle status'}
                         >
                           <span
@@ -602,7 +601,7 @@ export const AdminTeamPage: React.FC = () => {
                             <Edit2 className="w-4 h-4" />
                           </button>
 
-                          {!isSelf && !isPrimary && (
+                          {!isSelf && (
                             <button
                               type="button"
                               onClick={() => setDeletingAdmin(member)}

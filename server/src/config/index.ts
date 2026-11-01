@@ -7,7 +7,7 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'fallback-super-secret-key-change-in-production',
   jwtExpiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
-  adminEmail: process.env.ADMIN_EMAIL || 'admin@wealthanchor.in',
+  adminEmail: process.env.ADMIN_EMAIL || 'primeassociates2008@gmail.com',
   timezone: process.env.TIMEZONE || 'Asia/Kolkata',
   googleClientId: process.env.GOOGLE_CLIENT_ID || '',
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',

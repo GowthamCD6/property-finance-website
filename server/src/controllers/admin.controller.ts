@@ -1109,11 +1109,12 @@ export async function deleteAdminMember(req: AuthenticatedRequest, res: Response
       return;
     }
 
-    // Protect default system admin
-    if (target.email.toLowerCase() === config.adminEmail.toLowerCase()) {
+    // Ensure at least one administrator account remains in the system
+    const totalAdmins = await prisma.adminUser.count();
+    if (totalAdmins <= 1) {
       res.status(400).json({
         success: false,
-        message: 'The primary system administrator account cannot be deleted.',
+        message: 'Cannot delete the only remaining administrator account in the system.',
       });
       return;
     }
