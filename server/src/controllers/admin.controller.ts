@@ -210,7 +210,19 @@ export async function getEnquiryById(req: AuthenticatedRequest, res: Response, n
       return;
     }
 
-    res.json({ success: true, data: enquiry });
+    const enquiryData: any = { ...enquiry };
+    if (enquiry.additionalNotes && enquiry.additionalNotes.includes('<!--DOCUMENTS_JSON:')) {
+      try {
+        const match = enquiry.additionalNotes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
+        if (match && match[1]) {
+          enquiryData.documents = JSON.parse(match[1]);
+        }
+      } catch {
+        // Non-blocking
+      }
+    }
+
+    res.json({ success: true, data: enquiryData });
   } catch (err) {
     next(err);
   }

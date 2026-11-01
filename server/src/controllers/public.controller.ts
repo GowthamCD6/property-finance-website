@@ -290,7 +290,13 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
     if (validatedData.additionalNotes) {
       metadataItems.push(validatedData.additionalNotes);
     }
-    const finalNotes = metadataItems.filter(Boolean).join('\n\n') || null;
+    const rawDocs = (req.body as any).documents;
+    let documentsMeta = '';
+    if (Array.isArray(rawDocs) && rawDocs.length > 0) {
+      metadataItems.push(`📁 Attached Reference Documents: ${rawDocs.length} file(s) submitted (${rawDocs.map((d: any) => d.documentName || d.name).join(', ')})`);
+      documentsMeta = `\n<!--DOCUMENTS_JSON:${JSON.stringify(rawDocs)}-->`;
+    }
+    const finalNotes = (metadataItems.filter(Boolean).join('\n\n') + documentsMeta) || null;
 
     // Persist in transaction
     const result = await prisma.$transaction(async (tx) => {
