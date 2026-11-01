@@ -144,125 +144,131 @@ export const PropertyFundingPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: COMMERCIAL REAL ESTATE & LRD DESK
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-slate-950 text-white pt-16 pb-16 lg:pt-24 lg:pb-24 border-b border-brand-teal/20">
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-12 sm:pt-16 lg:pt-20 pb-16 lg:pb-24 border-b border-brand-teal/20">
         {/* Background Photographic Image for Purchase Loans & Takeover */}
         <div className="absolute inset-0 z-0">
           <img
             src={purchaseLoanHeroImage}
             alt="Purchase Loans & Property Takeover Architecture"
-            className="w-full h-full object-cover object-center brightness-[1.02] contrast-[1.05]"
+            className="w-full h-full object-cover object-[80%_center] brightness-[0.92] contrast-[1.08]"
             loading="eager"
           />
-          {/* Calibrated lightweight translucent overlays to keep image clearly visible */}
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-slate-950/65" />
+          {/* Calibrated directional gradient: Left side protected for pristine typography, right side reveals photographic graphics */}
+          <div className="absolute inset-0 bg-slate-950/45" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-transparent sm:via-slate-950/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-transparent to-slate-950/90" />
         </div>
 
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-10 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             
-            {/* Left Column: Commercial Mandate */}
+            {/* Left Column: Commercial & Retail Mandate */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 backdrop-blur-md">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/85 border border-emerald-500/35 backdrop-blur-md shadow-sm">
                 <Building2 className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 font-heading">
                   Purchase Loans &amp; Private to Govt. Bank Takeover Desk
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight font-heading leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight font-heading leading-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
                 Purchase Loans &amp; Takeovers, <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-brand-gold">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-amber-200 drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                   Engineered for Lowest Interest Rates.
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-gray-300 font-normal leading-relaxed max-w-2xl">
-                Specialized purchase loans for plot acquisition, plot with construction, new/old homes, tiled houses, and commercial buildings. Plus our high-impact loan takeover desk transferring loans from private banks to government banks at lowest interest rates.
+              <p className="text-sm sm:text-base lg:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                Specialized purchase loans for plot acquisition, plot with construction, new/old homes, tiled houses, and commercial buildings. Plus our signature bank takeover desk transferring loans from private banks to government banks at lowest interest rates.
               </p>
 
               {/* CTAs */}
-              <div className="pt-2 flex flex-wrap items-center gap-4">
+              <div className="pt-2 flex flex-wrap items-center gap-3.5">
                 <a
                   href="#enquiry-form"
-                  className="px-7 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-sm font-bold rounded-corporate shadow-lg shadow-brand-teal/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
+                  className="px-6 sm:px-8 py-3.5 rounded-full bg-gradient-to-r from-teal-500 to-[#20B2AA] hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
                 >
-                  <span>Request Term Sheet Feasibility</span>
+                  <Sparkles className="w-4 h-4 text-emerald-200" />
+                  <span>Request Purchase &amp; Takeover Assessment</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
                 <Link
                   to="/calculator"
-                  className="px-6 py-3.5 bg-white/10 hover:bg-white/15 text-white border border-white/20 rounded-corporate text-sm font-semibold transition-all backdrop-blur-sm flex items-center gap-2"
+                  className="px-6 py-3.5 rounded-full bg-slate-900/85 hover:bg-slate-800/90 text-white font-bold text-xs sm:text-sm border border-white/20 hover:border-teal-400/50 backdrop-blur-md shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
                 >
                   <FileSpreadsheet className="w-4 h-4 text-brand-teal" />
-                  <span>Model Debt Cash Flows</span>
+                  <span>Calculate Takeover Savings</span>
                 </Link>
               </div>
 
               {/* Key Institutional Benchmarks */}
-              <div className="pt-4 flex flex-wrap gap-2 text-[11px] font-semibold text-gray-400">
-                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                  Ticket Size: ₹5 Cr – ₹250+ Cr
+              <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-300 font-sans">
+                <span className="px-3 py-1 rounded-full bg-slate-900/85 border border-white/15 backdrop-blur-sm">
+                  Plot &amp; Home: From 7.25%*
                 </span>
-                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                  LRD Discounting: Up to 75% Net Rent
+                <span className="px-3 py-1 rounded-full bg-slate-900/85 border border-white/15 backdrop-blur-sm">
+                  Commercial: From 8.50%*
                 </span>
-                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                  Target DSCR: 1.25x – 1.40x
+                <span className="px-3 py-1 rounded-full bg-slate-900/85 border border-white/15 backdrop-blur-sm">
+                  Amortization: Up to 30 Years
+                </span>
+                <span className="px-3 py-1 rounded-full bg-slate-900/85 border border-white/15 backdrop-blur-sm">
+                  Zero Advance Fees
                 </span>
               </div>
             </div>
 
             {/* Right Column: Institutional Term Sheet Matrix Card */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-[#112334] to-[#0c1b29] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="lg:col-span-5 bg-gradient-to-br from-[#112334]/95 to-[#0c1b29]/95 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-7 shadow-2xl relative font-sans text-white">
+              <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs uppercase font-bold tracking-wider text-emerald-300">
-                    Institutional Debt Parameters
+                  <span className="text-xs uppercase font-extrabold tracking-wider text-teal-200 font-heading">
+                    Current Lending Benchmarks
                   </span>
                 </div>
-                <span className="text-[11px] text-gray-400 font-mono">Wholesale Desk</span>
+                <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-400/40">
+                  Govt. &amp; Private Panel
+                </span>
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-4">
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                  <span className="text-[11px] text-gray-400 block font-medium">Starting Interest Rate</span>
-                  <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">From 9.15%*</span>
-                  <span className="text-[10px] text-gray-400 block mt-0.5">Corporate AAA lessees</span>
+              <div className="mt-4.5 grid grid-cols-2 gap-3.5">
+                <div className="bg-white/5 p-3.5 sm:p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-slate-300 block font-medium">Starting Interest Rate</span>
+                  <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">From 7.25%*</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">PSU Bank Linked EBLR</span>
                 </div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                  <span className="text-[11px] text-gray-400 block font-medium">Loan Quantum</span>
-                  <span className="text-xl sm:text-2xl font-black text-white font-mono">₹5 Cr – ₹250 Cr</span>
-                  <span className="text-[10px] text-gray-400 block mt-0.5">Multi-bank consortium</span>
+                <div className="bg-white/5 p-3.5 sm:p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-slate-300 block font-medium">Takeover Savings</span>
+                  <span className="text-xl sm:text-2xl font-black text-white font-mono">Save up to 2.5%</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">ROI drop on transfer</span>
                 </div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                  <span className="text-[11px] text-gray-400 block font-medium">Facility Tenor</span>
-                  <span className="text-xl sm:text-2xl font-black text-brand-gold font-mono">Up to 15 Yrs</span>
-                  <span className="text-[10px] text-gray-400 block mt-0.5">Aligned to lease lock-in</span>
+                <div className="bg-white/5 p-3.5 sm:p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-slate-300 block font-medium">Maximum LTV</span>
+                  <span className="text-xl sm:text-2xl font-black text-brand-gold font-mono">Up to 85%</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">Of market valuation</span>
                 </div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                  <span className="text-[11px] text-gray-400 block font-medium">Escrow Security</span>
-                  <span className="text-xl sm:text-2xl font-black text-brand-teal-light font-mono">Tripartite</span>
-                  <span className="text-[10px] text-gray-400 block mt-0.5">Automated surplus sweep</span>
+                <div className="bg-white/5 p-3.5 sm:p-4 rounded-2xl border border-white/10">
+                  <span className="text-[11px] text-slate-300 block font-medium">Extended Tenor</span>
+                  <span className="text-xl sm:text-2xl font-black text-brand-teal-light font-mono">Up to 30 Yrs</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">Substantially lower EMI</span>
                 </div>
               </div>
 
-              <div className="mt-5 p-4 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-300 leading-relaxed">
-                <span><strong>LRD Escrow Mechanics:</strong> Lessee pays monthly rent directly to a designated no-lien bank escrow account. Bank debits EMI and automatically sweeps net balance to owner.</span>
+              <div className="mt-4 p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs text-slate-200 leading-relaxed font-sans">
+                <span><strong>Bank Takeover Advantage:</strong> Government bank pays off existing private financier, retrieves original mother documents directly, and significantly slashes monthly EMI.</span>
               </div>
 
-              <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs text-gray-400">Strict Non-Disclosure Protocol</span>
+              <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between">
+                <span className="text-xs text-slate-400">Zero Advance Processing Fees</span>
                 <a
                   href="#enquiry-form"
-                  className="text-xs font-bold text-brand-teal-light hover:text-white flex items-center gap-1 transition-colors"
+                  className="text-xs font-bold text-teal-300 hover:text-white flex items-center gap-1 transition-colors font-heading"
                 >
-                  <span>Initiate Commercial Review</span>
+                  <span>Check Takeover Eligibility</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </a>
               </div>
