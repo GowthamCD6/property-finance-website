@@ -1432,29 +1432,7 @@ export const AdminContentPage: React.FC = () => {
                   />
                 </div>
 
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-brand-navy mb-1.5">
-                    Hero Background High-Res Image URL
-                  </label>
-                  <div className="flex gap-3 items-center">
-                    <input
-                      type="url"
-                      name="heroImageUrl"
-                      value={content.heroImageUrl || ''}
-                      onChange={handleChange}
-                      className="flex-1 p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
-                    />
-                    {content.heroImageUrl && (
-                      <div className="w-16 h-10 rounded-lg overflow-hidden border border-brand-border flex-shrink-0 bg-slate-100">
-                        <img
-                          src={content.heroImageUrl}
-                          alt="Hero preview"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
+
 
                 {/* Hero Badges */}
                 <div className="md:col-span-2 p-4 bg-brand-ivory/50 rounded-xl border border-brand-border space-y-3">
