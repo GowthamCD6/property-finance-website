@@ -766,41 +766,7 @@ export const AdminContentPage: React.FC = () => {
 
       {/* ─── WHEN NO MODULE IS SELECTED: RENDER WEBSITE CONTENT CATALOG ─── */}
       {!activeTab ? (
-        <div className="space-y-6 animate-in fade-in duration-150">
-          {/* Header Bar */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[10px] font-bold font-heading uppercase tracking-wider">
-                  Live CMS Engine
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="text-xs text-slate-500 font-sans">
-                  {CONTENT_MODULES.length} Public Page Modules
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading mt-1">
-                Website Content &amp; Brand Studio
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 font-sans max-w-2xl">
-                Select any public page or website module below to edit its content, images, rates, testimonials, and legal policies live.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <a
-                href="/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold font-heading rounded-xl border border-slate-200 flex items-center gap-2 transition-colors shadow-2xs"
-              >
-                <Eye className="w-4 h-4 text-teal-600" />
-                <span>View Public Website</span>
-                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-              </a>
-            </div>
-          </div>
-
+        <div className="space-y-5 animate-in fade-in duration-150">
           {/* Filter & Search Bar */}
           <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-3 font-sans">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
