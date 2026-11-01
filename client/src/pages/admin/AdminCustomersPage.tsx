@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Users,
   Search,
   Mail,
   Phone,
+  PhoneCall,
   Calendar,
   Clock,
   Eye,
@@ -48,7 +49,6 @@ export const AdminCustomersPage: React.FC = () => {
       .then((res) => {
         setCustomers(res.data);
         setTotalCount(res.totalCount);
-        setPage(1);
       })
       .catch((err) => console.error('Error fetching enquired customers:', err))
       .finally(() => setLoading(false));
@@ -58,8 +58,22 @@ export const AdminCustomersPage: React.FC = () => {
     fetchCustomers();
   }, []);
 
+  const isSearchMounted = useRef(false);
+  useEffect(() => {
+    if (!isSearchMounted.current) {
+      isSearchMounted.current = true;
+      return;
+    }
+    const timer = setTimeout(() => {
+      setPage(1);
+      fetchCustomers();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setPage(1);
     fetchCustomers();
   };
 
@@ -162,137 +176,67 @@ export const AdminCustomersPage: React.FC = () => {
     }
   };
 
-  // Compute aggregate statistics
-  const totalEnquiriesAcrossCustomers = customers.reduce((acc, c) => acc + c.totalEnquiries, 0);
-  const totalCapitalRequested = customers.reduce((acc, c) => acc + c.totalLoanAmount, 0);
-
   return (
-    <div className="space-y-6 font-sans">
-      {/* Top Verification Explanation Banner */}
-      <div className="p-4 bg-gradient-to-r from-teal-50/80 via-white to-slate-50 border border-teal-200/90 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-        <div className="flex items-start gap-3">
-          <div className="p-2 bg-teal-600 text-white rounded-xl flex-shrink-0 mt-0.5 shadow-xs">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-xs sm:text-sm font-bold text-[#0c1a26] font-heading">
-              Enquired Customers Database (Google Verified)
-            </h3>
-            <p className="text-xs text-slate-500 font-sans mt-0.5">
-              Displays client accounts authenticated via Google One-Click SSO who have submitted active loan enquiry dossiers.
-            </p>
-          </div>
+    <div className="space-y-5 font-sans">
+      {/* Search & Actions Toolbar - Clean Single Row */}
+      <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        {/* Real-time Search Box */}
+        <div className="relative flex-1 min-w-[260px]">
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search by Customer Name, Email, Phone, or City..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchTerm('');
+                setPage(1);
+              }}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+
+        {/* Action Controls & Total Count */}
+        <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-auto">
+          <div className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 flex items-center gap-1.5 shadow-2xs">
+            <Users className="w-3.5 h-3.5 text-teal-600" />
+            <span>{totalCount} {totalCount === 1 ? 'Customer' : 'Customers'}</span>
+          </div>
+
           <button
             type="button"
             onClick={fetchCustomers}
-            className="p-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-semibold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-            title="Refresh Customers"
+            className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-heading font-bold shadow-2xs hover:shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+            title="Refresh customer database"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-teal-600' : ''}`} />
-            <span className="hidden sm:inline font-heading font-bold text-xs">Refresh</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-teal-600' : 'text-slate-500'}`} />
+            <span>Refresh</span>
           </button>
         </div>
-      </div>
-
-      {/* KPI Stats Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
-              Enquired Borrowers
-            </p>
-            <h3 className="text-2xl font-black text-[#0c1a26] mt-1 font-heading">{totalCount}</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Google authenticated profiles</p>
-          </div>
-          <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center text-teal-700">
-            <Users className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
-              Total Applications
-            </p>
-            <h3 className="text-2xl font-black text-indigo-600 mt-1 font-heading">
-              {totalEnquiriesAcrossCustomers}
-            </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Submitted dossiers</p>
-          </div>
-          <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-            <FileSpreadsheet className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
-              Total Loan Demand
-            </p>
-            <h3 className="text-2xl font-black text-emerald-600 mt-1 font-heading">
-              {formatAmountINR(totalCapitalRequested)}
-            </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Combined loan valuation</p>
-          </div>
-          <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-            <TrendingUp className="w-6 h-6" />
-          </div>
-        </div>
-      </div>
-
-      {/* Filter and Search Bar Container */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by Customer Name, Google Email, Mobile Number, or Reference..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchTerm('');
-                  getEnquiredCustomersApi().then((r) => {
-                    setCustomers(r.data);
-                    setTotalCount(r.totalCount);
-                  });
-                }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs transition-all active:scale-[0.98] cursor-pointer"
-          >
-            Search
-          </button>
-        </form>
       </div>
 
       {/* Customer Directory Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50/90 border-b border-slate-200/90 text-slate-600 font-bold uppercase tracking-wider text-[11px] font-heading">
-                <th className="py-4 px-5 min-w-[260px]">Verified Borrower</th>
-                <th className="py-4 px-4 min-w-[140px]">Contact Phone</th>
-                <th className="py-4 px-4 min-w-[140px]">Loan Inquiries</th>
-                <th className="py-4 px-4 min-w-[170px]">Latest Application</th>
-                <th className="py-4 px-4 min-w-[160px]">Preferred Slot</th>
-                <th className="py-4 px-4 min-w-[140px]">Last Active</th>
-                <th className="py-4 px-5 text-right min-w-[110px]">Actions</th>
+                <th className="py-3.5 px-4 min-w-[210px]">Customer &amp; Google Account</th>
+                <th className="py-3.5 px-3 min-w-[130px]">Contact Phone</th>
+                <th className="py-3.5 px-3 min-w-[120px]">Location</th>
+                <th className="py-3.5 px-3 min-w-[110px]">Applications</th>
+                <th className="py-3.5 px-3 min-w-[105px]">Registered On</th>
+                <th className="py-3.5 px-3 min-w-[115px]">Last Active</th>
+                <th className="py-3.5 px-4 text-right min-w-[100px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
@@ -300,38 +244,32 @@ export const AdminCustomersPage: React.FC = () => {
                 <>
                   {Array.from({ length: 6 }).map((_, idx) => (
                     <tr key={idx} className="animate-pulse border-b border-slate-100">
-                      <td className="py-4 px-5 min-w-[260px]">
+                      <td className="py-3.5 px-4 min-w-[210px]">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-slate-200 shrink-0" />
                           <div className="space-y-1.5 flex-1">
-                            <div className="h-4 bg-slate-200 rounded w-32" />
-                            <div className="h-3 bg-slate-100 rounded w-40" />
+                            <div className="h-4 bg-slate-200 rounded w-28" />
+                            <div className="h-3 bg-slate-100 rounded w-36" />
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-4 min-w-[140px]">
+                      <td className="py-3.5 px-3 min-w-[130px]">
                         <div className="h-3.5 bg-slate-200 rounded w-24" />
                       </td>
-                      <td className="py-4 px-4 min-w-[140px]">
-                        <div className="space-y-1">
-                          <div className="h-3.5 bg-slate-200 rounded w-16" />
-                          <div className="h-2.5 bg-slate-100 rounded w-20" />
-                        </div>
-                      </td>
-                      <td className="py-4 px-4 min-w-[170px]">
-                        <div className="space-y-1">
-                          <div className="h-3.5 bg-slate-200 rounded w-24" />
-                          <div className="h-2.5 bg-slate-100 rounded w-16" />
-                        </div>
-                      </td>
-                      <td className="py-4 px-4 min-w-[160px]">
-                        <div className="h-5 bg-slate-200 rounded-md w-24" />
-                      </td>
-                      <td className="py-4 px-4 min-w-[140px]">
+                      <td className="py-3.5 px-3 min-w-[120px]">
                         <div className="h-3.5 bg-slate-200 rounded w-20" />
                       </td>
-                      <td className="py-4 px-5 text-right min-w-[110px]">
-                        <div className="h-7 bg-slate-200 rounded-xl w-20 ml-auto" />
+                      <td className="py-3.5 px-3 min-w-[110px]">
+                        <div className="h-5 bg-slate-200 rounded-md w-20" />
+                      </td>
+                      <td className="py-3.5 px-3 min-w-[105px]">
+                        <div className="h-3.5 bg-slate-200 rounded w-18" />
+                      </td>
+                      <td className="py-3.5 px-3 min-w-[115px]">
+                        <div className="h-3.5 bg-slate-200 rounded w-20" />
+                      </td>
+                      <td className="py-3.5 px-4 text-right min-w-[100px]">
+                        <div className="h-7 bg-slate-200 rounded-xl w-24 ml-auto" />
                       </td>
                     </tr>
                   ))}
@@ -343,21 +281,19 @@ export const AdminCustomersPage: React.FC = () => {
                       <Users className="w-6 h-6" />
                     </div>
                     <h4 className="text-sm font-bold text-[#0c1a26] font-heading">
-                      No enquired customers found
+                      No customers found
                     </h4>
                     <p className="text-xs text-slate-500 max-w-sm mx-auto font-sans">
-                      Only users who have signed in with their Google account and submitted at least one loan application will be listed here.
+                      {searchTerm ? 'No registered customers match your search criteria.' : 'Users who sign in via Google and submit an application will appear here.'}
                     </p>
                   </td>
                 </tr>
               ) : (
                 displayedCustomers.map((c) => {
-                  const latest = c.latestEnquiry;
-
                   return (
-                    <tr key={c.id} className="hover:bg-slate-50/60 transition-colors group">
-                      {/* Customer Profile & Google ID */}
-                      <td className="py-4 px-5">
+                    <tr key={c.id} className="hover:bg-slate-50/70 transition-colors group">
+                      {/* Customer Profile & Google Email */}
+                      <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           {c.picture ? (
                             <img
@@ -382,19 +318,20 @@ export const AdminCustomersPage: React.FC = () => {
                                 {c.name}
                               </span>
                               <span
-                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200"
-                                title="Verified Google OAuth Profile"
+                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-sky-50 text-sky-700 border border-sky-200 shrink-0"
+                                title="Google Verified Account"
                               >
-                                <Sparkles className="w-2.5 h-2.5 text-blue-500" />
-                                <span>Google User</span>
+                                <Sparkles className="w-2.5 h-2.5 text-sky-500" />
+                                <span>Google</span>
                               </span>
                             </div>
 
-                            <div className="flex items-center gap-1 text-[11px] text-slate-500 truncate">
-                              <Mail className="w-3 h-3 text-slate-400 flex-shrink-0" />
+                            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 truncate">
+                              <Mail className="w-3 h-3 text-slate-400 shrink-0" />
                               <a
                                 href={`mailto:${c.email}`}
                                 className="hover:text-teal-700 hover:underline truncate"
+                                title={`Send email to ${c.email}`}
                               >
                                 {c.email}
                               </a>
@@ -403,101 +340,76 @@ export const AdminCustomersPage: React.FC = () => {
                         </div>
                       </td>
 
-                      {/* Phone Number */}
-                      <td className="py-4 px-4 whitespace-nowrap">
+                      {/* Contact Phone */}
+                      <td className="py-3.5 px-3 whitespace-nowrap">
                         {c.phone ? (
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-slate-700">{c.phone}</span>
-                            <a
-                              href={`https://wa.me/91${c.phone.replace(/\D/g, '')}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition-colors"
-                              title="Message on WhatsApp"
-                            >
-                              <Phone className="w-3.5 h-3.5" />
-                            </a>
+                            <span className="font-semibold text-slate-800 font-heading text-xs">{c.phone}</span>
+                            <div className="flex items-center gap-1">
+                              <a
+                                href={`https://wa.me/91${c.phone.replace(/\D/g, '')}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition-colors"
+                                title="Chat on WhatsApp"
+                              >
+                                <Phone className="w-3.5 h-3.5" />
+                              </a>
+                              <a
+                                href={`tel:${c.phone}`}
+                                className="p-1 rounded-md text-teal-600 hover:bg-teal-50 transition-colors"
+                                title="Direct Call"
+                              >
+                                <PhoneCall className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
                           </div>
                         ) : (
-                          <span className="text-slate-400 italic">Not provided</span>
+                          <span className="text-slate-400 italic text-xs">Not provided</span>
                         )}
                       </td>
 
-                      {/* Enquiry Count & Value */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <div className="space-y-0.5">
-                          <span className="inline-block px-2 py-0.5 rounded-md text-[11px] font-bold font-heading bg-slate-100 text-[#0c1a26] border border-slate-200">
-                            {c.totalEnquiries} {c.totalEnquiries === 1 ? 'Enquiry' : 'Enquiries'}
-                          </span>
-                          <div className="text-[11px] font-extrabold text-emerald-700 font-heading">
-                            {formatAmountINR(c.totalLoanAmount)}
-                          </div>
+                      {/* City / State Location */}
+                      <td className="py-3.5 px-3">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-700">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                          <span className="truncate">{c.latestEnquiry?.cityState || 'Tamil Nadu'}</span>
                         </div>
                       </td>
 
-                      {/* Latest Application Details */}
-                      <td className="py-4 px-4">
-                        {latest ? (
-                          <div className="space-y-1 min-w-[140px]">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-bold text-[#0c1a26] text-xs font-heading">
-                                {latest.loanType}
-                              </span>
-                              <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                                {latest.referenceNumber}
-                              </span>
-                            </div>
-                            <div>
-                              <span
-                                className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold border font-heading ${getStatusBadge(
-                                  latest.status
-                                )}`}
-                              >
-                                {formatStatusLabel(latest.status)}
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400 italic">None</span>
-                        )}
+                      {/* Total Applications Submitted */}
+                      <td className="py-3.5 px-3 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold font-heading bg-slate-100 text-slate-800 border border-slate-200">
+                          <FileSpreadsheet className="w-3 h-3 text-teal-600" />
+                          <span>{c.totalEnquiries} {c.totalEnquiries === 1 ? 'Application' : 'Applications'}</span>
+                        </span>
                       </td>
 
-                      {/* Preferred Meeting Slot */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        {latest?.preferredDate ? (
-                          <div className="space-y-1">
-                            <div className="font-heading font-extrabold text-[#0c1a26] text-xs flex items-center gap-1.5">
-                              <Calendar className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                              <span>{formatDate(latest.preferredDate).split(',')[0]}</span>
-                            </div>
-                            <div className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
-                              <Clock className="w-3 h-3 text-slate-400 shrink-0" />
-                              <span>{latest.preferredTimeSlot || 'Standard Slot'}</span>
-                            </div>
-                            <div className="pt-0.5">{getModeBadge(latest.meetingMode)}</div>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400 italic">Not set</span>
-                        )}
+                      {/* Registration Date */}
+                      <td className="py-3.5 px-3 whitespace-nowrap text-xs text-slate-600">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>{new Date(c.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        </div>
                       </td>
 
                       {/* Last Active */}
-                      <td className="py-4 px-4 whitespace-nowrap text-slate-500 text-[11px]">
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                      <td className="py-3.5 px-3 whitespace-nowrap text-xs text-slate-600">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span>{formatDate(c.lastLoginAt || c.createdAt)}</span>
                         </div>
                       </td>
 
                       {/* Actions */}
-                      <td className="py-4 px-5 text-right whitespace-nowrap">
+                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
                         <button
                           type="button"
                           onClick={() => setSelectedCustomer(c)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#0c1a26] text-slate-700 hover:text-white rounded-xl text-xs font-extrabold font-heading transition-all border border-slate-200 cursor-pointer shadow-2xs hover:shadow-sm active:scale-95 group"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#0c1a26] text-slate-700 hover:text-white rounded-xl text-xs font-extrabold font-heading transition-all border border-slate-200 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 group"
                         >
                           <Eye className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
-                          <span>Customer Dossier</span>
+                          <span>View Profile</span>
                         </button>
                       </td>
                     </tr>
@@ -505,8 +417,8 @@ export const AdminCustomersPage: React.FC = () => {
                 })
               )}
             </tbody>
-            </table>
-          </div>
+          </table>
+        </div>
 
         {/* Pagination Controls (Always visible at the bottom of the table) */}
         <div className="p-4 sm:px-6 border-t border-slate-200/90 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-sans">
