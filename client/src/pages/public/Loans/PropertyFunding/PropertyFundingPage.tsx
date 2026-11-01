@@ -241,7 +241,7 @@ export const PropertyFundingPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. FOUR COMMERCIAL FUNDING SOLUTIONS (Interactive Tabs)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-[#f7f7f3] border-b border-brand-border">
+      <section className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-2">

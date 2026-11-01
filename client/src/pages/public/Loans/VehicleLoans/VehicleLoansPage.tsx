@@ -490,7 +490,7 @@ export const VehicleLoansPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 lg:py-20 bg-[#f7f7f3] border-b border-brand-border">
+      <section className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto space-y-16">
           {/* Note 4 - Car Loan Categories */}
           <div>
@@ -705,11 +705,7 @@ export const VehicleLoansPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-[#f7f7f3] border-b border-brand-border">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <InteractiveDocumentVault loanType="vehicle-loans" />
-        </div>
-      </section>
+      <InteractiveDocumentVault loanType="vehicle-loans" />
 
       <div id="enquiry-form" className="bg-[#f7f7f3]">
         <EnquiryForm

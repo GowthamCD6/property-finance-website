@@ -513,7 +513,7 @@ export const HomeLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. SIX SPECIALIZED PATHWAYS (Interactive Grid)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-[#f7f7f3] border-b border-brand-border">
+      <section className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
@@ -570,7 +570,7 @@ export const HomeLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           3. CRITICAL LAND FINANCING ADVISORY (Must-Know Nuances)
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-[#f7f7f3] border-b border-brand-border">
+      <section className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-3xl mb-12">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
