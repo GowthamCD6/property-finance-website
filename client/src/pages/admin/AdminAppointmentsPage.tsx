@@ -31,7 +31,6 @@ import {
   Send,
 } from 'lucide-react';
 import { Appointment, Enquiry } from '../../types';
-import { RegisterBorrowerModal } from '../../components/admin/RegisterBorrowerModal';
 import {
   getAppointmentsApi,
   getPendingAllotmentsApi,
@@ -453,24 +452,7 @@ export const AdminAppointmentsPage: React.FC = () => {
             title="Refresh All Lists"
           >
             <RefreshCw className={`w-4 h-4 ${loading || pendingLoading ? 'animate-spin text-teal-600' : ''}`} />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsRegisterModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-[#0c1a26] rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs hover:border-teal-300 transition-all cursor-pointer active:scale-[0.98]"
-          >
-            <UserPlus className="w-4 h-4 text-teal-600" />
-            <span>+ Register Borrower</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={openGenericAllotModal}
-            className="group px-4 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs sm:text-sm font-bold font-heading shadow-md shadow-teal-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
-            <span>Allot Consultation Slot</span>
+            <span className="hidden sm:inline font-heading font-bold text-xs">Refresh</span>
           </button>
         </div>
       </div>
@@ -1697,16 +1679,6 @@ export const AdminAppointmentsPage: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Admin Register Borrower Modal */}
-      <RegisterBorrowerModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        onSuccess={() => {
-          fetchAppointments();
-          fetchPendingQueue();
-        }}
-      />
     </div>
   );
 };

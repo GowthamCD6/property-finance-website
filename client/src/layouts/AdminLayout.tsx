@@ -14,13 +14,11 @@ import {
   X,
   Loader2,
   Globe,
-  UserPlus,
   ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/images/logo.png';
 import { getDashboardStatsApi } from '../services/api';
-import { RegisterBorrowerModal } from '../components/admin/RegisterBorrowerModal';
 
 export const AdminLayout: React.FC = () => {
   const { admin, isAuthenticated, isLoading, logout } = useAuth();
@@ -28,7 +26,6 @@ export const AdminLayout: React.FC = () => {
   const location = useLocation();
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
   const [pendingCount, setPendingCount] = useState<number>(0);
 
@@ -410,15 +407,6 @@ export const AdminLayout: React.FC = () => {
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
-
-        {/* Global Register Borrower Modal */}
-        <RegisterBorrowerModal
-          isOpen={isRegisterModalOpen}
-          onClose={() => setIsRegisterModalOpen(false)}
-          onSuccess={(newEnquiry) => {
-            window.dispatchEvent(new CustomEvent('enquiry-registered', { detail: newEnquiry }));
-          }}
-        />
       </div>
     </div>
   );

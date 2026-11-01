@@ -31,16 +31,13 @@ import {
   ChevronLeft,
   CalendarCheck2,
   Share2,
-  UserPlus,
 } from 'lucide-react';
 import { Enquiry, UploadedDocument } from '../../types';
-import { RegisterBorrowerModal } from '../../components/admin/RegisterBorrowerModal';
 import {
   getEnquiriesApi,
   getEnquiryByIdApi,
   updateEnquiryStatusApi,
   addEnquiryNoteApi,
-  createAppointmentApi,
   getExportEnquiriesCsvUrl,
 } from '../../services/api';
 
@@ -64,7 +61,6 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>(searchParams.get('status') || 'ALL');
   const [selectedLoanType, setSelectedLoanType] = useState<string>('ALL');
   const [page, setPage] = useState<number>(1);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   // Data state
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
@@ -88,23 +84,6 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [newNoteContent, setNewNoteContent] = useState<string>('');
   const [noteSubmitting, setNoteSubmitting] = useState<boolean>(false);
 
-  // Appointment Allotment State
-  const [isAllotting, setIsAllotting] = useState<boolean>(false);
-  const [allotDate, setAllotDate] = useState<string>('');
-  const [allotSlot, setAllotSlot] = useState<string>('11:30 AM - 12:30 PM');
-  const [allotMode, setAllotMode] = useState<'phone' | 'video' | 'in_person'>('phone');
-  const [allotNotes, setAllotNotes] = useState<string>('');
-  const [allotSubmitting, setAllotSubmitting] = useState<boolean>(false);
-  const [allotSuccess, setAllotSuccess] = useState<string | null>(null);
-
-  const STANDARD_SLOTS = [
-    '10:00 AM - 11:00 AM',
-    '11:30 AM - 12:30 PM',
-    '02:00 PM - 03:00 PM',
-    '03:30 PM - 04:30 PM',
-    '05:00 PM - 06:00 PM',
-  ];
-
   const fetchList = () => {
     setLoading(true);
     getEnquiriesApi({
@@ -127,12 +106,6 @@ export const AdminEnquiriesPage: React.FC = () => {
     fetchList();
   }, [page, selectedStatus, selectedLoanType]);
 
-  useEffect(() => {
-    const handleNewEnquiry = () => fetchList();
-    window.addEventListener('enquiry-registered', handleNewEnquiry);
-    return () => window.removeEventListener('enquiry-registered', handleNewEnquiry);
-  }, []);
-
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
@@ -144,48 +117,14 @@ export const AdminEnquiriesPage: React.FC = () => {
     setSelectedEnquiryId(id);
     setDetailTab(initialTab);
     setDetailLoading(true);
-    setIsAllotting(false);
-    setAllotSuccess(null);
     getEnquiryByIdApi(id)
       .then((enq) => {
         setDetailEnquiry(enq);
         setNewStatus(enq.status);
         setStatusNote('');
-        setAllotDate(enq.preferredDate || new Date().toISOString().split('T')[0]);
-        setAllotSlot(enq.preferredTimeSlot || '11:30 AM - 12:30 PM');
-        setAllotMode(enq.meetingMode || 'phone');
-        setAllotNotes('');
       })
       .catch((err) => console.error('Error loading enquiry detail:', err))
       .finally(() => setDetailLoading(false));
-  };
-
-  const handleAllotAppointmentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!detailEnquiry || !allotDate || !allotSlot) return;
-
-    setAllotSubmitting(true);
-    setAllotSuccess(null);
-    try {
-      await createAppointmentApi({
-        enquiryId: detailEnquiry.id,
-        date: allotDate,
-        timeSlot: allotSlot,
-        meetingMode: allotMode,
-        adminNotes: allotNotes.trim() || undefined,
-      });
-
-      const refreshed = await getEnquiryByIdApi(detailEnquiry.id);
-      setDetailEnquiry(refreshed);
-      setNewStatus('Appointment Confirmed');
-      setIsAllotting(false);
-      setAllotSuccess('Consultation appointment confirmed & allotted successfully!');
-      fetchList();
-    } catch (err: any) {
-      alert(err.message || 'Failed to allot appointment');
-    } finally {
-      setAllotSubmitting(false);
-    }
   };
 
   const handleStatusUpdate = async (e: React.FormEvent) => {
@@ -346,39 +285,13 @@ export const AdminEnquiriesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
-            Loan Enquiry Pipeline
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
-            Total {totalCount} borrower applications registered across home loan, LAP, and business funding
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIsRegisterModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs sm:text-sm font-bold font-heading shadow-md shadow-teal-500/20 transition-all active:scale-[0.98] cursor-pointer"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>+ Register Borrower</span>
-          </button>
-
-          <a
-            href={getExportEnquiriesCsvUrl()}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#0c1a26] border border-slate-200 rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs hover:border-teal-300 transition-all active:scale-[0.98]"
-          >
-            <Download className="w-4 h-4 text-teal-600" />
-            <span>Export to CSV</span>
-          </a>
-        </div>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
+          Loan Enquiry Pipeline
+        </h1>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar Container */}
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -405,7 +318,7 @@ export const AdminEnquiriesPage: React.FC = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <select
               value={selectedLoanType}
               onChange={(e) => {
@@ -427,6 +340,16 @@ export const AdminEnquiriesPage: React.FC = () => {
             >
               Filter
             </button>
+
+            <a
+              href={getExportEnquiriesCsvUrl()}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#0c1a26] border border-slate-200 rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs hover:border-teal-300 transition-all active:scale-[0.98]"
+            >
+              <Download className="w-4 h-4 text-teal-600" />
+              <span>Export to CSV</span>
+            </a>
           </div>
         </form>
 
@@ -463,7 +386,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                 <th className="py-3.5 px-4">Location</th>
                 <th className="py-3.5 px-4">Facility Type</th>
                 <th className="py-3.5 px-4">Sanction Requested</th>
-                <th className="py-3.5 px-4">Allotted Slot</th>
+                <th className="py-3.5 px-4">Consultation Slot</th>
                 <th className="py-3.5 px-4">Pipeline Status</th>
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
@@ -599,9 +522,9 @@ export const AdminEnquiriesPage: React.FC = () => {
                         <span className="text-[10px] text-slate-400 font-sans block">Requested</span>
                       </td>
 
-                      {/* Allotted Slot Column */}
+                      {/* Consultation Slot Column */}
                       <td className="py-4 px-4 text-xs whitespace-nowrap">
-                        {appointment || enq.status === 'Appointment Confirmed' ? (
+                        {appointment?.date || enq.preferredDate ? (
                           <div className="space-y-1">
                             <div className="font-heading font-extrabold text-[#0c1a26] text-xs flex items-center gap-1.5">
                               <Calendar className="w-3.5 h-3.5 text-teal-600 shrink-0" />
@@ -609,28 +532,14 @@ export const AdminEnquiriesPage: React.FC = () => {
                             </div>
                             <div className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
                               <Clock className="w-3 h-3 text-slate-400 shrink-0" />
-                              <span>{appointment?.timeSlot || enq.preferredTimeSlot}</span>
+                              <span>{appointment?.timeSlot || enq.preferredTimeSlot || 'Standard Slot'}</span>
                             </div>
                             <div className="pt-0.5">
                               {getModeBadge(appointment?.meetingMode || enq.meetingMode)}
                             </div>
                           </div>
                         ) : (
-                          <div className="flex flex-col gap-1.5 items-start">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold font-heading bg-amber-50 text-amber-800 border border-amber-200">
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                              <span>Awaiting Slot</span>
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => handleOpenDetail(enq.id, 'appointment')}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-lg text-[10px] font-extrabold font-heading shadow-xs hover:shadow-sm transition-all cursor-pointer active:scale-95"
-                              title="Allot consultation date and slot"
-                            >
-                              <Calendar className="w-3 h-3" />
-                              <span>+ Allot Slot</span>
-                            </button>
-                          </div>
+                          <span className="text-slate-400 text-xs italic">Not requested</span>
                         )}
                       </td>
 
@@ -1067,34 +976,17 @@ export const AdminEnquiriesPage: React.FC = () => {
                     </div>
                   )}
 
-                  {/* TAB 3: APPOINTMENT ALLOTMENT */}
+                  {/* TAB 3: BORROWER REQUESTED CONSULTATION */}
                   {detailTab === 'appointment' && (
                     <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-teal-600" />
                           <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading">
-                            Consultation Scheduling &amp; Allotment
+                            Borrower Requested Consultation
                           </h4>
                         </div>
-                        {!isAllotting && (
-                          <button
-                            type="button"
-                            onClick={() => setIsAllotting(true)}
-                            className="px-3.5 py-1.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-                          >
-                            <Calendar className="w-3.5 h-3.5" />
-                            <span>{detailEnquiry.status === 'Appointment Confirmed' ? 'Change Allotted Slot' : 'Allot Time Slot'}</span>
-                          </button>
-                        )}
                       </div>
-
-                      {allotSuccess && (
-                        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                          <span className="font-semibold">{allotSuccess}</span>
-                        </div>
-                      )}
 
                       {/* Applicant Requested Preference Banner */}
                       <div className="p-3.5 bg-amber-50/80 rounded-xl border border-amber-200 text-xs flex items-center gap-2.5">
@@ -1107,176 +999,47 @@ export const AdminEnquiriesPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {!isAllotting ? (
-                        <>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50/70 rounded-xl border border-slate-200">
-                            <div>
-                              <span className="text-slate-400 block text-[11px] font-medium">Allotted Date &amp; Slot</span>
-                              <span className="font-bold text-[#0c1a26] text-xs font-mono">
-                                {detailEnquiry.preferredDate || 'Not Set'} &bull; {detailEnquiry.preferredTimeSlot || 'Pending'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-slate-400 block text-[11px] font-medium">Channel Mode</span>
-                              <span className="font-semibold text-[#0c1a26] capitalize text-xs">
-                                {detailEnquiry.meetingMode?.replace('_', ' ') || 'Phone Call'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-slate-400 block text-[11px] font-medium">Schedule Status</span>
-                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold mt-1 ${
-                                detailEnquiry.status === 'Appointment Confirmed'
-                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                                  : 'bg-amber-100 text-amber-800 border border-amber-200'
-                              }`}>
-                                {detailEnquiry.status === 'Appointment Confirmed' ? '● Confirmed Slot' : 'Awaiting Allotment'}
-                              </span>
-                            </div>
-                          </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-50/70 rounded-xl border border-slate-200">
+                        <div>
+                          <span className="text-slate-400 block text-[11px] font-medium">Requested Date &amp; Slot</span>
+                          <span className="font-bold text-[#0c1a26] text-xs font-mono">
+                            {detailEnquiry.preferredDate || 'Not Set'} &bull; {detailEnquiry.preferredTimeSlot || 'Pending'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[11px] font-medium">Channel Mode</span>
+                          <span className="font-semibold text-[#0c1a26] capitalize text-xs">
+                            {detailEnquiry.meetingMode?.replace('_', ' ') || 'Phone Call'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[11px] font-medium">Meeting Status</span>
+                          <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold mt-1 bg-teal-50 text-teal-800 border border-teal-200">
+                            ● Requested by Borrower
+                          </span>
+                        </div>
+                      </div>
 
-                          {detailEnquiry.status === 'Appointment Confirmed' && (
-                            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                              <div className="space-y-0.5">
-                                <span className="font-bold text-emerald-900 font-heading block">
-                                  Meeting Slot Confirmed: {detailEnquiry.preferredDate} ({detailEnquiry.preferredTimeSlot})
-                                </span>
-                                <p className="text-emerald-700 text-[11px] font-sans">
-                                  Send the confirmed consultation time, mode, and Tirupur office venue details directly to the borrower.
-                                </p>
-                              </div>
-                              <a
-                                href={`https://wa.me/91${detailEnquiry.mobileNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
-                                  `Dear ${detailEnquiry.fullName}, greetings from Prime Associates.\n\nYour loan consultation meeting for ${detailEnquiry.loanType} (Ref: ${detailEnquiry.referenceNumber}) has been confirmed:\n📅 Date: ${detailEnquiry.preferredDate}\n⏰ Time: ${detailEnquiry.preferredTimeSlot}\n📍 Mode: ${detailEnquiry.meetingMode === 'in_person' ? 'In-Person at No. 48, 49, P.R. Complex, Kumaran Road, Tirupur' : detailEnquiry.meetingMode === 'video' ? 'Google Meet Video Call' : 'Direct Phone Call'}\n\nPlease keep your reference KYC & bank statements ready. For questions, call +91 96555 66613.`
-                                )}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors flex-shrink-0 cursor-pointer"
-                              >
-                                <span>Send WhatsApp Confirmation</span>
-                              </a>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <form onSubmit={handleAllotAppointmentSubmit} className="space-y-4 p-4 bg-white rounded-xl border border-teal-300 ring-2 ring-teal-500/10">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                              <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">
-                                Consultation Date
-                              </label>
-                              <input
-                                type="date"
-                                required
-                                value={allotDate}
-                                onChange={(e) => setAllotDate(e.target.value)}
-                                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-[#0c1a26] focus:bg-white"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">
-                                Allot Time Slot
-                              </label>
-                              <select
-                                value={allotSlot}
-                                onChange={(e) => setAllotSlot(e.target.value)}
-                                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-[#0c1a26] focus:bg-white"
-                              >
-                                {STANDARD_SLOTS.map((slot) => (
-                                  <option key={slot} value={slot}>
-                                    {slot}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
-                              Consultation Channel
-                            </label>
-                            <div className="grid grid-cols-3 gap-2">
-                              <button
-                                type="button"
-                                onClick={() => setAllotMode('phone')}
-                                className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
-                                  allotMode === 'phone'
-                                    ? 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold ring-1 ring-emerald-400'
-                                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                                }`}
-                              >
-                                <Phone className="w-4 h-4 mx-auto mb-1 text-emerald-600" />
-                                <span className="text-[11px] block">Direct Phone</span>
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => setAllotMode('video')}
-                                className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
-                                  allotMode === 'video'
-                                    ? 'bg-sky-50 text-sky-900 border-sky-400 font-bold ring-1 ring-sky-400'
-                                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                                }`}
-                              >
-                                <Video className="w-4 h-4 mx-auto mb-1 text-sky-600" />
-                                <span className="text-[11px] block">Google Meet</span>
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => setAllotMode('in_person')}
-                                className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
-                                  allotMode === 'in_person'
-                                    ? 'bg-purple-50 text-purple-900 border-purple-400 font-bold ring-1 ring-purple-400'
-                                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                                }`}
-                              >
-                                <Building2 className="w-4 h-4 mx-auto mb-1 text-purple-600" />
-                                <span className="text-[11px] block">Tirupur Office</span>
-                              </button>
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="block text-xs font-bold text-[#0c1a26] mb-1 font-heading">
-                              Administrative Note / Google Meet Link
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="e.g. Google Meet: meet.google.com/xyz or bring original land patta document..."
-                              value={allotNotes}
-                              onChange={(e) => setAllotNotes(e.target.value)}
-                              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0c1a26]"
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-end gap-2 pt-2">
-                            <button
-                              type="button"
-                              onClick={() => setIsAllotting(false)}
-                              className="px-3.5 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="submit"
-                              disabled={allotSubmitting}
-                              className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading flex items-center gap-1.5 shadow-sm"
-                            >
-                              {allotSubmitting ? (
-                                <>
-                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                  <span>Saving Slot...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <CheckCircle2 className="w-3.5 h-3.5" />
-                                  <span>Confirm &amp; Allot Slot</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        </form>
-                      )}
+                      <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <div className="space-y-0.5">
+                          <span className="font-bold text-emerald-900 font-heading block">
+                            Send Meeting Details to Borrower
+                          </span>
+                          <p className="text-emerald-700 text-[11px] font-sans">
+                            Communicate consultation date, slot, and Tirupur office / Google Meet details via WhatsApp.
+                          </p>
+                        </div>
+                        <a
+                          href={`https://wa.me/91${detailEnquiry.mobileNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
+                            `Dear ${detailEnquiry.fullName}, greetings from Prime Associates.\n\nYour loan consultation request for ${detailEnquiry.loanType} (Ref: ${detailEnquiry.referenceNumber}) has been reviewed:\n📅 Date: ${detailEnquiry.preferredDate}\n⏰ Time: ${detailEnquiry.preferredTimeSlot}\n📍 Mode: ${detailEnquiry.meetingMode === 'in_person' ? 'In-Person at No. 48, 49, P.R. Complex, Kumaran Road, Tirupur' : detailEnquiry.meetingMode === 'video' ? 'Google Meet Video Call' : 'Direct Phone Call'}\n\nPlease keep your reference KYC & bank statements ready. For questions, call +91 96555 66613.`
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold font-heading shadow-xs transition-colors flex-shrink-0 cursor-pointer"
+                        >
+                          <span>Send WhatsApp Message</span>
+                        </a>
+                      </div>
                     </div>
                   )}
 
@@ -1412,15 +1175,6 @@ export const AdminEnquiriesPage: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Admin Register Borrower Modal */}
-      <RegisterBorrowerModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        onSuccess={() => {
-          fetchList();
-        }}
-      />
     </div>
   );
 };
