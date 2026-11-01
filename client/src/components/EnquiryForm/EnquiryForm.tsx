@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Calendar,
   Clock,
@@ -46,6 +46,8 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   selectedService,
   hideHeader = false,
 }) => {
+  const [searchParams] = useSearchParams();
+
   // Form State
   const [fullName, setFullName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
@@ -203,6 +205,37 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       }
     }
   }, [customer]);
+
+  // Pre-fill calculation values from URL query parameters (e.g., from Calculator or HowItWorks simulator)
+  useEffect(() => {
+    const urlAmt = searchParams.get('amount');
+    const urlType = searchParams.get('type');
+    const urlTenure = searchParams.get('tenure');
+    const urlRate = searchParams.get('rate');
+
+    if (urlAmt) {
+      setLoanAmount(urlAmt);
+    }
+    if (urlType) {
+      if (urlType === 'lap') setLoanType('Mortgage / Loan Against Property (LAP)');
+      else if (urlType === 'car') setLoanType('Vehicle & Used Car Loans');
+      else if (urlType === 'project') setLoanType('Builder & Commercial Property Funding');
+      else if (urlType === 'home') setLoanType('Home Loans & Self Construction');
+    }
+    if (urlTenure || urlRate) {
+      const parts: string[] = [];
+      if (urlAmt) {
+        const numAmt = Number(urlAmt);
+        const verbal = numAmt >= 10000000 ? `₹${(numAmt / 10000000).toFixed(2)} Cr` : `₹${(numAmt / 100000).toFixed(1)} Lakhs`;
+        parts.push(`Quantum: ${verbal}`);
+      }
+      if (urlTenure) parts.push(`Tenure: ${urlTenure} Yrs`);
+      if (urlRate) parts.push(`ROI: ${urlRate}%`);
+      if (parts.length > 0) {
+        setAdditionalNotes((prev) => (prev ? prev : `[Calculated Quote Pre-Approval Request: ${parts.join(', ')}]`));
+      }
+    }
+  }, [searchParams]);
 
   const triggerGoogleLogin = async () => {
     setIsGoogleSigningIn(true);

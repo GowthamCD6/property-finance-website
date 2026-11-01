@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { SiteContent } from '../../../types';
 import {
@@ -283,7 +283,7 @@ export const CalculatorPage: React.FC = () => {
   const totalMonths = tenureYears * 12;
 
   const emi =
-    totalMonths > 0 && monthlyRate > 0
+    totalMonths > 0 && monthlyRate > 0 && loanAmount > 0
       ? Math.round(
           (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
             (Math.pow(1 + monthlyRate, totalMonths) - 1)
@@ -295,10 +295,52 @@ export const CalculatorPage: React.FC = () => {
   const principalPercent = totalPayment > 0 ? Math.round((loanAmount / totalPayment) * 100) : 100;
   const interestPercent = totalPayment > 0 ? 100 - principalPercent : 0;
 
+  // Year 1 Amortization and Prepayment Analysis
+  const year1Amortization = useMemo(() => {
+    let balance = loanAmount;
+    let yr1Principal = 0;
+    let yr1Interest = 0;
+    if (loanAmount > 0 && monthlyRate > 0 && emi > 0) {
+      for (let m = 1; m <= Math.min(12, totalMonths); m++) {
+        const intForMonth = balance * monthlyRate;
+        const prinForMonth = Math.min(balance, emi - intForMonth);
+        yr1Interest += intForMonth;
+        yr1Principal += prinForMonth;
+        balance = Math.max(0, balance - prinForMonth);
+      }
+    }
+    return {
+      principal: Math.round(yr1Principal),
+      interest: Math.round(yr1Interest),
+      closingBalance: Math.round(balance),
+    };
+  }, [loanAmount, monthlyRate, emi, totalMonths]);
+
+  const prepaymentSavings = useMemo(() => {
+    if (loanAmount <= 0 || monthlyRate <= 0 || emi <= 0) return { monthsSaved: 0, interestSaved: 0 };
+    let balance = loanAmount;
+    let totalIntWithPrepay = 0;
+    let m = 0;
+    while (balance > 0 && m < totalMonths * 2) {
+      m++;
+      const intForMonth = balance * monthlyRate;
+      totalIntWithPrepay += intForMonth;
+      let prinPaid = emi - intForMonth;
+      if (m % 12 === 0) {
+        prinPaid += emi; // extra 1 EMI annual prepayment
+      }
+      balance -= prinPaid;
+      if (balance <= 0) break;
+    }
+    const monthsSaved = Math.max(0, totalMonths - m);
+    const interestSaved = Math.max(0, totalInterest - Math.round(totalIntWithPrepay));
+    return { monthsSaved, interestSaved };
+  }, [loanAmount, monthlyRate, emi, totalMonths, totalInterest]);
+
   // Mode 2 Calculations
   const eligMonthlyRate = eligibilityRate / 12 / 100;
   const eligTotalMonths = eligibilityTenure * 12;
-  const permissibleEmi = Math.max(0, monthlyIncome * (foirPercentage / 100) - existingEmis);
+  const permissibleEmi = Math.max(0, Math.round(monthlyIncome * (foirPercentage / 100) - existingEmis));
 
   const maxLoanEligible =
     eligTotalMonths > 0 && eligMonthlyRate > 0 && permissibleEmi > 0
@@ -307,6 +349,8 @@ export const CalculatorPage: React.FC = () => {
             (eligMonthlyRate * Math.pow(1 + eligMonthlyRate, eligTotalMonths))
         )
       : 0;
+  const currentObligationRatio = monthlyIncome > 0 ? Math.round((existingEmis / monthlyIncome) * 100) : 0;
+  const monthlyDisposableSurplus = Math.max(0, monthlyIncome - existingEmis - permissibleEmi);
 
   // Mode 3 Calculations
   const maxPlotLoan = Math.round(plotCost * 0.70);
@@ -328,6 +372,7 @@ export const CalculatorPage: React.FC = () => {
 
   const activeDrawdown = maxPlotLoan + Math.round((maxConstructionLoan * disbursedTranchePercent) / 100);
   const preEmiInterestOnly = Math.round((activeDrawdown * (compositeRate / 100)) / 12);
+  const preEmiMonthlySavings = Math.max(0, fullCompositeEmi - preEmiInterestOnly);
 
   const formatINR = (val: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -576,16 +621,32 @@ export const CalculatorPage: React.FC = () => {
 
                 {/* Slider 1: Loan Amount */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">Loan Amount Required</label>
-                    <span className="text-base sm:text-lg font-black text-brand-teal font-mono">{formatINR(loanAmount)}</span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
+                      Loan Amount Required
+                    </label>
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                      <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
+                      <input
+                        type="number"
+                        min={100000}
+                        max={200000000}
+                        step={50000}
+                        value={loanAmount === 0 ? '' : loanAmount}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
+                          setLoanAmount(val);
+                        }}
+                        className="w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
                     min="500000"
                     max="100000000"
                     step="250000"
-                    value={loanAmount}
+                    value={loanAmount || 500000}
                     onChange={(e) => setLoanAmount(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
@@ -622,22 +683,38 @@ export const CalculatorPage: React.FC = () => {
 
                 {/* Slider 2: Interest Rate */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">Indicative Annual Interest Rate (% p.a.)</label>
-                    <span className="text-base sm:text-lg font-black text-brand-teal font-mono">{interestRate.toFixed(2)} %</span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
+                      Indicative Annual Interest Rate (% p.a.)
+                    </label>
+                    <div className="flex items-center gap-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                      <input
+                        type="number"
+                        min={5.0}
+                        max={20.0}
+                        step={0.05}
+                        value={interestRate === 0 ? '' : interestRate}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Number(e.target.value);
+                          setInterestRate(val);
+                        }}
+                        className="w-16 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                      />
+                      <span className="text-brand-teal font-black text-xs sm:text-sm">%</span>
+                    </div>
                   </div>
                   <input
                     type="range"
-                    min="7.25"
+                    min="6.5"
                     max="16.0"
                     step="0.05"
-                    value={interestRate}
+                    value={interestRate || 7.25}
                     onChange={(e) => setInterestRate(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
                   <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
-                    <span>7.25% (Prime Home Loan)</span>
-                    <span>9.25% (Standard LAP)</span>
+                    <span>6.50% (Prime HL)</span>
+                    <span className="font-bold text-brand-navy font-mono">{interestRate.toFixed(2)}% p.a.</span>
                     <span>16.00%</span>
                   </div>
                   {/* Quick Rate Presets */}
@@ -667,22 +744,38 @@ export const CalculatorPage: React.FC = () => {
 
                 {/* Slider 3: Tenure */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">Repayment Horizon (Tenure in Years)</label>
-                    <span className="text-base sm:text-lg font-black text-brand-teal font-mono">{tenureYears} Years ({totalMonths} Months)</span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
+                      Repayment Horizon (Tenure in Years)
+                    </label>
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                      <input
+                        type="number"
+                        min={1}
+                        max={30}
+                        step={1}
+                        value={tenureYears === 0 ? '' : tenureYears}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Math.min(30, Math.max(1, Number(e.target.value)));
+                          setTenureYears(val);
+                        }}
+                        className="w-14 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                      />
+                      <span className="text-brand-slate font-bold text-xs font-mono">Yrs ({totalMonths}m)</span>
+                    </div>
                   </div>
                   <input
                     type="range"
                     min="1"
                     max="30"
                     step="1"
-                    value={tenureYears}
+                    value={tenureYears || 1}
                     onChange={(e) => setTenureYears(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
                   <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>1 Year</span>
-                    <span>15 Years (Standard Mortgage)</span>
+                    <span className="font-bold text-brand-navy font-mono">{tenureYears} Years</span>
                     <span>30 Years (Max Home Loan)</span>
                   </div>
                   {/* Quick Tenure Presets */}
@@ -701,6 +794,37 @@ export const CalculatorPage: React.FC = () => {
                         {yr} Years
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                {/* Year-1 Amortization Snapshot Box */}
+                <div className="p-4 bg-slate-50/90 rounded-2xl border border-brand-border space-y-3">
+                  <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-brand-teal" />
+                      Year 1 Repayment Distribution (12 Installments)
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-500 font-medium">Annual: {formatINR(emi * 12)}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200">
+                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Yr 1 Principal</span>
+                      <span className="text-xs sm:text-sm font-bold text-emerald-700 font-mono block mt-0.5">
+                        {formatINR(year1Amortization.principal)}
+                      </span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200">
+                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Yr 1 Interest</span>
+                      <span className="text-xs sm:text-sm font-bold text-sky-700 font-mono block mt-0.5">
+                        {formatINR(year1Amortization.interest)}
+                      </span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200">
+                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Yr 1 Balance</span>
+                      <span className="text-xs sm:text-sm font-bold text-brand-navy font-mono block mt-0.5">
+                        {formatINR(year1Amortization.closingBalance)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -743,9 +867,22 @@ export const CalculatorPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Prepayment Advantage Note */}
+                {prepaymentSavings.monthsSaved > 0 && (
+                  <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-xs text-emerald-200 space-y-1">
+                    <div className="flex items-center gap-1.5 font-bold font-heading text-emerald-300">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+                      <span>Smart Prepayment Advantage</span>
+                    </div>
+                    <p className="text-[11px] text-emerald-100/90 leading-relaxed font-sans">
+                      Paying just 1 extra EMI each year saves approx <strong className="font-mono text-white">{formatINR(prepaymentSavings.interestSaved)}</strong> in interest and finishes the loan <strong className="font-mono text-white">{Math.round(prepaymentSavings.monthsSaved / 12)} years earlier</strong>.
+                    </p>
+                  </div>
+                )}
+
                 <div className="pt-2">
                   <Link
-                    to="/enquire"
+                    to={`/enquire?amount=${loanAmount}&tenure=${tenureYears}&rate=${interestRate}&type=home`}
                     className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
                   >
                     <span>Apply with this Repayment Quote</span>
@@ -772,17 +909,34 @@ export const CalculatorPage: React.FC = () => {
                   </p>
                 </div>
 
+                {/* Net Income Control */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">Net Monthly Take-Home Income</label>
-                    <span className="text-base sm:text-lg font-black text-brand-teal font-mono">{formatINR(monthlyIncome)}</span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
+                      Net Monthly Take-Home Income
+                    </label>
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                      <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
+                      <input
+                        type="number"
+                        min={15000}
+                        max={5000000}
+                        step={5000}
+                        value={monthlyIncome === 0 ? '' : monthlyIncome}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
+                          setMonthlyIncome(val);
+                        }}
+                        className="w-28 sm:w-32 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
                     min="30000"
                     max="1000000"
                     step="10000"
-                    value={monthlyIncome}
+                    value={monthlyIncome || 30000}
                     onChange={(e) => setMonthlyIncome(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
@@ -791,12 +945,51 @@ export const CalculatorPage: React.FC = () => {
                     <span className="font-bold text-brand-navy font-heading">{getVerbalAmount(monthlyIncome)}</span>
                     <span>₹ 10 Lakhs / mo</span>
                   </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {[
+                      { label: '₹50K', val: 50000 },
+                      { label: '₹1L', val: 100000 },
+                      { label: '₹1.5L', val: 150000 },
+                      { label: '₹2.5L', val: 250000 },
+                      { label: '₹5L', val: 500000 },
+                    ].map((chip) => (
+                      <button
+                        key={chip.val}
+                        type="button"
+                        onClick={() => setMonthlyIncome(chip.val)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                          monthlyIncome === chip.val
+                            ? 'bg-brand-teal text-white shadow-sm'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {chip.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
+                {/* Existing Obligations Control */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">Existing Monthly Obligations (EMIs)</label>
-                    <span className="text-base sm:text-lg font-black text-amber-700 font-mono">{formatINR(existingEmis)}</span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
+                      Existing Monthly Obligations (Other EMIs)
+                    </label>
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-amber-600 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
+                      <span className="text-amber-700 font-black text-xs sm:text-sm">₹</span>
+                      <input
+                        type="number"
+                        min={0}
+                        max={1000000}
+                        step={2000}
+                        value={existingEmis === 0 ? '0' : existingEmis}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
+                          setExistingEmis(val);
+                        }}
+                        className="w-24 sm:w-28 bg-transparent text-amber-900 font-mono font-black text-xs sm:text-sm text-right outline-none"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
@@ -809,17 +1002,118 @@ export const CalculatorPage: React.FC = () => {
                   />
                   <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 0 (Debt Free)</span>
-                    <span className="font-bold text-brand-navy font-heading">{getVerbalAmount(existingEmis)}</span>
+                    <span className="font-bold text-amber-800 font-mono">{formatINR(existingEmis)}</span>
                     <span>₹ 3 Lakhs / mo</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {[
+                      { label: '₹0 (Nil)', val: 0 },
+                      { label: '₹15K', val: 15000 },
+                      { label: '₹30K', val: 30000 },
+                      { label: '₹50K', val: 50000 },
+                      { label: '₹1L', val: 100000 },
+                    ].map((chip) => (
+                      <button
+                        key={chip.val}
+                        type="button"
+                        onClick={() => setExistingEmis(chip.val)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                          existingEmis === chip.val
+                            ? 'bg-amber-600 text-white shadow-sm'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {chip.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-2xl border border-brand-border space-y-2">
+                {/* Additional Parameters: Tenure & Rate for Eligibility */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  {/* Desired Tenure */}
+                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                    <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
+                      <span>Loan Horizon:</span>
+                      <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
+                        <input
+                          type="number"
+                          min={1}
+                          max={30}
+                          value={eligibilityTenure}
+                          onChange={(e) => setEligibilityTenure(Math.min(30, Math.max(1, Number(e.target.value))))}
+                          className="w-8 font-mono font-bold text-xs text-right outline-none"
+                        />
+                        <span className="text-[11px] text-slate-500 font-mono">Yrs</span>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="5"
+                      max="30"
+                      step="1"
+                      value={eligibilityTenure}
+                      onChange={(e) => setEligibilityTenure(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                      <span>5y</span>
+                      <span>{eligTotalMonths} Months</span>
+                      <span>30y</span>
+                    </div>
+                  </div>
+
+                  {/* Benchmark Interest Rate */}
+                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                    <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
+                      <span>Indicative ROI:</span>
+                      <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
+                        <input
+                          type="number"
+                          min={6.0}
+                          max={16.0}
+                          step={0.05}
+                          value={eligibilityRate}
+                          onChange={(e) => setEligibilityRate(Number(e.target.value))}
+                          className="w-12 font-mono font-bold text-xs text-right outline-none"
+                        />
+                        <span className="text-[11px] text-slate-500 font-mono">%</span>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="6.5"
+                      max="14.0"
+                      step="0.05"
+                      value={eligibilityRate}
+                      onChange={(e) => setEligibilityRate(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                      <span>6.5%</span>
+                      <span>p.a.</span>
+                      <span>14.0%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* FOIR Benchmark Norm Selector */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-brand-border space-y-2.5">
                   <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
                     <span>Lender FOIR Benchmark Norm:</span>
-                    <span className="text-brand-teal font-mono">{foirPercentage}% of Net Income</span>
+                    <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
+                      <input
+                        type="number"
+                        min={35}
+                        max={75}
+                        value={foirPercentage}
+                        onChange={(e) => setFoirPercentage(Math.min(75, Math.max(30, Number(e.target.value))))}
+                        className="w-8 font-mono font-bold text-xs text-right outline-none"
+                      />
+                      <span className="text-[11px] text-brand-teal font-mono font-bold">% Net Income</span>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 pt-1 text-xs font-semibold font-heading">
+                  <div className="grid grid-cols-3 gap-2 text-xs font-semibold font-heading">
                     {[50, 55, 65].map((pct) => (
                       <button
                         key={pct}
@@ -850,7 +1144,7 @@ export const CalculatorPage: React.FC = () => {
                     {formatINR(maxLoanEligible)}
                   </div>
                   <span className="text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
-                    Governed by {foirPercentage}% banking FOIR threshold
+                    Sanction Ceiling @ {eligibilityRate}% ROI over {eligibilityTenure} Years
                   </span>
                 </div>
 
@@ -861,13 +1155,42 @@ export const CalculatorPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
                     <span className="text-slate-300 font-sans font-medium">Current Obligation Drain:</span>
-                    <span className="font-bold text-amber-400 font-mono">{formatINR(existingEmis)} / mo</span>
+                    <span className="font-bold text-amber-400 font-mono">
+                      {formatINR(existingEmis)} ({currentObligationRatio}% of Income)
+                    </span>
                   </div>
+                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.08] border border-white/20 backdrop-blur-md">
+                    <span className="text-white font-bold font-heading">Monthly Disposable Surplus:</span>
+                    <span className="font-black text-emerald-400 font-mono">{formatINR(monthlyDisposableSurplus)} / mo</span>
+                  </div>
+                </div>
+
+                {/* Risk and Clearance Rating */}
+                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
+                  <div className="flex items-center justify-between font-heading font-bold">
+                    <span className="text-slate-300">Underwriting Assessment:</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono ${
+                      currentObligationRatio <= 30
+                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                        : currentObligationRatio <= 50
+                        ? 'bg-sky-500/20 text-sky-300 border border-sky-400/40'
+                        : 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                    }`}>
+                      {currentObligationRatio <= 30 ? 'Low Risk • Prime Band' : currentObligationRatio <= 50 ? 'Moderate Leverage' : 'High Obligation Load'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed font-sans pt-1">
+                    {currentObligationRatio <= 30
+                      ? 'Excellent profile. Eligible for top-tier spreads and instant in-principle sanction from our 40+ panel lenders.'
+                      : currentObligationRatio <= 50
+                      ? 'Healthy borrowing cushion. Co-applicant addition or tenure extension can further expand your sanction ceiling.'
+                      : 'Existing obligations occupy substantial cash flow. Debt consolidation or partial loan pre-closure is advised.'}
+                  </p>
                 </div>
 
                 <div className="pt-2">
                   <Link
-                    to="/enquire"
+                    to={`/enquire?amount=${maxLoanEligible}&tenure=${eligibilityTenure}&rate=${eligibilityRate}&type=home`}
                     className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
                   >
                     <span>Request Full Multi-Bank Assessment</span>
@@ -894,17 +1217,34 @@ export const CalculatorPage: React.FC = () => {
                   </p>
                 </div>
 
+                {/* Plot Cost Control */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">Plot / Land Purchase Cost (A-Khata / DTCP / BDA)</label>
-                    <span className="text-base sm:text-lg font-black text-brand-teal font-mono">{formatINR(plotCost)}</span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
+                      Plot / Land Purchase Cost (A-Khata / DTCP / BDA)
+                    </label>
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                      <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
+                      <input
+                        type="number"
+                        min={500000}
+                        max={100000000}
+                        step={100000}
+                        value={plotCost === 0 ? '' : plotCost}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
+                          setPlotCost(val);
+                        }}
+                        className="w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
                     min="1500000"
                     max="50000000"
                     step="250000"
-                    value={plotCost}
+                    value={plotCost || 1500000}
                     onChange={(e) => setPlotCost(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
@@ -913,19 +1253,52 @@ export const CalculatorPage: React.FC = () => {
                     <span className="font-bold text-brand-navy font-heading">70% Max LTV: {formatINR(maxPlotLoan)}</span>
                     <span>₹ 5 Crores</span>
                   </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {[2500000, 4000000, 6000000, 10000000, 20000000].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setPlotCost(val)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                          plotCost === val
+                            ? 'bg-brand-teal text-white shadow-sm'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {getVerbalAmount(val)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
+                {/* Construction Cost Control */}
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">Estimated House Construction Budget</label>
-                    <span className="text-base sm:text-lg font-black text-brand-teal font-mono">{formatINR(constructionCost)}</span>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
+                      Estimated House Construction Budget
+                    </label>
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                      <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
+                      <input
+                        type="number"
+                        min={1000000}
+                        max={100000000}
+                        step={100000}
+                        value={constructionCost === 0 ? '' : constructionCost}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
+                          setConstructionCost(val);
+                        }}
+                        className="w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
                     min="2000000"
                     max="50000000"
                     step="250000"
-                    value={constructionCost}
+                    value={constructionCost || 2000000}
                     onChange={(e) => setConstructionCost(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
@@ -934,10 +1307,93 @@ export const CalculatorPage: React.FC = () => {
                     <span className="font-bold text-brand-navy font-heading">80% Max LTV: {formatINR(maxConstructionLoan)}</span>
                     <span>₹ 5 Crores</span>
                   </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {[3000000, 5000000, 7500000, 10000000, 20000000].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setConstructionCost(val)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                          constructionCost === val
+                            ? 'bg-brand-teal text-white shadow-sm'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {getVerbalAmount(val)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
+                {/* Additional Composite Controls: Tenure & ROI */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                    <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
+                      <span>Loan Tenure:</span>
+                      <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
+                        <input
+                          type="number"
+                          min={5}
+                          max={30}
+                          value={compositeTenure}
+                          onChange={(e) => setCompositeTenure(Math.min(30, Math.max(5, Number(e.target.value))))}
+                          className="w-8 font-mono font-bold text-xs text-right outline-none"
+                        />
+                        <span className="text-[11px] text-slate-500 font-mono">Yrs</span>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="5"
+                      max="30"
+                      step="1"
+                      value={compositeTenure}
+                      onChange={(e) => setCompositeTenure(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                      <span>5y</span>
+                      <span>{compositeMonths} Months</span>
+                      <span>30y</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                    <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
+                      <span>Indicative ROI:</span>
+                      <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
+                        <input
+                          type="number"
+                          min={6.5}
+                          max={16.0}
+                          step={0.05}
+                          value={compositeRate}
+                          onChange={(e) => setCompositeRate(Number(e.target.value))}
+                          className="w-12 font-mono font-bold text-xs text-right outline-none"
+                        />
+                        <span className="text-[11px] text-slate-500 font-mono">%</span>
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="6.5"
+                      max="14.0"
+                      step="0.05"
+                      value={compositeRate}
+                      onChange={(e) => setCompositeRate(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                      <span>6.5%</span>
+                      <span>p.a.</span>
+                      <span>14.0%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Construction Tranche Drawdown Slider */}
                 <div className="space-y-3 p-4 bg-slate-50 rounded-2xl border border-brand-border">
-                  <div className="flex justify-between items-center font-heading">
+                  <div className="flex items-center justify-between font-heading">
                     <label className="text-xs font-bold text-brand-navy">Simulated Construction Stage Drawdown:</label>
                     <span className="text-sm font-black text-brand-teal font-mono">{disbursedTranchePercent}% Disbursed</span>
                   </div>
@@ -950,12 +1406,27 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setDisbursedTranchePercent(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[10px] text-brand-slate font-sans font-medium">
-                    <span>0% (Plot Only)</span>
-                    <span>25% (Foundation)</span>
-                    <span>50% (Slab Complete)</span>
-                    <span>75% (Finishing)</span>
-                    <span>100% (Completed)</span>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-1">
+                    {[
+                      { label: '0% (Plot Only)', val: 0 },
+                      { label: '25% (Foundation)', val: 25 },
+                      { label: '50% (Slab Complete)', val: 50 },
+                      { label: '75% (Finishing)', val: 75 },
+                      { label: '100% (Completed)', val: 100 },
+                    ].map((step) => (
+                      <button
+                        key={step.val}
+                        type="button"
+                        onClick={() => setDisbursedTranchePercent(step.val)}
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold font-mono transition-all cursor-pointer text-center ${
+                          disbursedTranchePercent === step.val
+                            ? 'bg-brand-teal text-white shadow-xs'
+                            : 'bg-white border border-slate-200 text-slate-600 hover:border-brand-teal'
+                        }`}
+                      >
+                        {step.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -972,7 +1443,7 @@ export const CalculatorPage: React.FC = () => {
                     {formatINR(totalCompositeLoan)}
                   </div>
                   <span className="text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
-                    Total Outlay: {formatINR(totalProjectCost)} (Self: {formatINR(selfContribution)})
+                    Total Outlay: {formatINR(totalProjectCost)} (Self-Margin: {formatINR(selfContribution)})
                   </span>
                 </div>
 
@@ -988,19 +1459,26 @@ export const CalculatorPage: React.FC = () => {
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
                     <div>
                       <span className="text-amber-300 font-bold font-heading block">Active Pre-EMI (Interest Only):</span>
-                      <span className="text-[10px] text-slate-300 font-sans">At {disbursedTranchePercent}% construction stage</span>
+                      <span className="text-[10px] text-slate-300 font-sans">
+                        At {disbursedTranchePercent}% stage ({formatINR(activeDrawdown)} drawn)
+                      </span>
                     </div>
                     <span className="font-black text-amber-300 font-mono text-base">{formatINR(preEmiInterestOnly)} / mo</span>
                   </div>
                   <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.08] border border-white/20">
-                    <span className="text-white font-bold font-heading">Full EMI (Upon Handover):</span>
+                    <div>
+                      <span className="text-white font-bold font-heading block">Full Regular EMI (Post-Handover):</span>
+                      <span className="text-[10px] text-emerald-300 font-sans">
+                        Saves {formatINR(preEmiMonthlySavings)}/mo during construction
+                      </span>
+                    </div>
                     <span className="font-black text-emerald-400 font-mono text-base">{formatINR(fullCompositeEmi)} / mo</span>
                   </div>
                 </div>
 
                 <div className="pt-2">
                   <Link
-                    to="/enquire"
+                    to={`/enquire?amount=${totalCompositeLoan}&tenure=${compositeTenure}&rate=${compositeRate}&type=project`}
                     className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
                   >
                     <span>Consult on Composite Plot Loan</span>

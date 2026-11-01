@@ -30,6 +30,7 @@ import {
   TrendingUp,
   BarChart3,
   Wallet,
+  Percent,
 } from 'lucide-react';
 import { CHANNEL_PARTNERS, ChannelPartnersGroup } from '../../../constants/loanDocuments';
 import howItsWorkHero from '../../../assets/images/how-its-work.avif';
@@ -59,6 +60,7 @@ export const HowItWorksPage: React.FC = () => {
   const [simLoanType, setSimLoanType] = useState<'home' | 'lap' | 'car' | 'project'>('home');
   const [simAmountLakhs, setSimAmountLakhs] = useState<number>(65);
   const [simTenureYears, setSimTenureYears] = useState<number>(20);
+  const [simCustomRate, setSimCustomRate] = useState<number>(8.35);
 
   // Animated counters on mount
   const [counterValues, setCounterValues] = useState({
@@ -151,12 +153,24 @@ export const HowItWorksPage: React.FC = () => {
     }
   };
 
-  const currentRate = getRateForType(simLoanType);
-  const p = simAmountLakhs * 100000;
-  const r = currentRate / 12 / 100;
-  const n = simTenureYears * 12;
-  const estimatedEmi = Math.round((p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
-  const estimatedFeeSaved = Math.round(p * 0.005); // 0.50% fee waiver benefit
+  const handleSelectFacility = (type: 'home' | 'lap' | 'car' | 'project') => {
+    setSimLoanType(type);
+    setSimCustomRate(getRateForType(type));
+  };
+
+  const currentRate = simCustomRate > 0 ? simCustomRate : getRateForType(simLoanType);
+  const p = Math.max(0, (simAmountLakhs || 0) * 100000);
+  const r = (currentRate / 12) / 100;
+  const n = Math.max(1, (simTenureYears || 1) * 12);
+  const estimatedEmi =
+    p > 0 && r > 0 && n > 0
+      ? Math.round((p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1))
+      : 0;
+  const estimatedFeeSaved = Math.round(p * 0.005); // 0.50% institutional fee waiver
+  const totalRepayment = estimatedEmi * n;
+  const totalInterest = Math.max(0, totalRepayment - p);
+  const principalPercent = totalRepayment > 0 ? Math.round((p / totalRepayment) * 100) : 100;
+  const interestPercent = totalRepayment > 0 ? 100 - principalPercent : 0;
 
 
   const advisoryPhases = [
@@ -538,7 +552,7 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Loan Archetype Switcher Pills */}
-                <div className="relative z-10 pt-3">
+                <div className="relative z-10 pt-2">
                   <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider block mb-2">
                     Select Credit Facility
                   </span>
@@ -556,7 +570,7 @@ export const HowItWorksPage: React.FC = () => {
                         <button
                           key={facility.id}
                           type="button"
-                          onClick={() => setSimLoanType(facility.id)}
+                          onClick={() => handleSelectFacility(facility.id)}
                           className={`py-2 px-1 rounded-lg text-center transition-all cursor-pointer font-heading ${
                             isSel
                               ? 'bg-gradient-to-r from-brand-teal to-teal-700 text-white font-bold shadow-sm'
@@ -571,102 +585,207 @@ export const HowItWorksPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Interactive Sliders: Quantum & Tenure */}
-                <div className="relative z-10 space-y-4 pt-3">
+                {/* Interactive Dual-Control Sliders & Inputs */}
+                <div className="relative z-10 space-y-4 pt-2">
+                  {/* Loan Quantum Control */}
                   <div>
                     <div className="flex items-center justify-between text-xs mb-1.5">
                       <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
                         <Wallet className="w-3.5 h-3.5 text-teal-400" /> Loan Quantum Required:
                       </span>
-                      <span className="text-sm font-extrabold text-teal-300 font-mono tabular-nums">
-                        ₹{simAmountLakhs} Lakhs
-                      </span>
+                      <div className="flex items-center gap-1 bg-black/40 border border-white/20 rounded-lg px-2 py-0.5 focus-within:border-teal-400 transition-colors">
+                        <span className="text-teal-400 font-bold text-xs">₹</span>
+                        <input
+                          type="number"
+                          min={5}
+                          max={1000}
+                          step={1}
+                          value={simAmountLakhs === 0 ? '' : simAmountLakhs}
+                          onChange={(e) => {
+                            const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
+                            setSimAmountLakhs(val);
+                          }}
+                          className="w-14 bg-transparent text-white font-mono font-bold text-xs sm:text-sm text-right outline-none"
+                        />
+                        <span className="text-[11px] text-teal-300 font-mono font-semibold">Lakhs</span>
+                      </div>
                     </div>
                     <input
                       type="range"
-                      min={15}
-                      max={300}
+                      min={10}
+                      max={500}
                       step={5}
-                      value={simAmountLakhs}
+                      value={simAmountLakhs || 10}
                       onChange={(e) => setSimAmountLakhs(Number(e.target.value))}
                       className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
                     />
-                    <div className="flex justify-between text-[10px] text-slate-400 pt-1 font-mono font-semibold">
-                      <span>₹15 Lakhs</span>
-                      <span>₹1.50 Crore</span>
-                      <span>₹3.00 Crore</span>
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 font-mono">
+                      <span>₹10L</span>
+                      <div className="flex gap-1">
+                        {[25, 50, 75, 100, 200].map((amt) => (
+                          <button
+                            key={amt}
+                            type="button"
+                            onClick={() => setSimAmountLakhs(amt)}
+                            className={`px-1.5 py-0.5 rounded text-[9px] font-mono transition-colors ${
+                              simAmountLakhs === amt
+                                ? 'bg-teal-500/30 text-teal-200 font-bold border border-teal-400/40'
+                                : 'bg-white/5 text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            ₹{amt >= 100 ? `${amt / 100}Cr` : `${amt}L`}
+                          </button>
+                        ))}
+                      </div>
+                      <span>₹5Cr</span>
                     </div>
                   </div>
 
-                  <div>
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-sky-400" /> Repayment Tenure:
-                      </span>
-                      <span className="text-sm font-extrabold text-sky-300 font-mono tabular-nums">
-                        {simTenureYears} Years
-                      </span>
+                  {/* Repayment Tenure & Interest Rate Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Tenure */}
+                    <div>
+                      <div className="flex items-center justify-between text-xs mb-1.5">
+                        <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-sky-400" /> Tenure:
+                        </span>
+                        <div className="flex items-center gap-1 bg-black/40 border border-white/20 rounded-lg px-2 py-0.5 focus-within:border-sky-400 transition-colors">
+                          <input
+                            type="number"
+                            min={1}
+                            max={30}
+                            step={1}
+                            value={simTenureYears === 0 ? '' : simTenureYears}
+                            onChange={(e) => {
+                              const val = e.target.value === '' ? 0 : Math.min(30, Math.max(1, Number(e.target.value)));
+                              setSimTenureYears(val);
+                            }}
+                            className="w-9 bg-transparent text-white font-mono font-bold text-xs sm:text-sm text-right outline-none"
+                          />
+                          <span className="text-[11px] text-sky-300 font-mono font-semibold">Yrs</span>
+                        </div>
+                      </div>
+                      <input
+                        type="range"
+                        min={1}
+                        max={30}
+                        step={1}
+                        value={simTenureYears || 1}
+                        onChange={(e) => setSimTenureYears(Number(e.target.value))}
+                        className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
+                      />
+                      <div className="flex justify-between text-[10px] text-slate-400 pt-1 font-mono">
+                        <span>1y</span>
+                        <span>{n} Mos</span>
+                        <span>30y</span>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      {[10, 15, 20, 25, 30].map((yr) => (
-                        <button
-                          key={yr}
-                          type="button"
-                          onClick={() => setSimTenureYears(yr)}
-                          className={`flex-1 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer ${
-                            simTenureYears === yr
-                              ? 'bg-sky-500 text-white shadow-sm'
-                              : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10'
-                          }`}
-                        >
-                          {yr}y
-                        </button>
-                      ))}
+
+                    {/* Interest Rate */}
+                    <div>
+                      <div className="flex items-center justify-between text-xs mb-1.5">
+                        <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
+                          <Percent className="w-3.5 h-3.5 text-emerald-400" /> Interest:
+                        </span>
+                        <div className="flex items-center gap-1 bg-black/40 border border-white/20 rounded-lg px-2 py-0.5 focus-within:border-emerald-400 transition-colors">
+                          <input
+                            type="number"
+                            min={5.0}
+                            max={20.0}
+                            step={0.05}
+                            value={simCustomRate === 0 ? '' : simCustomRate}
+                            onChange={(e) => {
+                              const val = e.target.value === '' ? 0 : Number(e.target.value);
+                              setSimCustomRate(val);
+                            }}
+                            className="w-12 bg-transparent text-white font-mono font-bold text-xs sm:text-sm text-right outline-none"
+                          />
+                          <span className="text-[11px] text-emerald-300 font-mono font-semibold">%</span>
+                        </div>
+                      </div>
+                      <input
+                        type="range"
+                        min={6.5}
+                        max={16.0}
+                        step={0.05}
+                        value={simCustomRate || 8.35}
+                        onChange={(e) => setSimCustomRate(Number(e.target.value))}
+                        className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                      />
+                      <div className="flex justify-between text-[10px] text-slate-400 pt-1 font-mono">
+                        <span>6.5%</span>
+                        <span>p.a.</span>
+                        <span>16%</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Dynamic Computation Result Cards */}
-                <div className="relative z-10 grid grid-cols-3 gap-2 pt-3">
-                  <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
-                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading tracking-wider block">
-                      Estimated EMI
-                    </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono tabular-nums block mt-0.5">
-                      ₹{estimatedEmi.toLocaleString('en-IN')}
-                    </span>
-                    <span className="text-[9px] text-teal-300 font-semibold font-mono block">
-                      @{currentRate}% Benchmark
-                    </span>
+                {/* Principal vs Interest Ratio Bar */}
+                <div className="relative z-10 pt-1">
+                  <div className="flex justify-between text-[10px] font-mono font-bold mb-1">
+                    <span className="text-emerald-400">Principal: {principalPercent}%</span>
+                    <span className="text-sky-300">Interest: {interestPercent}%</span>
                   </div>
+                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden flex border border-white/10">
+                    <div style={{ width: `${principalPercent}%` }} className="bg-emerald-500 h-full transition-all duration-300" />
+                    <div style={{ width: `${interestPercent}%` }} className="bg-sky-400 h-full transition-all duration-300" />
+                  </div>
+                </div>
 
+                {/* Dynamic Computation Result Cards */}
+                <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
                   <div className="p-2.5 rounded-xl bg-teal-500/15 border border-teal-400/30 text-center">
-                    <span className="text-[10px] text-teal-200 uppercase font-bold font-heading tracking-wider block">
-                      Fee Waiver Saved
+                    <span className="text-[9px] text-teal-200 uppercase font-bold font-heading tracking-wider block">
+                      Monthly EMI
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-teal-100 font-mono tabular-nums block mt-0.5">
-                      ₹{estimatedFeeSaved.toLocaleString('en-IN')}
+                      ₹{estimatedEmi.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[9px] text-teal-200/90 font-medium font-sans block">
-                      Direct Zonal Benefit
+                    <span className="text-[9px] text-teal-300/80 font-mono block">
+                      @{currentRate}% p.a.
                     </span>
                   </div>
 
                   <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
-                    <span className="text-[10px] text-slate-300 uppercase font-bold font-heading tracking-wider block">
-                      Turnaround
+                    <span className="text-[9px] text-slate-300 uppercase font-bold font-heading tracking-wider block">
+                      Total Interest
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-white font-mono tabular-nums block mt-0.5">
-                      8–12 Days
+                      ₹{totalInterest.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[9px] text-emerald-400 font-semibold font-sans block">
-                      35d Faster vs Branch
+                    <span className="text-[9px] text-sky-300 font-mono block">
+                      Over {simTenureYears}y
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white/[0.06] border border-white/10 text-center">
+                    <span className="text-[9px] text-slate-300 uppercase font-bold font-heading tracking-wider block">
+                      Total Payable
+                    </span>
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-mono tabular-nums block mt-0.5">
+                      ₹{totalRepayment.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-mono block">
+                      Principal + Int
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-center">
+                    <span className="text-[9px] text-emerald-200 uppercase font-bold font-heading tracking-wider block">
+                      Fee Saved
+                    </span>
+                    <span className="text-xs sm:text-sm font-extrabold text-emerald-100 font-mono tabular-nums block mt-0.5">
+                      ₹{estimatedFeeSaved.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[9px] text-emerald-300 font-sans block">
+                      0.50% Waiver
                     </span>
                   </div>
                 </div>
 
                 {/* Interactive 4-Phase Stepper Inside Console */}
-                <div className="relative z-10 pt-3 border-t border-white/10 mt-3">
+                <div className="relative z-10 pt-2 border-t border-white/10 mt-2">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider">
                       Interactive Stage Synchronization
@@ -709,9 +828,9 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Console Fast-Track Action Button */}
-                <div className="relative z-10 pt-3">
+                <div className="relative z-10 pt-2">
                   <Link
-                    to="/enquire"
+                    to={`/enquire?amount=${simAmountLakhs * 100000}&tenure=${simTenureYears}&rate=${currentRate}&type=${simLoanType}`}
                     className="w-full py-3.5 px-4 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-teal-950/40 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer font-heading tracking-wide"
                   >
                     <Zap className="w-4 h-4 text-white fill-white" />
