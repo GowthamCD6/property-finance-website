@@ -12,6 +12,7 @@ import {
   CreateAdminPayload,
   UpdateAdminPayload,
   EnquiredCustomer,
+  Testimonial,
 } from '../types';
 
 const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
@@ -214,6 +215,53 @@ export async function getCustomerEnquiriesApi(): Promise<Enquiry[]> {
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to load enquiries');
   return json.data;
+}
+
+export async function submitCustomerReviewApi(data: {
+  rating: number;
+  review: string;
+  loanType?: string;
+  amount?: string;
+  location?: string;
+}): Promise<Testimonial> {
+  const token = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}/auth/customer/review`, {
+    method: 'POST',
+    headers,
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to submit feedback');
+  return json.data;
+}
+
+export async function getCustomerReviewApi(): Promise<Testimonial | null> {
+  const token = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}/auth/customer/review`, { headers, credentials: 'include' });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to load feedback');
+  return json.data;
+}
+
+export async function deleteCustomerReviewApi(): Promise<void> {
+  const token = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}/auth/customer/review`, {
+    method: 'DELETE',
+    headers,
+    credentials: 'include',
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Failed to delete review');
 }
 
 export async function logoutUserApi(): Promise<void> {

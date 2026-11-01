@@ -7,6 +7,9 @@ import {
   googleUserLogin,
   getCustomerMe,
   getCustomerEnquiries,
+  submitCustomerReview,
+  getCustomerReview,
+  deleteCustomerReview,
 } from '../controllers/auth.controller';
 import { loginRateLimiter } from '../middleware/rateLimiter';
 import { requireAdminAuth, requireCustomerAuth } from '../middleware/auth';
@@ -23,5 +26,8 @@ router.get('/me', requireAdminAuth, getMe);
 router.post('/google/user', googleUserLogin);
 router.get('/customer/me', requireCustomerAuth, getCustomerMe);
 router.get('/customer/enquiries', requireCustomerAuth, getCustomerEnquiries);
+router.post('/customer/review', requireCustomerAuth, submitCustomerReview);
+router.get('/customer/review', requireCustomerAuth, getCustomerReview);
+router.delete('/customer/review', requireCustomerAuth, deleteCustomerReview);
 
 export default router;

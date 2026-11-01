@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FileText,
@@ -21,11 +21,24 @@ import {
   Copy,
   Check,
   Sparkles,
+  Star,
+  MessageSquareQuote,
+  Edit2,
+  Trash2,
+  Send,
+  Quote,
+  RefreshCw,
+  ThumbsUp,
 } from 'lucide-react';
 import { useCustomerAuth } from '../../../context/CustomerAuthContext';
 import { GoogleIcon } from '../../../components/common/GoogleIcon';
 import { triggerGoogleOAuth } from '../../../utils/googleAuth';
-import { Enquiry } from '../../../types';
+import { Enquiry, Testimonial } from '../../../types';
+import {
+  submitCustomerReviewApi,
+  getCustomerReviewApi,
+  deleteCustomerReviewApi,
+} from '../../../services/api';
 
 export const MyEnquiriesPage: React.FC = () => {
   const { customer, isAuthenticated, isLoading, enquiries, loginWithGoogle, logout, refreshEnquiries } = useCustomerAuth();
@@ -33,18 +46,62 @@ export const MyEnquiriesPage: React.FC = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
+  // Tab & Review Feedback State
+  const [activeTab, setActiveTab] = useState<'enquiries' | 'review'>('enquiries');
+  const [customerReview, setCustomerReview] = useState<Testimonial | null>(null);
+  const [isReviewLoading, setIsReviewLoading] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [isDeletingReview, setIsDeletingReview] = useState(false);
+  const [isEditingReview, setIsEditingReview] = useState(false);
+  const [reviewSuccessMsg, setReviewSuccessMsg] = useState<string | null>(null);
+  const [reviewErrorMsg, setReviewErrorMsg] = useState<string | null>(null);
+
+  // Review Form Fields
+  const [reviewRating, setReviewRating] = useState<number>(5);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [reviewLoanType, setReviewLoanType] = useState<string>('Home Construction Loan');
+  const [reviewAmount, setReviewAmount] = useState<string>('₹50 Lakhs');
+  const [reviewLocation, setReviewLocation] = useState<string>('Tirupur, Tamil Nadu');
+  const [reviewText, setReviewText] = useState<string>('');
+
   const handleCopyLink = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedLink(id);
     setTimeout(() => setCopiedLink(null), 2500);
   };
 
+  const loadCustomerReview = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setIsReviewLoading(true);
+    try {
+      const rev = await getCustomerReviewApi();
+      setCustomerReview(rev);
+      if (rev) {
+        setReviewRating(rev.rating || 5);
+        setReviewLoanType(rev.loanType || 'Home Construction Loan');
+        setReviewAmount(rev.amount || '₹50 Lakhs');
+        setReviewLocation(rev.location || 'Tirupur, Tamil Nadu');
+        setReviewText(rev.review || '');
+      } else if (enquiries.length > 0) {
+        const first = enquiries[0];
+        setReviewLoanType(first.loanType || 'Home Construction Loan');
+        setReviewAmount(formatAmountINR(first.loanAmount));
+        setReviewLocation(first.cityState || first.propertyLocation || 'Tirupur, Tamil Nadu');
+      }
+    } catch (err) {
+      console.warn('Failed to load customer review', err);
+    } finally {
+      setIsReviewLoading(false);
+    }
+  }, [isAuthenticated, enquiries]);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (isAuthenticated) {
       refreshEnquiries();
+      loadCustomerReview();
     }
-  }, [isAuthenticated, refreshEnquiries]);
+  }, [isAuthenticated, refreshEnquiries, loadCustomerReview]);
 
   const triggerGoogleLogin = async () => {
     setIsSigningIn(true);
@@ -65,6 +122,72 @@ export const MyEnquiriesPage: React.FC = () => {
       currency: 'INR',
       maximumFractionDigits: 0,
     }).format(num);
+  };
+
+  const getRatingLabel = (stars: number) => {
+    switch (stars) {
+      case 5:
+        return 'Outstanding — Lowest Interest Rates & Fast Bank Sanction';
+      case 4:
+        return 'Very Good — Professional Advisory & Prompt Communication';
+      case 3:
+        return 'Satisfactory — Met Expectations';
+      case 2:
+        return 'Fair — Slower Turnaround or Inconveniences';
+      case 1:
+        return 'Needs Improvement';
+      default:
+        return 'Rate your overall experience';
+    }
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReviewErrorMsg(null);
+    setReviewSuccessMsg(null);
+
+    if (!reviewText.trim() || reviewText.trim().length < 5) {
+      setReviewErrorMsg('Please share at least a few words describing your experience (minimum 5 characters).');
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    try {
+      const saved = await submitCustomerReviewApi({
+        rating: reviewRating,
+        review: reviewText.trim(),
+        loanType: reviewLoanType.trim() || 'Property / Home Loan',
+        amount: reviewAmount.trim() || '₹50 Lakhs',
+        location: reviewLocation.trim() || 'Tirupur, Tamil Nadu',
+      });
+      setCustomerReview(saved);
+      setIsEditingReview(false);
+      setReviewSuccessMsg('🎉 Your review has been submitted and published live to the Prime Associates website!');
+      setTimeout(() => setReviewSuccessMsg(null), 8000);
+    } catch (err: any) {
+      setReviewErrorMsg(err.message || 'Failed to submit review.');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
+  const handleDeleteReview = async () => {
+    if (!window.confirm('Are you sure you want to delete your feedback and review?')) {
+      return;
+    }
+    setIsDeletingReview(true);
+    try {
+      await deleteCustomerReviewApi();
+      setCustomerReview(null);
+      setReviewText('');
+      setIsEditingReview(false);
+      setReviewSuccessMsg('Your review has been successfully removed.');
+      setTimeout(() => setReviewSuccessMsg(null), 5000);
+    } catch (err: any) {
+      setReviewErrorMsg(err.message || 'Failed to delete review.');
+    } finally {
+      setIsDeletingReview(false);
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -229,7 +352,18 @@ export const MyEnquiriesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('review');
+                if (!customerReview) setIsEditingReview(true);
+              }}
+              className="px-4 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/90 text-xs font-bold font-heading rounded-xl shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+              <span>{customerReview ? 'My Review' : 'Rate Experience'}</span>
+            </button>
             <Link
               to="/enquire"
               className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold font-heading rounded-xl shadow-xs transition-colors flex items-center gap-2"
@@ -248,14 +382,73 @@ export const MyEnquiriesPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Enquiries Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold font-heading text-brand-navy">Your Loan Enquiries &amp; Consultations</h2>
-            <span className="text-xs font-semibold text-brand-slate font-sans">
-              {enquiries.length} {enquiries.length === 1 ? 'Record' : 'Records'} Found
-            </span>
+        {/* Modern Portal Tab Navigation */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
+          <div className="flex items-center gap-2 p-1.5 bg-slate-100/90 rounded-2xl border border-slate-200/80">
+            <button
+              type="button"
+              onClick={() => setActiveTab('enquiries')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all flex items-center gap-2 cursor-pointer ${
+                activeTab === 'enquiries'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <FileText className="w-4 h-4 text-brand-teal" />
+              <span>Loan Enquiries &amp; Consultations</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold">
+                {enquiries.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('review')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all flex items-center gap-2 cursor-pointer ${
+                activeTab === 'review'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+              <span>Client Review &amp; Feedback</span>
+              {customerReview ? (
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Live
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold">
+                  Share Review
+                </span>
+              )}
+            </button>
           </div>
+
+          {activeTab === 'enquiries' && (
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('review');
+                if (!customerReview) setIsEditingReview(true);
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-900 border border-slate-200 hover:border-amber-300 rounded-xl text-xs font-bold font-heading transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
+            >
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+              <span>{customerReview ? 'View / Edit My Feedback' : 'Rate Your Experience'}</span>
+            </button>
+          )}
+        </div>
+
+        {/* Tab 1: ENQUIRIES CONTENT */}
+        {activeTab === 'enquiries' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold font-heading text-brand-navy">Your Loan Enquiries &amp; Consultations</h2>
+              <span className="text-xs font-semibold text-brand-slate font-sans">
+                {enquiries.length} {enquiries.length === 1 ? 'Record' : 'Records'} Found
+              </span>
+            </div>
 
           {enquiries.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/90 shadow-xs space-y-4">
@@ -631,18 +824,35 @@ export const MyEnquiriesPage: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Direct Contact / Follow-up Action Bar */}
+                    {/* Direct Contact & Review Action Bar */}
                     <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                      <a
-                        href={`https://wa.me/919655566613?text=${encodeURIComponent(
-                          `Hello Prime Associates, this is ${customer.name}. I am following up on my loan enquiry ${enq.referenceNumber} for ${enq.loanType} (${effectiveMode === 'video' ? 'Google Meet' : effectiveMode === 'in_person' ? 'Offline Doorstep Meeting' : 'Phone Call'}).`
-                        )}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs"
-                      >
-                        <span>💬 Chat with Advisor on WhatsApp</span>
-                      </a>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <a
+                          href={`https://wa.me/919655566613?text=${encodeURIComponent(
+                            `Hello Prime Associates, this is ${customer.name}. I am following up on my loan enquiry ${enq.referenceNumber} for ${enq.loanType} (${effectiveMode === 'video' ? 'Google Meet' : effectiveMode === 'in_person' ? 'Offline Doorstep Meeting' : 'Phone Call'}).`
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs"
+                        >
+                          <span>💬 Chat on WhatsApp</span>
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setReviewLoanType(enq.loanType || 'Home Construction Loan');
+                            setReviewAmount(formatAmountINR(enq.loanAmount));
+                            setReviewLocation(enq.cityState || enq.propertyLocation || 'Tirupur, Tamil Nadu');
+                            setActiveTab('review');
+                            if (!customerReview) setIsEditingReview(true);
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/90 font-bold text-xs font-heading rounded-xl transition-colors shadow-2xs cursor-pointer"
+                        >
+                          <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                          <span>{customerReview ? 'Review Loan' : 'Rate This Experience'}</span>
+                        </button>
+                      </div>
 
                       <span className="text-[11px] text-slate-400">
                         Desk Contact: +91 96555 66613 • primeassociates2008@gmail.com
@@ -654,10 +864,433 @@ export const MyEnquiriesPage: React.FC = () => {
             </div>
           )}
         </div>
+      )}
 
-      </div>
+      {/* Tab 2: CLIENT REVIEW & FEEDBACK CONTENT */}
+      {activeTab === 'review' && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Header Banner */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-[0_4px_24px_-2px_rgba(24,50,71,0.06)] space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100/80 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
+                  <MessageSquareQuote className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-black font-heading text-brand-navy">Client Review &amp; Advisory Feedback</h2>
+                    {customerReview && (
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-bold font-heading bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Live on Website
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-brand-slate font-sans mt-0.5">
+                    Share your experience with Prime Associates — from advisor consultation and interest rate negotiation to bank sanction.
+                  </p>
+                </div>
+              </div>
+
+              {customerReview && !isEditingReview && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditingReview(true);
+                    setReviewRating(customerReview.rating || 5);
+                    setReviewLoanType(customerReview.loanType || 'Home Construction Loan');
+                    setReviewAmount(customerReview.amount || '₹50 Lakhs');
+                    setReviewLocation(customerReview.location || 'Tirupur, Tamil Nadu');
+                    setReviewText(customerReview.review || '');
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold font-heading rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                  <span>Edit My Review</span>
+                </button>
+              )}
+            </div>
+
+            {/* Alert Feedback Messages */}
+            {reviewSuccessMsg && (
+              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs flex items-center gap-2.5 font-sans animate-in fade-in shadow-2xs">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <span className="font-semibold">{reviewSuccessMsg}</span>
+              </div>
+            )}
+
+            {reviewErrorMsg && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-800 text-xs flex items-center gap-2.5 font-sans animate-in fade-in shadow-2xs">
+                <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+                <span className="font-semibold">{reviewErrorMsg}</span>
+              </div>
+            )}
+
+            {/* VIEW 1: Published Live Review Card */}
+            {customerReview && !isEditingReview ? (
+              <div className="p-6 sm:p-8 bg-gradient-to-br from-amber-50/50 via-white to-teal-50/40 rounded-2xl border border-amber-200/90 shadow-xs space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-1.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-5 h-5 ${
+                            i < (customerReview.rating || 5)
+                              ? 'text-amber-400 fill-amber-400'
+                              : 'text-slate-200'
+                          }`}
+                        />
+                      ))}
+                      <span className="ml-2 text-xs font-bold font-heading text-amber-900 bg-amber-100/90 px-2.5 py-0.5 rounded-lg border border-amber-200/70">
+                        {customerReview.rating || 5}.0 / 5.0 Rating
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-slate-800 font-heading">
+                      {getRatingLabel(customerReview.rating || 5)}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 rounded-full text-[11px] font-bold text-slate-700 shadow-2xs font-heading">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      Verified Borrower Review
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 rounded-full text-[11px] font-bold text-emerald-800 shadow-2xs font-heading">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      Active on Homepage Marquee
+                    </span>
+                  </div>
+                </div>
+
+                {/* Loan Metadata Badges */}
+                <div className="flex flex-wrap items-center gap-2.5 text-xs">
+                  <span className="px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 font-medium text-slate-700 font-sans shadow-2xs flex items-center gap-1.5">
+                    <span className="text-slate-400 font-heading font-bold">Loan:</span>
+                    <strong className="text-brand-navy font-heading">{customerReview.loanType}</strong>
+                  </span>
+                  <span className="px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 font-medium text-slate-700 font-sans shadow-2xs flex items-center gap-1.5">
+                    <span className="text-slate-400 font-heading font-bold">Sanctioned:</span>
+                    <strong className="text-brand-teal font-heading">{customerReview.amount}</strong>
+                  </span>
+                  <span className="px-3 py-1.5 rounded-xl bg-white border border-slate-200/90 font-medium text-slate-700 font-sans shadow-2xs flex items-center gap-1.5">
+                    <span className="text-slate-400 font-heading font-bold">Location:</span>
+                    <strong className="text-slate-800 font-heading">{customerReview.location}</strong>
+                  </span>
+                </div>
+
+                {/* Quote block */}
+                <div className="relative p-5 sm:p-7 bg-white/95 rounded-2xl border border-amber-200/90 shadow-2xs">
+                  <Quote className="w-7 h-7 text-amber-400 absolute -top-3.5 left-4 bg-white rounded-full p-1 border border-amber-200/90 shadow-xs" />
+                  <p className="text-sm sm:text-base text-slate-800 italic leading-relaxed font-sans font-medium pt-1">
+                    "{customerReview.review}"
+                  </p>
+                </div>
+
+                {/* Author profile & actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-slate-200/70">
+                  <div className="flex items-center gap-3">
+                    {customerReview.avatarUrl ? (
+                      <img
+                        src={customerReview.avatarUrl}
+                        alt={customerReview.name}
+                        className="w-10 h-10 rounded-xl object-cover border border-slate-200"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-xl bg-brand-teal text-white font-black text-sm flex items-center justify-center font-heading">
+                        {customerReview.name.charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-xs font-black font-heading text-brand-navy">{customerReview.name}</h4>
+                        <span className="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-heading font-bold">
+                          Verified Client
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-400 font-sans block mt-0.5">
+                        {customerReview.createdAt
+                          ? `Published on ${new Date(customerReview.createdAt).toLocaleDateString('en-IN', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                            })}`
+                          : 'Published on Prime Associates'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEditingReview(true);
+                        setReviewRating(customerReview.rating || 5);
+                        setReviewLoanType(customerReview.loanType || 'Home Construction Loan');
+                        setReviewAmount(customerReview.amount || '₹50 Lakhs');
+                        setReviewLocation(customerReview.location || 'Tirupur, Tamil Nadu');
+                        setReviewText(customerReview.review || '');
+                      }}
+                      className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Edit Review</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDeleteReview}
+                      disabled={isDeletingReview}
+                      className="px-4 py-2 bg-white hover:bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
+                    >
+                      {isDeletingReview ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3.5 h-3.5" />
+                      )}
+                      <span>Delete</span>
+                    </button>
+
+                    <Link
+                      to="/"
+                      target="_blank"
+                      className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                    >
+                      <span>View on Homepage</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* VIEW 2: Interactive Review & Feedback Submission Form */
+              <form onSubmit={handleSubmitReview} className="space-y-6">
+                <div className="p-6 sm:p-7 bg-slate-50/70 rounded-2xl border border-slate-200/90 space-y-6">
+                  {/* 1. Rating Selector */}
+                  <div className="space-y-2">
+                    <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-700 font-heading">
+                      1. Overall Experience Rating <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex items-center gap-1 p-2 bg-white rounded-xl border border-slate-200 shadow-2xs">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setReviewRating(star)}
+                            onMouseEnter={() => setHoverRating(star)}
+                            onMouseLeave={() => setHoverRating(0)}
+                            className="p-1 hover:scale-125 transition-transform cursor-pointer focus:outline-hidden"
+                          >
+                            <Star
+                              className={`w-8 h-8 sm:w-9 sm:h-9 ${
+                                star <= (hoverRating || reviewRating)
+                                  ? 'text-amber-400 fill-amber-400 filter drop-shadow-[0_2px_4px_rgba(251,191,36,0.4)]'
+                                  : 'text-slate-200'
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+
+                      <span className="text-xs font-bold text-slate-700 font-heading px-3 py-1.5 bg-white rounded-xl border border-slate-200 shadow-2xs">
+                        {getRatingLabel(hoverRating || reviewRating)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 2. Metadata Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700 font-heading">
+                        Loan Category / Service
+                      </label>
+                      <select
+                        value={reviewLoanType}
+                        onChange={(e) => setReviewLoanType(e.target.value)}
+                        className="w-full h-11 px-3.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-brand-teal focus:border-brand-teal shadow-2xs"
+                      >
+                        <option value="Home Construction Loan">Home Construction Loan</option>
+                        <option value="Home Purchase Loan">Home Purchase Loan</option>
+                        <option value="Mortgage Loan (LAP)">Mortgage Loan (LAP)</option>
+                        <option value="Plot Purchase + Construction">Plot Purchase + Construction</option>
+                        <option value="Commercial Property Loan">Commercial Property Loan</option>
+                        <option value="Low-Interest Bank Takeover">Low-Interest Bank Takeover</option>
+                        <option value="Vehicle Loan">Vehicle Loan</option>
+                        <option value="Loan Advisory &amp; Syndication">Loan Advisory &amp; Syndication</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700 font-heading">
+                        Loan Sanction Amount
+                      </label>
+                      <input
+                        type="text"
+                        value={reviewAmount}
+                        onChange={(e) => setReviewAmount(e.target.value)}
+                        placeholder="e.g. ₹50 Lakhs"
+                        className="w-full h-11 px-3.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-brand-teal focus:border-brand-teal shadow-2xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700 font-heading">
+                        City / District
+                      </label>
+                      <input
+                        type="text"
+                        value={reviewLocation}
+                        onChange={(e) => setReviewLocation(e.target.value)}
+                        placeholder="e.g. Tirupur, Tamil Nadu"
+                        className="w-full h-11 px-3.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-brand-teal focus:border-brand-teal shadow-2xs"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 3. Review Feedback Textarea */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-700 font-heading">
+                        Your Detailed Testimonial &amp; Feedback <span className="text-red-500">*</span>
+                      </label>
+                      <span className="text-[11px] text-slate-400 font-mono">
+                        {reviewText.length} characters (min 5)
+                      </span>
+                    </div>
+
+                    <textarea
+                      rows={4}
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value)}
+                      placeholder="Tell other prospective borrowers about your experience with Prime Associates — our advisor guidance, interest rates obtained (e.g. 8.40%), document verification, subsidy assistance, or turnaround speed..."
+                      className="w-full p-4 bg-white border border-slate-300 rounded-2xl text-xs text-slate-800 leading-relaxed focus:outline-brand-teal focus:border-brand-teal shadow-2xs font-sans"
+                    />
+
+                    {/* Prompt suggestion chips */}
+                    <div className="space-y-1.5 pt-1">
+                      <span className="text-[11px] font-bold text-slate-500 font-heading block">
+                        💡 Need inspiration? Click to add key highlights:
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          '⚡ Quick 24-hour turnaround and loan sanction',
+                          '💰 Lowest 8.40% interest rate with SBI/Canara Bank',
+                          '📜 Comprehensive land deed and parent document verification',
+                          '🏛️ Step-by-step government interest subsidy guidance',
+                          '🤝 Direct advisor consultation with zero hidden broker fees',
+                        ].map((chip) => (
+                          <button
+                            key={chip}
+                            type="button"
+                            onClick={() => {
+                              const clean = chip.replace(/^[^\w\s]+/, '').trim();
+                              setReviewText((prev) =>
+                                prev ? `${prev.trim()} ${clean}.` : `${clean}.`
+                              );
+                            }}
+                            className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg text-[11px] font-medium font-sans transition-colors cursor-pointer"
+                          >
+                            {chip}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. Verification Identity Box */}
+                  <div className="p-3.5 bg-white rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-3">
+                      {customer.picture ? (
+                        <img
+                          src={customer.picture}
+                          alt={customer.name}
+                          className="w-9 h-9 rounded-xl object-cover border border-slate-200"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-xl bg-brand-teal text-white font-bold flex items-center justify-center font-heading">
+                          {customer.name.charAt(0)}
+                        </div>
+                      )}
+                      <div>
+                        <span className="font-bold text-slate-800 font-heading block">
+                          Submitting as: {customer.name}
+                        </span>
+                        <span className="text-[11px] text-slate-500 font-sans">
+                          {customer.email} • Verified Google Identity
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-[11px] text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-semibold flex items-center gap-1.5 self-start sm:self-auto">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Will be highlighted as Verified Borrower</span>
+                    </div>
+                  </div>
+
+                  {/* 5. Submit / Cancel Action Bar */}
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSubmittingReview || reviewText.trim().length < 5}
+                      className="px-6 py-3 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold font-heading rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSubmittingReview ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Publishing Review...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>{customerReview ? 'Update My Review' : 'Submit & Feature on Website'}</span>
+                        </>
+                      )}
+                    </button>
+
+                    {isEditingReview && customerReview && (
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingReview(false)}
+                        className="px-5 py-3 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-bold font-heading rounded-xl transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* Advisory Trust Note Card */}
+          <div className="p-5 bg-gradient-to-r from-teal-50/60 via-white to-blue-50/60 rounded-2xl border border-teal-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-sans">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-teal-100 text-brand-teal flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold font-heading text-brand-navy">Commitment to Transparent Advisory</h4>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  Prime Associates operates on a direct bank-channel model with zero upfront brokerage fees. Client testimonials are verified against authentic bank syndications.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="https://wa.me/919655566613"
+              target="_blank"
+              rel="noreferrer"
+              className="px-4 py-2 bg-white hover:bg-teal-50 text-brand-teal border border-teal-300 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 shrink-0 transition-colors shadow-2xs"
+            >
+              <span>Advisory Desk: +91 96555 66613</span>
+            </a>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
 };
 
 export default MyEnquiriesPage;

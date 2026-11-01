@@ -32,6 +32,11 @@ export interface Testimonial {
   review: string;
   rating: number;
   avatarUrl?: string;
+  email?: string;
+  customerId?: string;
+  verified?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AboutMilestone {

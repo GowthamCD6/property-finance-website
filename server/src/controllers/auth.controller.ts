@@ -425,3 +425,164 @@ export async function getCustomerEnquiries(req: AuthenticatedRequest, res: Respo
     next(err);
   }
 }
+
+/**
+ * Submit or update a client review / feedback
+ */
+export async function submitCustomerReview(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.customer) {
+      res.status(401).json({ success: false, message: 'Authentication required to submit feedback.' });
+      return;
+    }
+
+    const { rating, review, loanType, amount, location } = req.body;
+
+    const numRating = Math.max(1, Math.min(5, Math.round(Number(rating) || 5)));
+    const cleanReview = typeof review === 'string' ? review.trim() : '';
+
+    if (!cleanReview || cleanReview.length < 5) {
+      res.status(400).json({ success: false, message: 'Please share at least a few words describing your experience (min 5 characters).' });
+      return;
+    }
+
+    // Retrieve current testimonials
+    const siteContent = await prisma.siteContent.findUnique({
+      where: { id: 'default_content' },
+    });
+
+    let testimonialsList: any[] = [];
+    if (siteContent?.testimonials) {
+      try {
+        testimonialsList = JSON.parse(siteContent.testimonials);
+      } catch {
+        testimonialsList = [];
+      }
+    }
+
+    const customerId = req.customer.id;
+    const customerEmail = req.customer.email.toLowerCase();
+
+    const existingIndex = testimonialsList.findIndex(
+      (t: any) => (t.customerId && t.customerId === customerId) || (t.email && t.email.toLowerCase() === customerEmail)
+    );
+
+    const reviewPayload = {
+      id: existingIndex >= 0 ? testimonialsList[existingIndex].id : `rev_${Date.now()}`,
+      name: req.customer.name,
+      avatarUrl: req.customer.picture || '',
+      email: req.customer.email,
+      customerId: req.customer.id,
+      location: (location && String(location).trim()) || 'Tirupur, Tamil Nadu',
+      loanType: (loanType && String(loanType).trim()) || 'Property / Home Loan',
+      amount: (amount && String(amount).trim()) || '₹50 Lakhs',
+      rating: numRating,
+      review: cleanReview,
+      verified: true,
+      createdAt: existingIndex >= 0 ? (testimonialsList[existingIndex].createdAt || new Date().toISOString()) : new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (existingIndex >= 0) {
+      testimonialsList[existingIndex] = reviewPayload;
+    } else {
+      testimonialsList.unshift(reviewPayload);
+    }
+
+    await prisma.siteContent.upsert({
+      where: { id: 'default_content' },
+      update: { testimonials: JSON.stringify(testimonialsList) },
+      create: { id: 'default_content', testimonials: JSON.stringify(testimonialsList) },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Thank you! Your client review has been submitted successfully and published.',
+      data: reviewPayload,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Get current authenticated customer's review
+ */
+export async function getCustomerReview(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.customer) {
+      res.status(401).json({ success: false, message: 'Not authenticated.' });
+      return;
+    }
+
+    const siteContent = await prisma.siteContent.findUnique({
+      where: { id: 'default_content' },
+    });
+
+    let testimonialsList: any[] = [];
+    if (siteContent?.testimonials) {
+      try {
+        testimonialsList = JSON.parse(siteContent.testimonials);
+      } catch {
+        testimonialsList = [];
+      }
+    }
+
+    const customerId = req.customer.id;
+    const customerEmail = req.customer.email.toLowerCase();
+
+    const userReview = testimonialsList.find(
+      (t: any) => (t.customerId && t.customerId === customerId) || (t.email && t.email.toLowerCase() === customerEmail)
+    );
+
+    res.json({
+      success: true,
+      data: userReview || null,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Delete current customer's review
+ */
+export async function deleteCustomerReview(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.customer) {
+      res.status(401).json({ success: false, message: 'Not authenticated.' });
+      return;
+    }
+
+    const siteContent = await prisma.siteContent.findUnique({
+      where: { id: 'default_content' },
+    });
+
+    if (siteContent?.testimonials) {
+      try {
+        const testimonialsList = JSON.parse(siteContent.testimonials);
+        const customerId = req.customer.id;
+        const customerEmail = req.customer.email.toLowerCase();
+
+        const filtered = testimonialsList.filter(
+          (t: any) => !(t.customerId === customerId || (t.email && t.email.toLowerCase() === customerEmail))
+        );
+
+        await prisma.siteContent.update({
+          where: { id: 'default_content' },
+          data: { testimonials: JSON.stringify(filtered) },
+        });
+      } catch {
+        // Non-blocking
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Your review has been successfully removed.',
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
