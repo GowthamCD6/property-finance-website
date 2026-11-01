@@ -78,20 +78,22 @@ export const AdminDashboardPage: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
+      case 'Pending':
       case 'New':
-        return 'bg-blue-50 text-blue-700 border-blue-200/80 ring-1 ring-blue-500/10';
       case 'Contacted':
-        return 'bg-amber-50 text-amber-700 border-amber-200/80 ring-1 ring-amber-500/10';
       case 'Appointment Requested':
-        return 'bg-purple-50 text-purple-700 border-purple-200/80 ring-1 ring-purple-500/10';
+        return 'bg-amber-50 text-amber-700 border-amber-200/80 ring-1 ring-amber-500/10';
+      case 'Slot Booked':
       case 'Appointment Confirmed':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200/80 ring-1 ring-emerald-500/10';
-      case 'Converted':
+        return 'bg-sky-50 text-sky-700 border-sky-200/80 ring-1 ring-sky-500/10';
+      case 'Process Started':
+      case 'In Review':
         return 'bg-teal-50 text-teal-800 border-teal-200/80 ring-1 ring-teal-500/10';
       case 'Closed':
+      case 'Converted':
         return 'bg-slate-100 text-slate-700 border-slate-200/80 ring-1 ring-slate-500/10';
       default:
-        return 'bg-slate-100 text-slate-800 border-slate-200/80 ring-1 ring-slate-500/10';
+        return 'bg-amber-50 text-amber-800 border-amber-200/80 ring-1 ring-amber-500/10';
     }
   };
 

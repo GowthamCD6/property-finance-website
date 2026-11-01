@@ -69,34 +69,34 @@ export const MyEnquiriesPage: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const s = status.toLowerCase();
-    if (s.includes('sanction') || s.includes('converted') || s.includes('approved')) {
+    if (s.includes('closed') || s.includes('converted') || s.includes('sanction') || s.includes('approved')) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Sanctioned / Approved</span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-800 text-xs font-bold rounded-full border border-slate-200">
+          <CheckCircle2 className="w-3.5 h-3.5 text-slate-600" />
+          <span>Closed</span>
         </span>
       );
     }
-    if (s.includes('appoint') || s.includes('slot') || s.includes('confirmed')) {
+    if (s.includes('process') || s.includes('review')) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-100 text-teal-800 text-xs font-bold rounded-full">
-          <Calendar className="w-3.5 h-3.5 text-teal-600" />
-          <span>Consultation Slot Allotted</span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-800 text-xs font-bold rounded-full border border-teal-200">
+          <Clock className="w-3.5 h-3.5 text-teal-600" />
+          <span>Process Started</span>
         </span>
       );
     }
-    if (s.includes('review') || s.includes('contacted')) {
+    if (s.includes('slot') || s.includes('appoint') || s.includes('confirmed') || s.includes('booked')) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">
-          <Clock className="w-3.5 h-3.5 text-blue-600" />
-          <span>Under Advisor Review</span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 text-sky-800 text-xs font-bold rounded-full border border-sky-200">
+          <Calendar className="w-3.5 h-3.5 text-sky-600" />
+          <span>Slot Booked</span>
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-800 text-xs font-bold rounded-full border border-amber-200">
         <Clock className="w-3.5 h-3.5 text-amber-600" />
-        <span>Submitted • Awaiting Allotment</span>
+        <span>Pending</span>
       </span>
     );
   };

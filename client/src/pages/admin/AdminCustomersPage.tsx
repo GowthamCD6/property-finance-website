@@ -123,20 +123,42 @@ export const AdminCustomersPage: React.FC = () => {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const formatStatusLabel = (status?: string | null): string => {
+    if (!status) return 'Pending';
     switch (status) {
       case 'New':
-        return 'bg-sky-50 text-sky-800 border-sky-200';
       case 'Contacted':
-        return 'bg-amber-50 text-amber-800 border-amber-200';
+      case 'Follow-up Required':
+      case 'Appointment Requested':
+      case 'Pending':
+        return 'Pending';
       case 'Appointment Confirmed':
-        return 'bg-emerald-50 text-emerald-800 border-emerald-200';
+      case 'Slot Booked':
+        return 'Slot Booked';
+      case 'In Review':
+      case 'Process Started':
+        return 'Process Started';
       case 'Converted':
+      case 'Closed':
+        return 'Closed';
+      default:
+        return status;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const s = formatStatusLabel(status);
+    switch (s) {
+      case 'Pending':
+        return 'bg-amber-50 text-amber-800 border-amber-200';
+      case 'Slot Booked':
+        return 'bg-sky-50 text-sky-800 border-sky-200';
+      case 'Process Started':
         return 'bg-teal-50 text-teal-800 border-teal-200';
       case 'Closed':
         return 'bg-slate-100 text-slate-700 border-slate-200';
       default:
-        return 'bg-slate-50 text-slate-700 border-slate-200';
+        return 'bg-amber-50 text-amber-800 border-amber-200';
     }
   };
 
@@ -431,7 +453,7 @@ export const AdminCustomersPage: React.FC = () => {
                                   latest.status
                                 )}`}
                               >
-                                {latest.status}
+                                {formatStatusLabel(latest.status)}
                               </span>
                             </div>
                           </div>
@@ -704,7 +726,7 @@ export const AdminCustomersPage: React.FC = () => {
                               enq.status
                             )}`}
                           >
-                            {enq.status}
+                            {formatStatusLabel(enq.status)}
                           </span>
                           <span className="text-xs font-black text-emerald-700 font-heading">
                             {formatAmountINR(enq.loanAmount)}

@@ -43,15 +43,34 @@ import {
 
 const ALL_STATUSES = [
   'ALL',
-  'New',
-  'Contacted',
-  'Follow-up Required',
-  'Appointment Requested',
-  'Appointment Confirmed',
-  'In Review',
-  'Converted',
+  'Pending',
+  'Slot Booked',
+  'Process Started',
   'Closed',
 ] as const;
+
+export const formatStatusLabel = (status?: string | null): string => {
+  if (!status) return 'Pending';
+  switch (status) {
+    case 'New':
+    case 'Contacted':
+    case 'Follow-up Required':
+    case 'Appointment Requested':
+    case 'Pending':
+      return 'Pending';
+    case 'Appointment Confirmed':
+    case 'Slot Booked':
+      return 'Slot Booked';
+    case 'In Review':
+    case 'Process Started':
+      return 'Process Started';
+    case 'Converted':
+    case 'Closed':
+      return 'Closed';
+    default:
+      return status;
+  }
+};
 
 export const AdminEnquiriesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -204,41 +223,22 @@ export const AdminEnquiriesPage: React.FC = () => {
   };
 
   const getStatusBadgeConfig = (status: string) => {
-    switch (status) {
-      case 'New':
-        return {
-          badge: 'bg-sky-50 text-sky-800 border-sky-200/90',
-          dot: 'bg-sky-500',
-        };
-      case 'Contacted':
+    const s = formatStatusLabel(status);
+    switch (s) {
+      case 'Pending':
         return {
           badge: 'bg-amber-50 text-amber-800 border-amber-200/90',
           dot: 'bg-amber-500',
         };
-      case 'Follow-up Required':
+      case 'Slot Booked':
         return {
-          badge: 'bg-orange-50 text-orange-800 border-orange-200/90',
-          dot: 'bg-orange-500',
+          badge: 'bg-sky-50 text-sky-800 border-sky-200/90',
+          dot: 'bg-sky-500',
         };
-      case 'Appointment Requested':
+      case 'Process Started':
         return {
-          badge: 'bg-purple-50 text-purple-800 border-purple-200/90',
-          dot: 'bg-purple-500',
-        };
-      case 'Appointment Confirmed':
-        return {
-          badge: 'bg-emerald-50 text-emerald-800 border-emerald-200/90',
-          dot: 'bg-emerald-500',
-        };
-      case 'In Review':
-        return {
-          badge: 'bg-indigo-50 text-indigo-800 border-indigo-200/90',
-          dot: 'bg-indigo-500',
-        };
-      case 'Converted':
-        return {
-          badge: 'bg-teal-50 text-teal-900 border-teal-300',
-          dot: 'bg-teal-600',
+          badge: 'bg-teal-50 text-teal-800 border-teal-200/90',
+          dot: 'bg-teal-500',
         };
       case 'Closed':
         return {
@@ -247,8 +247,8 @@ export const AdminEnquiriesPage: React.FC = () => {
         };
       default:
         return {
-          badge: 'bg-slate-100 text-slate-700 border-slate-200',
-          dot: 'bg-slate-400',
+          badge: 'bg-amber-50 text-amber-800 border-amber-200/90',
+          dot: 'bg-amber-500',
         };
     }
   };
@@ -609,7 +609,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border font-heading shadow-2xs ${statusCfg.badge}`}
                         >
                           <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
-                          <span>{enq.status}</span>
+                          <span>{formatStatusLabel(enq.status)}</span>
                         </span>
                       </td>
 
@@ -828,7 +828,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-[#0c1a26] font-heading">Pipeline Status:</span>
                       <span className={`px-3 py-0.5 rounded-full text-xs font-bold border ${getStatusBadge(detailEnquiry.status)}`}>
-                        {detailEnquiry.status}
+                        {formatStatusLabel(detailEnquiry.status)}
                       </span>
                     </div>
 

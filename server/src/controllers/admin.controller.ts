@@ -111,7 +111,17 @@ export async function getEnquiries(req: AuthenticatedRequest, res: Response, nex
     }
 
     if (status && status !== 'ALL') {
-      where.status = status;
+      if (status === 'Pending') {
+        where.status = { in: ['Pending', 'New', 'Contacted', 'Follow-up Required', 'Appointment Requested'] };
+      } else if (status === 'Slot Booked') {
+        where.status = { in: ['Slot Booked', 'Appointment Confirmed'] };
+      } else if (status === 'Process Started') {
+        where.status = { in: ['Process Started', 'In Review'] };
+      } else if (status === 'Closed') {
+        where.status = { in: ['Closed', 'Converted'] };
+      } else {
+        where.status = status;
+      }
     }
 
     if (loanType && loanType !== 'ALL') {
@@ -580,15 +590,15 @@ export async function updateAppointment(req: AuthenticatedRequest, res: Response
       if (parsed.status === 'Confirmed') {
         await tx.enquiry.update({
           where: { id: existing.enquiryId },
-          data: { status: 'Appointment Confirmed' },
+          data: { status: 'Slot Booked' },
         });
         await tx.statusHistory.create({
           data: {
             enquiryId: existing.enquiryId,
             fromStatus: existing.enquiry.status,
-            toStatus: 'Appointment Confirmed',
+            toStatus: 'Slot Booked',
             changedBy: req.admin?.name || 'Administrator',
-            note: `Appointment confirmed for ${targetDate} at ${targetSlot}`,
+            note: `Consultation slot confirmed for ${targetDate} at ${targetSlot}`,
           },
         });
       } else if (parsed.status === 'Cancelled') {

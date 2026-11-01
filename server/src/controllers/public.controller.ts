@@ -259,7 +259,7 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
           preferredTimeSlot: validatedData.preferredTimeSlot || 'Pending Advisor Allotment',
           meetingMode: validatedData.meetingMode || 'phone',
           additionalNotes: validatedData.additionalNotes || null,
-          status: 'New',
+          status: 'Pending',
           consentGiven: true,
         },
       });
@@ -269,7 +269,7 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
         data: {
           enquiryId: enquiry.id,
           fromStatus: 'None',
-          toStatus: 'New',
+          toStatus: 'Pending',
           changedBy: 'System',
           note: 'Customer enquiry registered through public website form. Awaiting advisor slot allotment.',
         },
