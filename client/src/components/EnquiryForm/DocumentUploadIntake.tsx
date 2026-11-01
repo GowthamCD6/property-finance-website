@@ -21,6 +21,7 @@ import {
   CHANNEL_PARTNERS,
   getRequiredDocumentsForPlan,
 } from '../../constants/loanDocuments';
+import { compressImageFile } from '../../utils/formDraftStorage';
 
 interface DocumentUploadIntakeProps {
   loanType: string;
@@ -76,16 +77,6 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
     }
   };
 
-  // Convert File to Base64
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (err) => reject(err);
-      reader.readAsDataURL(file);
-    });
-  };
-
   // Handle single item upload
   const handleItemFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, item: DocumentItemDef) => {
     const files = e.target.files;
@@ -93,11 +84,11 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
 
     const file = files[0];
     try {
-      const base64 = await fileToBase64(file);
+      const base64 = await compressImageFile(file);
       const newDoc: UploadedDocument = {
         id: `doc-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
         name: file.name,
-        size: file.size,
+        size: Math.round((base64.length * 3) / 4),
         type: file.type || 'image/jpeg',
         category: item.category,
         documentName: item.name,
@@ -109,7 +100,7 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
       const updated = documents.filter((d) => d.documentName !== item.name).concat(newDoc);
       onDocumentsChange(updated);
     } catch (err) {
-      console.error('File reading failed', err);
+      console.error('File reading and compression failed', err);
     }
     // Reset file input
     e.target.value = '';

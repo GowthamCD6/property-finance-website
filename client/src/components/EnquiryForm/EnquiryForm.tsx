@@ -25,6 +25,8 @@ import {
   CreditCard,
   MessageSquare,
   Navigation,
+  Save,
+  X,
 } from 'lucide-react';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
@@ -33,6 +35,12 @@ import { Service, UploadedDocument } from '../../types';
 import { submitLoanEnquiry, getPublicAvailability } from '../../services/api';
 import { InteractiveDocumentVault } from '../common/InteractiveDocumentVault';
 import { DocumentUploadIntake } from './DocumentUploadIntake';
+import {
+  loadLoanDraft,
+  saveLoanDraft,
+  clearLoanDraft,
+  LoanApplicationDraft,
+} from '../../utils/formDraftStorage';
 
 interface EnquiryFormProps {
   services: Service[];
@@ -85,6 +93,12 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [preferredCallbackWindow, setPreferredCallbackWindow] = useState('Any Time (Fastest Callback)');
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [consentGiven, setConsentGiven] = useState(false);
+
+  // Local Storage Draft Persistence State
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [draftRestored, setDraftRestored] = useState(false);
+  const [draftTimestamp, setDraftTimestamp] = useState<string | null>(null);
+  const [dismissDraftBanner, setDismissDraftBanner] = useState(false);
 
   // Live GPS Location Detection State
   const [isLocating, setIsLocating] = useState(false);
@@ -205,6 +219,187 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       }
     }
   }, [customer]);
+
+  // 1. Restore draft from LocalStorage on component mount
+  useEffect(() => {
+    const draft = loadLoanDraft();
+    if (draft) {
+      if (draft.fullName) setFullName(draft.fullName);
+      if (draft.mobileNumber) setMobileNumber(draft.mobileNumber);
+      if (draft.email) setEmail(draft.email);
+      if (draft.preferredContactMethod) setPreferredContactMethod(draft.preferredContactMethod);
+      if (draft.cityState) setCityState(draft.cityState);
+      if (draft.panNumber) setPanNumber(draft.panNumber);
+      if (draft.aadhaarNumber) setAadhaarNumber(draft.aadhaarNumber);
+      if (draft.loanType) setLoanType(draft.loanType);
+      if (draft.loanAmount) setLoanAmount(draft.loanAmount);
+      if (draft.propertyType) setPropertyType(draft.propertyType);
+      if (draft.propertyLocation) setPropertyLocation(draft.propertyLocation);
+      if (draft.propertyOwnershipStatus) setPropertyOwnershipStatus(draft.propertyOwnershipStatus);
+      if (draft.employmentType) setEmploymentType(draft.employmentType);
+      if (draft.preferredBank) setPreferredBank(draft.preferredBank);
+      if (draft.carType) setCarType(draft.carType);
+      if (draft.carOnRoadPrice) setCarOnRoadPrice(draft.carOnRoadPrice);
+      if (draft.carShowroomName) setCarShowroomName(draft.carShowroomName);
+      if (draft.carArea) setCarArea(draft.carArea);
+      if (draft.carModelYear) setCarModelYear(draft.carModelYear);
+      if (draft.carOwnersCount) setCarOwnersCount(draft.carOwnersCount);
+      if (draft.carPurchaseValue) setCarPurchaseValue(draft.carPurchaseValue);
+      if (draft.meetingMode) setMeetingMode(draft.meetingMode);
+      if (draft.offlineMeetingAddress) setOfflineMeetingAddress(draft.offlineMeetingAddress);
+      if (draft.preferredCallbackWindow) setPreferredCallbackWindow(draft.preferredCallbackWindow);
+      if (draft.additionalNotes) setAdditionalNotes(draft.additionalNotes);
+      if (typeof draft.consentGiven === 'boolean') setConsentGiven(draft.consentGiven);
+      if (Array.isArray(draft.documents) && draft.documents.length > 0) setDocuments(draft.documents);
+
+      setDraftRestored(true);
+      setDraftTimestamp(draft.savedAt);
+    }
+    setIsInitialized(true);
+  }, []);
+
+  // 2. Auto-save to LocalStorage whenever fields or documents change
+  useEffect(() => {
+    if (!isInitialized || submissionSuccess) return;
+
+    const draftData: LoanApplicationDraft = {
+      fullName,
+      mobileNumber,
+      email,
+      preferredContactMethod,
+      cityState,
+      panNumber,
+      aadhaarNumber,
+      loanType,
+      loanAmount,
+      propertyType,
+      propertyLocation,
+      propertyOwnershipStatus,
+      employmentType,
+      preferredBank,
+      carType,
+      carOnRoadPrice,
+      carShowroomName,
+      carArea,
+      carModelYear,
+      carOwnersCount,
+      carPurchaseValue,
+      documents,
+      meetingMode,
+      offlineMeetingAddress,
+      preferredCallbackWindow,
+      additionalNotes,
+      consentGiven,
+      savedAt: new Date().toISOString(),
+    };
+
+    const timer = setTimeout(() => {
+      saveLoanDraft(draftData);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [
+    isInitialized,
+    submissionSuccess,
+    fullName,
+    mobileNumber,
+    email,
+    preferredContactMethod,
+    cityState,
+    panNumber,
+    aadhaarNumber,
+    loanType,
+    loanAmount,
+    propertyType,
+    propertyLocation,
+    propertyOwnershipStatus,
+    employmentType,
+    preferredBank,
+    carType,
+    carOnRoadPrice,
+    carShowroomName,
+    carArea,
+    carModelYear,
+    carOwnersCount,
+    carPurchaseValue,
+    documents,
+    meetingMode,
+    offlineMeetingAddress,
+    preferredCallbackWindow,
+    additionalNotes,
+    consentGiven,
+  ]);
+
+  // 3. Immediately flush to LocalStorage before page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (!submissionSuccess && isInitialized) {
+        saveLoanDraft({
+          fullName,
+          mobileNumber,
+          email,
+          preferredContactMethod,
+          cityState,
+          panNumber,
+          aadhaarNumber,
+          loanType,
+          loanAmount,
+          propertyType,
+          propertyLocation,
+          propertyOwnershipStatus,
+          employmentType,
+          preferredBank,
+          carType,
+          carOnRoadPrice,
+          carShowroomName,
+          carArea,
+          carModelYear,
+          carOwnersCount,
+          carPurchaseValue,
+          documents,
+          meetingMode,
+          offlineMeetingAddress,
+          preferredCallbackWindow,
+          additionalNotes,
+          consentGiven,
+          savedAt: new Date().toISOString(),
+        });
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [
+    isInitialized,
+    submissionSuccess,
+    fullName,
+    mobileNumber,
+    email,
+    preferredContactMethod,
+    cityState,
+    panNumber,
+    aadhaarNumber,
+    loanType,
+    loanAmount,
+    propertyType,
+    propertyLocation,
+    propertyOwnershipStatus,
+    employmentType,
+    preferredBank,
+    carType,
+    carOnRoadPrice,
+    carShowroomName,
+    carArea,
+    carModelYear,
+    carOwnersCount,
+    carPurchaseValue,
+    documents,
+    meetingMode,
+    offlineMeetingAddress,
+    preferredCallbackWindow,
+    additionalNotes,
+    consentGiven,
+  ]);
 
   // Pre-fill calculation values from URL query parameters (e.g., from Calculator or HowItWorks simulator)
   useEffect(() => {
@@ -406,6 +601,10 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
       const result = await submitLoanEnquiry(payload);
 
+      // Clear persistent local draft on successful submission
+      clearLoanDraft();
+      setDraftRestored(false);
+
       // Automatically authenticate the user session with returned credentials
       if (result.data?.customer) {
         try {
@@ -424,6 +623,8 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   };
 
   const handleReset = () => {
+    clearLoanDraft();
+    setDraftRestored(false);
     setSubmissionSuccess(null);
     setFormError(null);
     setFullName('');
@@ -431,7 +632,10 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     setEmail('');
     setPanNumber('');
     setAadhaarNumber('');
+    setCityState('');
+    setPropertyLocation('');
     setAdditionalNotes('');
+    setOfflineMeetingAddress('');
     setConsentGiven(false);
     setDocuments([]);
     setCarShowroomName('');
@@ -440,6 +644,13 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     setCarModelYear('');
     setCarPurchaseValue('');
     setPreferredBank('Any (Best Market Rate Finder across 40+ Channel Partners)');
+  };
+
+  const handleDiscardDraft = () => {
+    clearLoanDraft();
+    setDraftRestored(false);
+    setDismissDraftBanner(true);
+    handleReset();
   };
 
   const getMappedLoanType = (type?: string): 'home-loans' | 'loan-against-property' | 'property-backed-funding' | 'loan-consultation' => {
@@ -598,6 +809,50 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
         ) : (
           /* Interactive Form Card */
           <div className="bg-white rounded-2xl p-6 sm:p-10 border border-brand-border shadow-card">
+            {/* Draft Restored Notification Banner */}
+            {draftRestored && !dismissDraftBanner && (
+              <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-teal-50/90 border border-teal-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-brand-teal text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <Save className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="text-sm font-bold text-teal-950 font-heading">
+                        In-Progress Application Restored
+                      </h4>
+                      {draftTimestamp && (
+                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 border border-teal-200">
+                          Auto-Saved Session
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-teal-800 mt-0.5 leading-relaxed">
+                      We've restored your typed details {documents.length > 0 ? `and ${documents.length} uploaded document(s)` : ''} from your browser storage so you won't lose your progress.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                  <button
+                    type="button"
+                    onClick={handleDiscardDraft}
+                    className="px-3 py-1.5 text-xs font-bold text-rose-700 hover:text-rose-900 bg-white hover:bg-rose-50 rounded-xl border border-rose-200 shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Reset Form</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDismissDraftBanner(true)}
+                    className="p-1.5 text-teal-700 hover:text-teal-950 hover:bg-teal-100 rounded-lg transition-colors cursor-pointer"
+                    title="Dismiss"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
             {formError && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 text-red-800 text-sm">
                 <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -608,9 +863,15 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
             <form onSubmit={handleSubmit} className="space-y-10">
               {/* SECTION 1: APPLICANT INFORMATION */}
               <div>
-                <div className="flex items-center gap-2 pb-3 mb-5 border-b border-brand-border text-brand-navy">
-                  <User className="w-5 h-5 text-brand-teal" />
-                  <h3 className="text-base font-bold">1. Contact &amp; Personal Details</h3>
+                <div className="flex items-center justify-between pb-3 mb-5 border-b border-brand-border text-brand-navy flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-brand-teal" />
+                    <h3 className="text-base font-bold">1. Contact &amp; Personal Details</h3>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-medium font-sans">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Auto-saving draft locally</span>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1310,39 +1571,70 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
               {/* SUBMISSION / GOOGLE AUTHENTICATION STEP */}
               <div className="pt-2">
                 {!isAuthenticated || !customer ? (
-                  <div className="p-6 bg-gradient-to-br from-slate-50 via-white to-brand-teal/5 border-2 border-brand-teal/30 rounded-2xl shadow-xs space-y-4">
-                    <div className="flex items-start gap-3.5">
-                      <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center flex-shrink-0">
-                        <GoogleIcon size={20} />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-brand-navy">
-                          Google Sign-In Required Before Submitting
-                        </h4>
-                        <p className="text-xs text-brand-slate mt-0.5 leading-relaxed">
-                          Prime Associates links consultation appointments and advisor calls directly to your Google account. You will receive real-time notifications as soon as an advisor allots your consultation slot.
-                        </p>
-                      </div>
-                    </div>
-
+                  <div className="space-y-4">
                     <button
-                      type="button"
-                      onClick={() => triggerGoogleLogin()}
-                      disabled={isGoogleSigningIn}
-                      className="w-full py-4 px-6 bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-300 hover:border-slate-400 text-slate-800 font-bold text-sm rounded-corporate shadow-xs hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60"
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-4 px-6 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-base rounded-corporate shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer font-heading tracking-wide"
                     >
-                      {isGoogleSigningIn ? (
+                      {isSubmitting ? (
                         <>
-                          <Loader2 className="w-4 h-4 animate-spin text-brand-teal" />
-                          <span>Connecting to Google...</span>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Submitting Application &amp; Attaching Documents...</span>
                         </>
                       ) : (
                         <>
-                          <GoogleIcon size={18} />
-                          <span>Sign in with Google to Submit Loan Enquiry</span>
+                          <Send className="w-4 h-4" />
+                          <span>
+                            Submit Loan Application Now {documents.length > 0 ? `(${documents.length} Reference Docs Attached)` : ''}
+                          </span>
                         </>
                       )}
                     </button>
+
+                    <div className="relative flex items-center justify-center py-1">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-200" />
+                      </div>
+                      <div className="relative bg-white px-3 text-xs text-slate-400 uppercase tracking-wider font-semibold">
+                        Or Fast-Track With Google
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-gradient-to-br from-slate-50 via-white to-brand-teal/5 border border-slate-200 rounded-2xl shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 text-left">
+                        <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center shrink-0">
+                          <GoogleIcon size={18} />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-800">
+                            1-Click Google Verification
+                          </div>
+                          <div className="text-[11px] text-slate-500">
+                            Auto-fill your verified Google profile &amp; receive instant slot notifications
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => triggerGoogleLogin()}
+                        disabled={isGoogleSigningIn}
+                        className="w-full sm:w-auto px-4 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0 disabled:opacity-60"
+                      >
+                        {isGoogleSigningIn ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-teal" />
+                            <span>Connecting...</span>
+                          </>
+                        ) : (
+                          <>
+                            <GoogleIcon size={14} />
+                            <span>Verify with Google</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-4">
