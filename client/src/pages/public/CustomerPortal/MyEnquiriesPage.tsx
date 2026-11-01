@@ -91,10 +91,48 @@ export const MyEnquiriesPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F7F9FB] pt-28 pb-16 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-teal" />
-          <p className="text-xs font-semibold text-brand-slate">Loading customer portal...</p>
+      <div className="min-h-screen bg-[#F7F9FB] pt-28 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="max-w-6xl mx-auto space-y-8 animate-pulse">
+          {/* Banner Skeleton */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-slate-200 shrink-0" />
+              <div className="space-y-2">
+                <div className="h-5 bg-slate-200 rounded w-48" />
+                <div className="h-3 bg-slate-100 rounded w-36" />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="h-10 bg-slate-200 rounded-xl w-36" />
+              <div className="h-10 bg-slate-100 rounded-xl w-24" />
+            </div>
+          </div>
+
+          {/* Cards Skeleton */}
+          <div className="space-y-4">
+            <div className="h-5 bg-slate-200 rounded w-56" />
+            <div className="grid grid-cols-1 gap-6">
+              {[1, 2].map((i) => (
+                <div key={i} className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div className="space-y-2">
+                      <div className="h-4 bg-slate-200 rounded w-32" />
+                      <div className="h-6 bg-slate-200 rounded w-48" />
+                    </div>
+                    <div className="h-7 bg-slate-200 rounded-full w-36" />
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {[1, 2, 3, 4].map((j) => (
+                      <div key={j} className="space-y-1.5">
+                        <div className="h-3 bg-slate-100 rounded w-16" />
+                        <div className="h-4 bg-slate-200 rounded w-24" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -103,21 +141,21 @@ export const MyEnquiriesPage: React.FC = () => {
   // Not signed in: Login Gateway
   if (!isAuthenticated || !customer) {
     return (
-      <div className="min-h-screen bg-[#F7F9FB] pt-32 pb-20 px-4 sm:px-6">
+      <div className="min-h-screen bg-[#F7F9FB] pt-32 pb-20 px-4 sm:px-6 font-sans">
         <div className="max-w-md mx-auto bg-white rounded-3xl shadow-[0_4px_24px_-2px_rgba(24,50,71,0.08)] border border-slate-200/90 p-8 sm:p-10 text-center space-y-6">
           <div className="w-16 h-16 rounded-2xl bg-teal-50 border border-teal-100 mx-auto flex items-center justify-center text-brand-teal">
             <User className="w-8 h-8" />
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-2xl font-black text-brand-navy">Borrower Portal</h1>
-            <p className="text-xs text-brand-slate leading-relaxed">
+            <h1 className="text-2xl font-black font-heading text-brand-navy">Borrower Portal</h1>
+            <p className="text-xs text-brand-slate leading-relaxed font-sans">
               Sign in with your Google account to track your submitted loan enquiries, view assigned advisor consultation slots, and download sanction notes.
             </p>
           </div>
 
           {loginError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2 text-left">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2 text-left font-sans">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{loginError}</span>
             </div>
@@ -127,7 +165,7 @@ export const MyEnquiriesPage: React.FC = () => {
             type="button"
             onClick={() => triggerGoogleLogin()}
             disabled={isSigningIn}
-            className="w-full h-12 px-5 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-700 font-semibold text-sm rounded-xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60"
+            className="w-full h-12 px-5 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-700 font-bold font-heading text-sm rounded-xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60"
           >
             {isSigningIn ? (
               <>
@@ -142,7 +180,7 @@ export const MyEnquiriesPage: React.FC = () => {
             )}
           </button>
 
-          <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-center gap-2">
+          <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-center gap-2 font-sans">
             <ShieldCheck className="w-3.5 h-3.5 text-brand-teal" />
             <span>Secure 256-bit encrypted authentication</span>
           </div>
@@ -153,7 +191,7 @@ export const MyEnquiriesPage: React.FC = () => {
 
   // Signed in: Borrower Dashboard
   return (
-    <div className="min-h-screen bg-[#F7F9FB] pt-28 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F7F9FB] pt-28 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* User Welcome Banner */}
@@ -166,23 +204,23 @@ export const MyEnquiriesPage: React.FC = () => {
                 className="w-16 h-16 rounded-2xl border-2 border-brand-teal/20 shadow-xs object-cover"
               />
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-brand-teal text-white text-2xl font-black flex items-center justify-center shadow-xs">
+              <div className="w-16 h-16 rounded-2xl bg-brand-teal text-white text-2xl font-black font-heading flex items-center justify-center shadow-xs">
                 {customer.name.charAt(0)}
               </div>
             )}
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-black text-brand-navy">Welcome, {customer.name}</h1>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Google Verified</span>
+                <h1 className="text-xl sm:text-2xl font-black font-heading text-brand-navy">Welcome, {customer.name}</h1>
+                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold font-heading px-2 py-0.5 rounded-full">Google Verified</span>
               </div>
-              <p className="text-xs text-brand-slate mt-0.5">{customer.email}</p>
+              <p className="text-xs text-brand-slate font-sans mt-0.5">{customer.email}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
               to="/enquire"
-              className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center gap-2"
+              className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold font-heading rounded-xl shadow-xs transition-colors flex items-center gap-2"
             >
               <PlusCircle className="w-4 h-4" />
               <span>New Loan Enquiry</span>
@@ -190,7 +228,7 @@ export const MyEnquiriesPage: React.FC = () => {
             <button
               type="button"
               onClick={logout}
-              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold font-heading rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
@@ -201,8 +239,8 @@ export const MyEnquiriesPage: React.FC = () => {
         {/* Enquiries Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-brand-navy">Your Loan Enquiries &amp; Consultations</h2>
-            <span className="text-xs font-semibold text-brand-slate">
+            <h2 className="text-lg font-bold font-heading text-brand-navy">Your Loan Enquiries &amp; Consultations</h2>
+            <span className="text-xs font-semibold text-brand-slate font-sans">
               {enquiries.length} {enquiries.length === 1 ? 'Record' : 'Records'} Found
             </span>
           </div>
@@ -213,14 +251,14 @@ export const MyEnquiriesPage: React.FC = () => {
                 <FileText className="w-7 h-7" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base font-bold text-brand-navy">No Active Loan Enquiries</h3>
-                <p className="text-xs text-brand-slate max-w-md mx-auto">
+                <h3 className="text-base font-bold font-heading text-brand-navy">No Active Loan Enquiries</h3>
+                <p className="text-xs text-brand-slate max-w-md mx-auto font-sans">
                   You haven't submitted any loan requests under this Google account yet. Submit an enquiry to check your eligibility with 40+ banking partners.
                 </p>
               </div>
               <Link
                 to="/enquire"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-xl shadow-xs transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold font-heading rounded-xl shadow-xs transition-colors"
               >
                 <span>Submit Loan Enquiry</span>
                 <ArrowRight className="w-4 h-4" />
@@ -243,11 +281,11 @@ export const MyEnquiriesPage: React.FC = () => {
                           <span className="text-xs font-mono font-bold text-brand-teal bg-teal-50 px-2 py-0.5 rounded-md border border-teal-100">
                             {enq.referenceNumber}
                           </span>
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-slate-400 font-sans">
                             • Submitted on {new Date(enq.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </span>
                         </div>
-                        <h3 className="text-lg font-black text-brand-navy mt-1">
+                        <h3 className="text-lg font-black font-heading text-brand-navy mt-1">
                           {enq.loanType}
                         </h3>
                       </div>
@@ -257,44 +295,44 @@ export const MyEnquiriesPage: React.FC = () => {
 
                     {/* Loan Details Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-                      <div className="p-3 bg-slate-50 rounded-xl">
-                        <span className="text-slate-400 font-medium block">Requested Loan</span>
-                        <span className="text-sm font-bold text-brand-navy mt-0.5 block">
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <span className="text-slate-400 font-medium block font-sans">Requested Loan</span>
+                        <span className="text-sm font-extrabold text-brand-navy mt-0.5 block font-heading tabular-nums">
                           {formatAmountINR(enq.loanAmount)}
                         </span>
                       </div>
 
-                      <div className="p-3 bg-slate-50 rounded-xl">
-                        <span className="text-slate-400 font-medium block">Location</span>
-                        <span className="text-sm font-bold text-brand-navy mt-0.5 block truncate">
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <span className="text-slate-400 font-medium block font-sans">Location</span>
+                        <span className="text-sm font-bold text-brand-navy mt-0.5 block truncate font-heading">
                           {enq.cityState || enq.propertyLocation || 'Tamil Nadu'}
                         </span>
                       </div>
 
-                      <div className="p-3 bg-slate-50 rounded-xl">
-                        <span className="text-slate-400 font-medium block">Employment</span>
-                        <span className="text-sm font-bold text-brand-navy mt-0.5 block capitalize">
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <span className="text-slate-400 font-medium block font-sans">Employment</span>
+                        <span className="text-sm font-bold text-brand-navy mt-0.5 block capitalize font-heading">
                           {enq.employmentType?.replace('_', ' ') || 'Salaried'}
                         </span>
                       </div>
 
-                      <div className="p-3 bg-slate-50 rounded-xl">
-                        <span className="text-slate-400 font-medium block">Preferred Mode</span>
-                        <span className="text-sm font-bold text-brand-navy mt-0.5 block capitalize">
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <span className="text-slate-400 font-medium block font-sans">Preferred Mode</span>
+                        <span className="text-sm font-bold text-brand-navy mt-0.5 block capitalize font-heading">
                           {enq.meetingMode?.replace('_', ' ') || 'Phone Call'}
                         </span>
                       </div>
                     </div>
 
                     {/* APPOINTMENT / CONSULTATION SLOT ALLOTMENT BOX */}
-                    <div className="p-5 bg-gradient-to-br from-teal-50/60 to-emerald-50/30 border border-teal-100 rounded-2xl space-y-3">
+                    <div className="p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/40 border border-teal-100/90 rounded-2xl space-y-3 shadow-2xs">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-brand-teal font-bold text-xs uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-brand-teal font-extrabold text-xs uppercase tracking-wider font-heading">
                           <Calendar className="w-4 h-4" />
                           <span>Advisor Consultation Slot Allotment</span>
                         </div>
                         {latestAppointment?.status && (
-                          <span className="text-[10px] bg-teal-200/70 text-teal-900 font-bold px-2 py-0.5 rounded-full uppercase">
+                          <span className="text-[10px] bg-teal-200/80 text-teal-900 font-extrabold px-2.5 py-0.5 rounded-full uppercase font-heading tracking-wide">
                             {latestAppointment.status}
                           </span>
                         )}
@@ -305,32 +343,32 @@ export const MyEnquiriesPage: React.FC = () => {
                           <div className="flex items-center gap-2.5">
                             <Calendar className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                             <div>
-                              <span className="text-[11px] text-slate-500 block">Allotted Date</span>
-                              <span className="font-bold text-slate-900">{latestAppointment.date}</span>
+                              <span className="text-[11px] text-slate-500 block font-sans">Allotted Date</span>
+                              <span className="font-bold text-slate-900 font-heading">{latestAppointment.date}</span>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-2.5">
                             <Clock className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                             <div>
-                              <span className="text-[11px] text-slate-500 block">Time Slot</span>
-                              <span className="font-bold text-slate-900">{latestAppointment.timeSlot}</span>
+                              <span className="text-[11px] text-slate-500 block font-sans">Time Slot</span>
+                              <span className="font-bold text-slate-900 font-heading">{latestAppointment.timeSlot}</span>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-2.5">
                             <MapPin className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                             <div>
-                              <span className="text-[11px] text-slate-500 block">Mode</span>
-                              <span className="font-bold text-slate-900 capitalize">
+                              <span className="text-[11px] text-slate-500 block font-sans">Mode</span>
+                              <span className="font-bold text-slate-900 capitalize font-heading">
                                 {latestAppointment.meetingMode?.replace('_', ' ') || enq.meetingMode || 'Phone Call'}
                               </span>
                             </div>
                           </div>
 
                           {latestAppointment.adminNotes && (
-                            <div className="sm:col-span-3 p-3 bg-white/80 rounded-xl border border-teal-100 text-xs text-slate-700 mt-1">
-                              <span className="font-semibold text-brand-teal">Advisor Note: </span>
+                            <div className="sm:col-span-3 p-3 bg-white/90 rounded-xl border border-teal-100 text-xs text-slate-700 mt-1 font-sans">
+                              <span className="font-bold text-brand-teal font-heading">Advisor Note: </span>
                               {latestAppointment.adminNotes}
                             </div>
                           )}

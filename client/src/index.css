@@ -372,3 +372,25 @@ a:focus-visible, button:focus-visible {
 .animate-continuous-scroll-reverse:active {
   animation-play-state: paused !important;
 }
+
+/* ────────────────────────────────────────────────────────────
+   Admin Console Sleek Dark Scrollbar
+   ──────────────────────────────────────────────────────────── */
+.admin-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+}
+.admin-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.admin-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.admin-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+.admin-sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+}
+

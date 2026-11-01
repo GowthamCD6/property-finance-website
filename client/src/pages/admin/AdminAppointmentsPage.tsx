@@ -627,9 +627,29 @@ export const AdminAppointmentsPage: React.FC = () => {
 
           {/* Pending Queue Card Grid / Table */}
           {pendingLoading ? (
-            <div className="bg-white p-16 rounded-2xl border border-slate-200 text-center space-y-3">
-              <Loader2 className="w-8 h-8 animate-spin mx-auto text-amber-500" />
-              <p className="text-xs text-slate-500 font-sans">Checking borrower consultation requests...</p>
+            <div className="grid grid-cols-1 gap-3.5">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 animate-pulse flex flex-col md:flex-row md:items-center justify-between gap-4"
+                >
+                  <div className="flex items-start gap-3.5 min-w-0">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-200 shrink-0" />
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 bg-slate-200 rounded w-36" />
+                        <div className="h-4 bg-slate-100 rounded w-24" />
+                      </div>
+                      <div className="h-3 bg-slate-100 rounded w-48" />
+                      <div className="h-3 bg-slate-100 rounded w-32" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-9 bg-slate-200 rounded-xl w-32" />
+                    <div className="h-9 bg-slate-100 rounded-xl w-24" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : filteredPendingQueue.length === 0 ? (
             <div className="bg-white p-14 rounded-2xl border border-slate-200 text-center space-y-3">
@@ -889,12 +909,42 @@ export const AdminAppointmentsPage: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {loading ? (
-                    <tr>
-                      <td colSpan={6} className="py-16 text-center text-slate-500">
-                        <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600 mb-2" />
-                        <span className="font-sans text-xs">Loading appointments &amp; schedules...</span>
-                      </td>
-                    </tr>
+                    <>
+                      {Array.from({ length: 5 }).map((_, idx) => (
+                        <tr key={idx} className="animate-pulse border-b border-slate-100">
+                          <td className="py-4 px-4 min-w-[160px]">
+                            <div className="space-y-1.5">
+                              <div className="h-4 bg-slate-200 rounded w-28" />
+                              <div className="h-3 bg-slate-100 rounded w-20" />
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 min-w-[240px]">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-slate-200 shrink-0" />
+                              <div className="space-y-1.5 flex-1">
+                                <div className="h-4 bg-slate-200 rounded w-32" />
+                                <div className="h-3 bg-slate-100 rounded w-24" />
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 min-w-[160px]">
+                            <div className="space-y-1.5">
+                              <div className="h-4 bg-slate-200 rounded w-24" />
+                              <div className="h-3 bg-slate-100 rounded w-16" />
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 min-w-[140px]">
+                            <div className="h-6 bg-slate-200 rounded-full w-24" />
+                          </td>
+                          <td className="py-4 px-4 min-w-[120px]">
+                            <div className="h-6 bg-slate-200 rounded-full w-20" />
+                          </td>
+                          <td className="py-4 px-4 text-right min-w-[140px]">
+                            <div className="h-8 bg-slate-200 rounded-xl w-24 ml-auto" />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
                   ) : filteredAppointments.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="py-16 text-center text-slate-500 space-y-2">
@@ -1108,6 +1158,17 @@ export const AdminAppointmentsPage: React.FC = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Bottom Summary Bar */}
+            <div className="p-4 sm:px-6 border-t border-slate-200/90 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-sans">
+              <div>
+                Showing <span className="font-bold text-slate-900 font-heading tabular-nums">{filteredAppointments.length}</span> of{' '}
+                <span className="font-bold text-slate-900 font-heading tabular-nums">{appointments.length}</span> scheduled sessions
+              </div>
+              <div className="text-[11px] text-slate-400">
+                Coordinated via Prime Associates Advisory Desk
+              </div>
             </div>
           </div>
         </div>

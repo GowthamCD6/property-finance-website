@@ -61,6 +61,7 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>(searchParams.get('status') || 'ALL');
   const [selectedLoanType, setSelectedLoanType] = useState<string>('ALL');
   const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(15);
 
   // Data state
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
@@ -88,7 +89,7 @@ export const AdminEnquiriesPage: React.FC = () => {
     setLoading(true);
     getEnquiriesApi({
       page,
-      limit: 15,
+      limit,
       search: search.trim() || undefined,
       status: selectedStatus,
       loanType: selectedLoanType,
@@ -104,7 +105,7 @@ export const AdminEnquiriesPage: React.FC = () => {
 
   useEffect(() => {
     fetchList();
-  }, [page, selectedStatus, selectedLoanType]);
+  }, [page, limit, selectedStatus, selectedLoanType]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -282,10 +283,75 @@ export const AdminEnquiriesPage: React.FC = () => {
     }
   };
 
+  // Modern animated skeleton loader for enquiries table
+  const EnquiriesTableSkeleton: React.FC<{ rows?: number }> = ({ rows = 6 }) => {
+    return (
+      <>
+        {Array.from({ length: rows }).map((_, idx) => (
+          <tr key={idx} className="animate-pulse border-b border-slate-100">
+            {/* Applicant & Contact */}
+            <td className="py-4 px-5 min-w-[280px]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-200 shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 bg-slate-200 rounded w-36" />
+                  <div className="flex items-center gap-2">
+                    <div className="h-3.5 bg-slate-100 rounded w-24" />
+                    <div className="h-3.5 bg-slate-100 rounded w-20" />
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            {/* Location */}
+            <td className="py-4 px-5 min-w-[160px]">
+              <div className="flex items-center gap-2">
+                <div className="w-3.5 h-3.5 rounded bg-slate-200 shrink-0" />
+                <div className="h-3.5 bg-slate-200 rounded w-24" />
+              </div>
+            </td>
+
+            {/* Facility Type */}
+            <td className="py-4 px-5 min-w-[140px]">
+              <div className="h-6 bg-slate-200/80 rounded-lg w-24" />
+            </td>
+
+            {/* Sanction Requested */}
+            <td className="py-4 px-5 min-w-[150px]">
+              <div className="space-y-1.5">
+                <div className="h-4 bg-slate-200 rounded w-20" />
+                <div className="h-2.5 bg-slate-100 rounded w-12" />
+              </div>
+            </td>
+
+            {/* Consultation Slot */}
+            <td className="py-4 px-5 min-w-[180px]">
+              <div className="space-y-1.5">
+                <div className="h-3.5 bg-slate-200 rounded w-24" />
+                <div className="h-2.5 bg-slate-100 rounded w-20" />
+                <div className="h-4 bg-slate-100 rounded w-16 mt-1" />
+              </div>
+            </td>
+
+            {/* Pipeline Status */}
+            <td className="py-4 px-5 min-w-[160px]">
+              <div className="h-6 bg-slate-200/80 rounded-full w-24" />
+            </td>
+
+            {/* Actions */}
+            <td className="py-4 px-5 text-right min-w-[110px]">
+              <div className="h-7 bg-slate-200 rounded-xl w-20 ml-auto" />
+            </td>
+          </tr>
+        ))}
+      </>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Filter and Search Bar Container */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-4">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -318,7 +384,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                 setSelectedLoanType(e.target.value);
                 setPage(1);
               }}
-              className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+              className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer"
             >
               <option value="ALL">All Loan Facilities</option>
               <option value="Home Loan">Home Loan</option>
@@ -358,8 +424,8 @@ export const AdminEnquiriesPage: React.FC = () => {
               }}
               className={`px-3.5 py-1.5 rounded-xl font-heading font-bold whitespace-nowrap transition-all cursor-pointer ${
                 selectedStatus === status
-                  ? 'bg-[#0c1a26] text-white shadow-sm ring-2 ring-teal-500/30'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-slate-900 text-white shadow-sm ring-2 ring-teal-500/30'
+                  : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
               }`}
             >
               {status === 'ALL' ? 'All Statuses' : status}
@@ -369,34 +435,29 @@ export const AdminEnquiriesPage: React.FC = () => {
       </div>
 
       {/* Main Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-200/90 text-slate-500 font-extrabold uppercase tracking-wider text-[10px] font-heading">
-                <th className="py-3.5 px-4">Applicant &amp; Contact</th>
-                <th className="py-3.5 px-4">Reference</th>
-                <th className="py-3.5 px-4">Location</th>
-                <th className="py-3.5 px-4">Facility Type</th>
-                <th className="py-3.5 px-4">Sanction Requested</th>
-                <th className="py-3.5 px-4">Consultation Slot</th>
-                <th className="py-3.5 px-4">Pipeline Status</th>
-                <th className="py-3.5 px-4 text-right">Actions</th>
+              <tr className="bg-slate-50/90 border-b border-slate-200/90 text-slate-600 font-bold uppercase tracking-wider text-[11px] font-heading">
+                <th className="py-4 px-5 min-w-[280px]">Applicant &amp; Contact</th>
+                <th className="py-4 px-5 min-w-[160px]">Location</th>
+                <th className="py-4 px-5 min-w-[140px]">Facility Type</th>
+                <th className="py-4 px-5 min-w-[150px]">Sanction Requested</th>
+                <th className="py-4 px-5 min-w-[180px]">Consultation Slot</th>
+                <th className="py-4 px-5 min-w-[160px]">Pipeline Status</th>
+                <th className="py-4 px-5 text-right min-w-[110px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
               {loading ? (
-                <tr>
-                  <td colSpan={8} className="py-16 text-center text-slate-500 font-sans">
-                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600 mb-2" />
-                    <span className="text-xs">Loading pipeline records...</span>
-                  </td>
-                </tr>
+                <EnquiriesTableSkeleton rows={6} />
               ) : enquiries.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-slate-500 font-sans">
-                    <FileSpreadsheet className="w-9 h-9 mx-auto text-slate-300 mb-2" />
-                    <span className="text-xs font-semibold">No enquiries match the current filters.</span>
+                  <td colSpan={7} className="py-16 text-center text-slate-500 font-sans">
+                    <FileSpreadsheet className="w-10 h-10 mx-auto text-slate-300 mb-2.5" />
+                    <span className="text-sm font-bold text-slate-700 font-heading block">No enquiries found</span>
+                    <span className="text-xs text-slate-400 font-sans">No pipeline records match the selected filter criteria.</span>
                   </td>
                 </tr>
               ) : (
@@ -412,16 +473,20 @@ export const AdminEnquiriesPage: React.FC = () => {
                   const statusCfg = getStatusBadgeConfig(enq.status);
 
                   return (
-                    <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors group">
-                      {/* Applicant & Contact */}
-                      <td className="py-4 px-4">
+                    <tr
+                      key={enq.id}
+                      onClick={() => handleOpenDetail(enq.id, 'overview')}
+                      className="hover:bg-slate-50/90 transition-colors group cursor-pointer"
+                    >
+                      {/* Applicant & Contact with clean embedded Reference */}
+                      <td className="py-4 px-5 min-w-[280px]">
                         <div className="flex items-center gap-3">
                           {enq.customer?.picture ? (
                             <div className="relative shrink-0">
                               <img
                                 src={enq.customer.picture}
                                 alt={enq.fullName}
-                                className="w-9 h-9 rounded-full object-cover border border-slate-200 shadow-2xs"
+                                className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-2xs"
                               />
                               <span
                                 className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
@@ -432,7 +497,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                             </div>
                           ) : (
                             <div className="relative shrink-0">
-                              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-teal-600 to-teal-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs font-heading">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-600 to-teal-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs font-heading">
                                 {initials}
                               </div>
                               {(enq.customer?.email || enq.customerId) && (
@@ -445,21 +510,29 @@ export const AdminEnquiriesPage: React.FC = () => {
                               )}
                             </div>
                           )}
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-extrabold text-[#0c1a26] block font-heading text-xs sm:text-[13px] group-hover:text-teal-700 transition-colors truncate">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-slate-900 font-heading text-sm group-hover:text-teal-700 transition-colors">
                                 {enq.fullName}
                               </span>
                               {(enq.customer?.email || enq.customerId) && (
-                                <span title="Google Verified Applicant" className="shrink-0">
+                                <span title="Google Verified Applicant" className="shrink-0 inline-flex items-center">
                                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 text-[11px] text-slate-500 font-sans mt-0.5">
+                            <div className="flex items-center gap-2 text-xs text-slate-500 font-sans mt-1">
+                              <span
+                                className="font-mono text-[10px] font-semibold text-slate-600 bg-slate-100/90 px-1.5 py-0.5 rounded border border-slate-200/90 tracking-tight whitespace-nowrap shadow-2xs"
+                                title="Application Reference"
+                              >
+                                {enq.referenceNumber}
+                              </span>
+                              <span className="text-slate-300">•</span>
                               <a
                                 href={`tel:${enq.mobileNumber}`}
-                                className="hover:text-teal-700 hover:underline font-semibold text-slate-600"
+                                onClick={(e) => e.stopPropagation()}
+                                className="hover:text-teal-700 hover:underline font-medium text-slate-600 whitespace-nowrap"
                               >
                                 {enq.mobileNumber}
                               </a>
@@ -470,7 +543,8 @@ export const AdminEnquiriesPage: React.FC = () => {
                                   )},%20this%20is%20Prime%20Associates%20Loans%20regarding%20your%20property%20loan%20enquiry%20Ref:%20${enq.referenceNumber}.`}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="inline-flex items-center gap-0.5 text-[10px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.5 rounded-md font-extrabold border border-emerald-200 transition-colors"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="inline-flex items-center gap-0.5 text-[10px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.5 rounded font-bold border border-emerald-200 transition-colors shrink-0"
                                   title="Chat on WhatsApp"
                                 >
                                   <span>WA</span>
@@ -481,25 +555,18 @@ export const AdminEnquiriesPage: React.FC = () => {
                         </div>
                       </td>
 
-                      {/* Reference Badge */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold font-heading text-slate-700 bg-slate-100/90 hover:bg-slate-200 border border-slate-200/90 transition-colors tracking-wide">
-                          {enq.referenceNumber}
-                        </span>
-                      </td>
-
                       {/* Location */}
-                      <td className="py-4 px-4 text-slate-600">
+                      <td className="py-4 px-5 text-slate-600 min-w-[160px] whitespace-nowrap">
                         <div className="flex items-center gap-1.5 text-xs font-medium">
                           <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span className="truncate max-w-[120px]">{enq.cityState || 'Tamil Nadu'}</span>
+                          <span>{enq.cityState || 'Tamil Nadu'}</span>
                         </div>
                       </td>
 
                       {/* Facility Type */}
-                      <td className="py-4 px-4 whitespace-nowrap">
+                      <td className="py-4 px-5 whitespace-nowrap min-w-[140px]">
                         <span
-                          className={`inline-block px-2.5 py-1 rounded-lg text-[11px] font-bold font-heading border ${getFacilityBadge(
+                          className={`inline-block px-2.5 py-1 rounded-lg text-xs font-bold font-heading border shadow-2xs ${getFacilityBadge(
                             enq.loanType
                           )}`}
                         >
@@ -508,18 +575,18 @@ export const AdminEnquiriesPage: React.FC = () => {
                       </td>
 
                       {/* Sanction Requested Amount */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <div className="font-heading font-extrabold text-[13px] sm:text-sm text-[#0c1a26] tracking-tight tabular-nums">
+                      <td className="py-4 px-5 whitespace-nowrap min-w-[150px]">
+                        <div className="font-heading font-extrabold text-sm text-slate-900 tracking-tight tabular-nums">
                           {formatAmountINR(enq.loanAmount)}
                         </div>
-                        <span className="text-[10px] text-slate-400 font-sans block">Requested</span>
+                        <span className="text-[10px] text-slate-400 font-sans block mt-0.5">Requested Facility</span>
                       </td>
 
                       {/* Consultation Slot Column */}
-                      <td className="py-4 px-4 text-xs whitespace-nowrap">
+                      <td className="py-4 px-5 text-xs whitespace-nowrap min-w-[180px]">
                         {appointment?.date || enq.preferredDate ? (
                           <div className="space-y-1">
-                            <div className="font-heading font-extrabold text-[#0c1a26] text-xs flex items-center gap-1.5">
+                            <div className="font-heading font-bold text-slate-900 text-xs flex items-center gap-1.5">
                               <Calendar className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                               <span>{formatDate(appointment?.date || enq.preferredDate)}</span>
                             </div>
@@ -537,9 +604,9 @@ export const AdminEnquiriesPage: React.FC = () => {
                       </td>
 
                       {/* Pipeline Status */}
-                      <td className="py-4 px-4 whitespace-nowrap">
+                      <td className="py-4 px-5 whitespace-nowrap min-w-[160px]">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold border font-heading ${statusCfg.badge}`}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border font-heading shadow-2xs ${statusCfg.badge}`}
                         >
                           <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
                           <span>{enq.status}</span>
@@ -547,14 +614,17 @@ export const AdminEnquiriesPage: React.FC = () => {
                       </td>
 
                       {/* Actions */}
-                      <td className="py-4 px-4 text-right whitespace-nowrap">
+                      <td className="py-4 px-5 text-right whitespace-nowrap min-w-[110px]">
                         <button
                           type="button"
-                          onClick={() => handleOpenDetail(enq.id, 'overview')}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#0c1a26] text-slate-700 hover:text-white rounded-xl text-xs font-extrabold font-heading transition-all border border-slate-200/90 cursor-pointer shadow-2xs hover:shadow-sm active:scale-95 group"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenDetail(enq.id, 'overview');
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-50 hover:bg-slate-900 text-slate-700 hover:text-white rounded-xl text-xs font-bold font-heading transition-all border border-slate-200 hover:border-slate-900 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 group/btn"
                         >
-                          <Eye className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
-                          <span>Review Dossier</span>
+                          <Eye className="w-3.5 h-3.5 text-slate-400 group-hover/btn:text-white transition-colors" />
+                          <span>Review</span>
                         </button>
                       </td>
                     </tr>
@@ -565,32 +635,89 @@ export const AdminEnquiriesPage: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-slate-50/50">
+        {/* Pagination Controls (Always visible at the bottom of the table) */}
+        <div className="p-4 sm:px-6 border-t border-slate-200/90 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-sans">
+          <div className="flex flex-wrap items-center gap-3">
             <span>
-              Showing Page <span className="font-bold text-[#0c1a26]">{page}</span> of <span className="font-bold text-[#0c1a26]">{totalPages}</span> ({totalCount} total)
+              Showing{' '}
+              <span className="font-bold text-slate-900 font-heading tabular-nums">
+                {totalCount === 0 ? 0 : (page - 1) * limit + 1}–{Math.min(page * limit, totalCount)}
+              </span>{' '}
+              of <span className="font-bold text-slate-900 font-heading tabular-nums">{totalCount}</span> enquiries
             </span>
-            <div className="flex items-center gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-white disabled:opacity-50 font-heading font-semibold text-xs"
+            <span className="text-slate-300 hidden sm:inline">•</span>
+            <span className="hidden sm:inline text-slate-500">
+              Page <span className="font-bold text-slate-900 font-heading">{page}</span> of{' '}
+              <span className="font-bold text-slate-900 font-heading">{Math.max(totalPages, 1)}</span>
+            </span>
+
+            {/* Pagination Limit (Rows per page) Selector */}
+            <span className="text-slate-300 hidden sm:inline">•</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-400 font-medium text-[11px]">Rows:</span>
+              <select
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="px-2 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-heading font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer shadow-2xs transition-all"
+                title="Select records per page"
               >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Previous</span>
-              </button>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-white disabled:opacity-50 font-heading font-semibold text-xs"
-              >
-                <span>Next</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
+                <option value={5}>5 / page</option>
+                <option value={10}>10 / page</option>
+                <option value={15}>15 / page</option>
+                <option value={25}>25 / page</option>
+                <option value={50}>50 / page</option>
+                <option value={100}>100 / page</option>
+              </select>
             </div>
           </div>
-        )}
+
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <button
+              type="button"
+              disabled={page <= 1 || loading}
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+              title="Previous Page"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Previous</span>
+            </button>
+
+            {/* Page Number Pills */}
+            {totalPages > 1 && (
+              <div className="hidden sm:flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPage(p)}
+                    className={`w-7 h-7 rounded-lg text-xs font-heading font-bold transition-all cursor-pointer ${
+                      p === page
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              disabled={page >= Math.max(totalPages, 1) || loading}
+              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+              title="Next Page"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* DETAIL MODAL / SLIDE-OVER */}

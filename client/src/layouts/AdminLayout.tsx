@@ -16,9 +16,11 @@ import {
   Globe,
   ShieldCheck,
   Users,
+  ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/images/logo.png';
+import logoDarkImg from '../assets/images/logo-dark.png';
 import { getDashboardStatsApi } from '../services/api';
 
 export const AdminLayout: React.FC = () => {
@@ -107,14 +109,14 @@ export const AdminLayout: React.FC = () => {
           path: '/admin/enquiries',
           icon: <FileSpreadsheet className="w-4 h-4 flex-shrink-0" />,
           badge: pendingCount > 0 ? `${pendingCount} New` : null,
-          badgeColor: 'bg-emerald-500 text-slate-950 font-bold',
+          badgeColor: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/35 font-bold',
         },
         {
           name: 'Enquired Customers',
           path: '/admin/customers',
           icon: <Users className="w-4 h-4 flex-shrink-0" />,
-          badge: 'Google Auth',
-          badgeColor: 'bg-blue-500/20 text-blue-300 border border-blue-500/30',
+          badge: 'Google',
+          badgeColor: 'bg-sky-500/15 text-sky-300 border border-sky-500/30',
         },
         {
           name: 'Appointments & Slots',
@@ -128,11 +130,11 @@ export const AdminLayout: React.FC = () => {
       group: 'Website CMS & Catalog',
       items: [
         {
-          name: 'Website Content CMS',
+          name: 'Website Content',
           path: '/admin/content',
           icon: <FileEdit className="w-4 h-4 flex-shrink-0" />,
           badge: 'Live CMS',
-          badgeColor: 'bg-teal-500/20 text-teal-300 border border-teal-500/30',
+          badgeColor: 'bg-teal-500/15 text-teal-300 border border-teal-500/30',
         },
         {
           name: 'Loan Services',
@@ -156,7 +158,7 @@ export const AdminLayout: React.FC = () => {
           path: '/admin/team',
           icon: <ShieldCheck className="w-4 h-4 flex-shrink-0" />,
           badge: 'Access',
-          badgeColor: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
+          badgeColor: 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30',
         },
         {
           name: 'Working Hours & Slots',
@@ -185,25 +187,32 @@ export const AdminLayout: React.FC = () => {
   return (
     <div className="admin-portal h-screen w-screen overflow-hidden bg-[#f4f6f8] flex font-sans antialiased text-slate-800">
       {/* ────────────────────────────────────────────────────────────
-          1. FIXED DESKTOP SIDEBAR WITH CENTERED LOGO (NO COLLAPSE TOGGLE)
+          1. FIXED DESKTOP SIDEBAR WITH SLEEK BRAND LOGO & NEAT FINTECH STYLING
           ──────────────────────────────────────────────────────────── */}
-      <aside className="hidden md:flex flex-col bg-[#0b1924] text-white h-screen w-64 flex-shrink-0 select-none z-30 border-r border-slate-800 shadow-xl">
-        {/* Centered Brand Logo */}
-        <div className="h-20 px-4 border-b border-slate-800/80 flex items-center justify-center bg-[#09151f] flex-shrink-0 text-center">
-          <Link to="/admin/dashboard" className="w-full flex items-center justify-center text-center">
+      <aside className="hidden md:flex flex-col bg-[#080e18] bg-gradient-to-b from-[#0b1424] via-[#080e18] to-[#050910] text-white h-screen w-[292px] flex-shrink-0 select-none z-30 border-r border-slate-800/80 shadow-[4px_0_30px_rgba(0,0,0,0.35)] relative">
+        {/* Brand Logo Header */}
+        <div className="h-20 px-5 border-b border-slate-800/80 flex items-center justify-center bg-gradient-to-b from-[#0e192c]/70 to-transparent flex-shrink-0 text-center relative overflow-hidden">
+          {/* Subtle Ambient Backlight */}
+          <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-48 h-20 bg-gradient-to-b from-orange-500/15 via-teal-500/10 to-transparent blur-xl pointer-events-none" />
+
+          <Link
+            to="/admin/dashboard"
+            className="w-full flex items-center justify-center text-center group relative z-10 transition-transform duration-200"
+          >
             <img
-              src={logoImg}
-              alt="Prime Associates"
-              className="h-11 w-auto max-w-[190px] object-contain mx-auto block brightness-110"
+              src={logoDarkImg}
+              alt="Prime Associate Loans"
+              className="h-11 w-auto max-w-[215px] object-contain mx-auto block transition-transform duration-300 group-hover:scale-[1.03] filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+              loading="eager"
             />
           </Link>
         </div>
 
         {/* Navigation Groups */}
-        <nav className="p-3.5 space-y-5 flex-1 overflow-y-auto">
+        <nav className="p-3.5 space-y-4 flex-1 overflow-y-auto admin-sidebar-scroll">
           {navigationGroups.map((grp, gIdx) => (
             <div key={gIdx} className="space-y-1">
-              <div className="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 font-heading">
+              <div className="px-3 pt-2 pb-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-400/90 font-heading">
                 {grp.group}
               </div>
 
@@ -212,24 +221,24 @@ export const AdminLayout: React.FC = () => {
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `group flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
+                    `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all duration-200 ${
                       isActive
-                        ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white shadow-sm font-bold'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                        ? 'bg-gradient-to-r from-teal-500/20 via-teal-500/12 to-emerald-500/5 text-white font-bold border border-teal-500/35 shadow-[0_2px_12px_rgba(20,184,166,0.15)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-r-full before:bg-gradient-to-b before:from-teal-400 before:to-emerald-400'
+                        : 'text-slate-300/90 hover:text-white hover:bg-slate-800/40 hover:border-slate-700/30 border border-transparent font-medium hover:translate-x-0.5'
                     }`
                   }
                 >
-                  <div className="flex items-center gap-2.5 truncate">
-                    <span className="transition-transform group-hover:scale-105 duration-150 text-slate-300 group-hover:text-white">
+                  <div className="flex items-center gap-3 min-w-0 pr-1">
+                    <span className="transition-all duration-200 flex-shrink-0 text-slate-400 group-hover:text-teal-300 group-hover:scale-110">
                       {item.icon}
                     </span>
-                    <span className="truncate font-heading">{item.name}</span>
+                    <span className="truncate font-heading tracking-tight text-[12px]">{item.name}</span>
                   </div>
 
                   {item.badge && (
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide flex-shrink-0 ${
-                        item.badgeColor || 'bg-slate-700 text-slate-200'
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide flex-shrink-0 shadow-xs ${
+                        item.badgeColor || 'bg-slate-800 text-slate-200 border border-slate-700'
                       }`}
                     >
                       {item.badge}
@@ -241,32 +250,42 @@ export const AdminLayout: React.FC = () => {
           ))}
         </nav>
 
-        {/* User Profile Card & Sign Out */}
-        <div className="p-3.5 border-t border-slate-800 bg-[#09151f] flex-shrink-0 space-y-2.5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0">
-              {admin?.name?.charAt(0) || 'A'}
+        {/* Unified Executive User Profile & Log Out */}
+        <div className="p-3 border-t border-slate-800/80 bg-gradient-to-t from-[#050910] to-[#080e18] flex-shrink-0">
+          <div className="p-3 rounded-2xl bg-gradient-to-b from-[#0e1726] to-[#09101b] border border-slate-800/90 shadow-lg space-y-3 backdrop-blur-sm">
+            {/* User Details */}
+            <div className="flex items-center gap-2.5">
+              <div className="relative flex-shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-md ring-1 ring-teal-400/30">
+                  {admin?.name?.charAt(0) || 'A'}
+                </div>
+                <span
+                  className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-[#0e1726]"
+                  title="Authorized Session Active"
+                />
+              </div>
+
+              <div className="overflow-hidden min-w-0 flex-1">
+                <div className="text-xs font-bold text-white truncate font-heading leading-tight">
+                  {admin?.name || 'Administrator'}
+                </div>
+                <div className="text-[10px] text-slate-400 truncate font-sans mt-0.5">
+                  {admin?.email}
+                </div>
+              </div>
             </div>
 
-            <div className="overflow-hidden min-w-0 flex-1">
-              <div className="text-xs font-bold text-white truncate font-heading">
-                {admin?.name || 'Administrator'}
-              </div>
-              <div className="text-[10px] text-slate-400 truncate font-sans">
-                {admin?.email}
-              </div>
-            </div>
+            {/* Professional Integrated Log Out Action Button */}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold font-heading text-slate-300 hover:text-white bg-slate-800/80 hover:bg-rose-500/20 border border-slate-700/60 hover:border-rose-500/40 rounded-xl transition-all duration-200 cursor-pointer shadow-xs active:scale-[0.98] group"
+              title="Log Out"
+            >
+              <LogOut className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-400 transition-colors" />
+              <span>Log Out</span>
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold font-heading text-red-300 bg-red-950/30 hover:bg-red-950/60 border border-red-800/40 rounded-xl transition-all cursor-pointer"
-            title="Sign Out"
-          >
-            <LogOut className="w-3.5 h-3.5 text-red-400" />
-            <span>Sign Out</span>
-          </button>
         </div>
       </aside>
 
@@ -274,31 +293,36 @@ export const AdminLayout: React.FC = () => {
           2. MOBILE SIDEBAR DRAWER (OVERLAY)
           ──────────────────────────────────────────────────────────── */}
       {mobileSidebarOpen && (
-        <div className="fixed inset-0 z-50 md:hidden bg-slate-950/70 backdrop-blur-xs flex">
-          <div className="w-64 bg-[#0b1924] text-white h-full flex flex-col border-r border-slate-800 shadow-2xl animate-in slide-in-from-left duration-200">
-            {/* Mobile Header with Centered Logo */}
-            <div className="h-20 px-4 border-b border-slate-800 flex items-center justify-between flex-shrink-0 bg-[#09151f]">
+        <div className="fixed inset-0 z-50 md:hidden bg-slate-950/75 backdrop-blur-xs flex">
+          <div className="w-[292px] bg-[#080e18] bg-gradient-to-b from-[#0b1424] via-[#080e18] to-[#050910] text-white h-full flex flex-col border-r border-slate-800/80 shadow-2xl animate-in slide-in-from-left duration-200">
+            {/* Mobile Header with Centered Dark Logo & Close Button */}
+            <div className="h-20 px-4 border-b border-slate-800/80 flex items-center justify-between flex-shrink-0 bg-gradient-to-b from-[#0e192c]/70 to-transparent relative">
               <Link
                 to="/admin/dashboard"
                 onClick={() => setMobileSidebarOpen(false)}
                 className="flex items-center justify-center mx-auto"
               >
-                <img src={logoImg} alt="Prime Associates" className="h-9 w-auto brightness-110" />
+                <img
+                  src={logoDarkImg}
+                  alt="Prime Associate Loans"
+                  className="h-10 w-auto max-w-[190px] object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+                />
               </Link>
               <button
                 type="button"
                 onClick={() => setMobileSidebarOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-white rounded-lg cursor-pointer absolute right-3"
+                aria-label="Close Sidebar"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Mobile Nav Links */}
-            <nav className="p-3.5 space-y-4 flex-1 overflow-y-auto">
+            <nav className="p-3.5 space-y-4 flex-1 overflow-y-auto admin-sidebar-scroll">
               {navigationGroups.map((grp, gIdx) => (
                 <div key={gIdx} className="space-y-1">
-                  <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 font-heading">
+                  <div className="px-3 pt-2 pb-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-400/90 font-heading">
                     {grp.group}
                   </div>
                   {grp.items.map((item) => (
@@ -307,21 +331,23 @@ export const AdminLayout: React.FC = () => {
                       to={item.path}
                       onClick={() => setMobileSidebarOpen(false)}
                       className={({ isActive }) =>
-                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold ${
+                        `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all duration-200 ${
                           isActive
-                            ? 'bg-teal-600 text-white font-bold shadow-md'
-                            : 'text-slate-300 hover:bg-slate-800/60'
+                            ? 'bg-gradient-to-r from-teal-500/20 via-teal-500/12 to-emerald-500/5 text-white font-bold border border-teal-500/35 shadow-[0_2px_12px_rgba(20,184,166,0.15)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-r-full before:bg-gradient-to-b before:from-teal-400 before:to-emerald-400'
+                            : 'text-slate-300/90 hover:text-white hover:bg-slate-800/40 hover:border-slate-700/30 border border-transparent font-medium'
                         }`
                       }
                     >
-                      <div className="flex items-center gap-2.5">
-                        {item.icon}
-                        <span>{item.name}</span>
+                      <div className="flex items-center gap-3 min-w-0 pr-1">
+                        <span className="text-slate-400 group-hover:text-teal-300">
+                          {item.icon}
+                        </span>
+                        <span className="truncate font-heading tracking-tight text-[12px]">{item.name}</span>
                       </div>
                       {item.badge && (
                         <span
-                          className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            item.badgeColor || 'bg-slate-700 text-slate-200'
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide flex-shrink-0 ${
+                            item.badgeColor || 'bg-slate-800 text-slate-200 border border-slate-700'
                           }`}
                         >
                           {item.badge}
@@ -333,27 +359,33 @@ export const AdminLayout: React.FC = () => {
               ))}
             </nav>
 
-            {/* Mobile Bottom Profile */}
-            <div className="p-4 border-t border-slate-800 bg-[#09151f] space-y-3 flex-shrink-0">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
-                  {admin?.name?.charAt(0) || 'A'}
+            {/* Mobile Bottom Profile & Log Out */}
+            <div className="p-3 border-t border-slate-800/80 bg-gradient-to-t from-[#050910] to-[#080e18] flex-shrink-0">
+              <div className="p-3 rounded-2xl bg-gradient-to-b from-[#0e1726] to-[#09101b] border border-slate-800/90 shadow-lg space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
+                      {admin?.name?.charAt(0) || 'A'}
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full ring-2 ring-[#0e1726]" />
+                  </div>
+                  <div className="overflow-hidden min-w-0 flex-1">
+                    <div className="text-xs font-bold text-white truncate font-heading">
+                      {admin?.name || 'Administrator'}
+                    </div>
+                    <div className="text-[10px] text-slate-400 truncate font-sans">{admin?.email}</div>
+                  </div>
                 </div>
-                <div className="overflow-hidden min-w-0">
-                  <span className="text-xs font-bold text-white truncate block">
-                    {admin?.name || 'Administrator'}
-                  </span>
-                  <span className="text-[10px] text-slate-400 truncate block">{admin?.email}</span>
-                </div>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-rose-500/20 rounded-xl border border-slate-700/60 hover:border-rose-500/40 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Log Out</span>
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-red-300 bg-red-950/40 hover:bg-red-900/50 rounded-xl border border-red-800/40 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5 text-red-400" />
-                <span>Sign Out</span>
-              </button>
             </div>
           </div>
           <div className="flex-1" onClick={() => setMobileSidebarOpen(false)} />
@@ -364,50 +396,75 @@ export const AdminLayout: React.FC = () => {
           3. MAIN CONTENT VIEWPORT
           ──────────────────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#f4f6f8]">
-        {/* Clean Corporate Top Navbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 flex-shrink-0 z-20 shadow-xs">
+        {/* Corporate Top Navbar */}
+        <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 sm:px-6 lg:px-8 flex-shrink-0 z-20 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 cursor-pointer"
+              className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               aria-label="Open Mobile Menu"
             >
               <Menu className="w-5 h-5" />
             </button>
 
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 font-heading">
-              <span className="hidden sm:inline text-slate-400">Prime Associates</span>
-              <span className="text-slate-300 hidden sm:inline">/</span>
-              <span className="text-xs sm:text-sm font-extrabold text-[#0c1a26]">
+            {/* Elegant Breadcrumb Hierarchy */}
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 font-heading">
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100/90 text-slate-600 text-xs font-semibold border border-slate-200/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />
+                Prime Associates
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 hidden sm:inline" />
+              <span className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
                 {getCurrentPageTitle()}
               </span>
-            </div>
+            </nav>
           </div>
 
           {/* Right Header Badges & Actions */}
           <div className="flex items-center gap-3">
-            {/* Live IST Time */}
+            {/* Live IST Time Desk Clock */}
             {currentTime && (
-              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-600 text-xs font-heading font-semibold border border-slate-200 shadow-2xs">
-                <Clock className="w-3.5 h-3.5 text-teal-600" />
-                <span>{currentTime} IST</span>
+              <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <Clock className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-xs font-semibold text-slate-700 font-mono tracking-tight tabular-nums">
+                  {currentTime}
+                </span>
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider bg-slate-200/70 px-1 py-0.5 rounded font-sans">
+                  IST
+                </span>
               </div>
             )}
 
-            {/* View Live Public Site */}
+            {/* Subtle Divider */}
+            <div className="hidden sm:block h-5 w-px bg-slate-200" />
+
+            {/* View Live Public Site Button */}
             <a
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold font-heading text-[#0c1a26] bg-white hover:bg-slate-50 border border-slate-200 shadow-xs hover:border-teal-300 transition-colors"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold font-heading text-slate-700 hover:text-teal-700 bg-white hover:bg-teal-50/50 border border-slate-200 hover:border-teal-300 shadow-2xs hover:shadow-xs transition-all duration-200 group active:scale-95"
               title="Open Public User Website in New Tab"
             >
-              <Globe className="w-3.5 h-3.5 text-teal-600" />
+              <Globe className="w-3.5 h-3.5 text-teal-600 group-hover:rotate-12 transition-transform duration-300" />
               <span className="hidden sm:inline">View Website</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
+              <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-teal-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
+
+            {/* Quick Admin Profile Chip */}
+            <div className="flex items-center gap-2 pl-1">
+              <div
+                className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-slate-100"
+                title={admin?.name || 'Administrator'}
+              >
+                {admin?.name?.charAt(0) || 'A'}
+              </div>
+            </div>
           </div>
         </header>
 

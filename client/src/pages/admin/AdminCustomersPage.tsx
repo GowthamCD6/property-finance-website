@@ -250,41 +250,76 @@ export const AdminCustomersPage: React.FC = () => {
 
       {/* Customer Directory Table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="p-16 text-center space-y-3">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600" />
-            <span className="text-xs font-semibold text-slate-500 font-sans block">
-              Loading verified enquired customers...
-            </span>
-          </div>
-        ) : customers.length === 0 ? (
-          <div className="p-16 text-center space-y-3">
-            <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
-              <Users className="w-6 h-6" />
-            </div>
-            <h4 className="text-sm font-bold text-[#0c1a26] font-heading">
-              No enquired customers found
-            </h4>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto font-sans">
-              Only users who have signed in with their Google account and submitted at least one loan application will be listed here.
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200/90 text-slate-500 font-extrabold uppercase tracking-wider text-[10px] font-heading">
-                  <th className="py-3.5 px-5">Verified Borrower</th>
-                  <th className="py-3.5 px-4">Contact Phone</th>
-                  <th className="py-3.5 px-4">Loan Inquiries</th>
-                  <th className="py-3.5 px-4">Latest Application</th>
-                  <th className="py-3.5 px-4">Preferred Slot</th>
-                  <th className="py-3.5 px-4">Last Active</th>
-                  <th className="py-3.5 px-5 text-right">Actions</th>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="bg-slate-50/90 border-b border-slate-200/90 text-slate-600 font-bold uppercase tracking-wider text-[11px] font-heading">
+                <th className="py-4 px-5 min-w-[260px]">Verified Borrower</th>
+                <th className="py-4 px-4 min-w-[140px]">Contact Phone</th>
+                <th className="py-4 px-4 min-w-[140px]">Loan Inquiries</th>
+                <th className="py-4 px-4 min-w-[170px]">Latest Application</th>
+                <th className="py-4 px-4 min-w-[160px]">Preferred Slot</th>
+                <th className="py-4 px-4 min-w-[140px]">Last Active</th>
+                <th className="py-4 px-5 text-right min-w-[110px]">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-sans">
+              {loading ? (
+                <>
+                  {Array.from({ length: 6 }).map((_, idx) => (
+                    <tr key={idx} className="animate-pulse border-b border-slate-100">
+                      <td className="py-4 px-5 min-w-[260px]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-slate-200 shrink-0" />
+                          <div className="space-y-1.5 flex-1">
+                            <div className="h-4 bg-slate-200 rounded w-32" />
+                            <div className="h-3 bg-slate-100 rounded w-40" />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 min-w-[140px]">
+                        <div className="h-3.5 bg-slate-200 rounded w-24" />
+                      </td>
+                      <td className="py-4 px-4 min-w-[140px]">
+                        <div className="space-y-1">
+                          <div className="h-3.5 bg-slate-200 rounded w-16" />
+                          <div className="h-2.5 bg-slate-100 rounded w-20" />
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 min-w-[170px]">
+                        <div className="space-y-1">
+                          <div className="h-3.5 bg-slate-200 rounded w-24" />
+                          <div className="h-2.5 bg-slate-100 rounded w-16" />
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 min-w-[160px]">
+                        <div className="h-5 bg-slate-200 rounded-md w-24" />
+                      </td>
+                      <td className="py-4 px-4 min-w-[140px]">
+                        <div className="h-3.5 bg-slate-200 rounded w-20" />
+                      </td>
+                      <td className="py-4 px-5 text-right min-w-[110px]">
+                        <div className="h-7 bg-slate-200 rounded-xl w-20 ml-auto" />
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : customers.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-16 text-center space-y-3">
+                    <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
+                      <Users className="w-6 h-6" />
+                    </div>
+                    <h4 className="text-sm font-bold text-[#0c1a26] font-heading">
+                      No enquired customers found
+                    </h4>
+                    <p className="text-xs text-slate-500 max-w-sm mx-auto font-sans">
+                      Only users who have signed in with their Google account and submitted at least one loan application will be listed here.
+                    </p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-sans">
-                {customers.map((c) => {
+              ) : (
+                customers.map((c) => {
                   const latest = c.latestEnquiry;
 
                   return (
@@ -435,11 +470,23 @@ export const AdminCustomersPage: React.FC = () => {
                       </td>
                     </tr>
                   );
-                })}
-              </tbody>
+                })
+              )}
+            </tbody>
             </table>
           </div>
-        )}
+
+        {/* Bottom Summary & Directory Status Bar */}
+        <div className="p-4 sm:px-6 border-t border-slate-200/90 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-sans">
+          <div>
+            Showing <span className="font-bold text-slate-900 font-heading tabular-nums">{customers.length}</span> of{' '}
+            <span className="font-bold text-slate-900 font-heading tabular-nums">{totalCount}</span> verified borrowers
+          </div>
+          <div className="flex items-center gap-2 text-slate-400 text-[11px] font-sans">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+            <span>Google One-Click Authenticated Accounts</span>
+          </div>
+        </div>
       </div>
 
       {/* ====================================================================== */}
@@ -648,3 +695,4 @@ export const AdminCustomersPage: React.FC = () => {
 };
 
 export default AdminCustomersPage;
+
