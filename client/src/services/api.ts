@@ -127,6 +127,12 @@ export async function submitLoanEnquiry(data: any): Promise<any> {
       if (createdEnquiry.id) saveLocalEnquiryDocuments(createdEnquiry.id, documents);
       if (createdEnquiry.referenceNumber) saveLocalEnquiryDocuments(createdEnquiry.referenceNumber, documents);
       saveLocalEnquiry(createdEnquiry, documents);
+      if (json.data?.token) {
+        localStorage.setItem('vpf_user_token', json.data.token);
+      }
+      if (json.data?.customer) {
+        localStorage.setItem('vpf_user_profile', JSON.stringify(json.data.customer));
+      }
     }
     return json;
   } catch (err: any) {
@@ -197,6 +203,18 @@ export async function loginUserWithGoogleApi(credential: string): Promise<{ toke
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Google User authentication failed');
+  return json.data;
+}
+
+export async function loginCustomerDirectApi(identifier: string): Promise<{ token: string; customer: CustomerUser }> {
+  const res = await fetch(`${API_BASE}/auth/customer/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ identifier }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Direct access failed. Please verify your details.');
   return json.data;
 }
 

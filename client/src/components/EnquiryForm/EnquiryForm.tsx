@@ -192,7 +192,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
 
   // Customer Authentication Context
-  const { customer, isAuthenticated, loginWithGoogle } = useCustomerAuth();
+  const { customer, isAuthenticated, loginWithGoogle, setAuthenticatedCustomer } = useCustomerAuth();
 
   // Auto-fill from authenticated customer profile
   useEffect(() => {
@@ -348,13 +348,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       return;
     }
 
-    // Google Sign-In Requirement check
-    if (!isAuthenticated || !customer) {
-      setFormError('Google Sign-In is required before submitting your loan enquiry so that our advisors can allot and send your appointment schedule directly to your account.');
-      triggerGoogleLogin();
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -372,10 +365,10 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
         .join('\n\n');
 
       const payload: any = {
-        fullName: fullName.trim() || customer.name,
+        fullName: fullName.trim() || customer?.name,
         mobileNumber: cleanPhone,
-        email: customer.email || email.trim() || undefined,
-        customerId: customer.id,
+        email: customer?.email || email.trim() || undefined,
+        customerId: customer?.id,
         preferredContactMethod,
         cityState: cityState.trim(),
         loanType,
@@ -412,6 +405,16 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       }
 
       const result = await submitLoanEnquiry(payload);
+
+      // Automatically authenticate the user session with returned credentials
+      if (result.data?.customer) {
+        try {
+          await setAuthenticatedCustomer(result.data.customer, result.data.token);
+        } catch {
+          // Non-blocking
+        }
+      }
+
       setSubmissionSuccess(result.data);
     } catch (err: any) {
       setFormError(err.message || 'An error occurred while submitting your enquiry. Please check your inputs.');

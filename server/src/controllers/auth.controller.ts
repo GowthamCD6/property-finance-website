@@ -428,11 +428,22 @@ export async function getCustomerEnquiries(req: AuthenticatedRequest, res: Respo
       return;
     }
 
+    const customerPhone = req.customer.phone ? req.customer.phone.replace(/[\s-]/g, '') : null;
+    const phoneConditions: any[] = [];
+    if (customerPhone) {
+      phoneConditions.push({ mobileNumber: { equals: customerPhone } });
+      if (customerPhone.length === 10) {
+        phoneConditions.push({ mobileNumber: { equals: `+91${customerPhone}` } });
+        phoneConditions.push({ mobileNumber: { equals: `91${customerPhone}` } });
+      }
+    }
+
     const enquiries = await prisma.enquiry.findMany({
       where: {
         OR: [
           { customerId: req.customer.id },
           { email: { equals: req.customer.email } },
+          ...phoneConditions,
         ],
       },
       include: {
@@ -455,6 +466,7 @@ export async function getCustomerEnquiries(req: AuthenticatedRequest, res: Respo
     next(err);
   }
 }
+
 
 /**
  * Submit or update a client review / feedback
@@ -615,4 +627,111 @@ export async function deleteCustomerReview(req: AuthenticatedRequest, res: Respo
     next(err);
   }
 }
+
+/**
+  * Direct Customer Login via Mobile Number, Email, or Application Reference Number
+  */
+export async function customerDirectLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { identifier } = req.body;
+    if (!identifier || !identifier.trim()) {
+      res.status(400).json({
+        success: false,
+        message: 'Please provide your registered mobile number, email, or application reference number.',
+      });
+      return;
+    }
+
+    const inputVal = identifier.trim();
+    const cleanDigits = inputVal.replace(/[\s-]/g, '');
+
+    // 1. Search for existing loan enquiry first by reference number, phone, or email
+    const enquiry = await prisma.enquiry.findFirst({
+      where: {
+        OR: [
+          { referenceNumber: { equals: inputVal } },
+          { mobileNumber: { equals: cleanDigits } },
+          { email: { equals: inputVal.toLowerCase() } },
+        ],
+      },
+      include: { customer: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    let customer = enquiry?.customer;
+
+    if (!customer) {
+      // 2. Try finding CustomerUser directly
+      customer = await prisma.customerUser.findFirst({
+        where: {
+          OR: [
+            { email: inputVal.toLowerCase() },
+            { phone: cleanDigits },
+          ],
+        },
+      });
+    }
+
+    if (!customer && enquiry) {
+      // Auto-provision CustomerUser for this existing enquiry
+      const email = enquiry.email || `${enquiry.mobileNumber}@client.primeassociates.in`;
+      customer = await prisma.customerUser.create({
+        data: {
+          email: email.toLowerCase(),
+          name: enquiry.fullName,
+          phone: enquiry.mobileNumber,
+          lastLoginAt: new Date(),
+        },
+      });
+      // Link enquiry
+      await prisma.enquiry.update({
+        where: { id: enquiry.id },
+        data: { customerId: customer.id },
+      });
+    }
+
+    if (!customer) {
+      res.status(404).json({
+        success: false,
+        message: 'No loan application or borrower record found matching this mobile number, email, or reference number. Please submit an enquiry from any loan page to register.',
+      });
+      return;
+    }
+
+    // Generate Perpetual Token
+    const token = jwt.sign(
+      {
+        id: customer.id,
+        email: customer.email,
+        type: 'customer',
+      },
+      config.jwtSecret
+    );
+
+    res.cookie('customer_token', token, {
+      httpOnly: true,
+      secure: config.nodeEnv === 'production',
+      sameSite: 'lax',
+      maxAge: 36500 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      success: true,
+      message: 'Authentication successful. Welcome to your borrower portal.',
+      data: {
+        token,
+        customer: {
+          id: customer.id,
+          name: customer.name,
+          email: customer.email,
+          picture: customer.picture,
+          phone: customer.phone,
+        },
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 

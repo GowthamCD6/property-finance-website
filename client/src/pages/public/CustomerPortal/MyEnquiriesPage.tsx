@@ -41,10 +41,29 @@ import {
 } from '../../../services/api';
 
 export const MyEnquiriesPage: React.FC = () => {
-  const { customer, isAuthenticated, isLoading, enquiries, loginWithGoogle, logout, refreshEnquiries } = useCustomerAuth();
+  const { customer, isAuthenticated, isLoading, enquiries, loginWithGoogle, loginDirect, logout, refreshEnquiries } = useCustomerAuth();
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [directIdentifier, setDirectIdentifier] = useState('');
+  const [isDirectLoggingIn, setIsDirectLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+
+  const handleDirectLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!directIdentifier.trim()) {
+      setLoginError('Please enter your registered mobile number, email, or application reference number.');
+      return;
+    }
+    setIsDirectLoggingIn(true);
+    setLoginError(null);
+    try {
+      await loginDirect(directIdentifier.trim());
+    } catch (err: any) {
+      setLoginError(err.message || 'Could not find a loan application matching these details.');
+    } finally {
+      setIsDirectLoggingIn(false);
+    }
+  };
 
   // Tab & Review Feedback State
   const [activeTab, setActiveTab] = useState<'enquiries' | 'review'>('enquiries');
@@ -314,6 +333,43 @@ export const MyEnquiriesPage: React.FC = () => {
               </>
             )}
           </button>
+
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-slate-200 w-full" />
+            <span className="bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 font-heading shrink-0">
+              Or Lookup by Application
+            </span>
+          </div>
+
+          <form onSubmit={handleDirectLogin} className="space-y-3 text-left">
+            <div>
+              <label className="text-xs font-bold text-slate-700 font-heading block mb-1">
+                Mobile Number, Email, or Reference Number
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. 9876543210 or VPF-2026-..."
+                value={directIdentifier}
+                onChange={(e) => setDirectIdentifier(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 focus:border-brand-teal focus:bg-white rounded-xl text-sm font-medium text-slate-900 outline-none transition-all"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isDirectLoggingIn}
+              className="w-full h-11 px-4 bg-brand-teal hover:bg-teal-700 text-white font-bold font-heading text-xs uppercase tracking-wider rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+            >
+              {isDirectLoggingIn ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Locating Application...</span>
+                </>
+              ) : (
+                <span>Access My User Panel &rarr;</span>
+              )}
+            </button>
+          </form>
 
           <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-center gap-2 font-sans">
             <ShieldCheck className="w-3.5 h-3.5 text-brand-teal" />

@@ -5,6 +5,7 @@ import {
   logout,
   getMe,
   googleUserLogin,
+  customerDirectLogin,
   getCustomerMe,
   getCustomerEnquiries,
   submitCustomerReview,
@@ -22,8 +23,9 @@ router.post('/google/admin', loginRateLimiter, googleAdminLogin);
 router.post('/logout', logout);
 router.get('/me', requireAdminAuth, getMe);
 
-// Public Customer / Borrower Authentication Endpoints (Google SSO)
+// Public Customer / Borrower Authentication Endpoints (Google SSO & Direct Access)
 router.post('/google/user', googleUserLogin);
+router.post('/customer/login', customerDirectLogin);
 router.get('/customer/me', requireCustomerAuth, getCustomerMe);
 router.get('/customer/enquiries', requireCustomerAuth, getCustomerEnquiries);
 router.post('/customer/review', requireCustomerAuth, submitCustomerReview);

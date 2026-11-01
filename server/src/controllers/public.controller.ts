@@ -206,36 +206,91 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
 
     const referenceNumber = await generateEnquiryReference();
 
-    // Auto-link CustomerUser if enquiry email matches an existing borrower account or user is authenticated
+    // Auto-link or auto-provision CustomerUser account so borrower can immediately track in user panel
     let matchedCustomerId: string | null = null;
-    if (validatedData.email) {
-      const existingBorrower = await prisma.customerUser.findUnique({
-        where: { email: validatedData.email.toLowerCase() },
-      });
-      if (existingBorrower) {
-        matchedCustomerId = existingBorrower.id;
+    let customerUser: any = null;
+
+    // Check token from header or cookie first
+    let customerToken: string | undefined;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      customerToken = authHeader.substring(7);
+    } else if (req.cookies && req.cookies.customer_token) {
+      customerToken = req.cookies.customer_token;
+    }
+    if (customerToken) {
+      try {
+        const decoded = jwt.verify(customerToken, config.jwtSecret) as any;
+        if (decoded?.id) {
+          matchedCustomerId = decoded.id;
+          customerUser = await prisma.customerUser.findUnique({ where: { id: decoded.id } });
+        }
+      } catch {
+        // Non-blocking
       }
     }
 
+    // If not authenticated via token, auto-provision or match via email or phone
     if (!matchedCustomerId) {
-      let customerToken: string | undefined;
-      const authHeader = req.headers.authorization;
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        customerToken = authHeader.substring(7);
-      } else if (req.cookies && req.cookies.customer_token) {
-        customerToken = req.cookies.customer_token;
-      }
-      if (customerToken) {
-        try {
-          const decoded = jwt.verify(customerToken, config.jwtSecret) as any;
-          if (decoded?.id) {
-            matchedCustomerId = decoded.id;
-          }
-        } catch {
-          // Non-blocking
+      if (validatedData.email) {
+        const existingBorrower = await prisma.customerUser.findUnique({
+          where: { email: validatedData.email.toLowerCase() },
+        });
+        if (existingBorrower) {
+          matchedCustomerId = existingBorrower.id;
+          customerUser = existingBorrower;
+        } else {
+          customerUser = await prisma.customerUser.create({
+            data: {
+              email: validatedData.email.toLowerCase(),
+              name: validatedData.fullName,
+              phone: validatedData.mobileNumber,
+              lastLoginAt: new Date(),
+            },
+          });
+          matchedCustomerId = customerUser.id;
+        }
+      } else if (validatedData.mobileNumber) {
+        const fallbackEmail = `${validatedData.mobileNumber}@client.primeassociates.in`;
+        customerUser = await prisma.customerUser.findFirst({
+          where: {
+            OR: [
+              { phone: validatedData.mobileNumber },
+              { email: fallbackEmail },
+            ],
+          },
+        });
+        if (customerUser) {
+          matchedCustomerId = customerUser.id;
+        } else {
+          customerUser = await prisma.customerUser.create({
+            data: {
+              email: fallbackEmail,
+              name: validatedData.fullName,
+              phone: validatedData.mobileNumber,
+              lastLoginAt: new Date(),
+            },
+          });
+          matchedCustomerId = customerUser.id;
         }
       }
     }
+
+    // Format rich metadata into additionalNotes for comprehensive dossier persistence
+    const metadataItems: string[] = [];
+    if (validatedData.preferredBank) {
+      metadataItems.push(`🏛️ Preferred Bank / Channel: ${validatedData.preferredBank}`);
+    }
+    if ((validatedData as any).carLoanDetails) {
+      const car = (validatedData as any).carLoanDetails;
+      metadataItems.push(
+        `🚗 Vehicle Specifications: ${car.carType?.toUpperCase() || 'NEW'} | Showroom: ${car.showroomName || 'N/A'} | Area: ${car.area || 'N/A'} | On-Road: ₹${car.onRoadPrice || 'N/A'}`
+      );
+    }
+    if (validatedData.additionalNotes) {
+      metadataItems.push(validatedData.additionalNotes);
+    }
+    const finalNotes = metadataItems.filter(Boolean).join('\n\n') || null;
 
     // Persist in transaction
     const result = await prisma.$transaction(async (tx) => {
@@ -258,7 +313,7 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
           preferredDate: validatedData.preferredDate || 'Pending Advisor Allotment',
           preferredTimeSlot: validatedData.preferredTimeSlot || 'Pending Advisor Allotment',
           meetingMode: validatedData.meetingMode || 'phone',
-          additionalNotes: validatedData.additionalNotes || null,
+          additionalNotes: finalNotes,
           status: 'Pending',
           consentGiven: true,
         },
@@ -293,6 +348,26 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
       return { enquiry, appointment };
     });
 
+    // Generate Customer Perpetual Auth Token for seamless User Panel access
+    let generatedCustomerToken: string | null = null;
+    if (matchedCustomerId && customerUser) {
+      generatedCustomerToken = jwt.sign(
+        {
+          id: customerUser.id,
+          email: customerUser.email,
+          type: 'customer',
+        },
+        config.jwtSecret
+      );
+
+      res.cookie('customer_token', generatedCustomerToken, {
+        httpOnly: true,
+        secure: config.nodeEnv === 'production',
+        sameSite: 'lax',
+        maxAge: 36500 * 24 * 60 * 60 * 1000,
+      });
+    }
+
     // Send admin notification
     notifyAdminNewEnquiry({
       referenceNumber: result.enquiry.referenceNumber,
@@ -319,6 +394,16 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
         meetingSlot: result.appointment?.timeSlot || 'Pending Advisor Allotment',
         appointmentStatus: result.appointment?.status || 'Awaiting Advisor Slot Allotment',
         createdAt: result.enquiry.createdAt,
+        token: generatedCustomerToken,
+        customer: customerUser
+          ? {
+              id: customerUser.id,
+              name: customerUser.name,
+              email: customerUser.email,
+              picture: customerUser.picture,
+              phone: customerUser.phone,
+            }
+          : null,
       },
     });
   } catch (err) {

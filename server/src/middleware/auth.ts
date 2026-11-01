@@ -15,6 +15,7 @@ export interface AuthenticatedRequest extends Request {
     email: string;
     name: string;
     picture?: string | null;
+    phone?: string | null;
   };
 }
 
@@ -107,7 +108,7 @@ export async function requireCustomerAuth(
 
     const customer = await prisma.customerUser.findUnique({
       where: { id: customerId },
-      select: { id: true, email: true, name: true, picture: true },
+      select: { id: true, email: true, name: true, picture: true, phone: true },
     });
 
     if (!customer) {

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { CustomerUser, Enquiry } from '../types';
 import {
   loginUserWithGoogleApi,
+  loginCustomerDirectApi,
   getCustomerProfileApi,
   getCustomerEnquiriesApi,
   logoutUserApi,
@@ -13,6 +14,8 @@ interface CustomerAuthContextType {
   isLoading: boolean;
   enquiries: Enquiry[];
   loginWithGoogle: (credential: string) => Promise<CustomerUser>;
+  loginDirect: (identifier: string) => Promise<CustomerUser>;
+  setAuthenticatedCustomer: (customer: CustomerUser, token?: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshEnquiries: () => Promise<Enquiry[]>;
 }
@@ -91,6 +94,29 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   };
 
+  const loginDirect = async (identifier: string): Promise<CustomerUser> => {
+    setIsLoading(true);
+    try {
+      const data = await loginCustomerDirectApi(identifier);
+      localStorage.setItem('vpf_user_token', data.token);
+      localStorage.setItem('vpf_user_profile', JSON.stringify(data.customer));
+      setCustomer(data.customer);
+      await fetchEnquiries();
+      return data.customer;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const setAuthenticatedCustomer = async (cust: CustomerUser, token?: string) => {
+    if (token) {
+      localStorage.setItem('vpf_user_token', token);
+    }
+    localStorage.setItem('vpf_user_profile', JSON.stringify(cust));
+    setCustomer(cust);
+    await fetchEnquiries();
+  };
+
   const logout = async () => {
     try {
       await logoutUserApi();
@@ -110,6 +136,8 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         isLoading,
         enquiries,
         loginWithGoogle,
+        loginDirect,
+        setAuthenticatedCustomer,
         logout,
         refreshEnquiries: fetchEnquiries,
       }}
