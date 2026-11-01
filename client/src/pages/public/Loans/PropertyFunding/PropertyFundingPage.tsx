@@ -22,6 +22,7 @@ import {
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../../components/common/InteractiveDocumentVault';
 import { Service } from '../../../../types';
+import purchaseLoanHeroImage from '../../../../assets/images/purchase-loan.jpg';
 
 export const PropertyFundingPage: React.FC = () => {
   const context = useOutletContext<{ services?: Service[] }>();
@@ -143,9 +144,23 @@ export const PropertyFundingPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: COMMERCIAL REAL ESTATE & LRD DESK
           ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#0A1926] text-white pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-brand-teal/20">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-16 pb-16 lg:pt-24 lg:pb-24 border-b border-brand-teal/20">
+        {/* Background Photographic Image for Purchase Loans & Takeover */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={purchaseLoanHeroImage}
+            alt="Purchase Loans & Property Takeover Architecture"
+            className="w-full h-full object-cover object-center brightness-[0.70] contrast-[1.05]"
+            loading="eager"
+          />
+          {/* Calibrated lightweight translucent overlays */}
+          <div className="absolute inset-0 bg-slate-950/75" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-slate-950/80" />
+        </div>
+
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
