@@ -790,51 +790,8 @@ export const HowItWorksPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Interactive 4-Phase Stepper Inside Console */}
-                <div className="relative z-10 pt-2 border-t border-white/15 mt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider">
-                      Interactive Stage Synchronization
-                    </span>
-                    <span className="text-[11px] font-heading font-extrabold text-teal-300">
-                      Phase {activePhase} / 4 Active
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-4 gap-1.5">
-                    {advisoryPhases.map((p) => {
-                      const isAct = activePhase === p.phase;
-                      return (
-                        <button
-                          key={p.phase}
-                          type="button"
-                          onClick={() => setActivePhase(p.phase)}
-                          className={`py-2 px-1 rounded-xl text-center transition-all cursor-pointer border font-heading ${
-                            isAct
-                              ? 'bg-teal-500/30 border-teal-400 text-white shadow-[0_0_15px_rgba(20,184,166,0.25)] backdrop-blur-md'
-                              : 'bg-white/[0.06] border-white/12 text-slate-300 hover:text-white hover:bg-white/12 backdrop-blur-sm'
-                          }`}
-                        >
-                          <span
-                            className={`w-5 h-5 mx-auto rounded-full flex items-center justify-center text-[10px] font-extrabold font-heading mb-1 ${
-                              isAct ? 'bg-teal-400 text-slate-950 shadow-sm' : 'bg-white/15 text-slate-200'
-                            }`}
-                          >
-                            {p.number}
-                          </span>
-                          <span className="text-[9px] block font-bold font-heading truncate">
-                            {p.phase === 1 && 'Pre-Audit'}
-                            {p.phase === 2 && 'Syndication'}
-                            {p.phase === 3 && 'TSR & Site'}
-                            {p.phase === 4 && 'Disbursement'}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
                 {/* Console Fast-Track Action Button */}
-                <div className="relative z-10 pt-2">
+                <div className="relative z-10 pt-1">
                   <Link
                     to={`/enquire?amount=${simAmountLakhs * 100000}&tenure=${simTenureYears}&rate=${currentRate}&type=${simLoanType}`}
                     className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-teal-500 via-brand-teal to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_10px_25px_rgba(24,124,120,0.4)] border border-teal-300/30 backdrop-blur-md hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer font-heading tracking-wide"
