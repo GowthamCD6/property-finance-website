@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   UploadCloud,
   FileText,
@@ -14,7 +14,6 @@ import {
   FileCheck,
   Sparkles,
   X,
-  FileUp,
 } from 'lucide-react';
 import { UploadedDocument } from '../../types';
 import {
@@ -44,8 +43,6 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
 }) => {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('ALL');
   const [previewModalDoc, setPreviewModalDoc] = useState<UploadedDocument | null>(null);
-  const [dragActive, setDragActive] = useState<boolean>(false);
-  const generalFileInputRef = useRef<HTMLInputElement>(null);
 
   // Generate dynamic checklist definition based on user's current selections
   const checklist = getRequiredDocumentsForPlan(loanType, employmentType, carType);
@@ -118,50 +115,7 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
     e.target.value = '';
   };
 
-  // Handle multiple bulk file upload
-  const handleBulkFiles = async (fileList: FileList) => {
-    const newDocs: UploadedDocument[] = [];
-    for (let i = 0; i < fileList.length; i++) {
-      const file = fileList[i];
-      try {
-        const base64 = await fileToBase64(file);
-        newDocs.push({
-          id: `bulk-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 5)}`,
-          name: file.name,
-          size: file.size,
-          type: file.type || 'image/jpeg',
-          category: 'General',
-          documentName: file.name.replace(/\.[^/.]+$/, ''),
-          previewUrl: base64,
-          uploadedAt: new Date().toISOString(),
-        });
-      } catch (err) {
-        console.error('Failed reading file', file.name, err);
-      }
-    }
-    if (newDocs.length > 0) {
-      onDocumentsChange([...documents, ...newDocs]);
-    }
-  };
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleBulkFiles(e.dataTransfer.files);
-    }
-  };
 
   const handleRemoveDoc = (id: string) => {
     onDocumentsChange(documents.filter((d) => d.id !== id));
@@ -405,50 +359,6 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
         })}
       </div>
 
-      {/* QUICK BULK UPLOAD DROPZONE */}
-      <div
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-        className={`p-6 border-2 border-dashed rounded-2xl text-center transition-all ${
-          dragActive
-            ? 'border-brand-teal bg-brand-teal-light/60 scale-[1.01]'
-            : 'border-brand-border bg-white hover:border-brand-teal/50 hover:bg-brand-ivory/30'
-        }`}
-      >
-        <div className="max-w-md mx-auto space-y-2">
-          <div className="w-12 h-12 rounded-full bg-brand-teal-light text-brand-teal flex items-center justify-center mx-auto">
-            <FileUp className="w-6 h-6" />
-          </div>
-          <h4 className="text-sm font-bold text-brand-navy">
-            Or Drag &amp; Drop All Available Document Photos At Once
-          </h4>
-          <p className="text-xs text-brand-slate">
-            Take photos with your phone camera or select multiple PNG, JPG, or PDF files. Our system attaches them automatically for admin reference.
-          </p>
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={() => generalFileInputRef.current?.click()}
-              className="px-4 py-2 bg-brand-navy hover:bg-slate-800 text-white rounded-corporate text-xs font-bold shadow-xs transition-colors cursor-pointer"
-            >
-              Browse Files from Device
-            </button>
-            <input
-              ref={generalFileInputRef}
-              type="file"
-              multiple
-              accept="image/*,application/pdf"
-              onChange={(e) => {
-                if (e.target.files) handleBulkFiles(e.target.files);
-                e.target.value = '';
-              }}
-              className="sr-only"
-            />
-          </div>
-        </div>
-      </div>
 
       {/* FULL IMAGE PREVIEW MODAL */}
       {previewModalDoc && (
