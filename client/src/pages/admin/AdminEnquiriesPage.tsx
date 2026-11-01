@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   Search,
-  Filter,
   Download,
   Eye,
   Clock,
@@ -38,7 +37,6 @@ import {
   getEnquiryByIdApi,
   updateEnquiryStatusApi,
   addEnquiryNoteApi,
-  getExportEnquiriesCsvUrl,
 } from '../../services/api';
 
 const ALL_STATUSES = [
@@ -125,6 +123,19 @@ export const AdminEnquiriesPage: React.FC = () => {
   useEffect(() => {
     fetchList();
   }, [page, limit, selectedStatus, selectedLoanType]);
+
+  const isSearchMounted = useRef(false);
+  useEffect(() => {
+    if (!isSearchMounted.current) {
+      isSearchMounted.current = true;
+      return;
+    }
+    const timer = setTimeout(() => {
+      setPage(1);
+      fetchList();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -350,17 +361,18 @@ export const AdminEnquiriesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Filter and Search Bar Container */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-4">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
+      {/* Search & Filters Toolbar - Single Row */}
+      <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/90 shadow-sm">
+        <form onSubmit={handleSearchSubmit} className="flex flex-wrap lg:flex-nowrap items-center gap-2 sm:gap-3">
+          {/* Search Box */}
+          <div className="relative flex-1 min-w-[240px]">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search by Applicant Name, Mobile, Reference (e.g. MOR-2026-...) or City..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+              className="w-full pl-10 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
             />
             {search && (
               <button
@@ -368,23 +380,24 @@ export const AdminEnquiriesPage: React.FC = () => {
                 onClick={() => {
                   setSearch('');
                   setPage(1);
-                  fetchList();
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                aria-label="Clear search"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          {/* Loan Facility Dropdown */}
+          <div className="shrink-0">
             <select
               value={selectedLoanType}
               onChange={(e) => {
                 setSelectedLoanType(e.target.value);
                 setPage(1);
               }}
-              className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer"
+              className="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer"
             >
               <option value="ALL">All Loan Facilities</option>
               <option value="Home Loan">Home Loan</option>
@@ -392,46 +405,32 @@ export const AdminEnquiriesPage: React.FC = () => {
               <option value="Property-Backed Funding">Property-Backed Funding</option>
               <option value="Loan Consultation & Eligibility Review">Loan Consultation</option>
             </select>
+          </div>
 
-            <button
-              type="submit"
-              className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs transition-all active:scale-[0.98] cursor-pointer"
-            >
-              Filter
-            </button>
+          {/* Separator */}
+          <div className="hidden lg:block w-px h-6 bg-slate-200 shrink-0" />
 
-            <a
-              href={getExportEnquiriesCsvUrl()}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#0c1a26] border border-slate-200 rounded-xl text-xs sm:text-sm font-bold font-heading shadow-xs hover:border-teal-300 transition-all active:scale-[0.98]"
-            >
-              <Download className="w-4 h-4 text-teal-600" />
-              <span>Export to CSV</span>
-            </a>
+          {/* Status Tab Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 lg:pb-0 text-xs shrink-0">
+            {ALL_STATUSES.map((status) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => {
+                  setSelectedStatus(status);
+                  setPage(1);
+                }}
+                className={`px-3 py-1.5 rounded-xl font-heading font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  selectedStatus === status
+                    ? 'bg-slate-900 text-white shadow-sm ring-2 ring-teal-500/30'
+                    : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
+                }`}
+              >
+                {status === 'ALL' ? 'All Statuses' : status}
+              </button>
+            ))}
           </div>
         </form>
-
-        {/* Status Tab Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-2 border-t border-slate-100">
-          {ALL_STATUSES.map((status) => (
-            <button
-              key={status}
-              type="button"
-              onClick={() => {
-                setSelectedStatus(status);
-                setPage(1);
-              }}
-              className={`px-3.5 py-1.5 rounded-xl font-heading font-bold whitespace-nowrap transition-all cursor-pointer ${
-                selectedStatus === status
-                  ? 'bg-slate-900 text-white shadow-sm ring-2 ring-teal-500/30'
-                  : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
-              }`}
-            >
-              {status === 'ALL' ? 'All Statuses' : status}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Main Table */}
