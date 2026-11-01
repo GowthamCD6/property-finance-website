@@ -134,9 +134,6 @@ export const AdminServicesPage: React.FC = () => {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
             Configured Loan Services
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
-            Manage offered loan facilities, descriptions, features, and their live display order on public pages
-          </p>
         </div>
 
         <button

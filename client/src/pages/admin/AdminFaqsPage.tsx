@@ -126,11 +126,8 @@ export const AdminFaqsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
-            Frequently Asked Questions Management
+            Advisory FAQs
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
-            Manage informative customer answers, regulatory questions, and categorised banking advice
-          </p>
         </div>
 
         <button
@@ -177,9 +174,37 @@ export const AdminFaqsPage: React.FC = () => {
       {/* FAQs List */}
       <div className="space-y-3.5">
         {loading ? (
-          <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center shadow-sm">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto text-teal-600 mb-2" />
-            <span className="text-xs text-slate-500">Loading FAQs...</span>
+          <div className="space-y-3.5 animate-pulse">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-3.5"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3 flex-1">
+                    <div className="w-8 h-5 bg-slate-200 rounded-md shrink-0 mt-0.5" />
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-5 bg-teal-100/70 rounded-md" />
+                        <div className="w-14 h-5 bg-emerald-100/70 rounded-full" />
+                      </div>
+                      <div className="h-5 w-3/4 sm:w-2/3 bg-slate-300 rounded-lg pt-1" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="h-7 w-16 bg-slate-200 rounded-xl" />
+                    <div className="h-7 w-7 bg-slate-100 rounded-xl" />
+                  </div>
+                </div>
+
+                <div className="pl-11 space-y-2 pt-1">
+                  <div className="h-3.5 w-full bg-slate-100 rounded" />
+                  <div className="h-3.5 w-5/6 bg-slate-100 rounded" />
+                  <div className="h-3.5 w-1/2 bg-slate-100 rounded" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredFaqs.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center shadow-sm space-y-3">
