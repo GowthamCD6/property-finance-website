@@ -23,17 +23,39 @@ import {
   DollarSign,
   ChevronRight,
   Users,
+  Search,
+  RefreshCw,
+  Filter,
+  Sparkles,
+  PieChart,
+  Layers,
+  Check,
+  ExternalLink,
+  Shield,
+  FileText,
+  Sliders,
 } from 'lucide-react';
 import { DashboardStats } from '../../types';
 import { getDashboardStatsApi, getAppointmentsApi } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export const AdminDashboardPage: React.FC = () => {
+  const { admin } = useAuth();
+
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [upcomingList, setUpcomingList] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDashboardData = () => {
+  // Filter & Search states for the Recent Enquiries table
+  const [filterStatus, setFilterStatus] = useState<string>('ALL');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const fetchDashboardData = (manual = false) => {
+    if (manual) setIsRefreshing(true);
+    else setLoading(true);
+
     Promise.all([
       getDashboardStatsApi(),
       getAppointmentsApi({ status: 'ALL' }),
@@ -47,7 +69,10 @@ export const AdminDashboardPage: React.FC = () => {
         setUpcomingList(upcoming);
       })
       .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setIsRefreshing(false);
+      });
   };
 
   useEffect(() => {
@@ -71,9 +96,9 @@ export const AdminDashboardPage: React.FC = () => {
 
   const getGreeting = () => {
     const hr = new Date().getHours();
-    if (hr < 12) return 'Good Morning';
-    if (hr < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hr < 12) return 'Good morning';
+    if (hr < 17) return 'Good afternoon';
+    return 'Good evening';
   };
 
   const getStatusBadge = (status: string) => {
@@ -82,21 +107,22 @@ export const AdminDashboardPage: React.FC = () => {
       case 'New':
       case 'Contacted':
       case 'Appointment Requested':
-        return 'bg-amber-50 text-amber-700 border-amber-200/80 ring-1 ring-amber-500/10';
+        return 'bg-amber-50 text-amber-700 border-amber-200/90 ring-1 ring-amber-500/10';
       case 'Slot Booked':
       case 'Appointment Confirmed':
-        return 'bg-sky-50 text-sky-700 border-sky-200/80 ring-1 ring-sky-500/10';
+        return 'bg-sky-50 text-sky-700 border-sky-200/90 ring-1 ring-sky-500/10';
       case 'Process Started':
       case 'In Review':
-        return 'bg-teal-50 text-teal-800 border-teal-200/80 ring-1 ring-teal-500/10';
+        return 'bg-teal-50 text-teal-800 border-teal-200/90 ring-1 ring-teal-500/10';
       case 'Closed':
       case 'Converted':
-        return 'bg-slate-100 text-slate-700 border-slate-200/80 ring-1 ring-slate-500/10';
+        return 'bg-emerald-50 text-emerald-800 border-emerald-200/90 ring-1 ring-emerald-500/10';
       default:
-        return 'bg-amber-50 text-amber-800 border-amber-200/80 ring-1 ring-amber-500/10';
+        return 'bg-slate-100 text-slate-700 border-slate-200/90 ring-1 ring-slate-500/10';
     }
   };
 
+  // Skeleton Loader for initial page render
   if (loading) {
     return (
       <div className="space-y-7 animate-pulse">
@@ -131,28 +157,27 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Operational Queues & Tables Skeleton */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7">
+          <div className="lg:col-span-8 bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="h-5 w-40 bg-slate-200 rounded" />
-              <div className="h-4 w-20 bg-slate-100 rounded" />
+              <div className="h-5 w-48 bg-slate-200 rounded" />
+              <div className="h-4 w-24 bg-slate-100 rounded" />
             </div>
             <div className="space-y-3">
-              {[1, 2, 3, 4].map((j) => (
+              {[1, 2, 3, 4, 5].map((j) => (
                 <div key={j} className="h-16 bg-slate-50 rounded-xl border border-slate-100 p-3" />
               ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="lg:col-span-4 space-y-6">
+            <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs space-y-4">
               <div className="h-5 w-44 bg-slate-200 rounded" />
-              <div className="h-4 w-20 bg-slate-100 rounded" />
-            </div>
-            <div className="space-y-3">
-              {[1, 2, 3, 4].map((j) => (
-                <div key={j} className="h-16 bg-slate-50 rounded-xl border border-slate-100 p-3" />
-              ))}
+              <div className="space-y-3">
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="h-14 bg-slate-50 rounded-xl border border-slate-100" />
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -167,10 +192,46 @@ export const AdminDashboardPage: React.FC = () => {
         <div>
           <span className="font-bold font-heading text-base block">Failed to load operations dashboard</span>
           <span className="text-xs text-red-700 font-sans mt-0.5 block">{error}</span>
+          <button
+            onClick={() => fetchDashboardData(true)}
+            className="mt-3 px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold font-heading hover:bg-red-700 transition-colors cursor-pointer"
+          >
+            Retry Fetch
+          </button>
         </div>
       </div>
     );
   }
+
+  // Calculate total sanction pipeline volume
+  const totalPipelineAmount = (stats.recentEnquiries || []).reduce(
+    (sum, e) => sum + (Number(e.loanAmount) || 0),
+    0
+  );
+
+  // Filtered recent enquiries
+  const filteredEnquiries = (stats.recentEnquiries || []).filter((enq) => {
+    // Status filter
+    if (filterStatus === 'NEW') {
+      if (enq.status !== 'New' && enq.status !== 'Appointment Requested') return false;
+    } else if (filterStatus === 'IN_PROCESS') {
+      if (enq.status !== 'Contacted' && enq.status !== 'Slot Booked' && enq.status !== 'Process Started') return false;
+    } else if (filterStatus === 'CLOSED') {
+      if (enq.status !== 'Closed' && enq.status !== 'Converted') return false;
+    }
+
+    // Search query filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const name = (enq.fullName || '').toLowerCase();
+      const phone = (enq.mobileNumber || '').toLowerCase();
+      const ref = (enq.referenceNumber || '').toLowerCase();
+      const loan = (enq.loanType || '').toLowerCase();
+      return name.includes(q) || phone.includes(q) || ref.includes(q) || loan.includes(q);
+    }
+
+    return true;
+  });
 
   const kpis = [
     {
@@ -193,6 +254,16 @@ export const AdminDashboardPage: React.FC = () => {
       badgeClass: stats.newEnquiries > 0 ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600',
     },
     {
+      title: 'Active Pipeline Requested',
+      value: formatAmountINR(totalPipelineAmount),
+      sub: 'Recent dossier sanction capital',
+      icon: <Landmark className="w-5 h-5 text-emerald-600" />,
+      bgIcon: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+      borderAccent: 'border-l-4 border-l-emerald-600',
+      badge: 'Sanction Cap',
+      badgeClass: 'bg-emerald-100 text-emerald-800',
+    },
+    {
       title: 'Follow-ups Required',
       value: stats.awaitingFollowUp,
       sub: 'Active borrower negotiations',
@@ -203,24 +274,14 @@ export const AdminDashboardPage: React.FC = () => {
       badgeClass: 'bg-amber-100 text-amber-800',
     },
     {
-      title: 'Upcoming Sessions',
-      value: stats.upcomingAppointments,
-      sub: 'Allotted or requested',
-      icon: <Calendar className="w-5 h-5 text-purple-600" />,
-      bgIcon: 'bg-purple-50 text-purple-600 border-purple-100',
-      borderAccent: 'border-l-4 border-l-purple-600',
-      badge: 'This Week',
-      badgeClass: 'bg-purple-100 text-purple-800',
-    },
-    {
-      title: 'Confirmed Slots',
+      title: 'Confirmed Consultations',
       value: stats.confirmedAppointments,
       sub: 'Ready for advisory calls',
-      icon: <CheckCircle2 className="w-5 h-5 text-emerald-600" />,
-      bgIcon: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-      borderAccent: 'border-l-4 border-l-emerald-600',
+      icon: <CheckCircle2 className="w-5 h-5 text-indigo-600" />,
+      bgIcon: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+      borderAccent: 'border-l-4 border-l-indigo-600',
       badge: 'Verified',
-      badgeClass: 'bg-emerald-100 text-emerald-800',
+      badgeClass: 'bg-indigo-100 text-indigo-800',
     },
   ];
 
@@ -231,45 +292,68 @@ export const AdminDashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-7">
-      {/* Executive Welcome Hero Banner */}
+      {/* ────────────────────────────────────────────────────────────
+          1. EXECUTIVE COMMAND HERO BANNER
+          ──────────────────────────────────────────────────────────── */}
       <div className="rounded-2xl bg-[#0b1924] p-6 sm:p-7 text-white shadow-md border border-slate-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        <div className="space-y-1.5 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-xs font-semibold font-mono">
-            <span>Prime Associates</span>
-            <span>&bull;</span>
-            <span>{new Date().toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
+        <div className="space-y-2 max-w-2xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-[11px] font-semibold font-mono border border-teal-500/30">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>TiDB Cloud Synced</span>
+            </span>
+            <span className="text-slate-500">&bull;</span>
+            <span className="text-[11px] text-slate-300 font-mono font-medium">
+              {new Date().toLocaleDateString('en-IN', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-heading text-white">
-            Operations &amp; Sanctions Dashboard
+            {getGreeting()}, {admin?.name?.split(' ')[0] || 'Administrator'}
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
-            Manage customer loan applications, confirm advisory consultations, and monitor sanction throughput across partner banks.
+            Operations &amp; Loan Sanctions Command Hub. Manage borrower pipelines, allot expert consultation slots, and track underwriting throughput.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Quick Action Tools */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => fetchDashboardData(true)}
+            className="p-2.5 bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white rounded-xl border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95"
+            title="Refresh Operations Metrics"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-teal-400' : ''}`} />
+          </button>
+
           <Link
             to="/admin/customers"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-bold font-heading shadow-sm transition-all cursor-pointer active:scale-[0.98]"
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-semibold font-heading transition-colors"
           >
-            <UserCheck className="w-4 h-4" />
-            <span>Enquired Customers</span>
+            <Users className="w-4 h-4 text-teal-300" />
+            <span>Borrower Accounts</span>
           </Link>
 
           <Link
-            to="/admin/enquiries"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-semibold font-heading transition-colors"
+            to="/admin/appointments"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-xs sm:text-sm font-bold font-heading shadow-md shadow-teal-500/20 transition-all cursor-pointer active:scale-[0.98]"
           >
-            <Users className="w-4 h-4 text-teal-300" />
-            <span>Loan Pipeline</span>
-            <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+            <CalendarCheck2 className="w-4 h-4" />
+            <span>Appointments Hub</span>
           </Link>
         </div>
       </div>
 
-      {/* KPI Stats Cards */}
+      {/* ────────────────────────────────────────────────────────────
+          2. FIVE KEY PERFORMANCE INDICATOR CARDS
+          ──────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
         {kpis.map((k, idx) => (
           <div
@@ -298,7 +382,9 @@ export const AdminDashboardPage: React.FC = () => {
         ))}
       </div>
 
-      {/* SECTION: ENQUIRIES AWAITING APPOINTMENT ALLOTMENT */}
+      {/* ────────────────────────────────────────────────────────────
+          3. ACTION REQUIRED: UNALLOTTED ENQUIRIES QUEUE
+          ──────────────────────────────────────────────────────────── */}
       {unallottedEnquiries.length > 0 && (
         <div className="rounded-2xl bg-gradient-to-r from-amber-500/10 via-teal-500/5 to-white p-5 sm:p-6 border border-amber-300/70 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -316,14 +402,14 @@ export const AdminDashboardPage: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 font-sans">
-                  Prospective borrowers awaiting administrative slot allotment & verification call
+                  Prospective borrowers awaiting administrative slot allotment &amp; verification call
                 </p>
               </div>
             </div>
 
             <Link
               to="/admin/appointments"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal hover:text-teal-700 font-heading bg-white px-3.5 py-1.5 rounded-xl border border-teal-200/80 shadow-xs hover:border-teal-300 transition-colors self-start sm:self-auto"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 hover:text-teal-900 font-heading bg-white px-3.5 py-1.5 rounded-xl border border-teal-200/80 shadow-xs hover:border-teal-300 transition-colors self-start sm:self-auto cursor-pointer"
             >
               <span>Open Schedule Hub</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -334,7 +420,7 @@ export const AdminDashboardPage: React.FC = () => {
             {unallottedEnquiries.slice(0, 3).map((enq) => (
               <div
                 key={enq.id}
-                className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-teal-400/80 transition-all flex flex-col justify-between space-y-3"
+                className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-teal-400/80 transition-all flex flex-col justify-between space-y-3 group"
               >
                 <div>
                   <div className="flex items-center justify-between text-[11px] mb-1.5">
@@ -346,7 +432,7 @@ export const AdminDashboardPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <h4 className="font-bold text-[#0c1a26] text-sm font-heading line-clamp-1">
+                  <h4 className="font-bold text-[#0c1a26] text-sm font-heading line-clamp-1 group-hover:text-teal-700 transition-colors">
                     {enq.fullName}
                   </h4>
 
@@ -377,31 +463,74 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Main Two Column Layout: Latest Enquiries & Activity Trail */}
+      {/* ────────────────────────────────────────────────────────────
+          4. MAIN TWO-COLUMN LAYOUT: RECENT DOSSIERS & ACTIVITY FEED
+          ──────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
         {/* Left Column: Recent Enquiries Table (8 cols) */}
-        <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-extrabold text-[#0c1a26] font-heading">
-                  Recent Loan Enquiries &amp; Active Dossiers
-                </h3>
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+        <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden space-y-0">
+          {/* Header Toolbar with Tabs & Search */}
+          <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/50 space-y-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-extrabold text-[#0c1a26] font-heading">
+                    Recent Loan Applications &amp; Dossiers
+                  </h3>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                </div>
+                <p className="text-xs text-slate-500 font-sans mt-0.5">
+                  Real-time loan applications logged through borrower website &amp; eligibility portal
+                </p>
               </div>
-              <p className="text-xs text-slate-500 font-sans mt-0.5">
-                Real-time loan applications logged through borrower website & eligibility portal
-              </p>
+
+              <Link
+                to="/admin/enquiries"
+                className="inline-flex items-center gap-1 text-xs font-bold text-teal-700 hover:text-teal-900 font-heading bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs hover:border-teal-300 transition-colors self-start sm:self-auto cursor-pointer"
+              >
+                <span>View Full Pipeline ({stats.totalEnquiries})</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
-            <Link
-              to="/admin/enquiries"
-              className="inline-flex items-center gap-1 text-xs font-bold text-brand-teal hover:text-teal-700 font-heading bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs hover:border-teal-300 transition-colors"
-            >
-              <span>View All ({stats.totalEnquiries})</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+
+            {/* Quick Status Filter Tabs & Search Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                {[
+                  { id: 'ALL', label: 'All Dossiers' },
+                  { id: 'NEW', label: 'New / Pending' },
+                  { id: 'IN_PROCESS', label: 'In Review' },
+                  { id: 'CLOSED', label: 'Sanctioned / Closed' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setFilterStatus(tab.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer whitespace-nowrap ${
+                      filterStatus === tab.id
+                        ? 'bg-[#0c1a26] text-white shadow-2xs'
+                        : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200/80'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="relative min-w-[200px]">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Quick filter table..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-sans text-[#0c1a26] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                />
+              </div>
+            </div>
           </div>
 
+          {/* Enquiries Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
@@ -414,28 +543,29 @@ export const AdminDashboardPage: React.FC = () => {
                   <th className="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
-                {stats.recentEnquiries.length === 0 ? (
+              <tbody className="divide-y divide-slate-100 font-sans">
+                {filteredEnquiries.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="py-12 text-center text-slate-400 font-sans">
                       <FileSpreadsheet className="w-8 h-8 mx-auto text-slate-300 mb-2" />
-                      No customer loan applications registered yet.
+                      No loan applications matched your filter criteria.
                     </td>
                   </tr>
                 ) : (
-                  stats.recentEnquiries.map((enq) => {
-                    const initials = enq.fullName
-                      .split(' ')
-                      .map((n: string) => n[0])
-                      .slice(0, 2)
-                      .join('')
-                      .toUpperCase() || 'AP';
+                  filteredEnquiries.map((enq) => {
+                    const initials =
+                      enq.fullName
+                        .split(' ')
+                        .map((n: string) => n[0])
+                        .slice(0, 2)
+                        .join('')
+                        .toUpperCase() || 'AP';
 
                     return (
                       <tr key={enq.id} className="hover:bg-slate-50/80 transition-colors group">
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-800 to-slate-900 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-700">
                               {initials}
                             </div>
                             <div>
@@ -447,16 +577,16 @@ export const AdminDashboardPage: React.FC = () => {
                           </div>
                         </td>
                         <td className="py-3.5 px-4 font-bold font-heading text-slate-700 text-xs">
-                          <span className="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg border border-slate-200/90 tracking-wide">
+                          <span className="bg-slate-100 group-hover:bg-teal-50 group-hover:text-teal-800 px-2 py-0.5 rounded-md border border-slate-200/90 tracking-wide font-mono transition-colors">
                             {enq.referenceNumber}
                           </span>
                         </td>
                         <td className="py-3.5 px-4">
-                          <span className="inline-block px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 text-[11px] font-bold font-heading border border-teal-200/80">
+                          <span className="inline-block px-2.5 py-0.5 rounded-md bg-teal-50 text-teal-800 text-[11px] font-bold font-heading border border-teal-200/80">
                             {enq.loanType}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-extrabold text-[#0c1a26] font-heading text-xs tabular-nums">
+                        <td className="py-3.5 px-4 font-extrabold text-[#0c1a26] font-mono text-xs tabular-nums">
                           {formatAmountINR(enq.loanAmount)}
                         </td>
                         <td className="py-3.5 px-4">
@@ -471,7 +601,7 @@ export const AdminDashboardPage: React.FC = () => {
                         <td className="py-3.5 px-4 text-right">
                           <Link
                             to={`/admin/enquiries?search=${encodeURIComponent(enq.referenceNumber)}`}
-                            className="inline-flex items-center gap-1 px-3 py-1 text-[11px] font-bold font-heading text-teal-700 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors border border-teal-200/60"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold font-heading text-teal-700 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors border border-teal-200/60"
                           >
                             <span>Dossier</span>
                             <ArrowRight className="w-3 h-3" />
@@ -483,6 +613,12 @@ export const AdminDashboardPage: React.FC = () => {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Table Footer */}
+          <div className="px-5 py-3 bg-slate-50/70 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500 font-sans">
+            <span>Showing {filteredEnquiries.length} of {stats.recentEnquiries.length} active dossiers</span>
+            <span className="text-[11px] text-slate-400 font-mono">Live Sync</span>
           </div>
         </div>
 
@@ -504,13 +640,13 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
               <Link
                 to="/admin/appointments"
-                className="text-xs font-bold text-brand-teal hover:underline font-heading"
+                className="text-xs font-bold text-teal-700 hover:underline font-heading"
               >
                 Calendar
               </Link>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {upcomingList.length === 0 ? (
                 <div className="text-center py-6 text-slate-400 text-xs font-sans">
                   <CalendarCheck2 className="w-7 h-7 mx-auto text-slate-300 mb-1.5" />
@@ -533,7 +669,7 @@ export const AdminDashboardPage: React.FC = () => {
                     <div className="flex items-center justify-between text-[11px] text-slate-500 font-sans">
                       <span className="flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5 text-teal-600" />
-                        <span>{a.timeSlot}</span>
+                        <span className="font-mono font-medium">{a.timeSlot}</span>
                       </span>
                       <span className="capitalize font-semibold text-slate-700 text-[10px] bg-white px-2 py-0.5 rounded border border-slate-200">
                         {a.meetingMode?.replace('_', ' ')}
@@ -571,7 +707,7 @@ export const AdminDashboardPage: React.FC = () => {
                         <span className="font-bold text-[#0c1a26] font-heading">{act.changedBy}</span>
                         <span className="text-slate-400">updated</span>
                         <span className="font-mono font-bold text-teal-700 text-[11px] bg-teal-50 px-1.5 py-0.2 rounded">
-                          {act.enquiry.referenceNumber}
+                          {act.enquiry?.referenceNumber || 'Dossier'}
                         </span>
                       </div>
                       <div className="text-[11px] text-slate-600 font-sans">
@@ -597,6 +733,71 @@ export const AdminDashboardPage: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ────────────────────────────────────────────────────────────
+          5. SYSTEM QUICK SHORTCUTS DOCK
+          ──────────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-2">
+        <Link
+          to="/admin/services"
+          className="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-teal-300 transition-all flex items-center gap-3 group"
+        >
+          <div className="p-2.5 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/70 group-hover:scale-105 transition-transform">
+            <Layers className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-[#0c1a26] font-heading group-hover:text-teal-700 transition-colors">
+              Loan Services
+            </h4>
+            <p className="text-[10px] text-slate-400 font-sans">Catalog &amp; Facilities</p>
+          </div>
+        </Link>
+
+        <Link
+          to="/admin/settings"
+          className="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-amber-300 transition-all flex items-center gap-3 group"
+        >
+          <div className="p-2.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200/70 group-hover:scale-105 transition-transform">
+            <Sliders className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-[#0c1a26] font-heading group-hover:text-amber-700 transition-colors">
+              Calendar Settings
+            </h4>
+            <p className="text-[10px] text-slate-400 font-sans">Hours &amp; Blackout Dates</p>
+          </div>
+        </Link>
+
+        <Link
+          to="/admin/content"
+          className="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-blue-300 transition-all flex items-center gap-3 group"
+        >
+          <div className="p-2.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200/70 group-hover:scale-105 transition-transform">
+            <FileText className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-[#0c1a26] font-heading group-hover:text-blue-700 transition-colors">
+              Website CMS
+            </h4>
+            <p className="text-[10px] text-slate-400 font-sans">Live Content Editor</p>
+          </div>
+        </Link>
+
+        <Link
+          to="/admin/team"
+          className="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-indigo-300 transition-all flex items-center gap-3 group"
+        >
+          <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200/70 group-hover:scale-105 transition-transform">
+            <Shield className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-[#0c1a26] font-heading group-hover:text-indigo-700 transition-colors">
+              Admin Team
+            </h4>
+            <p className="text-[10px] text-slate-400 font-sans">Access &amp; Permissions</p>
+          </div>
+        </Link>
       </div>
     </div>
   );
