@@ -111,13 +111,13 @@ export const PropertyFundingPage: React.FC = () => {
           <img
             src={purchaseLoanHeroImage}
             alt="Purchase Loans & Property Takeover Architecture"
-            className="w-full h-full object-cover object-[80%_center] brightness-[0.92] contrast-[1.08]"
+            className="w-full h-full object-cover object-[80%_center] brightness-[1.15] contrast-[1.02]"
             loading="eager"
           />
-          {/* Calibrated directional gradient: Left side protected for pristine typography, right side reveals photographic graphics */}
-          <div className="absolute inset-0 bg-slate-950/45" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-transparent sm:via-slate-950/80" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-transparent to-slate-950/90" />
+          {/* Softened directional gradient: Keeps left side readable for text while letting the image shine brightly */}
+          <div className="absolute inset-0 bg-slate-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-slate-950/70" />
         </div>
 
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/15 rounded-full blur-3xl pointer-events-none" />
