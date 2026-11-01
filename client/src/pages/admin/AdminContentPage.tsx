@@ -834,10 +834,8 @@ export const AdminContentPage: React.FC = () => {
                 <div
                   key={mod.id}
                   onClick={() => selectModule(mod.id)}
-                  className="group bg-white rounded-2xl border border-slate-200/90 hover:border-teal-500/70 shadow-2xs hover:shadow-lg transition-all duration-200 p-5 sm:p-6 flex flex-col justify-between cursor-pointer relative overflow-hidden hover:-translate-y-0.5"
+                  className="group bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-md transition-all duration-150 p-5 sm:p-6 flex flex-col justify-between cursor-pointer"
                 >
-                  {/* Subtle top indicator strip */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                   <div>
                     {/* Header badge & number */}
