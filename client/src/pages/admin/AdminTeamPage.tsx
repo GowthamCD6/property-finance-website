@@ -37,7 +37,6 @@ export const AdminTeamPage: React.FC = () => {
   const [team, setTeam] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [roleFilter, setRoleFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
   // Modal states
@@ -88,20 +87,17 @@ export const AdminTeamPage: React.FC = () => {
       member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (member.phone && member.phone.includes(searchTerm));
 
-    const matchesRole = roleFilter === 'ALL' || member.role.toLowerCase() === roleFilter.toLowerCase();
-
     const matchesStatus =
       statusFilter === 'ALL' ||
       (statusFilter === 'active' && member.isActive !== false) ||
       (statusFilter === 'inactive' && member.isActive === false);
 
-    return matchesSearch && matchesRole && matchesStatus;
+    return matchesSearch && matchesStatus;
   });
 
   // Calculate statistics
   const totalAdmins = team.length;
   const activeAdmins = team.filter((a) => a.isActive !== false).length;
-  const superAdmins = team.filter((a) => a.role.toLowerCase() === 'superadmin').length;
 
   // Handle Enroll Submit
   const handleEnrollSubmit = async (e: React.FormEvent) => {
@@ -155,7 +151,7 @@ export const AdminTeamPage: React.FC = () => {
     setEditForm({
       name: admin.name,
       phone: admin.phone || '',
-      role: admin.role,
+      role: 'admin',
       isActive: admin.isActive !== false,
       password: '',
     });
@@ -223,33 +219,12 @@ export const AdminTeamPage: React.FC = () => {
     }
   };
 
-  const getRoleBadge = (role: string) => {
-    switch (role.toLowerCase()) {
-      case 'superadmin':
-        return {
-          bg: 'bg-indigo-50 text-indigo-700 border-indigo-200/90',
-          dot: 'bg-indigo-500',
-          label: 'Super Admin',
-        };
-      case 'manager':
-        return {
-          bg: 'bg-emerald-50 text-emerald-800 border-emerald-200/90',
-          dot: 'bg-emerald-500',
-          label: 'Loan Manager',
-        };
-      case 'advisor':
-        return {
-          bg: 'bg-sky-50 text-sky-800 border-sky-200/90',
-          dot: 'bg-sky-500',
-          label: 'Loan Advisor',
-        };
-      default:
-        return {
-          bg: 'bg-teal-50 text-teal-800 border-teal-200/90',
-          dot: 'bg-teal-500',
-          label: 'Administrator',
-        };
-    }
+  const getRoleBadge = (_role?: string) => {
+    return {
+      bg: 'bg-teal-50 text-teal-800 border-teal-200/90',
+      dot: 'bg-teal-500',
+      label: 'Administrator',
+    };
   };
 
   const formatDate = (dateStr?: string | null) => {
@@ -345,15 +320,15 @@ export const AdminTeamPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-indigo-200 transition-all">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-teal-200 transition-all">
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-heading">
-                Super Administrators
+                Administrator Role
               </p>
-              <h3 className="text-2xl font-black text-indigo-600 mt-1 font-heading">{superAdmins}</h3>
+              <h3 className="text-2xl font-black text-teal-700 mt-1 font-heading">{totalAdmins}</h3>
               <p className="text-[11px] text-slate-400 mt-0.5 font-sans">Full administrative control</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+            <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600">
               <Shield className="w-6 h-6" />
             </div>
           </div>
@@ -375,18 +350,6 @@ export const AdminTeamPage: React.FC = () => {
           </div>
 
           <div className="flex gap-2">
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium font-heading text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer"
-            >
-              <option value="ALL">All Roles</option>
-              <option value="superadmin">Super Admin</option>
-              <option value="admin">Administrator</option>
-              <option value="manager">Loan Manager</option>
-              <option value="advisor">Loan Advisor</option>
-            </select>
-
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -778,10 +741,7 @@ export const AdminTeamPage: React.FC = () => {
                     onChange={(e) => setEnrollForm({ ...enrollForm, role: e.target.value })}
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium font-heading text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                   >
-                    <option value="admin">Administrator (Standard)</option>
-                    <option value="manager">Loan Operations Manager</option>
-                    <option value="advisor">Loan Advisor</option>
-                    <option value="superadmin">Super Administrator</option>
+                    <option value="admin">Administrator</option>
                   </select>
                 </div>
               </div>
@@ -917,10 +877,7 @@ export const AdminTeamPage: React.FC = () => {
                     onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium font-heading text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                   >
-                    <option value="admin">Administrator (Standard)</option>
-                    <option value="manager">Loan Operations Manager</option>
-                    <option value="advisor">Loan Advisor</option>
-                    <option value="superadmin">Super Administrator</option>
+                    <option value="admin">Administrator</option>
                   </select>
                 </div>
               </div>
