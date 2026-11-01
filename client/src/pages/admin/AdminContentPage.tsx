@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   FileText,
   Save,
@@ -31,6 +32,14 @@ import {
   Award,
   Layers,
   Home,
+  ArrowLeft,
+  Search,
+  Grid,
+  ChevronLeft,
+  Sparkles,
+  CheckCheck,
+  Globe,
+  SlidersHorizontal,
 } from 'lucide-react';
 import {
   SiteContent,
@@ -59,7 +68,12 @@ type TabType =
   | 'legal';
 
 export const AdminContentPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('identity');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialSection = (searchParams.get('section') as TabType) || null;
+  const [activeTab, setActiveTab] = useState<TabType | null>(initialSection);
+  const [catalogFilter, setCatalogFilter] = useState<string>('ALL');
+  const [catalogSearch, setCatalogSearch] = useState<string>('');
+
   const [content, setContent] = useState<Partial<SiteContent>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
@@ -349,6 +363,23 @@ export const AdminContentPage: React.FC = () => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    const sectionParam = searchParams.get('section') as TabType | null;
+    if (sectionParam !== activeTab) {
+      setActiveTab(sectionParam);
+    }
+  }, [searchParams]);
+
+  const selectModule = (tab: TabType | null) => {
+    setActiveTab(tab);
+    if (tab) {
+      setSearchParams({ section: tab });
+    } else {
+      setSearchParams({});
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -507,75 +538,210 @@ export const AdminContentPage: React.FC = () => {
     );
   }
 
-  const tabs: Array<{ id: TabType; label: string; icon: React.ReactNode }> = [
-    { id: 'identity', label: 'Brand & Contact', icon: <Building className="w-4 h-4" /> },
-    { id: 'hero', label: 'Homepage Hero', icon: <Home className="w-4 h-4" /> },
-    { id: 'stats', label: 'Key Statistics', icon: <BarChart3 className="w-4 h-4" /> },
-    { id: 'rates', label: 'Multi-Lender Rates', icon: <Landmark className="w-4 h-4" /> },
-    { id: 'process', label: 'Pillars & Process', icon: <Layers className="w-4 h-4" /> },
-    { id: 'about', label: 'About & Leadership', icon: <Users className="w-4 h-4" /> },
-    { id: 'testimonials', label: 'Reviews & Ratings', icon: <Star className="w-4 h-4" /> },
-    { id: 'branches', label: 'Offices & Branches', icon: <MapPin className="w-4 h-4" /> },
-    { id: 'calculator', label: 'Calculator Benchmarks', icon: <Calculator className="w-4 h-4" /> },
-    { id: 'legal', label: 'Compliance & Legal', icon: <ShieldCheck className="w-4 h-4" /> },
+  const CONTENT_MODULES = [
+    {
+      id: 'hero' as TabType,
+      number: '01',
+      title: 'Homepage Hero & Value Proposition',
+      category: 'Home Page',
+      publicRoute: '/',
+      previewUrl: '/',
+      icon: Home,
+      colorScheme: {
+        bg: 'bg-teal-50',
+        text: 'text-teal-700',
+        border: 'border-teal-200',
+      },
+      shortDesc: 'Primary public welcoming banner, headline, rotating subsidy phrases, trust badges, and direct call-to-action button.',
+      keyFeatures: ['Hero Headline & Subtitle', 'Rotating Words', 'Trust Badges', 'Primary CTA Button'],
+      summary: `${rotatingWordsList.length} rotating phrases • ${heroBadgesList.length} badges`,
+    },
+    {
+      id: 'stats' as TabType,
+      number: '02',
+      title: 'Key Statistics & Milestone Strip',
+      category: 'Home Page',
+      publicRoute: '/#stats',
+      previewUrl: '/#stats',
+      icon: BarChart3,
+      colorScheme: {
+        bg: 'bg-indigo-50',
+        text: 'text-indigo-700',
+        border: 'border-indigo-200',
+      },
+      shortDesc: 'Four live milestone metrics highlighting total loan sanction volume, approval success percentage, bank network, and experience.',
+      keyFeatures: ['₹450+ Cr Disbursed', '99.2% Sanction Rate', '18+ Partner Banks', '16+ Years Experience'],
+      summary: '4 Key Track Record Metrics',
+    },
+    {
+      id: 'rates' as TabType,
+      number: '03',
+      title: 'Multi-Lender Interest Rate Matrix',
+      category: 'Home Page',
+      publicRoute: '/#rates',
+      previewUrl: '/#rates',
+      icon: Landmark,
+      colorScheme: {
+        bg: 'bg-emerald-50',
+        text: 'text-emerald-700',
+        border: 'border-emerald-200',
+      },
+      shortDesc: 'Interactive bank rate comparison table comparing SBI, HDFC, ICICI, and Axis Bank with processing fees and subsidy badges.',
+      keyFeatures: ['Multi-Bank Rates Table', 'Processing Fees', 'LTV Ratios', 'Govt Subsidy Tags'],
+      summary: `${rateMatrixItems.length} active lender benchmarks configured`,
+    },
+    {
+      id: 'process' as TabType,
+      number: '04',
+      title: 'Why Choose Us Pillars & 4-Step Process',
+      category: 'Home Page',
+      publicRoute: '/#process',
+      previewUrl: '/#process',
+      icon: Layers,
+      colorScheme: {
+        bg: 'bg-amber-50',
+        text: 'text-amber-700',
+        border: 'border-amber-200',
+      },
+      shortDesc: 'Core advisory advantages (doorstep service, unapproved layout desk, takeover savings) and the 4-stage loan syndication workflow.',
+      keyFeatures: ['4 Strategic Advantages', 'Step 1 to 4 Timeline', 'Sanction Workflow', 'Turnaround Guarantees'],
+      summary: `${whyChooseUsPillars.length || 4} Pillars • ${processStepsList.length || 4} Process Steps`,
+    },
+    {
+      id: 'testimonials' as TabType,
+      number: '05',
+      title: 'Borrower Reviews & Ratings',
+      category: 'Home Page',
+      publicRoute: '/#reviews',
+      previewUrl: '/#reviews',
+      icon: Star,
+      colorScheme: {
+        bg: 'bg-yellow-50',
+        text: 'text-yellow-700',
+        border: 'border-yellow-200',
+      },
+      shortDesc: 'Verified borrower customer feedback, 5-star ratings, quotes, loan product type, loan amount, and applicant city.',
+      keyFeatures: ['Verified Client Feedback', '5-Star Ratings', 'Borrower City & Facility', 'Customer Avatars'],
+      summary: `${testimonialsList.length} verified borrower reviews live`,
+    },
+    {
+      id: 'about' as TabType,
+      number: '06',
+      title: 'About Us, Leadership & History',
+      category: 'About Us',
+      publicRoute: '/about',
+      previewUrl: '/about',
+      icon: Users,
+      colorScheme: {
+        bg: 'bg-blue-50',
+        text: 'text-blue-700',
+        border: 'border-blue-200',
+      },
+      shortDesc: 'Company history, Managing Director / Founder vision, advisory leadership profiles, and corporate milestone timeline.',
+      keyFeatures: ['Company Founding Story', 'Founder & MD Message', 'Leadership Profiles', 'Milestone Timeline'],
+      summary: `${teamMembers.length} team profiles • ${milestonesList.length} milestones`,
+    },
+    {
+      id: 'identity' as TabType,
+      number: '07',
+      title: 'Corporate Brand & Contact Identity',
+      category: 'Contact & Branches',
+      publicRoute: 'Header, Footer & All Pages',
+      previewUrl: '/contact',
+      icon: Building,
+      colorScheme: {
+        bg: 'bg-teal-50',
+        text: 'text-teal-700',
+        border: 'border-teal-200',
+      },
+      shortDesc: 'Official business name, brand tagline, customer service phone lines, email addresses, GSTIN credentials, and social media links.',
+      keyFeatures: ['Official Business Name', 'Helpline & WhatsApp', 'Official Email & GSTIN', 'Social Channel Links'],
+      summary: 'Global brand identity across header, footer & official forms',
+    },
+    {
+      id: 'branches' as TabType,
+      number: '08',
+      title: 'Office Branches & Advisory Desks',
+      category: 'Contact & Branches',
+      publicRoute: '/contact',
+      previewUrl: '/contact',
+      icon: MapPin,
+      colorScheme: {
+        bg: 'bg-rose-50',
+        text: 'text-rose-700',
+        border: 'border-rose-200',
+      },
+      shortDesc: 'Physical advisory office locations (Tirupur HQ, Coimbatore, Erode), full postal addresses, direct desks, timings, and map navigation.',
+      keyFeatures: ['Physical Branch Directory', 'Direct Desk Phones', 'Consultation Hours', 'Google Maps Links'],
+      summary: `${branchOfficesList.length} physical office branches listed`,
+    },
+    {
+      id: 'calculator' as TabType,
+      number: '09',
+      title: 'Calculator Benchmarks & Document Lists',
+      category: 'Tools & Compliance',
+      publicRoute: '/calculator',
+      previewUrl: '/calculator',
+      icon: Calculator,
+      colorScheme: {
+        bg: 'bg-purple-50',
+        text: 'text-purple-700',
+        border: 'border-purple-200',
+      },
+      shortDesc: 'Default interest rates, max tenure limits for the loan calculator, and required document checklists for Salaried, Self-Employed & Property.',
+      keyFeatures: ['Default Calculator Rates', 'Tenure Limit Settings', 'Salaried & Business Docs', 'Property Deed Checklists'],
+      summary: '3 Complete borrower document checklists configured',
+    },
+    {
+      id: 'legal' as TabType,
+      number: '10',
+      title: 'Compliance, Disclaimers & Legal Notice',
+      category: 'Tools & Compliance',
+      publicRoute: '/terms',
+      previewUrl: '/terms',
+      icon: ShieldCheck,
+      colorScheme: {
+        bg: 'bg-emerald-50',
+        text: 'text-emerald-700',
+        border: 'border-emerald-200',
+      },
+      shortDesc: 'RERA registration numbers, direct lending disclaimer, RBI compliance notice, copyright statements, and data privacy safeguards.',
+      keyFeatures: ['RERA Registration No.', 'Direct Lending Disclaimer', 'RBI Regulatory Notice', 'Official Copyright Policy'],
+      summary: 'Compliance disclosure and regulatory safeguarding',
+    },
   ];
 
+  const categories = ['ALL', 'Home Page', 'About Us', 'Contact & Branches', 'Tools & Compliance'];
+
+  const filteredModules = CONTENT_MODULES.filter((mod) => {
+    const matchesCat = catalogFilter === 'ALL' || mod.category === catalogFilter;
+    const matchesSearch =
+      catalogSearch.trim() === '' ||
+      mod.title.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+      mod.shortDesc.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+      mod.publicRoute.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+      mod.category.toLowerCase().includes(catalogSearch.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
+
+  const currentModule = CONTENT_MODULES.find((m) => m.id === activeTab);
+  const currentIndex = CONTENT_MODULES.findIndex((m) => m.id === activeTab);
+  const prevModule = currentIndex > 0 ? CONTENT_MODULES[currentIndex - 1] : null;
+  const nextModule = currentIndex < CONTENT_MODULES.length - 1 ? CONTENT_MODULES[currentIndex + 1] : null;
+
   return (
-    <div className="space-y-6 max-w-7xl pb-16">
-      {/* ─── HEADER BAR ─── */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-black text-[#0c1a26] tracking-tight">
-            Website Content &amp; Brand Settings
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Update business details, interest rates, testimonials, team, and loan policies live on the public website.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <a
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3.5 py-2.5 bg-brand-ivory hover:bg-slate-100 text-brand-navy text-xs font-semibold rounded-corporate border border-brand-border/80 flex items-center gap-2 transition-colors"
-          >
-            <Eye className="w-4 h-4 text-brand-teal" />
-            <span>View Public Website</span>
-            <ExternalLink className="w-3 h-3 text-brand-slate" />
-          </a>
-
-          <button
-            type="button"
-            onClick={() => handleSaveAll()}
-            disabled={saving}
-            className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 text-white font-bold text-xs sm:text-sm rounded-corporate shadow-sm flex items-center gap-2 transition-all active:scale-95"
-          >
-            {saving ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Publishing Live...</span>
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                <span>Save &amp; Publish All Changes</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
+    <div className="space-y-6 max-w-7xl pb-16 font-sans">
       {/* ─── ALERTS ─── */}
       {successMessage && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs sm:text-sm flex items-center justify-between gap-2.5 animate-in fade-in">
+        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs sm:text-sm flex items-center justify-between gap-2.5 animate-in fade-in shadow-2xs">
           <div className="flex items-center gap-2.5">
             <CheckCircle className="w-5 h-5 flex-shrink-0 text-emerald-600" />
-            <span className="font-medium">{successMessage}</span>
+            <span className="font-semibold">{successMessage}</span>
           </div>
           <button
+            type="button"
             onClick={() => setSuccessMessage(null)}
-            className="text-emerald-700 hover:text-emerald-900"
+            className="text-emerald-700 hover:text-emerald-900 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -583,38 +749,341 @@ export const AdminContentPage: React.FC = () => {
       )}
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs sm:text-sm flex items-center justify-between gap-2.5">
+        <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-800 text-xs sm:text-sm flex items-center justify-between gap-2.5 shadow-2xs">
           <div className="flex items-center gap-2.5">
             <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-600" />
-            <span className="font-medium">{error}</span>
+            <span className="font-semibold">{error}</span>
           </div>
-          <button onClick={() => setError(null)} className="text-red-700 hover:text-red-900">
+          <button
+            type="button"
+            onClick={() => setError(null)}
+            className="text-red-700 hover:text-red-900 cursor-pointer"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* ─── TAB NAVIGATION ─── */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-brand-border/60 scrollbar-none">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all ${
-              activeTab === tab.id
-                ? 'bg-brand-navy text-white shadow-sm'
-                : 'bg-white hover:bg-brand-ivory text-brand-slate hover:text-brand-navy border border-brand-border/60'
-            }`}
-          >
-            {tab.icon}
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
+      {/* ─── WHEN NO MODULE IS SELECTED: RENDER WEBSITE CONTENT CATALOG ─── */}
+      {!activeTab ? (
+        <div className="space-y-6 animate-in fade-in duration-150">
+          {/* Header Bar */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[10px] font-bold font-heading uppercase tracking-wider">
+                  Live CMS Engine
+                </span>
+                <span className="text-slate-300">•</span>
+                <span className="text-xs text-slate-500 font-sans">
+                  {CONTENT_MODULES.length} Public Page Modules
+                </span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading mt-1">
+                Website Content &amp; Brand Studio
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 font-sans max-w-2xl">
+                Select any public page or website module below to edit its content, images, rates, testimonials, and legal policies live.
+              </p>
+            </div>
 
-      {/* ─── TAB CONTENT PANELS ─── */}
-      <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold font-heading rounded-xl border border-slate-200 flex items-center gap-2 transition-colors shadow-2xs"
+              >
+                <Eye className="w-4 h-4 text-teal-600" />
+                <span>View Public Website</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+              </a>
+
+              <button
+                type="button"
+                onClick={() => handleSaveAll()}
+                disabled={saving}
+                className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Publishing Live...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save &amp; Publish All Changes</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Filter & Search Bar */}
+          <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-3 font-sans">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              {/* Category Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                {categories.map((cat) => {
+                  const count =
+                    cat === 'ALL'
+                      ? CONTENT_MODULES.length
+                      : CONTENT_MODULES.filter((m) => m.category === cat).length;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setCatalogFilter(cat)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold font-heading whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                        catalogFilter === cat
+                          ? 'bg-slate-900 text-white shadow-xs'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200/80'
+                      }`}
+                    >
+                      <span>{cat === 'ALL' ? 'All Sections' : cat}</span>
+                      <span
+                        className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                          catalogFilter === cat
+                            ? 'bg-white/20 text-white'
+                            : 'bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Search Toolbar */}
+              <div className="relative min-w-[260px] sm:min-w-[300px]">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={catalogSearch}
+                  onChange={(e) => setCatalogSearch(e.target.value)}
+                  placeholder="Search section name, page, or topic..."
+                  className="w-full pl-9 pr-8 py-2 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl text-xs font-sans text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                />
+                {catalogSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setCatalogSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {filteredModules.map((mod) => {
+              const IconComp = mod.icon;
+              return (
+                <div
+                  key={mod.id}
+                  onClick={() => selectModule(mod.id)}
+                  className="group bg-white rounded-2xl border border-slate-200/90 hover:border-teal-500/70 shadow-2xs hover:shadow-lg transition-all duration-200 p-5 sm:p-6 flex flex-col justify-between cursor-pointer relative overflow-hidden hover:-translate-y-0.5"
+                >
+                  {/* Subtle top indicator strip */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <div>
+                    {/* Header badge & number */}
+                    <div className="flex items-center justify-between gap-2 mb-3.5">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center ${mod.colorScheme.bg} ${mod.colorScheme.border} border shadow-2xs`}
+                        >
+                          <IconComp className={`w-5 h-5 ${mod.colorScheme.text}`} />
+                        </div>
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600 font-heading bg-slate-100 px-2 py-0.5 rounded-md">
+                          {mod.category}
+                        </span>
+                      </div>
+                      <span className="text-xs font-black text-slate-300 group-hover:text-teal-600 font-heading transition-colors">
+                        #{mod.number}
+                      </span>
+                    </div>
+
+                    {/* Title & Short Description */}
+                    <h3 className="text-base font-extrabold text-[#0c1a26] group-hover:text-teal-700 transition-colors font-heading leading-snug">
+                      {mod.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1.5 leading-relaxed line-clamp-2 font-sans">
+                      {mod.shortDesc}
+                    </p>
+
+                    {/* Feature tags */}
+                    <div className="flex flex-wrap gap-1.5 mt-3.5">
+                      {mod.keyFeatures.map((feat, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-50 text-slate-600 border border-slate-200/80 rounded-md text-[10px] font-medium font-sans"
+                        >
+                          <span className="w-1 h-1 rounded-full bg-teal-500" />
+                          {feat}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Configuration Summary & Route */}
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-sans">
+                      <span className="text-slate-500 font-medium truncate max-w-[190px]">
+                        {mod.summary}
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-400 font-mono shrink-0">
+                        {mod.publicRoute}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Action Footer */}
+                  <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        selectModule(mod.id);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-900 group-hover:bg-teal-600 text-white rounded-xl text-xs font-bold font-heading shadow-2xs transition-colors cursor-pointer"
+                    >
+                      <span>Edit Page Content</span>
+                      <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </button>
+
+                    <a
+                      href={mod.previewUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg text-xs font-semibold font-heading transition-colors"
+                      title="View live section on public website"
+                    >
+                      <span>Live Site</span>
+                      <ExternalLink className="w-3 h-3 text-slate-400" />
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {filteredModules.length === 0 && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500 space-y-2">
+              <Search className="w-8 h-8 text-slate-300 mx-auto" />
+              <div className="font-bold text-slate-800 text-sm font-heading">No Content Modules Found</div>
+              <p className="text-xs text-slate-400 max-w-sm mx-auto font-sans">
+                No website modules match your search filter "{catalogSearch}". Clear the search to view all sections.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setCatalogSearch('');
+                  setCatalogFilter('ALL');
+                }}
+                className="mt-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading cursor-pointer"
+              >
+                Clear Filters
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* ─── WHEN A MODULE IS OPENED: RENDER DEDICATED SECTION EDITOR PAGE ─── */
+        <div className="space-y-6 animate-in fade-in duration-150">
+          {/* Dedicated Section Top Header Bar */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4 font-sans">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <button
+                type="button"
+                onClick={() => selectModule(null)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold font-heading transition-all active:scale-95 cursor-pointer shadow-2xs"
+              >
+                <ArrowLeft className="w-4 h-4 text-slate-700" />
+                <span>Back to All Website Modules</span>
+              </button>
+
+              {/* Module Quick Switcher */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-slate-500 font-heading hidden sm:inline">
+                  Jump to Module:
+                </span>
+                <select
+                  value={activeTab}
+                  onChange={(e) => selectModule(e.target.value as TabType)}
+                  className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold font-heading text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 cursor-pointer shadow-2xs"
+                >
+                  {CONTENT_MODULES.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      #{m.number} {m.title} ({m.category})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Title, Category & Live Link */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-700 font-heading bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">
+                    {currentModule?.category}
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    Public Route: {currentModule?.publicRoute}
+                  </span>
+                </div>
+                <h1 className="text-xl sm:text-2xl font-black text-[#0c1a26] font-heading mt-1">
+                  {currentModule?.title}
+                </h1>
+                <p className="text-xs text-slate-500 mt-0.5 font-sans">
+                  {currentModule?.shortDesc}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                {currentModule?.previewUrl && (
+                  <a
+                    href={currentModule.previewUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold font-heading rounded-xl border border-slate-200 flex items-center gap-1.5 transition-colors shadow-2xs"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-teal-600" />
+                    <span>View Live</span>
+                    <ExternalLink className="w-3 h-3 text-slate-400" />
+                  </a>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => handleSaveAll()}
+                  disabled={saving}
+                  className="px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs font-heading rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+                >
+                  {saving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Publishing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      <span>Save &amp; Publish This Section</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── TAB CONTENT PANELS ─── */}
+          <div className="space-y-6">
         {/* 1. BRAND & IDENTITY */}
         {activeTab === 'identity' && (
           <div className="space-y-6 animate-in fade-in duration-200">
@@ -2458,34 +2927,69 @@ export const AdminContentPage: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+          </div>
 
-      {/* ─── BOTTOM SAVE BAR ─── */}
-      <div className="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-brand-border shadow-modal flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-xs text-brand-slate">
-          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>Unsaved edits will remain in draft until published.</span>
+          {/* ─── BOTTOM SAVE BAR FOR DEDICATED SECTION ─── */}
+          <div className="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3 font-sans">
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => selectModule(null)}
+                className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>All Modules</span>
+              </button>
+              {prevModule && (
+                <button
+                  type="button"
+                  onClick={() => selectModule(prevModule.id)}
+                  className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Prev: {prevModule.title.split(' ')[0]}</span>
+                </button>
+              )}
+              {nextModule && (
+                <button
+                  type="button"
+                  onClick={() => selectModule(nextModule.id)}
+                  className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span className="hidden sm:inline">Next: {nextModule.title.split(' ')[0]}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+              <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="hidden sm:inline">Unsaved edits remain in draft until published.</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleSaveAll()}
+                disabled={saving}
+                className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs font-heading rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Publishing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save &amp; Publish Website Changes</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
-
-        <button
-          type="button"
-          onClick={() => handleSaveAll()}
-          disabled={saving}
-          className="px-6 py-2.5 bg-brand-teal hover:bg-brand-teal-hover disabled:bg-gray-300 text-white font-bold text-xs sm:text-sm rounded-corporate shadow-sm flex items-center gap-2 transition-all active:scale-95"
-        >
-          {saving ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Publishing Updates...</span>
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4" />
-              <span>Save &amp; Publish Website Changes</span>
-            </>
-          )}
-        </button>
-      </div>
+      )}
 
       {/* ─── MODAL: RATE MATRIX ROW ─── */}
       {rateModalOpen && editingRate && (
