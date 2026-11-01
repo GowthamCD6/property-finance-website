@@ -798,25 +798,6 @@ export const AdminContentPage: React.FC = () => {
                 <span>View Public Website</span>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </a>
-
-              <button
-                type="button"
-                onClick={() => handleSaveAll()}
-                disabled={saving}
-                className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
-              >
-                {saving ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Publishing Live...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    <span>Save &amp; Publish All Changes</span>
-                  </>
-                )}
-              </button>
             </div>
           </div>
 
