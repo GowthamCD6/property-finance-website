@@ -520,7 +520,7 @@ export const RegisterBorrowerModal: React.FC<RegisterBorrowerModalProps> = ({
                     }`}
                   >
                     <Building2 className="w-4 h-4 mx-auto mb-1 text-purple-600" />
-                    <span className="text-[11px] block">Tirupur Office</span>
+                    <span className="text-[11px] block">Doorstep Visit</span>
                   </button>
                 </div>
               </div>

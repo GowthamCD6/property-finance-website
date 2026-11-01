@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Users,
   Search,
@@ -23,6 +24,9 @@ import {
   Briefcase,
   Home,
   Check,
+  ChevronLeft,
+  ChevronRight,
+  CalendarCheck2,
 } from 'lucide-react';
 import { EnquiredCustomer, Enquiry } from '../../types';
 import { getEnquiredCustomersApi } from '../../services/api';
@@ -32,6 +36,8 @@ export const AdminCustomersPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(15);
 
   // Detail Modal State
   const [selectedCustomer, setSelectedCustomer] = useState<EnquiredCustomer | null>(null);
@@ -42,6 +48,7 @@ export const AdminCustomersPage: React.FC = () => {
       .then((res) => {
         setCustomers(res.data);
         setTotalCount(res.totalCount);
+        setPage(1);
       })
       .catch((err) => console.error('Error fetching enquired customers:', err))
       .finally(() => setLoading(false));
@@ -55,6 +62,9 @@ export const AdminCustomersPage: React.FC = () => {
     e.preventDefault();
     fetchCustomers();
   };
+
+  const totalPages = Math.max(1, Math.ceil(customers.length / limit));
+  const displayedCustomers = customers.slice((page - 1) * limit, page * limit);
 
   // Format currency in INR (Cr / Lakhs)
   const formatAmountINR = (val?: number) => {
@@ -100,7 +110,7 @@ export const AdminCustomersPage: React.FC = () => {
         return (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold font-heading bg-purple-50 text-purple-800 border border-purple-200">
             <Building2 className="w-3 h-3 text-purple-600" />
-            <span>Tirupur Desk</span>
+            <span>Doorstep Visit</span>
           </span>
         );
       default:
@@ -319,7 +329,7 @@ export const AdminCustomersPage: React.FC = () => {
                   </td>
                 </tr>
               ) : (
-                customers.map((c) => {
+                displayedCustomers.map((c) => {
                   const latest = c.latestEnquiry;
 
                   return (
@@ -476,15 +486,87 @@ export const AdminCustomersPage: React.FC = () => {
             </table>
           </div>
 
-        {/* Bottom Summary & Directory Status Bar */}
+        {/* Pagination Controls (Always visible at the bottom of the table) */}
         <div className="p-4 sm:px-6 border-t border-slate-200/90 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-sans">
-          <div>
-            Showing <span className="font-bold text-slate-900 font-heading tabular-nums">{customers.length}</span> of{' '}
-            <span className="font-bold text-slate-900 font-heading tabular-nums">{totalCount}</span> verified borrowers
+          <div className="flex flex-wrap items-center gap-3">
+            <span>
+              Showing{' '}
+              <span className="font-bold text-slate-900 font-heading tabular-nums">
+                {totalCount === 0 ? 0 : (page - 1) * limit + 1}–{Math.min(page * limit, totalCount)}
+              </span>{' '}
+              of <span className="font-bold text-slate-900 font-heading tabular-nums">{totalCount}</span> verified borrowers
+            </span>
+            <span className="text-slate-300 hidden sm:inline">•</span>
+            <span className="hidden sm:inline text-slate-500">
+              Page <span className="font-bold text-slate-900 font-heading">{page}</span> of{' '}
+              <span className="font-bold text-slate-900 font-heading">{Math.max(totalPages, 1)}</span>
+            </span>
+
+            {/* Pagination Limit (Rows per page) Selector */}
+            <span className="text-slate-300 hidden sm:inline">•</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-400 font-medium text-[11px]">Rows:</span>
+              <select
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="px-2 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-heading font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer shadow-2xs transition-all"
+                title="Select records per page"
+              >
+                <option value={5}>5 / page</option>
+                <option value={10}>10 / page</option>
+                <option value={15}>15 / page</option>
+                <option value={25}>25 / page</option>
+                <option value={50}>50 / page</option>
+                <option value={100}>100 / page</option>
+              </select>
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-slate-400 text-[11px] font-sans">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-            <span>Google One-Click Authenticated Accounts</span>
+
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <button
+              type="button"
+              disabled={page <= 1 || loading}
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+              title="Previous Page"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Previous</span>
+            </button>
+
+            {/* Page Number Pills */}
+            {totalPages > 1 && (
+              <div className="hidden sm:flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPage(p)}
+                    className={`w-7 h-7 rounded-lg text-xs font-heading font-bold transition-all cursor-pointer ${
+                      p === page
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              disabled={page >= Math.max(totalPages, 1) || loading}
+              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+              title="Next Page"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </div>
@@ -658,18 +740,59 @@ export const AdminCustomersPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Consultation Slot Requested */}
-                      {enq.preferredDate && (
-                        <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2 text-slate-700">
-                            <Calendar className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                            <span className="font-medium text-[11px]">
-                              {enq.preferredDate} &bull; {enq.preferredTimeSlot}
-                            </span>
+                      {/* Doorstep Location & Consultation Slot */}
+                      {(() => {
+                        const doorstepAddress = enq.additionalNotes?.includes('📍 Doorstep Meeting Address:')
+                          ? enq.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim()
+                          : (enq.meetingMode === 'in_person' ? (enq.propertyLocation || enq.cityState) : null);
+
+                        return (
+                          <div className="space-y-2 pt-1 border-t border-slate-200/60">
+                            {doorstepAddress && enq.meetingMode === 'in_person' && (
+                              <div className="p-2.5 bg-purple-50/70 rounded-xl border border-purple-200 flex items-center justify-between text-xs">
+                                <div className="space-y-0.5 min-w-0 pr-2">
+                                  <span className="text-[10px] font-bold text-purple-900 font-heading block">
+                                    📍 Doorstep Area Visit Address
+                                  </span>
+                                  <span className="text-purple-950 font-medium text-[11px] truncate block">
+                                    {doorstepAddress}
+                                  </span>
+                                </div>
+                                <a
+                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(doorstepAddress)}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-1 px-2 py-1 bg-white hover:bg-purple-100 text-purple-800 border border-purple-200 rounded-lg text-[10px] font-bold font-heading shrink-0 shadow-2xs"
+                                >
+                                  <MapPin className="w-3 h-3 text-purple-600" />
+                                  <span>Maps</span>
+                                  <ExternalLink className="w-2.5 h-2.5" />
+                                </a>
+                              </div>
+                            )}
+
+                            <div className="p-2.5 bg-white rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+                              <div className="flex items-center gap-2 text-slate-700">
+                                <Calendar className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                                <span className="font-semibold text-[11px] text-[#0c1a26]">
+                                  {enq.preferredDate || 'Date Not Set'} &bull; {enq.preferredTimeSlot || 'Pending'}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                {getModeBadge(enq.meetingMode)}
+                                <Link
+                                  to={`/admin/appointments?allotEnquiryId=${enq.id}`}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-[10px] font-bold font-heading transition-colors shadow-2xs"
+                                >
+                                  <CalendarCheck2 className="w-3 h-3" />
+                                  <span>Allot Slot</span>
+                                </Link>
+                              </div>
+                            </div>
                           </div>
-                          <div>{getModeBadge(enq.meetingMode)}</div>
-                        </div>
-                      )}
+                        );
+                      })()}
                     </div>
                   ))}
                 </div>
