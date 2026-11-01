@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Calendar as CalendarIcon,
@@ -8,6 +8,7 @@ import {
   AlertCircle,
   Loader2,
   Phone,
+  PhoneCall,
   Video,
   Building2,
   User,
@@ -18,6 +19,7 @@ import {
   MessageSquare,
   ExternalLink,
   ChevronRight,
+  ChevronLeft,
   Filter,
   FileText,
   CalendarCheck2,
@@ -63,6 +65,14 @@ export const AdminAppointmentsPage: React.FC = () => {
   // Filters for Pending Queue
   const [pendingSearch, setPendingSearch] = useState('');
   const [pendingModeFilter, setPendingModeFilter] = useState('ALL');
+
+  // Pagination for Pending Queue
+  const [pendingPage, setPendingPage] = useState<number>(1);
+  const [pendingLimit, setPendingLimit] = useState<number>(10);
+
+  // Pagination for Scheduled Appointments
+  const [scheduledPage, setScheduledPage] = useState<number>(1);
+  const [scheduledLimit, setScheduledLimit] = useState<number>(10);
 
   // Register Borrower Modal
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -438,6 +448,26 @@ export const AdminAppointmentsPage: React.FC = () => {
     return true;
   });
 
+  useEffect(() => {
+    setPendingPage(1);
+  }, [pendingSearch, pendingModeFilter]);
+
+  useEffect(() => {
+    setScheduledPage(1);
+  }, [searchQuery, modeFilter, dateFilter, statusFilter]);
+
+  const pendingTotalPages = Math.max(1, Math.ceil(filteredPendingQueue.length / pendingLimit));
+  const displayedPendingQueue = filteredPendingQueue.slice(
+    (pendingPage - 1) * pendingLimit,
+    pendingPage * pendingLimit
+  );
+
+  const scheduledTotalPages = Math.max(1, Math.ceil(filteredAppointments.length / scheduledLimit));
+  const displayedAppointments = filteredAppointments.slice(
+    (scheduledPage - 1) * scheduledLimit,
+    scheduledPage * scheduledLimit
+  );
+
   // Calculate statistics
   const totalCount = appointments.length;
   const confirmedCount = appointments.filter((a) => a.status === 'Confirmed').length;
@@ -447,7 +477,7 @@ export const AdminAppointmentsPage: React.FC = () => {
   const completedCount = appointments.filter((a) => a.status === 'Completed').length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 font-sans">
       {/* Top Header & Direct Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -475,84 +505,107 @@ export const AdminAppointmentsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI Stats Counter Strip */}
+      {/* KPI Stats Counter Strip - Modern Refined */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
         <div
           onClick={() => setActiveTab('pending')}
-          className={`p-4 rounded-2xl border shadow-sm transition-all cursor-pointer ${
+          className={`p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer ${
             activeTab === 'pending'
-              ? 'bg-amber-50/50 border-amber-300 border-l-4 border-l-amber-500 ring-2 ring-amber-500/20'
-              : 'bg-white border-slate-200 border-l-4 border-l-amber-500 hover:bg-amber-50/30'
+              ? 'bg-amber-50/60 border-amber-300 shadow-sm ring-2 ring-amber-400/20'
+              : 'bg-white border-slate-200/90 shadow-2xs hover:bg-slate-50'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider block font-heading">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-heading">
               Awaiting Allotment
             </span>
-            {pendingQueueCount > 0 && (
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
-            )}
+            <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+              <Clock className="w-3.5 h-3.5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-amber-800 mt-1 font-mono">{pendingQueueCount}</div>
-          <span className="text-[10px] text-amber-700 font-sans">Requires advisor slot</span>
+          <div className="text-xl sm:text-2xl font-extrabold text-[#0c1a26] mt-1 font-heading">{pendingQueueCount}</div>
+          <span className="text-[11px] text-amber-700 font-sans font-medium">Requires advisor slot</span>
         </div>
 
         <div
           onClick={() => setActiveTab('scheduled')}
-          className={`p-4 rounded-2xl border shadow-sm transition-all cursor-pointer ${
+          className={`p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer ${
             activeTab === 'scheduled'
-              ? 'bg-teal-50/40 border-teal-300 border-l-4 border-l-teal-600 ring-2 ring-teal-600/20'
-              : 'bg-white border-slate-200 border-l-4 border-l-slate-400 hover:bg-slate-50'
+              ? 'bg-teal-50/60 border-teal-300 shadow-sm ring-2 ring-teal-500/20'
+              : 'bg-white border-slate-200/90 shadow-2xs hover:bg-slate-50'
           }`}
         >
-          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-heading">
-            Total Scheduled
-          </span>
-          <div className="text-2xl font-extrabold text-[#0c1a26] mt-1 font-mono">{totalCount}</div>
-          <span className="text-[10px] text-slate-400 font-sans">All booked sessions</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-heading">
+              Total Scheduled
+            </span>
+            <div className="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
+              <CalendarCheck2 className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="text-xl sm:text-2xl font-extrabold text-[#0c1a26] mt-1 font-heading">{totalCount}</div>
+          <span className="text-[11px] text-slate-400 font-sans">All booked sessions</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
-          <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block font-heading">
-            Confirmed Slots
-          </span>
-          <div className="text-2xl font-extrabold text-emerald-700 mt-1 font-mono">{confirmedCount}</div>
-          <span className="text-[10px] text-emerald-600 font-sans">Ready for review</span>
+        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-heading">
+              Confirmed Slots
+            </span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="text-xl sm:text-2xl font-extrabold text-emerald-700 mt-1 font-heading">{confirmedCount}</div>
+          <span className="text-[11px] text-emerald-600 font-sans">Ready for review</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-blue-500">
-          <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider block font-heading">
-            Today's Schedule
-          </span>
-          <div className="text-2xl font-extrabold text-blue-700 mt-1 font-mono">{todayCount}</div>
-          <span className="text-[10px] text-blue-600 font-sans">{todayStr}</span>
+        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-heading">
+              Today's Schedule
+            </span>
+            <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+              <CalendarIcon className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="text-xl sm:text-2xl font-extrabold text-blue-700 mt-1 font-heading">{todayCount}</div>
+          <span className="text-[11px] text-blue-600 font-sans">{todayStr}</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-teal-600 col-span-2 sm:col-span-1">
-          <span className="text-[11px] font-bold text-teal-800 uppercase tracking-wider block font-heading">
-            Completed
-          </span>
-          <div className="text-2xl font-extrabold text-teal-800 mt-1 font-mono">{completedCount}</div>
-          <span className="text-[10px] text-teal-600 font-sans">Finished reviews</span>
+        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs col-span-2 sm:col-span-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-heading">
+              Completed
+            </span>
+            <div className="w-7 h-7 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600">
+              <ShieldCheck className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="text-xl sm:text-2xl font-extrabold text-teal-700 mt-1 font-heading">{completedCount}</div>
+          <span className="text-[11px] text-teal-600 font-sans">Finished reviews</span>
         </div>
       </div>
 
-      {/* Primary Workflow Tabs */}
-      <div className="flex items-center gap-3 border-b border-slate-200 pb-2">
+      {/* Primary Workflow Tabs - Corporate Styled */}
+      <div className="flex items-center gap-2 border-b border-slate-200/90 pb-2">
         <button
           type="button"
-          onClick={() => setActiveTab('pending')}
-          className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl font-heading font-extrabold text-xs sm:text-sm transition-all cursor-pointer ${
+          onClick={() => {
+            setActiveTab('pending');
+            setPendingPage(1);
+          }}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm transition-all cursor-pointer ${
             activeTab === 'pending'
-              ? 'bg-amber-500 text-white shadow-md shadow-amber-500/25 ring-2 ring-amber-400/40'
-              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              ? 'bg-slate-900 text-white shadow-sm ring-2 ring-teal-500/30'
+              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
           }`}
         >
-          <Clock className="w-4 h-4" />
+          <Clock className="w-4 h-4 text-amber-400" />
           <span>Borrowers Awaiting Allotment</span>
           <span
             className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-bold ${
-              activeTab === 'pending' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-800'
+              activeTab === 'pending' ? 'bg-amber-500 text-slate-950' : 'bg-amber-100 text-amber-800'
             }`}
           >
             {pendingQueueCount}
@@ -561,18 +614,21 @@ export const AdminAppointmentsPage: React.FC = () => {
 
         <button
           type="button"
-          onClick={() => setActiveTab('scheduled')}
-          className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl font-heading font-extrabold text-xs sm:text-sm transition-all cursor-pointer ${
+          onClick={() => {
+            setActiveTab('scheduled');
+            setScheduledPage(1);
+          }}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading font-bold text-xs sm:text-sm transition-all cursor-pointer ${
             activeTab === 'scheduled'
-              ? 'bg-[#0c1a26] text-white shadow-md shadow-slate-900/25 ring-2 ring-slate-800/40'
-              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              ? 'bg-slate-900 text-white shadow-sm ring-2 ring-teal-500/30'
+              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
           }`}
         >
-          <CalendarCheck2 className="w-4 h-4" />
+          <CalendarCheck2 className="w-4 h-4 text-teal-400" />
           <span>Scheduled Consultations</span>
           <span
             className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-bold ${
-              activeTab === 'scheduled' ? 'bg-slate-800 text-teal-300' : 'bg-slate-100 text-slate-700'
+              activeTab === 'scheduled' ? 'bg-teal-500 text-slate-950' : 'bg-slate-100 text-slate-700'
             }`}
           >
             {totalCount}
@@ -581,254 +637,360 @@ export const AdminAppointmentsPage: React.FC = () => {
       </div>
 
       {/* ════════════════════════════════════════════════════════════
-          VIEW 1: BORROWERS AWAITING ALLOTMENT QUEUE
+          VIEW 1: BORROWERS AWAITING ALLOTMENT QUEUE - PROFESSIONAL TABLE
           ════════════════════════════════════════════════════════════ */}
       {activeTab === 'pending' && (
         <div className="space-y-4">
-          {/* Informative Workflow Banner */}
-          <div className="p-4 bg-gradient-to-r from-amber-50 via-amber-50/70 to-white border border-amber-200/90 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-300 flex items-center justify-center shrink-0 mt-0.5">
-                <Sparkles className="w-5 h-5 text-amber-600" />
-              </div>
-              <div className="space-y-0.5">
-                <h3 className="font-extrabold text-[#0c1a26] text-sm font-heading">
-                  Applicant Consultation Allocation Queue
-                </h3>
-                <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                  These borrowers have completed their loan enquiry and selected their requested callback window and meeting format. Click <strong className="text-amber-800">"Allot Consultation Slot"</strong> on any applicant below to lock in the appointment date, time, and instructions.
-                </p>
-              </div>
-            </div>
-            <div className="shrink-0 flex items-center gap-2">
-              <span className="text-xs font-bold text-amber-800 bg-amber-100/80 px-3 py-1.5 rounded-xl border border-amber-300 font-heading">
-                {filteredPendingQueue.length} Pending Allotment
-              </span>
-            </div>
-          </div>
-
-          {/* Search & Mode Filter Bar for Pending Queue */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <div className="relative flex-1">
+          {/* Single Row Toolbar for Pending Queue */}
+          <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            {/* Real-time Search Box */}
+            <div className="relative flex-1 min-w-[260px]">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search applicant name, phone, loan facility, or reference number..."
                 value={pendingSearch}
                 onChange={(e) => setPendingSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                className="w-full pl-10 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
               />
               {pendingSearch && (
                 <button
                   type="button"
                   onClick={() => setPendingSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
               <select
                 value={pendingModeFilter}
                 onChange={(e) => setPendingModeFilter(e.target.value)}
-                className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:bg-white"
+                className="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-heading font-semibold text-[#0c1a26] focus:bg-white cursor-pointer"
               >
                 <option value="ALL">All Requested Modes</option>
                 <option value="phone">Direct Phone Call</option>
                 <option value="video">Google Meet / Video</option>
                 <option value="in_person">Branch Visit (Tirupur)</option>
               </select>
+
+              <button
+                type="button"
+                onClick={() => {
+                  fetchAppointments();
+                  fetchPendingQueue();
+                }}
+                className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-heading font-bold shadow-2xs hover:shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                title="Refresh queue"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${pendingLoading ? 'animate-spin text-teal-600' : 'text-slate-500'}`} />
+                <span>Refresh</span>
+              </button>
             </div>
           </div>
 
-          {/* Pending Queue Card Grid / Table */}
-          {pendingLoading ? (
-            <div className="grid grid-cols-1 gap-3.5">
-              {Array.from({ length: 3 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 animate-pulse flex flex-col md:flex-row md:items-center justify-between gap-4"
-                >
-                  <div className="flex items-start gap-3.5 min-w-0">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-200 shrink-0" />
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-2">
-                        <div className="h-4 bg-slate-200 rounded w-36" />
-                        <div className="h-4 bg-slate-100 rounded w-24" />
-                      </div>
-                      <div className="h-3 bg-slate-100 rounded w-48" />
-                      <div className="h-3 bg-slate-100 rounded w-32" />
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-9 bg-slate-200 rounded-xl w-32" />
-                    <div className="h-9 bg-slate-100 rounded-xl w-24" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : filteredPendingQueue.length === 0 ? (
-            <div className="bg-white p-14 rounded-2xl border border-slate-200 text-center space-y-3">
-              <Inbox className="w-10 h-10 text-slate-300 mx-auto" />
-              <div className="font-bold text-[#0c1a26] text-sm font-heading">
-                All Borrower Enquiries Have Been Allotted Slots
-              </div>
-              <p className="text-xs text-slate-400 max-w-md mx-auto font-sans">
-                There are currently no new borrower enquiries awaiting consultation schedule allotment. Check the "Scheduled Consultations" tab to review confirmed sessions.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-3.5">
-              {filteredPendingQueue.map((enq) => {
-                const cleanPhone = (enq.mobileNumber || '').replace(/[^0-9]/g, '');
-                const initials = (enq.fullName || 'AP')
-                  .split(' ')
-                  .map((n) => n[0])
-                  .slice(0, 2)
-                  .join('')
-                  .toUpperCase();
-
-                const requestedWindow = enq.preferredTimeSlot || enq.preferredContactMethod || 'Any Time (Fastest Callback)';
-                const isGoogleUser = !!(enq.customer?.email || enq.customerId);
-
-                return (
-                  <div
-                    key={enq.id}
-                    className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 hover:border-amber-400/80 shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
-                  >
-                    {/* Left: Applicant identity and loan dossier */}
-                    <div className="flex items-start gap-3.5 min-w-0">
-                      {/* Avatar with Google profile support */}
-                      {enq.customer?.picture ? (
-                        <div className="relative shrink-0">
-                          <img
-                            src={enq.customer.picture}
-                            alt={enq.fullName}
-                            className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shadow-2xs"
-                          />
-                          <span
-                            className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold"
-                            title="Google Authenticated Applicant"
-                          >
-                            ✓
-                          </span>
+          {/* Awaiting Allotment Table */}
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-50/90 border-b border-slate-200/90 text-slate-600 font-bold uppercase tracking-wider text-[11px] font-heading">
+                    <th className="py-3.5 px-4 min-w-[220px]">Applicant &amp; Dossier</th>
+                    <th className="py-3.5 px-3 min-w-[140px]">Contact Phone</th>
+                    <th className="py-3.5 px-3 min-w-[150px]">Facility Requested</th>
+                    <th className="py-3.5 px-3 min-w-[130px]">Location</th>
+                    <th className="py-3.5 px-3 min-w-[180px]">Requested Preference</th>
+                    <th className="py-3.5 px-3 min-w-[110px]">Submitted</th>
+                    <th className="py-3.5 px-4 text-right min-w-[160px]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-sans">
+                  {pendingLoading ? (
+                    <>
+                      {Array.from({ length: 5 }).map((_, idx) => (
+                        <tr key={idx} className="animate-pulse border-b border-slate-100">
+                          <td className="py-3.5 px-4 min-w-[220px]">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-xl bg-slate-200 shrink-0" />
+                              <div className="space-y-1.5 flex-1">
+                                <div className="h-4 bg-slate-200 rounded w-28" />
+                                <div className="h-3 bg-slate-100 rounded w-36" />
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-3 min-w-[140px]">
+                            <div className="h-3.5 bg-slate-200 rounded w-24" />
+                          </td>
+                          <td className="py-3.5 px-3 min-w-[150px]">
+                            <div className="space-y-1">
+                              <div className="h-3.5 bg-slate-200 rounded w-24" />
+                              <div className="h-3 bg-slate-100 rounded w-16" />
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-3 min-w-[130px]">
+                            <div className="h-3.5 bg-slate-200 rounded w-20" />
+                          </td>
+                          <td className="py-3.5 px-3 min-w-[180px]">
+                            <div className="space-y-1">
+                              <div className="h-5 bg-slate-200 rounded-md w-24" />
+                              <div className="h-3 bg-slate-100 rounded w-28" />
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-3 min-w-[110px]">
+                            <div className="h-3.5 bg-slate-200 rounded w-20" />
+                          </td>
+                          <td className="py-3.5 px-4 text-right min-w-[160px]">
+                            <div className="h-8 bg-slate-200 rounded-xl w-32 ml-auto" />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : filteredPendingQueue.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="p-16 text-center space-y-3">
+                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
+                          <Inbox className="w-6 h-6" />
                         </div>
-                      ) : (
-                        <div className="relative shrink-0">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white font-extrabold text-sm flex items-center justify-center shadow-xs font-heading">
-                            {initials}
-                          </div>
-                          {isGoogleUser && (
-                            <span
-                              className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold"
-                              title="Google Authenticated Applicant"
+                        <h4 className="text-sm font-bold text-[#0c1a26] font-heading">
+                          All Borrower Enquiries Have Been Allotted Slots
+                        </h4>
+                        <p className="text-xs text-slate-500 max-w-sm mx-auto font-sans">
+                          {pendingSearch || pendingModeFilter !== 'ALL'
+                            ? 'No borrower enquiries match your search filters.'
+                            : 'There are currently no new borrower enquiries awaiting consultation schedule allotment.'}
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    displayedPendingQueue.map((enq) => {
+                      const cleanPhone = (enq.mobileNumber || '').replace(/[^0-9]/g, '');
+                      const initials = (enq.fullName || 'AP')
+                        .split(' ')
+                        .map((n) => n[0])
+                        .slice(0, 2)
+                        .join('')
+                        .toUpperCase();
+
+                      const requestedWindow = enq.preferredTimeSlot || enq.preferredContactMethod || 'Standard Window';
+                      const isGoogleUser = !!(enq.customer?.email || enq.customerId);
+
+                      return (
+                        <tr key={enq.id} className="hover:bg-slate-50/70 transition-colors group">
+                          {/* Applicant & Dossier */}
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-3">
+                              {enq.customer?.picture ? (
+                                <img
+                                  src={enq.customer.picture}
+                                  alt={enq.fullName}
+                                  className="w-9 h-9 rounded-xl object-cover border border-slate-200 shadow-2xs shrink-0"
+                                />
+                              ) : (
+                                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-600 to-teal-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs font-heading shrink-0">
+                                  {initials}
+                                </div>
+                              )}
+                              <div className="space-y-0.5 min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-bold text-[#0c1a26] font-heading text-xs group-hover:text-teal-700 transition-colors truncate">
+                                    {enq.fullName}
+                                  </span>
+                                  {isGoogleUser && (
+                                    <span
+                                      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-sky-50 text-sky-700 border border-sky-200 shrink-0"
+                                      title="Google Verified Account"
+                                    >
+                                      <Sparkles className="w-2.5 h-2.5 text-sky-500" />
+                                      <span>Google</span>
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1 text-[11px] text-slate-500 truncate">
+                                  <span className="font-mono text-teal-700 font-bold text-[10px]">
+                                    {enq.referenceNumber}
+                                  </span>
+                                  {enq.email && (
+                                    <>
+                                      <span>&bull;</span>
+                                      <span className="truncate">{enq.email}</span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Contact Phone */}
+                          <td className="py-3.5 px-3 whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-slate-800 font-heading text-xs">{enq.mobileNumber}</span>
+                              <div className="flex items-center gap-1">
+                                <a
+                                  href={`https://wa.me/91${cleanPhone}?text=Hello%20${encodeURIComponent(
+                                    enq.fullName
+                                  )},%20this%20is%20Prime%20Associates%20Loans%20regarding%20your%20loan%20enquiry%20Ref:%20${enq.referenceNumber}.%20We%20are%20allotting%20your%20consultation%20slot.`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition-colors"
+                                  title="Chat on WhatsApp"
+                                >
+                                  <Phone className="w-3.5 h-3.5" />
+                                </a>
+                                <a
+                                  href={`tel:${cleanPhone}`}
+                                  className="p-1 rounded-md text-teal-600 hover:bg-teal-50 transition-colors"
+                                  title="Direct Call"
+                                >
+                                  <PhoneCall className="w-3.5 h-3.5" />
+                                </a>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Facility Requested */}
+                          <td className="py-3.5 px-3 whitespace-nowrap">
+                            <span className="font-bold text-[#0c1a26] text-xs block font-heading">
+                              {enq.loanType}
+                            </span>
+                            <span className="text-xs font-extrabold text-teal-700 font-heading tabular-nums">
+                              {formatAmountINR(enq.loanAmount)}
+                            </span>
+                          </td>
+
+                          {/* Location */}
+                          <td className="py-3.5 px-3">
+                            <div className="flex items-center gap-1 text-xs text-slate-700">
+                              <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                              <span className="truncate">{enq.cityState || 'Tamil Nadu'}</span>
+                            </div>
+                          </td>
+
+                          {/* Requested Preference */}
+                          <td className="py-3.5 px-3">
+                            <div className="space-y-1">
+                              <div>{getModeBadge(enq.meetingMode)}</div>
+                              <div className="flex items-center gap-1 text-[11px] text-slate-600">
+                                <Clock className="w-3 h-3 text-amber-600 shrink-0" />
+                                <span className="truncate">{requestedWindow}</span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Submitted Date */}
+                          <td className="py-3.5 px-3 whitespace-nowrap text-xs text-slate-600">
+                            <div className="flex items-center gap-1">
+                              <CalendarIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                              <span>{new Date(enq.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                            </div>
+                          </td>
+
+                          {/* Actions */}
+                          <td className="py-3.5 px-4 text-right whitespace-nowrap space-x-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleAllotForApplicant(enq)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs font-extrabold font-heading shadow-xs hover:shadow-sm active:scale-95 transition-all cursor-pointer"
                             >
-                              ✓
-                            </span>
-                          )}
-                        </div>
-                      )}
+                              <CalendarCheck2 className="w-3.5 h-3.5" />
+                              <span>Allot Slot</span>
+                            </button>
 
-                      <div className="space-y-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h4 className="font-extrabold text-sm sm:text-base text-[#0c1a26] font-heading truncate">
-                            {enq.fullName}
-                          </h4>
-                          <span className="font-mono text-[11px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200/60">
-                            {enq.referenceNumber}
-                          </span>
-                          {isGoogleUser && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                              <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                              <span>Google Verified</span>
-                            </span>
-                          )}
-                          <span className="text-[10px] text-slate-400 font-sans">
-                            {new Date(enq.createdAt).toLocaleDateString('en-IN', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                            })}
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600 font-sans">
-                          <span className="font-semibold text-[#0c1a26] font-heading">{enq.loanType}</span>
-                          <span>&bull;</span>
-                          <span className="font-extrabold text-teal-700 font-mono">
-                            {formatAmountINR(enq.loanAmount)}
-                          </span>
-                          <span>&bull;</span>
-                          <span>{enq.cityState || 'Tamil Nadu'}</span>
-                        </div>
-
-                        {/* Quick Contact Line */}
-                        <div className="flex flex-wrap items-center gap-3 pt-0.5 text-xs">
-                          <a
-                            href={`tel:${cleanPhone}`}
-                            className="inline-flex items-center gap-1 font-mono font-bold text-[#0c1a26] hover:text-teal-700"
-                          >
-                            <Phone className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>{enq.mobileNumber}</span>
-                          </a>
-
-                          {cleanPhone && (
                             <a
-                              href={`https://wa.me/91${cleanPhone}?text=Hello%20${encodeURIComponent(
-                                enq.fullName
-                              )},%20this%20is%20Prime%20Associates%20Loans%20regarding%20your%20loan%20enquiry%20Ref:%20${enq.referenceNumber}.%20We%20are%20allotting%20your%20consultation%20slot.`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 hover:bg-emerald-100 font-semibold"
+                              href={`/admin/enquiries?search=${enq.referenceNumber}`}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-colors"
+                              title="View Full Loan Application Dossier"
                             >
-                              <MessageSquare className="w-3 h-3" />
-                              <span>WhatsApp</span>
+                              <span>Dossier</span>
+                              <ChevronRight className="w-3 h-3 text-slate-400" />
                             </a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Middle: Borrower's Requested Consultation Preferences */}
-                    <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200/80 md:w-72 shrink-0 space-y-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 font-heading block">
-                        Applicant Requested Preference:
-                      </span>
-                      <div className="flex items-center gap-2">
-                        {getModeBadge(enq.meetingMode)}
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs text-[#0c1a26] font-sans font-semibold">
-                        <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                        <span className="truncate">{requestedWindow}</span>
-                      </div>
-                    </div>
-
-                    {/* Right: Direct Action Button */}
-                    <div className="shrink-0 flex sm:flex-col items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleAllotForApplicant(enq)}
-                        className="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl text-xs sm:text-sm font-extrabold font-heading shadow-md shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
-                      >
-                        <CalendarCheck2 className="w-4 h-4" />
-                        <span>Allot Consultation Slot</span>
-                      </button>
-
-                      <a
-                        href={`/admin/enquiries?search=${enq.referenceNumber}`}
-                        className="w-full sm:w-auto px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl text-xs font-semibold border border-slate-200 flex items-center justify-center gap-1 transition-colors"
-                      >
-                        <span>View Full Dossier</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </a>
-                    </div>
-                  </div>
-                );
-              })}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
-          )}
+
+            {/* Pagination Controls for Pending Queue */}
+            <div className="p-4 sm:px-6 border-t border-slate-200/90 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-sans">
+              <div className="flex flex-wrap items-center gap-3">
+                <span>
+                  Showing{' '}
+                  <span className="font-bold text-slate-900 font-heading tabular-nums">
+                    {filteredPendingQueue.length === 0 ? 0 : (pendingPage - 1) * pendingLimit + 1}–{Math.min(pendingPage * pendingLimit, filteredPendingQueue.length)}
+                  </span>{' '}
+                  of <span className="font-bold text-slate-900 font-heading tabular-nums">{filteredPendingQueue.length}</span> borrowers
+                </span>
+                <span className="text-slate-300 hidden sm:inline">•</span>
+                <span className="hidden sm:inline text-slate-500">
+                  Page <span className="font-bold text-slate-900 font-heading">{pendingPage}</span> of{' '}
+                  <span className="font-bold text-slate-900 font-heading">{pendingTotalPages}</span>
+                </span>
+                <span className="text-slate-300 hidden sm:inline">•</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-slate-400 font-medium text-[11px]">Rows:</span>
+                  <select
+                    value={pendingLimit}
+                    onChange={(e) => {
+                      setPendingLimit(Number(e.target.value));
+                      setPendingPage(1);
+                    }}
+                    className="px-2 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-heading font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer shadow-2xs transition-all"
+                  >
+                    <option value={5}>5 / page</option>
+                    <option value={10}>10 / page</option>
+                    <option value={15}>15 / page</option>
+                    <option value={25}>25 / page</option>
+                    <option value={50}>50 / page</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  type="button"
+                  disabled={pendingPage <= 1 || pendingLoading}
+                  onClick={() => setPendingPage((p) => Math.max(p - 1, 1))}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Previous</span>
+                </button>
+
+                {pendingTotalPages > 1 && (
+                  <div className="hidden sm:flex items-center gap-1">
+                    {Array.from({ length: pendingTotalPages }, (_, i) => i + 1).map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => setPendingPage(p)}
+                        className={`w-7 h-7 rounded-lg text-xs font-heading font-bold transition-all cursor-pointer ${
+                          p === pendingPage
+                            ? 'bg-slate-900 text-white shadow-xs'
+                            : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  disabled={pendingPage >= pendingTotalPages || pendingLoading}
+                  onClick={() => setPendingPage((p) => Math.min(p + 1, pendingTotalPages))}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -971,18 +1133,10 @@ export const AdminAppointmentsPage: React.FC = () => {
                         <p className="text-xs text-slate-400 max-w-sm mx-auto font-sans">
                           No consultations match your selected filters. Click "Allot Consultation Slot" to allocate a slot.
                         </p>
-                        <button
-                          type="button"
-                          onClick={openGenericAllotModal}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-bold font-heading hover:bg-teal-700 transition-colors cursor-pointer mt-2"
-                        >
-                          <Plus className="w-4 h-4" />
-                          <span>Allot Slot Now</span>
-                        </button>
                       </td>
                     </tr>
                   ) : (
-                    filteredAppointments.map((appt) => {
+                    displayedAppointments.map((appt) => {
                       const isToday = appt.date === todayStr;
                       const cleanPhone = (appt.enquiry?.mobileNumber || '').replace(/[^0-9]/g, '');
                       const initials = (appt.enquiry?.fullName || 'AP')
@@ -1060,7 +1214,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                                     href={`tel:${cleanPhone}`}
                                     className="text-[11px] text-[#0c1a26] font-semibold hover:text-teal-700 inline-flex items-center gap-1 font-mono"
                                   >
-                                    <Phone className="w-3 h-3 text-emerald-600" />
+                                    <Phone className="w-3.5 h-3.5 text-emerald-600" />
                                     <span>{appt.enquiry?.mobileNumber}</span>
                                   </a>
                                   {cleanPhone && (
@@ -1178,14 +1332,80 @@ export const AdminAppointmentsPage: React.FC = () => {
               </table>
             </div>
 
-            {/* Bottom Summary Bar */}
+            {/* Pagination Controls for Scheduled Consultations */}
             <div className="p-4 sm:px-6 border-t border-slate-200/90 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 font-sans">
-              <div>
-                Showing <span className="font-bold text-slate-900 font-heading tabular-nums">{filteredAppointments.length}</span> of{' '}
-                <span className="font-bold text-slate-900 font-heading tabular-nums">{appointments.length}</span> scheduled sessions
+              <div className="flex flex-wrap items-center gap-3">
+                <span>
+                  Showing{' '}
+                  <span className="font-bold text-slate-900 font-heading tabular-nums">
+                    {filteredAppointments.length === 0 ? 0 : (scheduledPage - 1) * scheduledLimit + 1}–{Math.min(scheduledPage * scheduledLimit, filteredAppointments.length)}
+                  </span>{' '}
+                  of <span className="font-bold text-slate-900 font-heading tabular-nums">{filteredAppointments.length}</span> scheduled sessions
+                </span>
+                <span className="text-slate-300 hidden sm:inline">•</span>
+                <span className="hidden sm:inline text-slate-500">
+                  Page <span className="font-bold text-slate-900 font-heading">{scheduledPage}</span> of{' '}
+                  <span className="font-bold text-slate-900 font-heading">{scheduledTotalPages}</span>
+                </span>
+                <span className="text-slate-300 hidden sm:inline">•</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-slate-400 font-medium text-[11px]">Rows:</span>
+                  <select
+                    value={scheduledLimit}
+                    onChange={(e) => {
+                      setScheduledLimit(Number(e.target.value));
+                      setScheduledPage(1);
+                    }}
+                    className="px-2 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-heading font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 cursor-pointer shadow-2xs transition-all"
+                  >
+                    <option value={5}>5 / page</option>
+                    <option value={10}>10 / page</option>
+                    <option value={15}>15 / page</option>
+                    <option value={25}>25 / page</option>
+                    <option value={50}>50 / page</option>
+                  </select>
+                </div>
               </div>
-              <div className="text-[11px] text-slate-400">
-                Coordinated via Prime Associates Advisory Desk
+
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  type="button"
+                  disabled={scheduledPage <= 1 || loading}
+                  onClick={() => setScheduledPage((p) => Math.max(p - 1, 1))}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Previous</span>
+                </button>
+
+                {scheduledTotalPages > 1 && (
+                  <div className="hidden sm:flex items-center gap-1">
+                    {Array.from({ length: scheduledTotalPages }, (_, i) => i + 1).map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => setScheduledPage(p)}
+                        className={`w-7 h-7 rounded-lg text-xs font-heading font-bold transition-all cursor-pointer ${
+                          p === scheduledPage
+                            ? 'bg-slate-900 text-white shadow-xs'
+                            : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  disabled={scheduledPage >= scheduledTotalPages || loading}
+                  onClick={() => setScheduledPage((p) => Math.min(p + 1, scheduledTotalPages))}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           </div>
