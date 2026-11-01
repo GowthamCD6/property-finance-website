@@ -24,6 +24,7 @@ import {
   Landmark,
   CreditCard,
   MessageSquare,
+  Navigation,
 } from 'lucide-react';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
@@ -82,6 +83,105 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [preferredCallbackWindow, setPreferredCallbackWindow] = useState('Any Time (Fastest Callback)');
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [consentGiven, setConsentGiven] = useState(false);
+
+  // Live GPS Location Detection State
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [liveLocationCaptured, setLiveLocationCaptured] = useState(false);
+
+  const handleCaptureLiveLocation = () => {
+    setLocationError(null);
+    if (!('geolocation' in navigator)) {
+      setLocationError('Geolocation is not supported by your browser. Please type your address manually.');
+      return;
+    }
+
+    setIsLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        let resolvedAddress = '';
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+            {
+              headers: {
+                'Accept-Language': 'en',
+              },
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data.address || {};
+            const streetParts = [
+              addr.house_number,
+              addr.building,
+              addr.road || addr.street,
+              addr.suburb || addr.neighbourhood,
+            ]
+              .filter(Boolean)
+              .join(', ');
+
+            const cityPart =
+              addr.city ||
+              addr.town ||
+              addr.village ||
+              addr.city_district ||
+              addr.county ||
+              '';
+            const statePart = addr.state || '';
+            const postalPart = addr.postcode ? ` - ${addr.postcode}` : '';
+
+            const parts = [
+              streetParts,
+              cityPart,
+              statePart ? `${statePart}${postalPart}` : postalPart.replace(' - ', ''),
+            ].filter(Boolean);
+
+            if (parts.length > 0) {
+              resolvedAddress = `${parts.join(', ')} (GPS: ${latitude.toFixed(5)}, ${longitude.toFixed(5)})`;
+            } else if (data.display_name) {
+              resolvedAddress = `${data.display_name} (GPS: ${latitude.toFixed(5)}, ${longitude.toFixed(5)})`;
+            }
+
+            // Also assist by populating cityState if empty
+            if (!cityState.trim() && (cityPart || statePart)) {
+              setCityState([cityPart, statePart].filter(Boolean).join(', '));
+            }
+          }
+        } catch (fetchErr) {
+          console.warn('Reverse geocode lookup notice:', fetchErr);
+        }
+
+        if (!resolvedAddress) {
+          resolvedAddress = `📍 Live GPS Coordinates: Lat ${latitude.toFixed(5)}, Long ${longitude.toFixed(5)} (Accuracy: ~${Math.round(accuracy)}m)`;
+        }
+
+        setOfflineMeetingAddress(resolvedAddress);
+        setLiveLocationCaptured(true);
+        setIsLocating(false);
+      },
+      (error) => {
+        setIsLocating(false);
+        let errorMsg = 'Unable to retrieve location. Please type your address manually.';
+        if (error.code === error.PERMISSION_DENIED) {
+          errorMsg = 'Location permission was denied. Please allow location permissions in your browser or type your address manually.';
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          errorMsg = 'Location information is currently unavailable. Please type your address manually.';
+        } else if (error.code === error.TIMEOUT) {
+          errorMsg = 'Location request timed out. Please try again or type your address manually.';
+        }
+        setLocationError(errorMsg);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  };
 
   // Submission State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1045,22 +1145,61 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
                   {/* Mode-specific context box */}
                   {meetingMode === 'in_person' && (
-                    <div className="p-4 bg-teal-50/80 border border-teal-200/90 rounded-2xl space-y-2 animate-in fade-in duration-200 shadow-2xs">
-                      <div className="flex items-center gap-2 text-brand-teal font-extrabold text-xs uppercase tracking-wide font-heading">
-                        <MapPin className="w-4 h-4 text-brand-teal" />
-                        <span>Meeting Address / Area for Advisor Doorstep Visit <span className="text-red-500">*</span></span>
+                    <div className="p-4 bg-teal-50/80 border border-teal-200/90 rounded-2xl space-y-2.5 animate-in fade-in duration-200 shadow-2xs">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-brand-teal font-extrabold text-xs uppercase tracking-wide font-heading">
+                          <MapPin className="w-4 h-4 text-brand-teal" />
+                          <span>Meeting Address / Area for Advisor Doorstep Visit <span className="text-red-500">*</span></span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCaptureLiveLocation}
+                          disabled={isLocating}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs shadow-xs hover:shadow transition-all cursor-pointer disabled:opacity-75 disabled:cursor-wait"
+                        >
+                          {isLocating ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Detecting GPS Location...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Navigation className="w-3.5 h-3.5 fill-white text-white" />
+                              <span>Use My Live Location</span>
+                            </>
+                          )}
+                        </button>
                       </div>
+
                       <p className="text-xs text-slate-600 font-sans">
-                        Please provide your complete door number, building, street, and landmark in your area so the loan advisor can navigate and visit you in person:
+                        Auto-capture your live location with the button above, or manually type your complete door number, building, street, and landmark below:
                       </p>
+
                       <textarea
                         rows={2}
                         required
                         placeholder="e.g. Door No. 42, 2nd Cross, Rayapuram, Kumaran Road, Tirupur - 641601 (Near Old Bus Stand)"
                         value={offlineMeetingAddress}
-                        onChange={(e) => setOfflineMeetingAddress(e.target.value)}
+                        onChange={(e) => {
+                          setOfflineMeetingAddress(e.target.value);
+                          if (locationError) setLocationError(null);
+                        }}
                         className="w-full px-3.5 py-2.5 bg-white border border-teal-200 rounded-xl text-xs sm:text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal resize-none font-medium placeholder:text-slate-400"
                       />
+
+                      {liveLocationCaptured && (
+                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <span>Live GPS location captured! You can freely edit or append your specific door/flat number and landmark above.</span>
+                        </div>
+                      )}
+
+                      {locationError && (
+                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
+                          <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                          <span>{locationError}</span>
+                        </div>
+                      )}
                     </div>
                   )}
 
