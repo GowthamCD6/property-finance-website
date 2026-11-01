@@ -66,25 +66,14 @@ export const AdminLayout: React.FC = () => {
 
   // Route guard
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    const hasToken = Boolean(localStorage.getItem('vpf_admin_token'));
+    if (!isLoading && (!isAuthenticated || !hasToken)) {
       navigate('/admin/login', { replace: true });
     }
   }, [isLoading, isAuthenticated, navigate]);
 
-  if (isLoading) {
-    return (
-      <div className="h-screen bg-[#0b1924] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
-          <span className="text-xs font-semibold text-slate-300 font-sans tracking-wide">
-            Loading Admin Panel...
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
+  const hasToken = Boolean(localStorage.getItem('vpf_admin_token'));
+  if (!isAuthenticated && (!isLoading || !hasToken)) {
     return null;
   }
 
@@ -470,7 +459,19 @@ export const AdminLayout: React.FC = () => {
 
         {/* Page Content Viewport */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <Outlet />
+          {isLoading && !admin ? (
+            <div className="space-y-6 animate-pulse">
+              <div className="h-8 w-64 bg-slate-200 rounded-xl" />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-28 bg-white rounded-2xl border border-slate-200 p-5" />
+                ))}
+              </div>
+              <div className="h-72 bg-white rounded-2xl border border-slate-200 p-6" />
+            </div>
+          ) : (
+            <Outlet />
+          )}
         </main>
       </div>
     </div>

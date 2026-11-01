@@ -15,13 +15,27 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [admin, setAdmin] = useState<AdminUser | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [admin, setAdmin] = useState<AdminUser | null>(() => {
+    try {
+      const cached = localStorage.getItem('vpf_admin_profile');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    const token = localStorage.getItem('vpf_admin_token');
+    const cached = localStorage.getItem('vpf_admin_profile');
+    // If we have token and cached profile, don't block the layout with full-screen loading
+    return Boolean(token && !cached);
+  });
 
   const checkAuth = async () => {
     const token = localStorage.getItem('vpf_admin_token');
     if (!token) {
       setAdmin(null);
+      localStorage.removeItem('vpf_admin_profile');
       setIsLoading(false);
       return;
     }
@@ -29,8 +43,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const profile = await getAdminProfileApi();
       setAdmin(profile);
+      localStorage.setItem('vpf_admin_profile', JSON.stringify(profile));
     } catch {
       localStorage.removeItem('vpf_admin_token');
+      localStorage.removeItem('vpf_admin_profile');
       setAdmin(null);
     } finally {
       setIsLoading(false);
@@ -46,6 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const data = await loginAdminApi(email, pass);
       localStorage.setItem('vpf_admin_token', data.token);
+      localStorage.setItem('vpf_admin_profile', JSON.stringify(data.admin));
       setAdmin(data.admin);
     } finally {
       setIsLoading(false);
@@ -57,6 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const data = await loginAdminWithGoogleApi(credential);
       localStorage.setItem('vpf_admin_token', data.token);
+      localStorage.setItem('vpf_admin_profile', JSON.stringify(data.admin));
       setAdmin(data.admin);
     } finally {
       setIsLoading(false);
@@ -68,6 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await logoutAdminApi();
     } finally {
       localStorage.removeItem('vpf_admin_token');
+      localStorage.removeItem('vpf_admin_profile');
       setAdmin(null);
     }
   };

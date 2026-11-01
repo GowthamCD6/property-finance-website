@@ -290,9 +290,72 @@ export const AdminSettingsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-28 space-y-3">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
-        <span className="text-xs text-slate-500 font-sans">Loading calendar availability settings...</span>
+      <div className="space-y-6 animate-pulse">
+        {/* Page Header Skeleton */}
+        <div className="flex items-center justify-between">
+          <div className="h-8 w-80 bg-slate-200 rounded-xl" />
+          <div className="h-6 w-28 bg-teal-100 rounded-full" />
+        </div>
+
+        {/* Timezone Card Skeleton */}
+        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+          <div className="h-4 w-72 bg-slate-200 rounded" />
+          <div className="h-3 w-80 bg-slate-100 rounded hidden sm:block" />
+        </div>
+
+        {/* Quick Presets Toolbar Skeleton */}
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+          <div className="h-3.5 w-60 bg-slate-200 rounded" />
+          <div className="flex flex-wrap gap-2.5">
+            <div className="h-9 w-64 bg-slate-100 rounded-xl" />
+            <div className="h-9 w-60 bg-slate-100 rounded-xl" />
+            <div className="h-9 w-64 bg-slate-100 rounded-xl" />
+          </div>
+        </div>
+
+        {/* Weekly Schedule Skeleton (7 Day Rows) */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-5">
+          <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
+            <div className="space-y-1.5">
+              <div className="h-5 w-64 bg-slate-200 rounded-lg" />
+              <div className="h-3.5 w-80 bg-slate-100 rounded" />
+            </div>
+          </div>
+
+          <div className="space-y-3.5">
+            {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+              <div
+                key={i}
+                className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 bg-white flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-6 bg-slate-200 rounded-full" />
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-28 bg-slate-200 rounded" />
+                    <div className="h-3 w-36 bg-slate-100 rounded" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-24 bg-slate-100 rounded-xl" />
+                  <div className="h-8 w-24 bg-slate-100 rounded-xl" />
+                  <div className="h-8 w-32 bg-slate-100 rounded-xl" />
+                  <div className="h-8 w-16 bg-slate-200 rounded-xl" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Holiday Blackout Skeleton */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+          <div className="h-5 w-56 bg-slate-200 rounded-lg" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-16 bg-slate-50 rounded-xl border border-slate-200 p-3" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -308,13 +371,15 @@ export const AdminSettingsPage: React.FC = () => {
       )}
 
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
-          Consultation Availability &amp; Calendar Settings
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
-          Configure weekly operational days, business hours, and holiday blackout dates for applicant appointments
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0c1a26] tracking-tight font-heading">
+            Consultation Availability &amp; Calendar Settings
+          </h1>
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-heading bg-teal-50 text-teal-700 border border-teal-200">
+            Auto Slot Sync
+          </span>
+        </div>
       </div>
 
       {/* Timezone Card */}
