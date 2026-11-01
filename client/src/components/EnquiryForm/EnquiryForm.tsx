@@ -22,6 +22,8 @@ import {
   RotateCcw,
   FileCheck,
   Landmark,
+  CreditCard,
+  MessageSquare,
 } from 'lucide-react';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
@@ -49,6 +51,10 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [email, setEmail] = useState('');
   const [preferredContactMethod, setPreferredContactMethod] = useState<'phone' | 'email' | 'whatsapp'>('phone');
   const [cityState, setCityState] = useState('');
+
+  // Optional KYC State
+  const [panNumber, setPanNumber] = useState('');
+  const [aadhaarNumber, setAadhaarNumber] = useState('');
 
   const [loanType, setLoanType] = useState('Home Loans & Self Construction');
   const [loanAmount, setLoanAmount] = useState<string>('5000000');
@@ -178,6 +184,11 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
       return;
     }
 
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFormError('Please enter a valid personal or business email address.');
+      return;
+    }
+
     if (!cityState.trim()) {
       setFormError('Please provide your current city and state.');
       return;
@@ -214,8 +225,14 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     setIsSubmitting(true);
 
     try {
+      const kycNotes = [
+        panNumber.trim() ? `PAN: ${panNumber.trim().toUpperCase()}` : null,
+        aadhaarNumber.trim() ? `Aadhaar: ${aadhaarNumber.trim()}` : null,
+      ].filter(Boolean).join(' | ');
+
       const combinedNotes = [
         meetingMode === 'in_person' ? `📍 Doorstep Meeting Address: ${offlineMeetingAddress.trim()}` : null,
+        kycNotes ? `Optional KYC Details: ${kycNotes}` : null,
         additionalNotes.trim() || null,
       ]
         .filter(Boolean)
@@ -241,6 +258,10 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
         preferredContactWindow: preferredCallbackWindow,
         meetingMode,
         additionalNotes: combinedNotes || undefined,
+        kycDetails: {
+          panNumber: panNumber.trim().toUpperCase() || undefined,
+          aadhaarNumber: aadhaarNumber.trim() || undefined,
+        },
         documents,
         consentGiven: true,
       };
@@ -272,6 +293,8 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
     setFullName('');
     setMobileNumber('');
     setEmail('');
+    setPanNumber('');
+    setAadhaarNumber('');
     setAdditionalNotes('');
     setConsentGiven(false);
     setDocuments([]);
@@ -424,7 +447,8 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                 rel="noreferrer"
                 className="px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-corporate transition-colors flex items-center justify-center gap-2"
               >
-                <span>💬 Quick WhatsApp Connect</span>
+                <MessageSquare className="w-4 h-4 text-white" />
+                <span>Connect on WhatsApp</span>
               </a>
               <button
                 type="button"
@@ -514,25 +538,33 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Full Name <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Full Name</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Ramesh Kumar"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Ramesh Kumar"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Mobile Number <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Mobile Number</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-brand-slate text-xs">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 font-semibold text-xs border-r border-slate-200 pr-2.5 my-1.5">
+                        <Phone className="w-3.5 h-3.5 mr-1 text-slate-400" />
                         +91
                       </div>
                       <input
@@ -541,50 +573,64 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                         placeholder="98765 43210"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
-                        className="w-full pl-11 pr-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
+                        className="w-full pl-20 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Email Address <span className="text-brand-slate font-normal">(Optional)</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Email Address</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
-                    <input
-                      type="email"
-                      placeholder="ramesh.kumar@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="email"
+                        required
+                        placeholder="e.g. ramesh.kumar@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      City &amp; State <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>City &amp; State</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Tirupur, Tamil Nadu"
-                      value={cityState}
-                      onChange={(e) => setCityState(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Tirupur, Tamil Nadu"
+                        value={cityState}
+                        onChange={(e) => setCityState(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                      />
+                    </div>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-semibold text-brand-navy mb-2">
-                      Preferred Mode of Initial Contact
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-2 font-heading">
+                      <span>Preferred Mode of Initial Contact</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
                     <div className="grid grid-cols-3 gap-3">
                       {(['phone', 'whatsapp', 'email'] as const).map((method) => (
                         <label
                           key={method}
-                          className={`flex items-center justify-center gap-2 p-2.5 border rounded-lg text-xs font-medium cursor-pointer transition-colors ${
+                          className={`flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold cursor-pointer transition-all duration-150 ${
                             preferredContactMethod === method
-                              ? 'border-brand-teal bg-brand-teal-light text-brand-teal font-semibold'
-                              : 'border-brand-border hover:bg-brand-ivory text-brand-slate'
+                              ? 'border-brand-teal bg-teal-50/80 text-brand-teal shadow-2xs ring-2 ring-brand-teal/20'
+                              : 'border-slate-200 hover:bg-slate-50 text-slate-600'
                           }`}
                         >
                           <input
@@ -595,10 +641,73 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                             onChange={() => setPreferredContactMethod(method)}
                             className="sr-only"
                           />
-                          <span className="capitalize">{method === 'phone' ? 'Phone Call' : method === 'whatsapp' ? 'WhatsApp' : 'Email'}</span>
+                          {method === 'phone' && <Phone className="w-3.5 h-3.5 text-brand-teal" />}
+                          {method === 'whatsapp' && <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />}
+                          {method === 'email' && <Mail className="w-3.5 h-3.5 text-sky-600" />}
+                          <span>{method === 'phone' ? 'Phone Call' : method === 'whatsapp' ? 'WhatsApp' : 'Email'}</span>
                         </label>
                       ))}
                     </div>
+                  </div>
+
+                  {/* Optional KYC Details - marked Optional clearly */}
+                  <div className="md:col-span-2 pt-3 pb-1 border-t border-slate-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-brand-teal" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-brand-navy font-heading">
+                          KYC &amp; Identity Details
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                        Optional
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                          <span>PAN Number</span>
+                          <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Optional</span>
+                        </label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <CreditCard className="w-4 h-4" />
+                          </div>
+                          <input
+                            type="text"
+                            maxLength={10}
+                            placeholder="e.g. ABCDE1234F"
+                            value={panNumber}
+                            onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-mono uppercase text-slate-900 placeholder:text-slate-400 placeholder:font-sans focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                          <span>Aadhaar Number</span>
+                          <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Optional</span>
+                        </label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <ShieldCheck className="w-4 h-4" />
+                          </div>
+                          <input
+                            type="text"
+                            maxLength={14}
+                            placeholder="e.g. 1234 5678 9012"
+                            value={aadhaarNumber}
+                            onChange={(e) => setAadhaarNumber(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-mono text-slate-900 placeholder:text-slate-400 placeholder:font-sans focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-slate-500 mt-2">
+                      * KYC verification is optional during initial consultation and will be completed prior to formal bank submission.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -612,42 +721,49 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Financing Plan / Category <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Financing Plan / Category</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
-                    <select
-                      value={loanType}
-                      onChange={(e) => setLoanType(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
-                    >
-                      <option value="Home Loans & Self Construction">
-                        Home Loans &amp; Self Construction (from 7.25%)
-                      </option>
-                      <option value="Mortgage Loans (LAP)">
-                        Mortgage Loans / LAP (from 8.50%)
-                      </option>
-                      <option value="Car Loans (New / Used / Refinance)">
-                        Car Loans &amp; Vehicle Refinance (Up to 90% On-Road)
-                      </option>
-                      <option value="Purchase Loans (Plot / Home / Commercial)">
-                        Purchase Loans (Plot / House / Commercial Site)
-                      </option>
-                      <option value="Private to Govt Bank Takeover">
-                        Private Bank to Govt Bank Takeover &amp; Top-Up
-                      </option>
-                      <option value="Commercial Property & Project Funding">
-                        Commercial Property &amp; Builder Project Funding
-                      </option>
-                    </select>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <select
+                        value={loanType}
+                        onChange={(e) => setLoanType(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                      >
+                        <option value="Home Loans & Self Construction">
+                          Home Loans &amp; Self Construction (from 7.25%)
+                        </option>
+                        <option value="Mortgage Loans (LAP)">
+                          Mortgage Loans / LAP (from 8.50%)
+                        </option>
+                        <option value="Car Loans (New / Used / Refinance)">
+                          Car Loans &amp; Vehicle Refinance (Up to 90% On-Road)
+                        </option>
+                        <option value="Purchase Loans (Plot / Home / Commercial)">
+                          Purchase Loans (Plot / House / Commercial Site)
+                        </option>
+                        <option value="Private to Govt Bank Takeover">
+                          Private Bank to Govt Bank Takeover &amp; Top-Up
+                        </option>
+                        <option value="Commercial Property & Project Funding">
+                          Commercial Property &amp; Builder Project Funding
+                        </option>
+                      </select>
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Approximate Loan Amount (INR) <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Approximate Loan Amount (INR)</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-brand-slate text-xs font-semibold">
-                        ₹
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <IndianRupee className="w-4 h-4" />
                       </div>
                       <input
                         type="number"
@@ -656,12 +772,12 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                         required
                         value={loanAmount}
                         onChange={(e) => setLoanAmount(e.target.value)}
-                        className="w-full pl-8 pr-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
                       />
                     </div>
-                    <div className="flex justify-between items-center mt-1 text-[11px] text-brand-slate">
+                    <div className="flex justify-between items-center mt-1 text-[11px] text-slate-500">
                       <span>{formatAmountINR(loanAmount)}</span>
-                      <span className="font-medium text-brand-teal">{getVerbalAmount(loanAmount)}</span>
+                      <span className="font-semibold text-brand-teal">{getVerbalAmount(loanAmount)}</span>
                     </div>
                   </div>
 
@@ -671,11 +787,11 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-brand-navy">
                           <Car className="w-4 h-4 text-brand-teal" />
-                          <span className="text-xs font-bold uppercase tracking-wider">
-                            Vehicle Loan Specifications (Page 4 Master Plan)
+                          <span className="text-xs font-bold uppercase tracking-wider font-heading">
+                            Vehicle Loan Specifications
                           </span>
                         </div>
-                        <span className="text-[11px] font-bold text-teal-800 bg-teal-100 px-2 py-0.5 rounded">
+                        <span className="text-[11px] font-bold text-teal-800 bg-teal-100 px-2.5 py-0.5 rounded-full">
                           Up to 90% Funding
                         </span>
                       </div>
@@ -687,10 +803,10 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                             key={type}
                             type="button"
                             onClick={() => setCarType(type)}
-                            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+                            className={`py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                               carType === type
-                                ? 'bg-brand-teal text-white shadow-xs'
-                                : 'bg-white text-brand-slate border border-brand-border hover:bg-gray-50'
+                                ? 'bg-brand-teal text-white shadow-2xs'
+                                : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50'
                             }`}
                           >
                             {type === 'new' && <span className="inline-flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-teal-300" /> New Car</span>}
@@ -705,39 +821,45 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                         {carType === 'new' && (
                           <>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                On-Road Price (INR)
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>On-Road Price (INR)</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <input
                                 type="number"
+                                required
                                 placeholder="e.g. 1500000"
                                 value={carOnRoadPrice}
                                 onChange={(e) => setCarOnRoadPrice(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               />
                             </div>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Showroom Name
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Showroom Name</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <input
                                 type="text"
+                                required
                                 placeholder="e.g. Tata Motors / Hyundai"
                                 value={carShowroomName}
                                 onChange={(e) => setCarShowroomName(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               />
                             </div>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Area / City
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Area / City</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <input
                                 type="text"
+                                required
                                 placeholder="e.g. Tirupur / Coimbatore"
                                 value={carArea}
                                 onChange={(e) => setCarArea(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               />
                             </div>
                           </>
@@ -746,25 +868,28 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                         {carType === 'used' && (
                           <>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Model &amp; Year
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Model &amp; Year</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <input
                                 type="text"
+                                required
                                 placeholder="e.g. Innova Crysta 2020"
                                 value={carModelYear}
                                 onChange={(e) => setCarModelYear(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               />
                             </div>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Number of Owners
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Number of Owners</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <select
                                 value={carOwnersCount}
                                 onChange={(e) => setCarOwnersCount(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               >
                                 <option value="1">1st Owner</option>
                                 <option value="2">2nd Owner</option>
@@ -773,15 +898,17 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                               </select>
                             </div>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Purchase / Valuation Value (INR)
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Valuation (INR)</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <input
                                 type="number"
+                                required
                                 placeholder="e.g. 1200000"
                                 value={carPurchaseValue}
                                 onChange={(e) => setCarPurchaseValue(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               />
                             </div>
                           </>
@@ -790,25 +917,28 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                         {carType === 'refinance' && (
                           <>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Vehicle Model &amp; Make
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Vehicle Model &amp; Make</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <input
                                 type="text"
+                                required
                                 placeholder="e.g. Swift Dzire 2021"
                                 value={carModelYear}
                                 onChange={(e) => setCarModelYear(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               />
                             </div>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Number of Owners
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Number of Owners</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <select
                                 value={carOwnersCount}
                                 onChange={(e) => setCarOwnersCount(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               >
                                 <option value="1">1st Owner</option>
                                 <option value="2">2nd Owner</option>
@@ -816,15 +946,17 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                               </select>
                             </div>
                             <div>
-                              <label className="block text-[11px] font-semibold text-brand-navy mb-1">
-                                Current Financer (If Any)
+                              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1 font-heading">
+                                <span>Current Financer</span>
+                                <span className="text-rose-600 font-bold ml-0.5">*</span>
                               </label>
                               <input
                                 type="text"
+                                required
                                 placeholder="e.g. HDFC / Cholamandalam / Free"
                                 value={carShowroomName}
                                 onChange={(e) => setCarShowroomName(e.target.value)}
-                                className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-xs text-brand-navy"
+                                className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
                               />
                             </div>
                           </>
@@ -834,73 +966,97 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   ) : (
                     <>
                       <div>
-                        <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                          Property / Collateral Type <span className="text-red-500">*</span>
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                          <span>Property / Collateral Type</span>
+                          <span className="text-rose-600 font-bold ml-1">*</span>
                         </label>
-                        <select
-                          value={propertyType}
-                          onChange={(e) => setPropertyType(e.target.value as any)}
-                          className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                        >
-                          <option value="residential">Concrete Building / Tiled House / Independent Home</option>
-                          <option value="land">Plots (Empty Land / Vacant Site / Layout Plot)</option>
-                          <option value="commercial">Commercial Building (Showroom / Complex / Unit)</option>
-                          <option value="other">Agricultural / Industrial / Other</option>
-                        </select>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <Building className="w-4 h-4" />
+                          </div>
+                          <select
+                            value={propertyType}
+                            onChange={(e) => setPropertyType(e.target.value as any)}
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                          >
+                            <option value="residential">Concrete Building / Tiled House / Independent Home</option>
+                            <option value="land">Plots (Empty Land / Vacant Site / Layout Plot)</option>
+                            <option value="commercial">Commercial Building (Showroom / Complex / Unit)</option>
+                            <option value="other">Agricultural / Industrial / Other</option>
+                          </select>
+                        </div>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                          Property Location (City / Locality) <span className="text-red-500">*</span>
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                          <span>Property Location (City / Locality)</span>
+                          <span className="text-rose-600 font-bold ml-1">*</span>
                         </label>
-                        <input
-                          type="text"
-                          required={!isCarLoan}
-                          placeholder="e.g. Kumaran Road, Tirupur"
-                          value={propertyLocation}
-                          onChange={(e) => setPropertyLocation(e.target.value)}
-                          className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                        />
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <MapPin className="w-4 h-4" />
+                          </div>
+                          <input
+                            type="text"
+                            required={!isCarLoan}
+                            placeholder="e.g. Kumaran Road, Tirupur"
+                            value={propertyLocation}
+                            onChange={(e) => setPropertyLocation(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                          />
+                        </div>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                          Property Ownership Status <span className="text-red-500">*</span>
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                          <span>Property Ownership Status</span>
+                          <span className="text-rose-600 font-bold ml-1">*</span>
                         </label>
-                        <select
-                          value={propertyOwnershipStatus}
-                          onChange={(e) => setPropertyOwnershipStatus(e.target.value as any)}
-                          className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors"
-                        >
-                          <option value="purchasing">In Process of Purchasing (New / Resale)</option>
-                          <option value="owned">Solely Owned &amp; Freehold</option>
-                          <option value="jointly_owned">Jointly Owned</option>
-                          <option value="other">Inherited / Under Partition</option>
-                        </select>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <FileCheck className="w-4 h-4" />
+                          </div>
+                          <select
+                            value={propertyOwnershipStatus}
+                            onChange={(e) => setPropertyOwnershipStatus(e.target.value as any)}
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                          >
+                            <option value="purchasing">In Process of Purchasing (New / Resale)</option>
+                            <option value="owned">Solely Owned &amp; Freehold</option>
+                            <option value="jointly_owned">Jointly Owned</option>
+                            <option value="other">Inherited / Under Partition</option>
+                          </select>
+                        </div>
                       </div>
                     </>
                   )}
 
                   {/* EMPLOYMENT TYPE WITH CASH/HAND SALARY (PAGE 2) */}
                   <div>
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Applicant Employment / Income Profile <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Applicant Employment / Income Profile</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
-                    <select
-                      value={employmentType}
-                      onChange={(e) => setEmploymentType(e.target.value as any)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
-                    >
-                      <option value="salaried">Salaried (Bank Transfer / Payslips / Form 16)</option>
-                      <option value="self_employed">Self-Employed Professional / Business (ITR / GST)</option>
-                      <option value="cash_salary">Cash Salary (Hand Salary / Cash Income with 1-Yr Banking)</option>
-                      <option value="business_owner">Business Owner / Proprietor / MSME</option>
-                      <option value="other">NRI / Other Income Profile</option>
-                    </select>
-                    <span className="text-[11px] text-brand-slate mt-1 block">
-                      {employmentType === 'cash_salary' && <span className="inline-flex items-center gap-1 text-brand-teal"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 1-Yr Bank Statement + Salary Certificate.</span>}
-                      {employmentType === 'salaried' && <span className="inline-flex items-center gap-1 text-brand-teal"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 6-Mo Bank Statement + Payslips / Form 16.</span>}
-                      {employmentType === 'self_employed' && <span className="inline-flex items-center gap-1 text-brand-teal"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 1-Yr Bank Statement + ITR (1-3 Yrs) / GST.</span>}
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Briefcase className="w-4 h-4" />
+                      </div>
+                      <select
+                        value={employmentType}
+                        onChange={(e) => setEmploymentType(e.target.value as any)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                      >
+                        <option value="salaried">Salaried (Bank Transfer / Payslips / Form 16)</option>
+                        <option value="self_employed">Self-Employed Professional / Business (ITR / GST)</option>
+                        <option value="cash_salary">Cash Salary (Hand Salary / Cash Income with 1-Yr Banking)</option>
+                        <option value="business_owner">Business Owner / Proprietor / MSME</option>
+                        <option value="other">NRI / Other Income Profile</option>
+                      </select>
+                    </div>
+                    <span className="text-[11px] text-slate-500 mt-1.5 block">
+                      {employmentType === 'cash_salary' && <span className="inline-flex items-center gap-1 text-brand-teal font-medium"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 1-Yr Bank Statement + Salary Certificate.</span>}
+                      {employmentType === 'salaried' && <span className="inline-flex items-center gap-1 text-brand-teal font-medium"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 6-Mo Bank Statement + Payslips / Form 16.</span>}
+                      {employmentType === 'self_employed' && <span className="inline-flex items-center gap-1 text-brand-teal font-medium"><Sparkles className="w-3 h-3 text-brand-teal" /> Requires 1-Yr Bank Statement + ITR (1-3 Yrs) / GST.</span>}
                     </span>
                   </div>
                 </div>
@@ -1095,32 +1251,38 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5 font-heading">
-                      Best Time Window for Advisor to Reach You
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Best Time Window for Advisor to Reach You</span>
+                      <span className="text-rose-600 font-bold ml-1">*</span>
                     </label>
-                    <select
-                      value={preferredCallbackWindow}
-                      onChange={(e) => setPreferredCallbackWindow(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors font-medium"
-                    >
-                      <option value="Any Time (Fastest Callback)">⚡ Any Time (Fastest Callback)</option>
-                      <option value="Morning (10:00 AM – 01:00 PM)">🌅 Morning (10:00 AM – 01:00 PM)</option>
-                      <option value="Afternoon (01:00 PM – 04:00 PM)">☀️ Afternoon (01:00 PM – 04:00 PM)</option>
-                      <option value="Evening (04:00 PM – 07:00 PM)">🌆 Evening (04:00 PM – 07:00 PM)</option>
-                    </select>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Clock className="w-4 h-4" />
+                      </div>
+                      <select
+                        value={preferredCallbackWindow}
+                        onChange={(e) => setPreferredCallbackWindow(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                      >
+                        <option value="Any Time (Fastest Callback)">Any Time (Fastest Callback)</option>
+                        <option value="Morning (10:00 AM – 01:00 PM)">Morning (10:00 AM – 01:00 PM)</option>
+                        <option value="Afternoon (01:00 PM – 04:00 PM)">Afternoon (01:00 PM – 04:00 PM)</option>
+                        <option value="Evening (04:00 PM – 07:00 PM)">Evening (04:00 PM – 07:00 PM)</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-semibold text-brand-navy mb-1.5">
-                      Specific Inquiries, Existing Loan Transfer, or Notes{' '}
-                      <span className="text-brand-slate font-normal">(Optional)</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                      <span>Specific Inquiries, Existing Loan Transfer, or Notes</span>
+                      <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Optional</span>
                     </label>
                     <textarea
                       rows={3}
                       placeholder="e.g. Existing home loan balance transfer, query regarding co-applicant eligibility, unapproved plot financing, or construction stage..."
                       value={additionalNotes}
                       onChange={(e) => setAdditionalNotes(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-sm text-brand-navy focus:bg-white transition-colors resize-none"
+                      className="w-full px-4 py-3 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200 resize-none"
                     />
                   </div>
                 </div>

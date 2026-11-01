@@ -4,7 +4,7 @@ export interface DocumentItemDef {
   id: string;
   name: string;
   category: 'KYC' | 'Income' | 'Legal' | 'Technical' | 'Mortgage_LAP' | 'Vehicle';
-  tag: 'Mandatory' | 'If Available' | 'Recommended' | 'Conditional';
+  tag: 'Mandatory' | 'Optional' | 'If Available' | 'Recommended' | 'Conditional';
   desc: string;
   sampleHint?: string;
 }
@@ -83,22 +83,22 @@ export function getRequiredDocumentsForPlan(
         id: 'car-kyc-pan',
         name: 'PAN Card (Applicant & Co-Applicant)',
         category: 'KYC',
-        tag: 'Mandatory',
-        desc: 'Clear photo or scan of PAN card for identity & credit verification.',
+        tag: 'Optional',
+        desc: 'Optional at consultation enquiry stage. Can be presented later during sanction.',
       },
       {
         id: 'car-kyc-aadhaar',
         name: 'Aadhaar Card (Applicant & Co-Applicant)',
         category: 'KYC',
-        tag: 'Mandatory',
-        desc: 'Front and back photo of Aadhaar Card.',
+        tag: 'Optional',
+        desc: 'Optional at initial stage. Identity verification completed prior to disbursement.',
       },
       {
         id: 'car-kyc-photo',
         name: 'Passport Size Photo',
         category: 'KYC',
-        tag: 'Mandatory',
-        desc: 'Recent passport size photograph of the applicant.',
+        tag: 'Optional',
+        desc: 'Optional at initial stage. Recent photograph for final loan kit.',
       },
     ];
 
@@ -116,7 +116,7 @@ export function getRequiredDocumentsForPlan(
           id: 'car-new-booking',
           name: 'Booking Receipt / Down Payment Voucher',
           category: 'Vehicle',
-          tag: 'If Available',
+          tag: 'Mandatory',
           desc: 'Advance booking receipt issued by the automobile dealership.',
         }
       );
@@ -141,7 +141,7 @@ export function getRequiredDocumentsForPlan(
           id: 'car-used-purchase-agreement',
           name: 'Purchase Agreement / Sale Receipt',
           category: 'Vehicle',
-          tag: 'If Available',
+          tag: 'Mandatory',
           desc: 'Sale receipt or letter from seller specifying agreed purchase value.',
         }
       );
@@ -166,7 +166,7 @@ export function getRequiredDocumentsForPlan(
           id: 'car-refinance-soa',
           name: 'Existing Loan Statement / Foreclosure Letter',
           category: 'Vehicle',
-          tag: 'If Available',
+          tag: 'Mandatory',
           desc: 'Current financer loan statement showing outstanding balance for refinance equity.',
         }
       );
@@ -187,32 +187,32 @@ export function getRequiredDocumentsForPlan(
   // 2. PROPERTY LOANS (HOME LOANS, SELF-CONSTRUCTION, LAP, PROPERTY FUNDING)
   const docs: DocumentItemDef[] = [];
 
-  // A. KYC (APPLICANT & CO-APPLICANT)
+  // A. KYC (APPLICANT & CO-APPLICANT) - OPTIONAL AT INITIAL INTAKE
   docs.push(
     {
       id: 'kyc-pan',
       name: 'PAN Card (Applicant & Co-Applicant)',
       category: 'KYC',
-      tag: 'Mandatory',
-      desc: 'Mandatory identity proof for credit bureau eligibility audit.',
+      tag: 'Optional',
+      desc: 'Optional at initial consultation. Verified prior to formal bank submission.',
     },
     {
       id: 'kyc-aadhaar',
       name: 'Aadhaar Card (Applicant & Co-Applicant)',
       category: 'KYC',
-      tag: 'Mandatory',
-      desc: 'Front and back photo of Aadhaar Card.',
+      tag: 'Optional',
+      desc: 'Optional at enquiry stage. Front and back photo of Aadhaar Card.',
     },
     {
       id: 'kyc-photo',
       name: 'Passport Size Photo',
       category: 'KYC',
-      tag: 'Mandatory',
-      desc: 'Recent color passport photo for applicant & co-applicant.',
+      tag: 'Optional',
+      desc: 'Optional at enquiry stage. Recent color photo for loan application.',
     }
   );
 
-  // B. INCOME DOCUMENTS (TAILORED TO EMPLOYMENT)
+  // B. INCOME DOCUMENTS (TAILORED TO EMPLOYMENT) - MANDATORY
   if (employmentType === 'salaried') {
     docs.push(
       {
@@ -226,14 +226,14 @@ export function getRequiredDocumentsForPlan(
         id: 'inc-sal-slips',
         name: 'Pay Slips (Last 6 Months)',
         category: 'Income',
-        tag: 'If Available',
+        tag: 'Mandatory',
         desc: 'Official company payslips with earnings, deductions, PF, and gross/net breakups.',
       },
       {
         id: 'inc-sal-form16',
         name: 'Form 16 / ITR (Last 3 Years)',
         category: 'Income',
-        tag: 'If Available',
+        tag: 'Mandatory',
         desc: 'Part A & B issued by employer or annual income tax acknowledgments.',
       }
     );
@@ -250,12 +250,12 @@ export function getRequiredDocumentsForPlan(
         id: 'inc-cash-cert',
         name: 'Salary Certificate (from Employer / Business)',
         category: 'Income',
-        tag: 'If Available',
+        tag: 'Mandatory',
         desc: 'Written certificate on employer letterhead confirming monthly hand-salary compensation.',
       }
     );
   } else {
-    // Self-Employed / Business Owner
+    // Self-Employed / Business Owner - MANDATORY
     docs.push(
       {
         id: 'inc-se-bank',
@@ -268,20 +268,20 @@ export function getRequiredDocumentsForPlan(
         id: 'inc-se-itr',
         name: 'ITR - Last 3 Years / 2 Years / 1 Year',
         category: 'Income',
-        tag: 'If Available',
+        tag: 'Mandatory',
         desc: 'Income Tax Return acknowledgments with computation of income and CA audit balance sheets.',
       },
       {
         id: 'inc-se-gst',
         name: 'GST Certificate / Udyam MSME Certificate',
         category: 'Income',
-        tag: 'If Available',
+        tag: 'Mandatory',
         desc: 'Valid government business registration, GST certificate, or MSME Udyam registration.',
       }
     );
   }
 
-  // C. LEGAL PROPERTY DOCUMENTS
+  // C. LEGAL PROPERTY DOCUMENTS - MANDATORY
   docs.push(
     {
       id: 'leg-title-deed',
@@ -321,13 +321,13 @@ export function getRequiredDocumentsForPlan(
     }
   );
 
-  // D. TECHNICAL DOCUMENTS
+  // D. TECHNICAL DOCUMENTS - MANDATORY
   docs.push(
     {
       id: 'tech-approved-plan',
       name: 'Approved Sanctioned Building Plan',
       category: 'Technical',
-      tag: 'If Available',
+      tag: 'Mandatory',
       desc: 'Sanctioned blueprint approved by Municipal Corporation, DTCP, CMDA, or Local Planning Authority.',
     },
     {
@@ -346,7 +346,7 @@ export function getRequiredDocumentsForPlan(
     }
   );
 
-  // E. ADDITIONAL DOCUMENTS FOR MORTGAGE LOAN (LAP)
+  // E. ADDITIONAL DOCUMENTS FOR MORTGAGE LOAN (LAP) - MANDATORY
   if (isLAP) {
     docs.push(
       {
@@ -375,3 +375,4 @@ export function getRequiredDocumentsForPlan(
 
   return docs;
 }
+

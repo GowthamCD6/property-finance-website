@@ -58,30 +58,30 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
           profiles: [
             {
               id: 'kyc',
-              label: 'A. KYC Documents',
+              label: 'A. KYC Documents (Optional)',
               icon: <User className="w-4 h-4" />,
               title: 'KYC Documents (Applicant & Co-Applicant)',
-              subtitle: 'Mandatory identification and address verification required from both applicant and co-applicant.',
+              subtitle: 'Optional during consultation enquiry intake. Identity proof can be provided later during sanction.',
               docs: [
                 {
                   name: 'PAN Card (Applicant & Co-Applicant)',
-                  desc: 'Permanent Account Number card mandatory for tax validation and credit evaluation.',
-                  tag: 'Mandatory',
+                  desc: 'Permanent Account Number card for tax validation and credit evaluation.',
+                  tag: 'Optional',
                 },
                 {
                   name: 'Aadhaar Card (Applicant & Co-Applicant)',
                   desc: 'Government Aadhaar identity proof with linked active mobile number for biometric e-KYC.',
-                  tag: 'Mandatory',
+                  tag: 'Optional',
                 },
                 {
                   name: 'Passport-Size Photographs',
                   desc: 'Recent passport-size colored photographs of both applicant and co-applicant.',
-                  tag: 'Photo ID',
+                  tag: 'Optional',
                 },
                 {
                   name: 'Applicant and Co-Applicant Details',
                   desc: 'Complete residential address proof, relationship declaration, contact details, and family profile particulars.',
-                  tag: 'Profile Details',
+                  tag: 'Optional',
                 },
               ],
             },

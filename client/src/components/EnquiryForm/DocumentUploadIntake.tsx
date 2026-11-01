@@ -241,7 +241,7 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
             className="w-full px-3.5 py-2.5 bg-white border border-brand-border rounded-lg text-sm text-brand-navy font-semibold focus:ring-2 focus:ring-brand-teal focus:border-transparent transition-all"
           >
             <option value="Any (Best Market Rate Finder across 40+ Channel Partners)">
-              ⭐ Any / Best Available Lowest Rate (Recommended — Algorithmic Comparison)
+              Any / Best Available Lowest Rate (Recommended — Algorithmic Comparison)
             </option>
             {CHANNEL_PARTNERS.map((group) => (
               <optgroup key={group.category} label={`── ${group.category} ──`}>
@@ -267,7 +267,7 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
               : 'bg-brand-ivory hover:bg-gray-200 text-brand-slate'
           }`}
         >
-          All Required Documents ({checklist.length})
+          All Documents ({checklist.length})
         </button>
         {categories.map((cat) => {
           const meta = getCategoryMeta(cat);
@@ -313,7 +313,9 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
                   <span
                     className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
                       item.tag === 'Mandatory'
-                        ? 'bg-red-50 text-red-700 border border-red-200'
+                        ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                        : item.tag === 'Optional'
+                        ? 'bg-slate-100 text-slate-600 border border-slate-200'
                         : item.tag === 'If Available'
                         ? 'bg-blue-50 text-blue-700 border border-blue-200'
                         : 'bg-amber-50 text-amber-700 border border-amber-200'
