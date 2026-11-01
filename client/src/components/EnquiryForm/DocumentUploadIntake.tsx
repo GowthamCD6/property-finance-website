@@ -129,46 +129,7 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* SECTION HEADER & REAL-PLAN INTENT */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-[#0C1E30] via-[#0E263D] to-[#0A1826] text-white border border-teal-500/30 shadow-lg">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/30 text-xs font-bold uppercase tracking-wider">
-              <FileCheck className="w-3.5 h-3.5" />
-              <span>Real Document Intake &amp; Reference Portal</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight font-heading">
-              Submit Reference Documents for Fast-Track Sanction
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Upload clear photos or scans of your property, identity, and income documents. These will be securely referenced by our senior credit underwriters to formulate your sanction proposal across 40+ banks.
-            </p>
-          </div>
 
-          <div className="shrink-0 flex items-center sm:flex-col sm:items-end justify-between gap-2 p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-teal-300" />
-              <span className="text-xs font-bold text-white uppercase tracking-wider">Documents Attached</span>
-            </div>
-            <div className="text-2xl font-extrabold text-teal-300 font-mono">
-              {documents.length} <span className="text-xs font-normal text-slate-300">File(s)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Reassurance banner */}
-        <div className="mt-4 pt-3 border-t border-white/15 flex flex-wrap items-center gap-y-2 gap-x-6 text-[11px] text-slate-300">
-          <span className="flex items-center gap-1.5 text-teal-300 font-medium">
-            <ShieldCheck className="w-4 h-4" /> 256-Bit Bank Grade Encryption
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Zero CIBIL Inquiry On Document Upload
-          </span>
-          <span className="text-slate-400 italic">
-            * Optional: If you don't have all documents now, you can submit the form and share the rest via WhatsApp.
-          </span>
-        </div>
-      </div>
 
       {/* CHANNEL PARTNER / PREFERRED BANK PICKER (PAGE 1) */}
       <div className="p-4 sm:p-5 rounded-xl bg-brand-ivory border border-brand-border space-y-3">
