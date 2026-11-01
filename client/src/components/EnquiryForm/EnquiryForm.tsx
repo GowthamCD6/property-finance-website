@@ -477,65 +477,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   <h3 className="text-base font-bold">1. Contact &amp; Personal Details</h3>
                 </div>
 
-                {customer ? (
-                  <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      {customer.picture ? (
-                        <img
-                          src={customer.picture}
-                          alt={customer.name}
-                          className="w-10 h-10 rounded-full border border-emerald-300"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-emerald-700 text-white font-bold flex items-center justify-center text-xs">
-                          {customer.name.charAt(0)}
-                        </div>
-                      )}
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-emerald-950">Logged in with Google: {customer.name}</span>
-                          <span className="text-[10px] bg-emerald-200/70 text-emerald-900 px-2 py-0.5 rounded-full font-bold">Verified Account</span>
-                        </div>
-                        <p className="text-[11px] text-emerald-700 mt-0.5">
-                          {customer.email} • Your consultation date and allotted slot will be synchronized to this account.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mb-6 p-4 bg-slate-50 border border-slate-200/80 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white rounded-lg border border-slate-200 shadow-xs">
-                        <GoogleIcon size={18} />
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-brand-navy block">Sign in with Google to pre-fill &amp; track</span>
-                        <span className="text-[11px] text-brand-slate block">
-                          Required before submitting so advisors can allot and send your meeting schedule.
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => triggerGoogleLogin()}
-                      disabled={isGoogleSigningIn}
-                      className="px-4 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-semibold text-xs rounded-lg shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
-                    >
-                      {isGoogleSigningIn ? (
-                        <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-teal" />
-                          <span>Connecting...</span>
-                        </>
-                      ) : (
-                        <>
-                          <GoogleIcon size={14} />
-                          <span>Sign in with Google</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                )}
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
@@ -1087,21 +1028,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   </div>
                 </div>
 
-                {/* ADVISOR SLOT ALLOCATION NOTICE */}
-                <div className="p-4 mb-5 bg-teal-50/70 border border-teal-200/90 rounded-xl flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs">
-                    <Clock className="w-4 h-4" />
-                  </div>
-                  <div className="text-xs space-y-1">
-                    <span className="font-bold text-[#0c1a26] font-heading block">
-                      Dedicated Meeting Slot Allocation by Senior Loan Advisor
-                    </span>
-                    <p className="text-slate-600 font-sans leading-relaxed">
-                      Once submitted, our Tirupur advisory desk will assess your profile across 40+ PSU and private banking partners to allocate your personalized consultation date and slot. You will receive direct slot confirmation via phone call and WhatsApp.
-                    </p>
-                  </div>
-                </div>
-
                 {/* 3 Interactive Meeting Mode Option Cards */}
                 <div className="space-y-4 mb-5">
                   <label className="block text-xs font-bold text-brand-navy font-heading uppercase tracking-wider">
@@ -1249,41 +1175,25 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
-                      <span>Best Time Window for Advisor to Reach You</span>
-                      <span className="text-rose-600 font-bold ml-1">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <Clock className="w-4 h-4" />
-                      </div>
-                      <select
-                        value={preferredCallbackWindow}
-                        onChange={(e) => setPreferredCallbackWindow(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
-                      >
-                        <option value="Any Time (Fastest Callback)">Any Time (Fastest Callback)</option>
-                        <option value="Morning (10:00 AM – 01:00 PM)">Morning (10:00 AM – 01:00 PM)</option>
-                        <option value="Afternoon (01:00 PM – 04:00 PM)">Afternoon (01:00 PM – 04:00 PM)</option>
-                        <option value="Evening (04:00 PM – 07:00 PM)">Evening (04:00 PM – 07:00 PM)</option>
-                      </select>
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
+                    <span>Best Time Window for Advisor to Reach You</span>
+                    <span className="text-rose-600 font-bold ml-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Clock className="w-4 h-4" />
                     </div>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between mb-1.5 font-heading">
-                      <span>Specific Inquiries, Existing Loan Transfer, or Notes</span>
-                      <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Optional</span>
-                    </label>
-                    <textarea
-                      rows={3}
-                      placeholder="e.g. Existing home loan balance transfer, query regarding co-applicant eligibility, unapproved plot financing, or construction stage..."
-                      value={additionalNotes}
-                      onChange={(e) => setAdditionalNotes(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200 resize-none"
-                    />
+                    <select
+                      value={preferredCallbackWindow}
+                      onChange={(e) => setPreferredCallbackWindow(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 shadow-2xs transition-all duration-200"
+                    >
+                      <option value="Any Time (Fastest Callback)">Any Time (Fastest Callback)</option>
+                      <option value="Morning (10:00 AM – 01:00 PM)">Morning (10:00 AM – 01:00 PM)</option>
+                      <option value="Afternoon (01:00 PM – 04:00 PM)">Afternoon (01:00 PM – 04:00 PM)</option>
+                      <option value="Evening (04:00 PM – 07:00 PM)">Evening (04:00 PM – 07:00 PM)</option>
+                    </select>
                   </div>
                 </div>
               </div>
