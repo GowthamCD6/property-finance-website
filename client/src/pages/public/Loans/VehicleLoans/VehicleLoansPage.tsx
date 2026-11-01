@@ -491,47 +491,223 @@ export const VehicleLoansPage: React.FC = () => {
       </section>
 
       <section className="py-16 lg:py-20 bg-white border-b border-brand-border">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="max-w-3xl mb-12 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-teal font-heading">
-              Complete Automotive Debt Syndication
-            </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight">
-              Four Specialized Vehicle Financing Categories
-            </h2>
-            <p className="text-sm sm:text-base text-brand-slate leading-relaxed">
-              Whether you are acquiring a luxury private car, modernizing a commercial transport fleet, or unlocking liquidity from existing vehicles, our desk manages the entire process from valuation to sanction.
-            </p>
-          </div>
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto space-y-16">
+          {/* Note 4 - Car Loan Categories */}
+          <div>
+            <div className="max-w-3xl mb-10 space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-teal font-heading">
+                Note 4 • Car Loan Advisory & Syndication
+              </span>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight">
+                Our 3 Tailored Car Loan Facilities
+              </h2>
+              <p className="text-sm sm:text-base text-brand-slate leading-relaxed">
+                Clear documentation standards and maximum funding syndication across top public banks, private sector leaders, and prime NBFCs.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {consultationPillars.map((p, idx) => (
-              <div
-                key={idx}
-                className="bg-[#f8f8f4] rounded-2xl p-6 border border-brand-border/80 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-400 group space-y-4"
-              >
-                <div className="w-10 h-10 rounded-xl bg-brand-teal-light text-brand-teal flex items-center justify-center font-bold text-xs font-mono border border-brand-teal/20 group-hover:bg-brand-teal group-hover:text-white transition-colors">
-                  {p.step}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Card 1: New Car Loan */}
+              <div className="bg-[#f8f8f4] rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold font-mono border border-emerald-300">
+                      Up to 90% Funding
+                    </span>
+                    <span className="text-xs font-mono font-bold text-slate-400">01</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-brand-navy font-heading group-hover:text-brand-teal transition-colors">
+                    New Car Loan
+                  </h3>
+                  <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
+                    High-margin financing up to 90% of on-road quotation for luxury sedans, SUVs, and personal hatchbacks.
+                  </p>
+
+                  <div className="pt-2 space-y-2">
+                    <span className="text-[11px] uppercase tracking-wider font-extrabold text-brand-navy font-heading block">
+                      Required Details & Docs:
+                    </span>
+                    <ul className="text-xs text-brand-slate space-y-2 font-sans">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>On-Road Price Breakdown:</strong> Showroom proforma invoice.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Showroom Details:</strong> Authorized dealer name & account.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Area / Location:</strong> Exact delivery and RTO registration zone.</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-                <h3 className="font-bold text-base text-brand-navy font-heading leading-snug">
-                  {p.title}
-                </h3>
-                <p className="text-xs text-brand-slate leading-relaxed font-sans">
-                  {p.desc}
-                </p>
-                <div className="pt-3 border-t border-slate-200/80 text-[11px] font-semibold text-emerald-700 font-sans flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                  <span>{p.outcome}</span>
+
+                <div className="mt-6 pt-4 border-t border-slate-200">
+                  <a
+                    href="#enquiry-form"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal hover:text-teal-700 transition-colors"
+                  >
+                    <span>Apply for New Car Loan</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
                 </div>
               </div>
-            ))}
+
+              {/* Card 2: Used Car Loan */}
+              <div className="bg-[#f8f8f4] rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold font-mono border border-teal-300">
+                      Pre-Owned Financing
+                    </span>
+                    <span className="text-xs font-mono font-bold text-slate-400">02</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-brand-navy font-heading group-hover:text-brand-teal transition-colors">
+                    Used Car Loan
+                  </h3>
+                  <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
+                    Empanelled valuation and seamless ownership transfer funding for certified pre-owned vehicles.
+                  </p>
+
+                  <div className="pt-2 space-y-2">
+                    <span className="text-[11px] uppercase tracking-wider font-extrabold text-brand-navy font-heading block">
+                      Required Documents & Details:
+                    </span>
+                    <ul className="text-xs text-brand-slate space-y-2 font-sans">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>RC Book:</strong> Registration Certificate copy.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Insurance Details:</strong> Comprehensive / third-party policy.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Vehicle Model & Year:</strong> Make, variant & manufacturing year.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Previous Owners:</strong> Number of past registered owners.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Purchase Value:</strong> Agreed buyer-seller consideration.</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-200">
+                  <a
+                    href="#enquiry-form"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal hover:text-teal-700 transition-colors"
+                  >
+                    <span>Get Used Car Valuation</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Card 3: Used Car Refinance */}
+              <div className="bg-[#f8f8f4] rounded-2xl p-6 sm:p-7 border border-brand-border/90 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-500 group flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-[11px] font-bold font-mono border border-cyan-300">
+                      Equity Refinance
+                    </span>
+                    <span className="text-xs font-mono font-bold text-slate-400">03</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-brand-navy font-heading group-hover:text-brand-teal transition-colors">
+                    Used Car Refinance
+                  </h3>
+                  <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
+                    Unlock immediate cash liquidity by refinancing your owned or active vehicle at minimal borrowing rates.
+                  </p>
+
+                  <div className="pt-2 space-y-2">
+                    <span className="text-[11px] uppercase tracking-wider font-extrabold text-brand-navy font-heading block">
+                      Required Documents & Details:
+                    </span>
+                    <ul className="text-xs text-brand-slate space-y-2 font-sans">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>RC Book:</strong> Registration Certificate with hypothecation record.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Insurance Details:</strong> Valid active vehicle insurance.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Vehicle Model:</strong> Specific trim, engine & chassis data.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Previous Owners:</strong> Number of past owners on record.</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-200">
+                  <a
+                    href="#enquiry-form"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal hover:text-teal-700 transition-colors"
+                  >
+                    <span>Refinance Vehicle Today</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pillars Section */}
+          <div className="pt-6 border-t border-slate-200/80">
+            <div className="max-w-3xl mb-12 space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-teal font-heading">
+                Four-Pillar Execution Standard
+              </span>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight">
+                Our Structured Syndication Process
+              </h2>
+              <p className="text-sm sm:text-base text-brand-slate leading-relaxed">
+                Whether acquiring a luxury private car, commercial fleet, or refinancing, our desk manages the entire process from valuation to sanction.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {consultationPillars.map((p, idx) => (
+                <div
+                  key={idx}
+                  className="bg-[#f8f8f4] rounded-2xl p-6 border border-brand-border/80 shadow-card hover:shadow-xl transition-all duration-300 hover:border-teal-400 group space-y-4"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-brand-teal-light text-brand-teal flex items-center justify-center font-bold text-xs font-mono border border-brand-teal/20 group-hover:bg-brand-teal group-hover:text-white transition-colors">
+                    {p.step}
+                  </div>
+                  <h3 className="font-bold text-base text-brand-navy font-heading leading-snug">
+                    {p.title}
+                  </h3>
+                  <p className="text-xs text-brand-slate leading-relaxed font-sans">
+                    {p.desc}
+                  </p>
+                  <div className="pt-3 border-t border-slate-200/80 text-[11px] font-semibold text-emerald-700 font-sans flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                    <span>{p.outcome}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       <section className="py-16 bg-[#f8f8f4] border-b border-brand-border">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <InteractiveDocumentVault />
+          <InteractiveDocumentVault loanType="vehicle-loans" />
         </div>
       </section>
 

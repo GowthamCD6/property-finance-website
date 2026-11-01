@@ -31,8 +31,7 @@ export const CHANNEL_PARTNERS: ChannelPartnersGroup[] = [
       'Bank of Maharashtra',
       'Punjab & Sind Bank',
       'Karnataka Bank',
-      'Karur Vysya Bank (KVB)',
-      'LIC Housing Finance',
+      'LIC',
     ],
   },
   {
@@ -56,10 +55,10 @@ export const CHANNEL_PARTNERS: ChannelPartnersGroup[] = [
     category: 'NBFCs (Non-Banking Financial Companies)',
     banks: [
       'Aditya Birla Capital Limited',
-      'Tata Capital Ltd',
-      'Tru Homes Finance Ltd',
-      'Sundaram Finance Ltd',
-      'Cholamandalam Housing Finance',
+      'Tata Capital Limited',
+      'TruHome Finance Limited',
+      'Sundaram Finance Limited',
+      'Cholamandalam Investment and Finance Company',
     ],
   },
 ];

@@ -16,7 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 
 export interface InteractiveDocumentVaultProps {
-  loanType?: 'home-loans' | 'loan-against-property' | 'property-backed-funding' | 'loan-consultation' | 'all';
+  loanType?: 'home-loans' | 'loan-against-property' | 'property-backed-funding' | 'loan-consultation' | 'vehicle-loans' | 'all';
   embedded?: boolean;
 }
 
@@ -51,110 +51,144 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
     switch (loanType) {
       case 'home-loans':
         return {
-          sectionBadge: 'Home Loan Checklist',
-          sectionTitle: 'Required Documentation for Home Loans & Construction',
+          sectionBadge: 'Home Loan & Construction Checklist',
+          sectionTitle: 'Required Documentation for Home Loans (Self-Construction & Purchase)',
           sectionSubtitle:
-            'Prepare the exact documents required for salaried or self-employed home loans, land purchase, and self-construction sanction at benchmark low interest rates with government subsidy.',
+            'Comprehensive checklist covering KYC, Income Proofs (Self-Employed, Salaried, Cash Salary), Legal Deeds (Mother documents, Chitta, EC), and Technical Building Plans.',
           profiles: [
             {
-              id: 'salaried',
-              label: 'Salaried Applicants',
+              id: 'kyc',
+              label: 'A. KYC Documents',
               icon: <User className="w-4 h-4" />,
-              title: 'Salaried Home Loan Documentation',
-              subtitle: 'For employees of corporate MNCs, public limited firms, government, and private enterprises.',
+              title: 'KYC Documents (Applicant & Co-Applicant)',
+              subtitle: 'Mandatory identification and address verification required from both applicant and co-applicant.',
               docs: [
                 {
-                  name: 'KYC & Identification Proofs',
-                  desc: 'PAN Card (mandatory) + Aadhaar Card / Valid Passport / Voter ID.',
+                  name: 'PAN Card (Applicant & Co-Applicant)',
+                  desc: 'Permanent Account Number card mandatory for tax validation and credit evaluation.',
                   tag: 'Mandatory',
                 },
                 {
-                  name: 'Last 3 to 6 Months Salary Slips',
-                  desc: 'Official company payslips with breakdown of Basic, HRA, PF, and statutory deductions.',
-                  tag: 'Income Proof',
+                  name: 'Aadhaar Card (Applicant & Co-Applicant)',
+                  desc: 'Government Aadhaar identity proof with linked active mobile number for biometric e-KYC.',
+                  tag: 'Mandatory',
                 },
                 {
-                  name: 'Latest 6 Months Salary Account Statements',
-                  desc: 'Bank statements with bank digital stamp / seal verifying salary credit credits.',
-                  tag: 'Banking',
+                  name: 'Passport-Size Photographs',
+                  desc: 'Recent passport-size colored photographs of both applicant and co-applicant.',
+                  tag: 'Photo ID',
                 },
                 {
-                  name: 'Latest 2 Years Form 16 (Part A & B) / ITR-V',
-                  desc: 'Form 16 issued by employer verifying TDS deduction and gross annual income.',
-                  tag: 'Tax Proof',
-                },
-                {
-                  name: 'Employment Proof & Stability',
-                  desc: 'Official company ID card + Appointment letter / recent increment letter indicating tenure.',
-                  tag: 'Stability',
+                  name: 'Applicant and Co-Applicant Details',
+                  desc: 'Complete residential address proof, relationship declaration, contact details, and family profile particulars.',
+                  tag: 'Profile Details',
                 },
               ],
             },
             {
-              id: 'selfEmployed',
-              label: 'Self-Employed / Business',
+              id: 'income',
+              label: 'B. Income Documents',
               icon: <Building className="w-4 h-4" />,
-              title: 'Self-Employed & Business Home Loan Documentation',
-              subtitle: 'For proprietors, partners, directors, doctors, CAs, traders, and business enterprises.',
+              title: 'Income Documents by Employment Stream',
+              subtitle: 'Tailored requirements for Self-Employed Individuals, Salaried Employees, and Cash Salary (Hand Salary) recipients.',
               docs: [
                 {
-                  name: 'Business Entity Registration & KYC',
-                  desc: 'GST Certificate, Udyam MSME, Partnership Deed / Certificate of Incorporation.',
-                  tag: 'Mandatory',
+                  name: 'Self-Employed: Last 1 Year’s Bank Statement',
+                  desc: '12-month complete operative current and savings bank accounts demonstrating routine turnover and cash flow.',
+                  tag: 'Self-Employed',
                 },
                 {
-                  name: 'Last 3 Years CA-Audited Financial Statements',
-                  desc: 'Audited Balance Sheets and Profit & Loss accounts with all schedules and CA audit reports.',
-                  tag: 'Financials',
+                  name: 'Self-Employed: Income Tax Returns (ITR)',
+                  desc: 'ITR acknowledgments with computation sheets for Last 3 years / 2 years / 1 year, if available.',
+                  tag: 'ITR (If Available)',
                 },
                 {
-                  name: 'Last 3 Years ITR with Computation of Income',
-                  desc: 'Complete personal & firm/company ITR acknowledgments along with CA computation sheets.',
-                  tag: 'Tax Proof',
+                  name: 'Self-Employed: GST / Udyam Registration',
+                  desc: 'GST Registration Certificate or Udyam MSME Certificate, if available.',
+                  tag: 'Business Proof',
                 },
                 {
-                  name: 'Last 12 Months Operative Bank Statements',
-                  desc: 'All business current accounts and promoters primary savings accounts showing healthy banking turnover.',
-                  tag: 'Banking',
+                  name: 'Salaried: Last 6 Months’ Bank Statements',
+                  desc: 'Official bank statement of the designated salary credit account showing regular monthly salary debits/credits.',
+                  tag: 'Salaried',
                 },
                 {
-                  name: 'Last 12 Months GST Returns (GSTR-3B & GSTR-1)',
-                  desc: 'Filed GST return summaries to substantiate banking sales turnover matching P&L entries.',
-                  tag: 'Turnover',
+                  name: 'Salaried: Last 6 Months’ Salary Slips',
+                  desc: 'Official company payslips detailing Basic, HRA, allowances, and statutory deductions, if available.',
+                  tag: 'Payslips (If Available)',
+                },
+                {
+                  name: 'Salaried: Form 16 (Last 3 Years)',
+                  desc: 'Employer-issued Form 16 Part A & Part B for the last 3 years, if available.',
+                  tag: 'Form 16 (If Available)',
+                },
+                {
+                  name: 'Cash Salary (Hand Salary): Last 1 Year’s Bank Statement',
+                  desc: '1 year savings account statement reflecting cash savings, household deposits, or family banking track.',
+                  tag: 'Cash Salary',
+                },
+                {
+                  name: 'Cash Salary (Hand Salary): Salary Certificate',
+                  desc: 'Formal signed salary certificate from employer confirming monthly remuneration, designation, and tenure, if available.',
+                  tag: 'Certificate (If Available)',
                 },
               ],
             },
             {
-              id: 'property',
-              label: 'Property & Construction Title',
+              id: 'legal',
+              label: 'C. Legal Documents',
               icon: <Landmark className="w-4 h-4" />,
-              title: 'Home & Construction Title Deeds',
-              subtitle: 'Essential property legal documents required for legal opinion and technical valuation.',
+              title: 'Legal Documents (Property & Title Deeds)',
+              subtitle: 'Essential property documents, chain of mother deeds, encumbrance verification, and revenue records.',
               docs: [
                 {
-                  name: 'Registered Title Deed / Sale Agreement',
-                  desc: 'Registered Sale Deed / Agreement to Sell / Construction Agreement establishing legal title.',
-                  tag: 'Title Primary',
+                  name: 'Primary Property Documents',
+                  desc: 'Registered Sale Deed, Title Deed, Settlement Deed, or Partition Deed establishing current ownership.',
+                  tag: 'Primary Title',
                 },
                 {
-                  name: 'Prior Chain of Title Deeds (Mother Deeds)',
-                  desc: 'Complete unbroken link of predecessor transfer deeds for the past 13 to 30 years.',
-                  tag: 'Chain Audit',
+                  name: 'All Mother Documents (Previous Property Documents)',
+                  desc: 'Complete unbroken chain of parent title deeds tracing legitimate property ownership history for 13 to 30 years.',
+                  tag: 'Mother Deeds Chain',
                 },
                 {
-                  name: 'Approved Sanctioned Building Plan & Civil Estimate',
-                  desc: 'Building plan approved by municipal authority / DTCP plus detailed construction cost estimate from a certified civil engineer.',
-                  tag: 'Construction',
+                  name: 'Encumbrance Certificate (EC)',
+                  desc: 'Official Sub-Registrar Office Encumbrance Certificate (EC Form 15) reflecting clear, unencumbered title for up to 30 years.',
+                  tag: 'EC Form 15',
                 },
                 {
-                  name: 'Encumbrance Certificate (EC Form 15 for 30 Years)',
-                  desc: 'Official sub-registrar certificate reflecting all registered transactions/liens up to current date.',
-                  tag: 'Lien Check',
+                  name: 'Chitta Extract',
+                  desc: 'Official Chitta / Patta revenue land ownership record proving mutation and classification in government registers.',
+                  tag: 'Revenue Chitta',
                 },
                 {
-                  name: 'Latest Property Tax Receipts & Khata / Patta Extract',
-                  desc: 'Current financial year tax paid receipt + Khata Certificate / Extract (A-Khata, Patta, or municipal equivalent).',
-                  tag: 'Municipal Record',
+                  name: 'Layout Sketch Copy',
+                  desc: 'Certified layout sketch copy reflecting surveyed plot boundaries, dimensions, and road frontage access.',
+                  tag: 'Layout Sketch',
+                },
+              ],
+            },
+            {
+              id: 'technical',
+              label: 'D. Technical Documents',
+              icon: <Layers className="w-4 h-4" />,
+              title: 'Technical Documents (Self-Construction & Engineering)',
+              subtitle: 'Municipal plans, civil engineer estimates, and site layout copies for self-construction sanction.',
+              docs: [
+                {
+                  name: 'Approved Building Plan (If Available)',
+                  desc: 'Sanctioned residential building plan approved by Municipal Corporation, Town Panchayat, or DTCP authorities, if available.',
+                  tag: 'Sanction (If Available)',
+                },
+                {
+                  name: 'Actual Building Plan & Estimate',
+                  desc: 'Architectural structural plan drawings and stage-wise construction cost estimate certified by a registered civil engineer.',
+                  tag: 'Civil Estimate',
+                },
+                {
+                  name: 'Layout Copy',
+                  desc: 'Approved layout copy showing site plan, demarcated plot number, and sanctioned area layout.',
+                  tag: 'Layout Plan',
                 },
               ],
             },
@@ -501,6 +535,118 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
                   name: 'Fresh Income & Banking Statements',
                   desc: 'Latest 6 months bank statements verifying adequate debt servicing capability.',
                   tag: 'Repayment Capacity',
+                },
+              ],
+            },
+          ],
+        };
+
+      case 'vehicle-loans':
+        return {
+          sectionBadge: 'Car Loan Checklist',
+          sectionTitle: 'New Car, Used Car & Refinance Documentation',
+          sectionSubtitle:
+            'Comprehensive checklist for new vehicle funding up to 90%, pre-owned car purchases, and used car refinance equity liquidity across top partner banks.',
+          profiles: [
+            {
+              id: 'new-car',
+              label: 'New Car Loan (Up to 90%)',
+              icon: <Truck className="w-4 h-4" />,
+              title: 'New Car Loan – Financing Up to 90%',
+              subtitle: 'Up to 90% funding on on-road quotation with swift processing and minimum dealer turnaround.',
+              docs: [
+                {
+                  name: 'On-Road Price Breakdown & Proforma Invoice',
+                  desc: 'Official showroom proforma quotation showing ex-showroom, road tax, registration, and comprehensive insurance.',
+                  tag: 'Quotation',
+                },
+                {
+                  name: 'Authorized Showroom & Dealer Details',
+                  desc: 'Official dealership name, GST credentials, bank disbursement details, and vehicle allocation slip.',
+                  tag: 'Dealer Details',
+                },
+                {
+                  name: 'Showroom Area & Delivery Location',
+                  desc: 'Exact dealership address, RTO jurisdiction zone, and delivery location confirmation.',
+                  tag: 'Location',
+                },
+                {
+                  name: 'Applicant & Co-Applicant KYC Credentials',
+                  desc: 'Mandatory PAN Card, Aadhaar Card, Passport photo, and applicant/co-applicant details.',
+                  tag: 'KYC',
+                },
+                {
+                  name: 'Banking Statements (Last 6 Months)',
+                  desc: 'Operative bank statements reflecting monthly cashflow and income consistency.',
+                  tag: 'Banking',
+                },
+              ],
+            },
+            {
+              id: 'used-car',
+              label: 'Used Car Loan',
+              icon: <FileSpreadsheet className="w-4 h-4" />,
+              title: 'Used Car Loan – Pre-Owned Vehicle Purchase',
+              subtitle: 'Rigorous valuation, ownership vetting, and fast financing for pre-owned automobiles.',
+              docs: [
+                {
+                  name: 'RC (Registration Certificate) Book Copy',
+                  desc: 'Clear copy of valid Registration Certificate (Smart Card / Paper RC) verifying ownership history.',
+                  tag: 'Mandatory RC',
+                },
+                {
+                  name: 'Comprehensive Vehicle Insurance Details',
+                  desc: 'Active motor insurance policy copy with third-party liability and own-damage coverage verification.',
+                  tag: 'Active Insurance',
+                },
+                {
+                  name: 'Vehicle Model & Manufacturing Year Details',
+                  desc: 'Make, model variant, fuel type, engine/chassis number verification, and manufacture vintage.',
+                  tag: 'Specs & Vintage',
+                },
+                {
+                  name: 'Number of Previous Owners Verification',
+                  desc: 'Confirmed record of individual/commercial transfer history on vehicle registry records.',
+                  tag: 'Ownership Track',
+                },
+                {
+                  name: 'Agreed Purchase Value & Valuation Assessment',
+                  desc: 'Agreed sale consideration agreement and certified bank-empanelled inspection valuation.',
+                  tag: 'Valuation & Price',
+                },
+              ],
+            },
+            {
+              id: 'car-refinance',
+              label: 'Used Car Refinance',
+              icon: <RefreshCw className="w-4 h-4" />,
+              title: 'Used Car Refinance – Unlock Instant Capital',
+              subtitle: 'Unlock cash equity against your debt-free or ongoing vehicle ownership at attractive rates.',
+              docs: [
+                {
+                  name: 'RC (Registration Certificate) with Hypothecation Status',
+                  desc: 'Current Registration Certificate; NOC from existing financier if previous loan was cleared.',
+                  tag: 'RC Book / NOC',
+                },
+                {
+                  name: 'Comprehensive Vehicle Insurance Details',
+                  desc: 'Valid comprehensive insurance certificate ensuring full insurable asset value.',
+                  tag: 'Insurance',
+                },
+                {
+                  name: 'Vehicle Model & Variant Verification',
+                  desc: 'Detailed specification, year of manufacturing, odometer reading, and physical fitness check.',
+                  tag: 'Asset Profile',
+                },
+                {
+                  name: 'Number of Previous Owners Details',
+                  desc: 'Clean ownership title documentation confirming permissible transfer count.',
+                  tag: 'Ownership Count',
+                },
+                {
+                  name: 'Repayment Banking Statements (Last 6–12 Months)',
+                  desc: 'Salary or business operative bank statements demonstrating reliable debt servicing.',
+                  tag: 'Repayment Capability',
                 },
               ],
             },
