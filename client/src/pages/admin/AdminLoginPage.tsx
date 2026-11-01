@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Lock,
-  User,
+  Phone,
   AlertCircle,
   Loader2,
   Eye,
@@ -18,7 +18,7 @@ export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, loginWithGoogle, isAuthenticated } = useAuth();
 
-  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -35,27 +35,22 @@ export const AdminLoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const identifier = usernameOrEmail.trim();
+    const cleanPhone = phone.trim();
 
-    if (!identifier || !password) {
-      setError('Please enter your username or email and password.');
+    if (!cleanPhone || !password) {
+      setError('Please enter your registered mobile number and password.');
       return;
     }
-
-    // Auto-normalize if user enters just "admin" or short username
-    const resolvedEmail = identifier.includes('@')
-      ? identifier
-      : `${identifier.toLowerCase()}@wealthanchor.in`;
 
     setError(null);
     setIsLoading(true);
 
     try {
-      await login(resolvedEmail, password);
+      await login(cleanPhone, password);
       navigate('/admin/dashboard', { replace: true });
     } catch (err: any) {
       setError(
-        err.message || 'Invalid credentials. Please verify your username and password.'
+        err.message || 'Invalid credentials. Please verify your mobile number and password.'
       );
     } finally {
       setIsLoading(false);
@@ -76,12 +71,6 @@ export const AdminLoginPage: React.FC = () => {
     } finally {
       setIsGoogleLoading(false);
     }
-  };
-
-  const handleQuickFill = (accountEmail: string) => {
-    setUsernameOrEmail(accountEmail);
-    setPassword('Admin@123456');
-    setError(null);
   };
 
   return (
@@ -172,24 +161,24 @@ export const AdminLoginPage: React.FC = () => {
           <div className="border-t border-slate-200 w-full" />
         </div>
 
-        {/* Username & Password Form */}
+        {/* Phone & Password Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Username / Email */}
+          {/* Registered Mobile Phone Number */}
           <div>
             <label className="block text-xs font-semibold text-brand-navy mb-1.5 font-heading">
-              Username or Email
+              Registered Mobile Number
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <User className="w-4 h-4" />
+                <Phone className="w-4 h-4" />
               </div>
               <input
-                type="text"
+                type="tel"
                 required
-                autoComplete="username"
-                value={usernameOrEmail}
-                onChange={(e) => setUsernameOrEmail(e.target.value)}
-                placeholder="admin or name@primeassociates.in"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Enter 10-digit mobile number (e.g. 9655566613)"
                 className="w-full h-11 pl-10 pr-3.5 bg-slate-50/70 border border-slate-300 rounded-xl text-xs sm:text-sm text-brand-navy placeholder:text-slate-400 font-sans focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal transition-all"
               />
             </div>
@@ -197,18 +186,9 @@ export const AdminLoginPage: React.FC = () => {
 
           {/* Password */}
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-semibold text-brand-navy font-heading">
-                Password
-              </label>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('admin@wealthanchor.in')}
-                className="text-[11px] font-medium text-brand-teal hover:underline font-sans cursor-pointer"
-              >
-                Auto-fill demo
-              </button>
-            </div>
+            <label className="block text-xs font-semibold text-brand-navy mb-1.5 font-heading">
+              Password
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <KeyRound className="w-4 h-4" />
@@ -272,37 +252,6 @@ export const AdminLoginPage: React.FC = () => {
             </button>
           </div>
         </form>
-
-        {/* Demo Credentials Quick Switcher */}
-        <div className="pt-3 border-t border-slate-100">
-          <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/70 space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] font-semibold text-slate-700 font-heading">
-              <span className="flex items-center gap-1.5 text-brand-navy">
-                <KeyRound className="w-3.5 h-3.5 text-teal-600" />
-                <span>Test Accounts</span>
-              </span>
-              <span className="text-[10px] text-brand-slate font-mono">1-Click</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 pt-0.5">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('admin@wealthanchor.in')}
-                className="text-left p-1.5 px-2 bg-white hover:bg-brand-teal-light border border-slate-200 rounded-lg text-[10px] text-slate-700 hover:text-brand-teal truncate font-medium transition-colors cursor-pointer"
-                title="admin@wealthanchor.in"
-              >
-                admin@wealthanchor.in
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('admin@primeassociateloans.in')}
-                className="text-left p-1.5 px-2 bg-white hover:bg-brand-teal-light border border-slate-200 rounded-lg text-[10px] text-slate-700 hover:text-brand-teal truncate font-medium transition-colors cursor-pointer"
-                title="admin@primeassociateloans.in"
-              >
-                admin@primeassociates...
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* Security Assurance */}
         <div className="pt-1 flex items-center justify-center gap-1.5 text-[11px] text-slate-400 font-sans text-center">

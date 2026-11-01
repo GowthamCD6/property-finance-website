@@ -6,7 +6,7 @@ interface AuthContextType {
   admin: AdminUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, pass: string) => Promise<void>;
+  login: (phoneOrIdentifier: string, pass: string) => Promise<void>;
   loginWithGoogle: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
@@ -57,10 +57,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, []);
 
-  const login = async (email: string, pass: string) => {
+  const login = async (phoneOrIdentifier: string, pass: string) => {
     setIsLoading(true);
     try {
-      const data = await loginAdminApi(email, pass);
+      const data = await loginAdminApi(phoneOrIdentifier, pass);
       localStorage.setItem('vpf_admin_token', data.token);
       localStorage.setItem('vpf_admin_profile', JSON.stringify(data.admin));
       setAdmin(data.admin);

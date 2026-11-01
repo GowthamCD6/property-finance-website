@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  email: z.string().trim().email('Please enter a valid administrator email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  phone: z.string().trim().optional(),
+  email: z.string().trim().optional(),
+  identifier: z.string().trim().optional(),
+  password: z.string().min(1, 'Password is required'),
 });
 
 export const createAdminSchema = z.object({

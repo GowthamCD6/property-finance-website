@@ -83,16 +83,47 @@ async function verifyGoogleToken(token: string) {
 
 export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { email, password } = loginSchema.parse(req.body);
+    const { phone, email, identifier, password } = loginSchema.parse(req.body);
 
-    const admin = await prisma.adminUser.findUnique({
-      where: { email: email.toLowerCase() },
+    const inputVal = (phone || identifier || email || '').trim();
+    if (!inputVal) {
+      res.status(400).json({
+        success: false,
+        message: 'Please provide your registered mobile phone number and password.',
+      });
+      return;
+    }
+
+    // Clean digits from phone input
+    const digitsOnly = inputVal.replace(/\D/g, '');
+    const phoneConditions: any[] = [{ phone: inputVal }];
+
+    if (digitsOnly) {
+      phoneConditions.push({ phone: digitsOnly });
+      if (digitsOnly.length === 12 && digitsOnly.startsWith('91')) {
+        phoneConditions.push({ phone: digitsOnly.slice(2) });
+      }
+      if (digitsOnly.length === 10) {
+        phoneConditions.push({ phone: `+91${digitsOnly}` });
+        phoneConditions.push({ phone: `91${digitsOnly}` });
+        phoneConditions.push({ phone: { contains: digitsOnly } });
+      }
+    }
+
+    // Always query the live database in real-time
+    const admin = await prisma.adminUser.findFirst({
+      where: {
+        OR: [
+          ...phoneConditions,
+          { email: inputVal.toLowerCase() },
+        ],
+      },
     });
 
     if (!admin) {
       res.status(401).json({
         success: false,
-        message: 'Invalid email address or password.',
+        message: 'Invalid registered mobile number or password.',
       });
       return;
     }
@@ -109,7 +140,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     if (!isMatch) {
       res.status(401).json({
         success: false,
-        message: 'Invalid email address or password.',
+        message: 'Invalid registered mobile number or password.',
       });
       return;
     }

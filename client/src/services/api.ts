@@ -159,12 +159,17 @@ export async function submitLoanEnquiry(data: any): Promise<any> {
 }
 
 // 2. AUTH API
-export async function loginAdminApi(email: string, password: string): Promise<{ token: string; admin: AdminUser }> {
+export async function loginAdminApi(phoneOrIdentifier: string, password: string): Promise<{ token: string; admin: AdminUser }> {
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({
+      phone: phoneOrIdentifier,
+      identifier: phoneOrIdentifier,
+      email: phoneOrIdentifier,
+      password,
+    }),
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Authentication failed');

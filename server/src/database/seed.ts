@@ -19,7 +19,8 @@ async function main() {
         email: adminEmail,
         passwordHash,
         name: 'Advisory Operations Manager',
-        role: 'superadmin',
+        role: 'admin',
+        phone: '9655566613',
       },
     });
     console.log(`✅ Admin user created: ${adminEmail} (password: ${defaultPassword})`);
