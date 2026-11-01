@@ -905,7 +905,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
   }
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
+    <section className="pt-12 sm:pt-16 pb-0 bg-[#f7f7f3]">
       {contentBody}
     </section>
   );

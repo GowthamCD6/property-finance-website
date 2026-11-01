@@ -490,7 +490,7 @@ export const VehicleLoansPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
+      <section className="pt-12 sm:pt-16 pb-0 bg-[#f7f7f3]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto space-y-16">
           {/* Note 4 - Car Loan Categories */}
           <div>

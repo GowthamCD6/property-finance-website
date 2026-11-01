@@ -317,7 +317,7 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   };
 
   return (
-    <section id="enquiry-form" className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
+    <section id="enquiry-form" className="pt-12 sm:pt-16 pb-16 sm:pb-20 bg-[#f7f7f3]">
       <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
         {/* Section Heading - Conditionally rendered */}
         {!hideHeader && (

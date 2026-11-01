@@ -436,7 +436,7 @@ export const MortgageLoansPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. ACCEPTED COLLATERAL ASSETS
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 lg:py-24 bg-[#f7f7f3]">
+      <section className="pt-12 sm:pt-16 pb-0 bg-[#f7f7f3]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           <div className="max-w-3xl mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-teal block mb-1">
