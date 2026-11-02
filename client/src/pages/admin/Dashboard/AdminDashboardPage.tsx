@@ -36,9 +36,9 @@ import {
   FileText,
   Sliders,
 } from 'lucide-react';
-import { DashboardStats } from '../../types';
-import { getDashboardStatsApi, getAppointmentsApi } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
+import { DashboardStats } from '../../../types';
+import { getDashboardStatsApi, getAppointmentsApi } from '../../../services/api';
+import { useAuth } from '../../../context/AuthContext';
 
 export const AdminDashboardPage: React.FC = () => {
   const { admin } = useAuth();

@@ -13,13 +13,13 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { Faq } from '../../types';
+import { Faq } from '../../../types';
 import {
   getAdminFaqsApi,
   createFaqApi,
   updateFaqApi,
   deleteFaqApi,
-} from '../../services/api';
+} from '../../../services/api';
 
 export const AdminFaqsPage: React.FC = () => {
   const [faqs, setFaqs] = useState<Faq[]>([]);

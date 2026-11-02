@@ -31,13 +31,13 @@ import {
   CalendarCheck2,
   Share2,
 } from 'lucide-react';
-import { Enquiry, UploadedDocument } from '../../types';
+import { Enquiry, UploadedDocument } from '../../../types';
 import {
   getEnquiriesApi,
   getEnquiryByIdApi,
   updateEnquiryStatusApi,
   addEnquiryNoteApi,
-} from '../../services/api';
+} from '../../../services/api';
 
 const ALL_STATUSES = [
   'ALL',

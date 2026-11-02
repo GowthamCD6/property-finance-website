@@ -17,14 +17,14 @@ import {
   RotateCcw,
   Sliders,
 } from 'lucide-react';
-import { WeeklyConfig, BlockedDate } from '../../types';
+import { WeeklyConfig, BlockedDate } from '../../../types';
 import {
   getAvailabilitySettingsApi,
   updateWeeklyScheduleApi,
   bulkUpdateWeeklyScheduleApi,
   blockDateApi,
   unblockDateApi,
-} from '../../services/api';
+} from '../../../services/api';
 
 const TIME_OPTIONS = [
   '08:00',

@@ -22,14 +22,14 @@ import {
   ToggleLeft,
   ToggleRight,
 } from 'lucide-react';
-import { AdminUser, CreateAdminPayload, UpdateAdminPayload } from '../../types';
-import { useAuth } from '../../context/AuthContext';
+import { AdminUser, CreateAdminPayload, UpdateAdminPayload } from '../../../types';
+import { useAuth } from '../../../context/AuthContext';
 import {
   getAdminTeamApi,
   createAdminMemberApi,
   updateAdminMemberApi,
   deleteAdminMemberApi,
-} from '../../services/api';
+} from '../../../services/api';
 
 export const AdminTeamPage: React.FC = () => {
   const { admin: currentAdmin } = useAuth();

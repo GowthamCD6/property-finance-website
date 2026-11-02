@@ -17,16 +17,16 @@ import { PrivacyPolicyPage } from '../pages/public/Privacy/PrivacyPolicyPage';
 import { TermsConditionsPage } from '../pages/public/Terms/TermsConditionsPage';
 
 import { AdminLayout } from '../layouts/AdminLayout';
-import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
-import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
-import { AdminEnquiriesPage } from '../pages/admin/AdminEnquiriesPage';
-import { AdminAppointmentsPage } from '../pages/admin/AdminAppointmentsPage';
-import { AdminServicesPage } from '../pages/admin/AdminServicesPage';
-import { AdminContentPage } from '../pages/admin/AdminContentPage';
-import { AdminFaqsPage } from '../pages/admin/AdminFaqsPage';
-import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage';
-import { AdminTeamPage } from '../pages/admin/AdminTeamPage';
-import { AdminCustomersPage } from '../pages/admin/AdminCustomersPage';
+import { AdminLoginPage } from '../pages/admin/Login/AdminLoginPage';
+import { AdminDashboardPage } from '../pages/admin/Dashboard/AdminDashboardPage';
+import { AdminEnquiriesPage } from '../pages/admin/Enquiries/AdminEnquiriesPage';
+import { AdminAppointmentsPage } from '../pages/admin/Appointments/AdminAppointmentsPage';
+import { AdminServicesPage } from '../pages/admin/Services/AdminServicesPage';
+import { AdminContentPage } from '../pages/admin/Content/AdminContentPage';
+import { AdminFaqsPage } from '../pages/admin/Faqs/AdminFaqsPage';
+import { AdminSettingsPage } from '../pages/admin/Settings/AdminSettingsPage';
+import { AdminTeamPage } from '../pages/admin/Team/AdminTeamPage';
+import { AdminCustomersPage } from '../pages/admin/Customers/AdminCustomersPage';
 import { ScrollToTop } from '../components/common/ScrollToTop';
 
 export const AppRouting: React.FC = () => {

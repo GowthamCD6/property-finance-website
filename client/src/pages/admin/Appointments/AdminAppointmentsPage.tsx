@@ -34,7 +34,7 @@ import {
   Send,
   MapPin,
 } from 'lucide-react';
-import { Appointment, Enquiry } from '../../types';
+import { Appointment, Enquiry } from '../../../types';
 import {
   getAppointmentsApi,
   getPendingAllotmentsApi,
@@ -43,7 +43,7 @@ import {
   getEnquiriesApi,
   getEnquiryByIdApi,
   getPublicAvailability,
-} from '../../services/api';
+} from '../../../services/api';
 
 export const AdminAppointmentsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();

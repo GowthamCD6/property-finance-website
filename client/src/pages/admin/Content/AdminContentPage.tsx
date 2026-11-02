@@ -52,8 +52,8 @@ import {
   AboutPillar,
   BranchOffice,
   SocialLinks,
-} from '../../types';
-import { getPublicSiteContent, updateSiteContentApi } from '../../services/api';
+} from '../../../types';
+import { getPublicSiteContent, updateSiteContentApi } from '../../../services/api';
 
 type TabType =
   | 'identity'

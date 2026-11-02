@@ -29,8 +29,8 @@ import {
   ChevronRight,
   CalendarCheck2,
 } from 'lucide-react';
-import { EnquiredCustomer, Enquiry } from '../../types';
-import { getEnquiredCustomersApi } from '../../services/api';
+import { EnquiredCustomer, Enquiry } from '../../../types';
+import { getEnquiredCustomersApi } from '../../../services/api';
 
 export const AdminCustomersPage: React.FC = () => {
   const [customers, setCustomers] = useState<EnquiredCustomer[]>([]);

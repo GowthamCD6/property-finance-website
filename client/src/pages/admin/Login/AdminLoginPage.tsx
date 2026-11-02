@@ -10,9 +10,9 @@ import {
   ShieldCheck,
   KeyRound,
 } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { triggerGoogleOAuth } from '../../utils/googleAuth';
-import logoImg from '../../assets/images/logo.png';
+import { useAuth } from '../../../context/AuthContext';
+import { triggerGoogleOAuth } from '../../../utils/googleAuth';
+import logoImg from '../../../assets/images/logo.png';
 
 export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();

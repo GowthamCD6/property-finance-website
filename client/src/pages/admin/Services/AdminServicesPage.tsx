@@ -17,13 +17,13 @@ import {
   Eye,
   Sliders,
 } from 'lucide-react';
-import { Service } from '../../types';
+import { Service } from '../../../types';
 import {
   getAdminServicesApi,
   createServiceApi,
   updateServiceApi,
   deleteServiceApi,
-} from '../../services/api';
+} from '../../../services/api';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   Home: <Home className="w-5 h-5" />,
