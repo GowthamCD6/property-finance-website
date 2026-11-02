@@ -83,7 +83,7 @@ export const AdminLoginPage: React.FC = () => {
           <div className="flex justify-center">
             <img
               src={logoImg}
-              alt="Prime Associate Loans"
+              alt="Prime Associates Loans"
               className="h-12 w-auto object-contain"
               loading="eager"
             />

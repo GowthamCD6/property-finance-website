@@ -221,7 +221,7 @@ async function main() {
     calcDefaultLapRate: 8.50,
     calcDefaultAmount: 5000000,
     calcDefaultTenure: 20,
-    disclaimerText: 'Prime Associates (Prime Associate Loans) is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.',
+    disclaimerText: 'Prime Associates (Prime Associates Loans) is an independent loan consultancy and loan facilitation service. We are not a bank, NBFC, or direct credit lender. Loan sanctions, interest rates, valuation, eligibility, and disbursements are strictly at the sole discretion of the partner banks and lending institutions following their regulatory underwriting criteria.',
     privacyPolicy: 'We respect your confidentiality. The personal, financial, and property details shared in this enquiry are solely used for eligibility assessment and arranging consultation. We do not sell or distribute your data to unauthorized third parties.',
     termsConditions: 'Information provided on this website is for informational and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.',
     copyrightText: 'Prime Associates — Loans & Constructions. All rights reserved.',
@@ -312,7 +312,7 @@ async function main() {
     },
     {
       question: 'Are you a direct lender, bank, or NBFC?',
-      answer: 'No. Prime Associate Loans is an independent financial consultancy firm. We do not disburse funds or grant loan approvals ourselves. We guide applicants, assess preliminary eligibility, streamline documentation, and facilitate discussions with regulated commercial banks and NBFCs.',
+      answer: 'No. Prime Associates Loans is an independent financial consultancy firm. We do not disburse funds or grant loan approvals ourselves. We guide applicants, assess preliminary eligibility, streamline documentation, and facilitate discussions with regulated commercial banks and NBFCs.',
       category: 'About Us',
       displayOrder: 2,
       isPublished: true,

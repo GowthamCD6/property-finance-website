@@ -18,7 +18,7 @@ export const PrimeAssociateLogo: React.FC<LogoProps> = ({
   height,
   width,
   variant = 'dark',
-  alt = 'Prime Associate Loans',
+  alt = 'Prime Associates Loans',
 }) => {
   const resolvedHeight = height !== undefined
     ? (typeof height === 'number' ? `${height}px` : height)

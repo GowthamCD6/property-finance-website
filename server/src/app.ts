@@ -42,7 +42,7 @@ app.use(cookieParser());
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
-    service: 'Prime Associate Loans API',
+    service: 'Prime Associates Loans API',
     timestamp: new Date().toISOString(),
   });
 });
