@@ -4,6 +4,7 @@ import {
   Calendar,
   Clock,
   CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Loader2,
   ShieldCheck,
@@ -27,6 +28,9 @@ import {
   Navigation,
   Save,
   X,
+  Copy,
+  Check,
+  ExternalLink,
 } from 'lucide-react';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
@@ -203,7 +207,15 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<any | null>(null);
+  const [copiedRef, setCopiedRef] = useState(false);
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+
+  const handleCopyReference = (ref: string) => {
+    if (!ref) return;
+    navigator.clipboard.writeText(ref);
+    setCopiedRef(true);
+    setTimeout(() => setCopiedRef(false), 2000);
+  };
 
   // Customer Authentication Context
   const { customer, isAuthenticated, loginWithGoogle, setAuthenticatedCustomer } = useCustomerAuth();
@@ -683,92 +695,159 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
         {/* Confirmation Screen on Success */}
         {submissionSuccess ? (
-          <div className="bg-white rounded-2xl p-8 sm:p-12 border border-brand-teal/30 shadow-card text-center space-y-6 animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-full bg-brand-teal-light text-brand-teal flex items-center justify-center mx-auto">
-              <CheckCircle className="w-10 h-10" />
+          <div className="bg-white rounded-3xl p-6 sm:p-10 lg:p-12 border border-slate-200 shadow-sm text-center space-y-6 sm:space-y-7 animate-in fade-in zoom-in-95 duration-200">
+            {/* Success Icon */}
+            <div className="relative inline-flex items-center justify-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-xl shadow-emerald-600/25 ring-8 ring-emerald-500/10">
+                <CheckCircle2 className="w-9 h-9 sm:w-10 sm:h-10 text-white stroke-[2.5]" />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-teal">
+            <div className="space-y-2.5">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider text-teal-800 bg-teal-50 border border-teal-200/90 font-heading">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 Enquiry Registered Successfully
               </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-brand-navy">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0c1a26] font-heading tracking-tight">
                 Thank You, {submissionSuccess.fullName || fullName}
               </h3>
-              <p className="text-sm text-brand-slate max-w-lg mx-auto">
-                Your enquiry reference has been created. Our team has received your submission and will review your attached reference documents.
+              <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto font-sans leading-relaxed">
+                Your pre-underwriting loan dossier has been created and registered with Prime Associates Central Lending Desk.
               </p>
             </div>
 
-            {/* Reference Badge */}
-            <div className="p-4 bg-brand-ivory rounded-xl border border-brand-border max-w-md mx-auto text-left space-y-2 text-xs sm:text-sm">
-              <div className="flex justify-between items-center pb-2 border-b border-brand-border">
-                <span className="text-brand-slate">Reference Number:</span>
-                <span className="font-mono font-bold text-brand-navy text-base">
-                  {submissionSuccess.referenceNumber || 'Generated'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-brand-slate">Loan Plan:</span>
-                <span className="font-semibold text-brand-navy">{loanType}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-brand-slate">Requested Amount:</span>
-                <span className="font-semibold text-brand-navy">
-                  {formatAmountINR(loanAmount)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-brand-slate">Preferred Channel Partner:</span>
-                <span className="font-semibold text-brand-navy truncate max-w-[200px]">
-                  {preferredBank}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-brand-slate">Consultation Status:</span>
-                <span className="font-bold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200 text-xs">
-                  Awaiting Slot Allotment by Advisor
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-brand-slate">Preferred Channel:</span>
-                <span className="font-semibold text-brand-navy">
-                  {meetingMode === 'in_person'
-                    ? 'In-Person (Tirupur Office)'
-                    : meetingMode === 'video'
-                    ? 'Google Meet Video Call'
-                    : 'Direct Phone Call'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-brand-slate">Callback Window:</span>
-                <span className="font-semibold text-brand-navy">
-                  {preferredCallbackWindow}
-                </span>
-              </div>
-              {documents.length > 0 && (
-                <div className="flex justify-between items-center pt-2 border-t border-brand-border text-teal-800 bg-teal-50 px-2 py-1 rounded">
-                  <span className="font-bold flex items-center gap-1.5">
-                    <FileCheck className="w-4 h-4 text-brand-teal" />
-                    Reference Documents Attached:
-                  </span>
-                  <span className="font-extrabold font-mono text-brand-teal">
-                    {documents.length} File(s)
+            {/* Official Lending Dossier Acknowledgment Slip */}
+            <div className="max-w-xl mx-auto rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden text-left">
+              {/* Slip Top Header */}
+              <div className="bg-[#0b1924] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <Landmark className="w-4 h-4 text-teal-400" />
+                  <span className="text-[11px] font-extrabold font-heading tracking-wider uppercase text-slate-200">
+                    Official Lending Dossier
                   </span>
                 </div>
-              )}
+                <div className="flex items-center gap-2 bg-white/10 px-2.5 py-1 rounded-xl border border-white/20">
+                  <span className="text-[10px] text-slate-300 font-sans">Ref:</span>
+                  <span className="font-mono font-extrabold text-white text-xs sm:text-sm tracking-wide">
+                    {submissionSuccess.referenceNumber || 'Generated'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyReference(submissionSuccess.referenceNumber || '')}
+                    className="p-1 rounded-lg hover:bg-white/20 text-teal-300 transition-colors cursor-pointer"
+                    title="Copy Reference"
+                  >
+                    {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Detailed Metrics */}
+              <div className="p-4 sm:p-5 space-y-3 text-xs divide-y divide-slate-100">
+                <div className="flex justify-between items-center pt-0">
+                  <span className="text-slate-500 font-medium font-sans">Loan Facility:</span>
+                  <span className="font-extrabold text-[#0c1a26] font-heading text-xs sm:text-[13px]">{loanType}</span>
+                </div>
+                <div className="flex justify-between items-center pt-2.5">
+                  <span className="text-slate-500 font-medium font-sans">Requested Sanction:</span>
+                  <span className="font-extrabold text-teal-700 font-heading text-sm sm:text-base tabular-nums">
+                    {formatAmountINR(loanAmount)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-2.5 gap-4">
+                  <span className="text-slate-500 font-medium font-sans shrink-0">Channel Partner:</span>
+                  <span className="font-semibold text-[#0c1a26] text-right font-sans">
+                    {preferredBank?.includes('Any') ? 'Best Market Rate Finder (Multi-Bank Comparison)' : preferredBank}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-2.5">
+                  <span className="text-slate-500 font-medium font-sans">Consultation Format:</span>
+                  <span className="font-bold text-[#0c1a26] font-heading">
+                    {meetingMode === 'in_person'
+                      ? '🏢 In-Person (Tirupur Desk)'
+                      : meetingMode === 'video'
+                      ? '🎥 Google Meet Video Call'
+                      : '📞 Direct Advisory Call'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-2.5">
+                  <span className="text-slate-500 font-medium font-sans">Scheduled Window:</span>
+                  <span className="font-semibold text-slate-800 font-sans">
+                    {preferredCallbackWindow}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-2.5">
+                  <span className="text-slate-500 font-medium font-sans">Dossier Status:</span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold font-heading bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    Consultation Requested &amp; Locked
+                  </span>
+                </div>
+                {documents.length > 0 && (
+                  <div className="flex justify-between items-center pt-3 text-teal-900 bg-teal-50/80 -mx-4 -mb-4 sm:-mx-5 sm:-mb-5 p-3.5 border-t border-teal-200/80">
+                    <span className="font-bold font-heading flex items-center gap-1.5 text-xs text-teal-800">
+                      <FileCheck className="w-4 h-4 text-teal-600 shrink-0" />
+                      Verification Documents Received:
+                    </span>
+                    <span className="font-extrabold font-mono text-xs text-teal-900 bg-white px-2.5 py-0.5 rounded-lg border border-teal-200 shadow-2xs">
+                      {documents.length} File{documents.length > 1 ? 's' : ''} Attached
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Document Checklist for the OK Confirmation Screen */}
-            <div className="pt-6 border-t border-brand-border/80 text-left">
-              <div className="p-4 bg-brand-teal-light/40 border border-brand-teal/20 rounded-2xl mb-2 flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-brand-teal shrink-0 mt-0.5" />
+            {/* Next Steps Info Box */}
+            <div className="max-w-xl mx-auto p-4 rounded-2xl bg-gradient-to-r from-sky-50 to-indigo-50/50 border border-sky-200 text-left flex items-start gap-3 text-xs">
+              <Sparkles className="w-5 h-5 text-sky-600 shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <span className="font-extrabold text-sky-950 font-heading block">What happens next?</span>
+                <p className="text-sky-800 text-[11px] font-sans leading-relaxed">
+                  Our senior credit analyst is cross-referencing your profile against lending criteria across 40+ partner banks. We will connect with you during your requested consultation window: <strong className="font-semibold text-sky-950">{preferredCallbackWindow}</strong>.
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="pt-2 flex flex-col sm:flex-row justify-center items-center gap-3">
+              <Link
+                to="/my-enquiries"
+                className="w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-bold font-heading text-white bg-gradient-to-r from-[#0c1a26] to-[#162a3b] hover:from-[#162a3b] hover:to-[#0c1a26] rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+              >
+                <span>Track in Borrower Portal</span>
+                <ExternalLink className="w-3.5 h-3.5 text-teal-300" />
+              </Link>
+              <a
+                href={`https://wa.me/919655566613?text=${encodeURIComponent(
+                  `Hello Prime Associates, I have submitted my loan enquiry ${submissionSuccess.referenceNumber || ''} for ${loanType} of ${formatAmountINR(loanAmount)}. Please confirm my consultation schedule.`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-bold font-heading text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+              >
+                <MessageSquare className="w-4 h-4 text-white" />
+                <span>Connect on WhatsApp</span>
+              </a>
+              <button
+                type="button"
+                onClick={handleReset}
+                className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-bold font-heading text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+                <span>Submit Another Enquiry</span>
+              </button>
+            </div>
+
+            {/* Document Checklist Section */}
+            <div className="pt-6 border-t border-slate-200/90 text-left">
+              <div className="p-4 bg-teal-50/70 border border-teal-200/80 rounded-2xl mb-3 flex items-start gap-3">
+                <ShieldCheck className="w-5 h-5 text-teal-700 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-bold text-brand-navy">
-                    Document Checklist for Your Scheduled Meeting:
+                  <h4 className="text-xs sm:text-sm font-bold font-heading text-teal-950">
+                    Recommended Checklist for Your Scheduled Consultation:
                   </h4>
-                  <p className="text-xs text-brand-slate mt-0.5 leading-relaxed">
-                    Having these documents ready during your consultation enables our specialists to evaluate your sanction limit and secure lowest interest rates across partner banks.
+                  <p className="text-[11px] sm:text-xs text-teal-800/90 mt-0.5 leading-relaxed font-sans">
+                    Keeping these reference documents handy during your advisory session helps our team verify loan eligibility and lock in minimum interest rate slabs.
                   </p>
                 </div>
               </div>
@@ -777,33 +856,6 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                 loanType={getMappedLoanType(loanType)}
                 embedded={true}
               />
-            </div>
-
-            <div className="pt-6 flex flex-col sm:flex-row justify-center gap-3">
-              <Link
-                to="/my-enquiries"
-                className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-navy hover:bg-brand-navy/90 rounded-corporate transition-colors flex items-center justify-center gap-2"
-              >
-                <span>Track in My Enquiries Portal &rarr;</span>
-              </Link>
-              <a
-                href={`https://wa.me/919655566613?text=${encodeURIComponent(
-                  `Hello Prime Associates, I have submitted my loan enquiry ${submissionSuccess.referenceNumber || ''} for ${loanType} of ${formatAmountINR(loanAmount)}. Please allocate my consultation date and slot.`
-                )}`}
-                target="_blank"
-                rel="noreferrer"
-                className="px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-corporate transition-colors flex items-center justify-center gap-2"
-              >
-                <MessageSquare className="w-4 h-4 text-white" />
-                <span>Connect on WhatsApp</span>
-              </a>
-              <button
-                type="button"
-                onClick={handleReset}
-                className="px-6 py-2.5 text-sm font-semibold text-brand-navy bg-brand-ivory border border-brand-border rounded-corporate hover:bg-gray-100 transition-colors"
-              >
-                Submit Another Enquiry
-              </button>
             </div>
           </div>
         ) : (
