@@ -7,6 +7,7 @@ import { loginSchema } from '../validators/auth.validator';
 import { config } from '../config';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { generateCustomerSessionHash } from '../middleware/apiProtection';
+import { generateSignedDocumentPreviewUrl } from '../config/cloudinary';
 
 const googleClient = new OAuth2Client(config.googleClientId, config.googleClientSecret);
 
@@ -466,6 +467,9 @@ export async function getCustomerEnquiries(req: AuthenticatedRequest, res: Respo
         appointments: {
           orderBy: { createdAt: 'desc' },
         },
+        documents: {
+          orderBy: { createdAt: 'desc' },
+        },
         statusHistory: {
           orderBy: { createdAt: 'desc' },
         },
@@ -475,17 +479,30 @@ export async function getCustomerEnquiries(req: AuthenticatedRequest, res: Respo
 
     const sanitizedEnquiries = enquiries.map((enq) => {
       const data: any = { ...enq };
+      const dbDocs = (enq.documents || []).map((doc) => ({
+        ...doc,
+        previewUrl: generateSignedDocumentPreviewUrl(
+          doc.cloudinaryPublicId,
+          doc.resourceType,
+          doc.fileFormat || undefined,
+          3600
+        ),
+      }));
+
+      let legacyDocs: any[] = [];
       if (enq.additionalNotes && enq.additionalNotes.includes('<!--DOCUMENTS_JSON:')) {
         try {
           const match = enq.additionalNotes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
           if (match && match[1]) {
-            data.documents = JSON.parse(match[1]);
+            legacyDocs = JSON.parse(match[1]);
           }
         } catch {
           // Non-blocking
         }
         data.additionalNotes = enq.additionalNotes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
       }
+
+      data.documents = dbDocs.length > 0 ? dbDocs : legacyDocs;
       return data;
     });
 

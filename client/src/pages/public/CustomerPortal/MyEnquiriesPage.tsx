@@ -35,20 +35,26 @@ import {
   BadgeCheck,
   Phone,
   MessageCircle,
+  CheckCircle,
+  UploadCloud,
+  FileCheck,
+  Eye,
+  Download,
+  X,
   Lock,
   Activity,
-  CheckCircle,
 } from 'lucide-react';
 import { useCustomerAuth } from '../../../context/CustomerAuthContext';
 import { GoogleIcon } from '../../../components/common/GoogleIcon';
 import { UserAvatar } from '../../../components/common/UserAvatar';
 import { triggerGoogleOAuth } from '../../../utils/googleAuth';
-import { Enquiry, Testimonial } from '../../../types';
+import { Enquiry, Testimonial, UploadedDocument } from '../../../types';
 import {
   submitCustomerReviewApi,
   getCustomerReviewApi,
   deleteCustomerReviewApi,
   getCustomerProfileApi,
+  uploadEnquiryDocumentApi,
 } from '../../../services/api';
 
 export const MyEnquiriesPage: React.FC = () => {
@@ -129,6 +135,61 @@ export const MyEnquiriesPage: React.FC = () => {
   const [reviewAmount, setReviewAmount] = useState<string>('₹50 Lakhs');
   const [reviewLocation, setReviewLocation] = useState<string>('Tirupur, Tamil Nadu');
   const [reviewText, setReviewText] = useState<string>('');
+
+  // Cloudinary Document Vault State
+  const [customerPreviewDoc, setCustomerPreviewDoc] = useState<UploadedDocument | null>(null);
+  const [uploadModalEnquiry, setUploadModalEnquiry] = useState<Enquiry | null>(null);
+  const [uploadDocFile, setUploadDocFile] = useState<File | null>(null);
+  const [uploadDocName, setUploadDocName] = useState<string>('');
+  const [uploadDocCategory, setUploadDocCategory] = useState<string>('KYC');
+  const [isUploadingDoc, setIsUploadingDoc] = useState<boolean>(false);
+  const [uploadDocSuccess, setUploadDocSuccess] = useState<string | null>(null);
+  const [uploadDocError, setUploadDocError] = useState<string | null>(null);
+
+  const handleCustomerUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!uploadModalEnquiry || !uploadDocFile) {
+      setUploadDocError('Please choose a JPG, PNG, or PDF file to upload.');
+      return;
+    }
+    if (!uploadDocName.trim()) {
+      setUploadDocError('Please enter a document title (e.g. PAN Card, 6M Bank Statement).');
+      return;
+    }
+
+    setIsUploadingDoc(true);
+    setUploadDocError(null);
+    setUploadDocSuccess(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', uploadDocFile);
+      formData.append('enquiryId', uploadModalEnquiry.id);
+      formData.append('enquiryReference', uploadModalEnquiry.referenceNumber);
+      formData.append('documentName', uploadDocName.trim());
+      formData.append('category', uploadDocCategory);
+      if (uploadModalEnquiry.mobileNumber) {
+        formData.append('customerIdentifier', uploadModalEnquiry.mobileNumber);
+      }
+
+      await uploadEnquiryDocumentApi(formData);
+      setUploadDocSuccess('Document successfully uploaded and secured in Cloudinary vault!');
+      setUploadDocFile(null);
+      setUploadDocName('');
+
+      // Refresh customer enquiries from database
+      await refreshEnquiries();
+
+      setTimeout(() => {
+        setUploadDocSuccess(null);
+        setUploadModalEnquiry(null);
+      }, 1500);
+    } catch (err: any) {
+      setUploadDocError(err.message || 'Failed to upload document. Please try again.');
+    } finally {
+      setIsUploadingDoc(false);
+    }
+  };
 
   const handleCopyLink = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -1260,6 +1321,151 @@ export const MyEnquiriesPage: React.FC = () => {
                         )}
                       </div>
 
+                      {/* =========================================================================
+                          ATTACHED VERIFICATION DOCUMENTS (CLOUDINARY SECURE VAULT)
+                          ========================================================================= */}
+                      <div className="p-5 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 text-teal-700 flex items-center justify-center shrink-0">
+                              <FileCheck className="w-4 h-4 text-teal-700" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-sm font-bold text-slate-900 font-heading">
+                                  Loan Verification Documents &amp; KYC
+                                </h4>
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200 font-heading">
+                                  {enq.documents?.length || 0} Files
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-slate-500 font-sans mt-0.5">
+                                Encrypted in Cloudinary vault with authenticated delivery for advisor underwriting.
+                              </p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUploadModalEnquiry(enq);
+                              setUploadDocFile(null);
+                              setUploadDocName('');
+                              setUploadDocCategory('KYC');
+                              setUploadDocError(null);
+                              setUploadDocSuccess(null);
+                            }}
+                            className="inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-100 text-teal-800 border border-teal-300 font-bold font-heading text-xs rounded-xl shadow-2xs transition-colors self-start sm:self-auto cursor-pointer"
+                          >
+                            <UploadCloud className="w-3.5 h-3.5 text-teal-700" />
+                            <span>+ Upload Document</span>
+                          </button>
+                        </div>
+
+                        {enq.documents && enq.documents.length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {enq.documents.map((doc) => {
+                              const isPdf = doc.fileFormat === 'pdf' || doc.type?.includes('pdf') || doc.name?.toLowerCase().endsWith('.pdf');
+                              return (
+                                <div
+                                  key={doc.id}
+                                  className="p-3 bg-white rounded-xl border border-slate-200 flex items-start gap-3 shadow-2xs hover:border-teal-400 transition-all group"
+                                >
+                                  {isPdf ? (
+                                    <div
+                                      onClick={() => setCustomerPreviewDoc(doc)}
+                                      className="w-12 h-12 rounded-lg bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-[10px] cursor-pointer hover:bg-red-100 transition-colors"
+                                      title="Preview PDF document"
+                                    >
+                                      <FileText className="w-4 h-4 text-red-600 mb-0.5" />
+                                      <span className="font-heading">PDF</span>
+                                    </div>
+                                  ) : (
+                                    <div
+                                      onClick={() => setCustomerPreviewDoc(doc)}
+                                      className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 cursor-pointer shrink-0 bg-slate-100 flex items-center justify-center hover:opacity-85 transition-opacity"
+                                      title="Preview image document"
+                                    >
+                                      {doc.previewUrl ? (
+                                        <img
+                                          src={doc.previewUrl}
+                                          alt={doc.name}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      ) : (
+                                        <FileCheck className="w-5 h-5 text-teal-600" />
+                                      )}
+                                    </div>
+                                  )}
+
+                                  <div className="min-w-0 flex-1 space-y-1">
+                                    <div className="flex items-center justify-between gap-1">
+                                      <span className="text-[9px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 font-heading">
+                                        {doc.category || 'KYC'}
+                                      </span>
+                                      <span className="text-[10px] text-slate-400 tabular-nums">
+                                        {doc.size ? `${(doc.size / 1024).toFixed(0)} KB` : 'Secured'}
+                                      </span>
+                                    </div>
+
+                                    <h5 className="text-xs font-bold text-slate-900 truncate block font-heading" title={doc.documentName || doc.name}>
+                                      {doc.documentName || doc.name}
+                                    </h5>
+                                    <p className="text-[10px] text-slate-400 truncate font-mono">
+                                      {doc.name}
+                                    </p>
+
+                                    <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px]">
+                                      <button
+                                        type="button"
+                                        onClick={() => setCustomerPreviewDoc(doc)}
+                                        className="text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 font-heading hover:underline cursor-pointer"
+                                      >
+                                        <Eye className="w-3 h-3" />
+                                        <span>Preview</span>
+                                      </button>
+                                      {doc.previewUrl && (
+                                        <a
+                                          href={doc.previewUrl}
+                                          download={doc.name || 'document'}
+                                          className="text-slate-500 hover:text-slate-800 font-bold flex items-center gap-1 font-heading hover:underline"
+                                          title="Download document file"
+                                        >
+                                          <Download className="w-3 h-3" />
+                                          <span>Download</span>
+                                        </a>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="p-4 bg-white rounded-xl border border-dashed border-slate-200 text-center space-y-1.5 text-xs text-slate-500">
+                            <p className="font-bold text-slate-800 font-heading">No Verification Documents Attached Yet</p>
+                            <p className="text-[11px] font-sans max-w-md mx-auto">
+                              You can upload soft copies of your PAN card, Aadhaar, salary payslips, or property title documents here anytime for expedited advisor review.
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUploadModalEnquiry(enq);
+                                setUploadDocFile(null);
+                                setUploadDocName('');
+                                setUploadDocCategory('KYC');
+                                setUploadDocError(null);
+                                setUploadDocSuccess(null);
+                              }}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold font-heading rounded-lg transition-colors cursor-pointer mt-1"
+                            >
+                              <UploadCloud className="w-3.5 h-3.5 text-teal-700" />
+                              <span>Upload Document Now</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
                       {/* Card Footer Action Bar */}
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
                         <div className="flex flex-wrap items-center gap-2.5">
@@ -1732,6 +1938,225 @@ export const MyEnquiriesPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* =========================================================================
+          CUSTOMER DOCUMENT LIGHTBOX PREVIEW MODAL (IMAGE & PDF)
+          ========================================================================= */}
+      {customerPreviewDoc && (
+        <div
+          className="fixed inset-0 z-50 bg-[#0c1a26]/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setCustomerPreviewDoc(null)}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200/90 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block font-heading">
+                  Verified Loan Document
+                </span>
+                <h4 className="text-base font-bold text-slate-900 flex items-center gap-2 font-heading">
+                  <FileCheck className="w-4 h-4 text-teal-700" />
+                  <span>{customerPreviewDoc.documentName || customerPreviewDoc.name}</span>
+                </h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCustomerPreviewDoc(null)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+                title="Close Preview (Esc)"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950 min-h-[450px]">
+              {customerPreviewDoc.fileFormat === 'pdf' ||
+              customerPreviewDoc.type === 'application/pdf' ||
+              customerPreviewDoc.name.toLowerCase().endsWith('.pdf') ? (
+                <iframe
+                  src={customerPreviewDoc.previewUrl}
+                  title={customerPreviewDoc.name}
+                  className="w-full h-[68vh] rounded-lg shadow-lg bg-white border border-slate-700"
+                />
+              ) : (
+                <img
+                  src={customerPreviewDoc.previewUrl}
+                  alt={customerPreviewDoc.name}
+                  className="max-h-[70vh] max-w-full object-contain rounded-lg shadow-lg"
+                />
+              )}
+            </div>
+
+            <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-white">
+              <span className="font-mono text-slate-600">
+                {customerPreviewDoc.name} ({customerPreviewDoc.size ? `${(customerPreviewDoc.size / 1024).toFixed(0)} KB` : 'Verified'})
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCustomerPreviewDoc(null)}
+                  className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold text-xs font-heading shadow-2xs transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+                <a
+                  href={customerPreviewDoc.previewUrl}
+                  download={customerPreviewDoc.name}
+                  className="px-4 py-2 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl font-bold text-xs font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Document</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          CUSTOMER DOCUMENT UPLOAD MODAL
+          ========================================================================= */}
+      {uploadModalEnquiry && (
+        <div
+          className="fixed inset-0 z-50 bg-[#0c1a26]/80 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => {
+            if (!isUploadingDoc) setUploadModalEnquiry(null);
+          }}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
+                  <UploadCloud className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 font-heading">
+                    Upload Loan Verification Document
+                  </h4>
+                  <span className="text-[11px] text-slate-500 font-mono">
+                    Ref: {uploadModalEnquiry.referenceNumber}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                disabled={isUploadingDoc}
+                onClick={() => setUploadModalEnquiry(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCustomerUpload} className="p-6 space-y-4">
+              {uploadDocSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center gap-2 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{uploadDocSuccess}</span>
+                </div>
+              )}
+
+              {uploadDocError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2 font-medium">
+                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                  <span>{uploadDocError}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 font-heading block mb-1.5">
+                  Document Category
+                </label>
+                <select
+                  value={uploadDocCategory}
+                  onChange={(e) => setUploadDocCategory(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 outline-none focus:border-teal-600 focus:bg-white transition-all"
+                >
+                  <option value="KYC">KYC &amp; Identity (PAN, Aadhaar, Passport, Voter ID)</option>
+                  <option value="Income">Income &amp; Banking (3M Payslips, Form 16, 6M Bank Statement, ITR)</option>
+                  <option value="Legal">Legal &amp; Title Deeds (Sale Deed, Patta, Chitta, EC Form 15, Mother Deed)</option>
+                  <option value="Technical">Technical &amp; Plan Approval (Civil Engineer Estimate, Blueprint)</option>
+                  <option value="Vehicle">Vehicle Documents (RC Book, Insurance, Proforma Invoice)</option>
+                  <option value="Other">Other Reference Document</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 font-heading block mb-1.5">
+                  Document Title / Description
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Applicant PAN Card Front, 6M HDFC Bank Statement"
+                  value={uploadDocName}
+                  onChange={(e) => setUploadDocName(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 outline-none focus:border-teal-600 focus:bg-white transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 font-heading block mb-1.5">
+                  Choose File (JPG, PNG, PDF &bull; Max 10MB)
+                </label>
+                <input
+                  type="file"
+                  required
+                  accept="image/jpeg,image/png,image/webp,application/pdf"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      setUploadDocFile(f);
+                      if (!uploadDocName) {
+                        setUploadDocName(f.name.replace(/\.[^/.]+$/, ''));
+                      }
+                    }
+                  }}
+                  className="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:font-heading file:bg-teal-50 file:text-teal-800 hover:file:bg-teal-100 cursor-pointer"
+                />
+                {uploadDocFile && (
+                  <p className="text-[11px] text-teal-700 font-sans mt-1">
+                    Selected: <strong>{uploadDocFile.name}</strong> ({(uploadDocFile.size / 1024).toFixed(0)} KB)
+                  </p>
+                )}
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-slate-100">
+                <button
+                  type="button"
+                  disabled={isUploadingDoc}
+                  onClick={() => setUploadModalEnquiry(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold font-heading rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUploadingDoc}
+                  className="px-5 py-2 bg-[#0c1a26] hover:bg-teal-700 text-white text-xs font-bold font-heading rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                >
+                  {isUploadingDoc ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>Encrypting &amp; Uploading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <UploadCloud className="w-4 h-4" />
+                      <span>Upload to Secure Vault</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

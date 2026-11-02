@@ -36,6 +36,7 @@ import {
   Check,
   FileText,
   Info,
+  Trash2,
 } from 'lucide-react';
 import { Enquiry, UploadedDocument } from '../../../types';
 import { UserAvatar } from '../../../components/common/UserAvatar';
@@ -44,6 +45,7 @@ import {
   getEnquiryByIdApi,
   updateEnquiryStatusApi,
   addEnquiryNoteApi,
+  deleteEnquiryDocumentApi,
 } from '../../../services/api';
 
 const ALL_STATUSES = [
@@ -176,9 +178,34 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [statusNote, setStatusNote] = useState<string>('');
   const [statusUpdating, setStatusUpdating] = useState<boolean>(false);
 
+  // Document Deletion State
+  const [deletingDocId, setDeletingDocId] = useState<string | null>(null);
+
   // New Note State
   const [newNoteContent, setNewNoteContent] = useState<string>('');
   const [noteSubmitting, setNoteSubmitting] = useState<boolean>(false);
+
+  const handleDeleteDoc = async (docId: string, docName: string) => {
+    if (!window.confirm(`Are you sure you want to permanently delete "${docName}" from Cloudinary and the database?`)) {
+      return;
+    }
+    setDeletingDocId(docId);
+    try {
+      await deleteEnquiryDocumentApi(docId);
+      if (detailEnquiry) {
+        const updatedDocs = (detailEnquiry.documents || []).filter((d) => d.id !== docId);
+        setDetailEnquiry({
+          ...detailEnquiry,
+          documents: updatedDocs,
+        });
+      }
+      fetchList();
+    } catch (err: any) {
+      alert(err.message || 'Failed to delete document from vault');
+    } finally {
+      setDeletingDocId(null);
+    }
+  };
 
   const fetchList = () => {
     setLoading(true);
@@ -1496,9 +1523,13 @@ export const AdminEnquiriesPage: React.FC = () => {
                                       </div>
                                     </div>
                                   ) : (
-                                    <div className="w-16 h-16 rounded-xl bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs shadow-2xs">
-                                      <span className="font-heading">PDF</span>
-                                      <span className="text-[9px] text-red-500 font-sans mt-0.5">Doc</span>
+                                    <div
+                                      onClick={() => setAdminPreviewDoc(doc)}
+                                      className="w-16 h-16 rounded-xl bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs shadow-2xs cursor-pointer hover:bg-red-100 transition-colors"
+                                      title="Click to view PDF document"
+                                    >
+                                      <FileText className="w-5 h-5 text-red-600 mb-0.5" />
+                                      <span className="font-heading text-[10px]">PDF</span>
                                     </div>
                                   )}
 
@@ -1518,23 +1549,40 @@ export const AdminEnquiriesPage: React.FC = () => {
                                       {doc.name}
                                     </p>
                                     <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px]">
+                                      <div className="flex items-center gap-2">
+                                        <button
+                                          type="button"
+                                          onClick={() => setAdminPreviewDoc(doc)}
+                                          className="text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 font-heading hover:underline cursor-pointer"
+                                        >
+                                          <Eye className="w-3 h-3" />
+                                          <span>Preview</span>
+                                        </button>
+                                        <a
+                                          href={doc.previewUrl}
+                                          download={doc.name || 'document'}
+                                          className="text-slate-600 hover:text-slate-900 font-bold flex items-center gap-1 font-heading hover:underline"
+                                          title="Download document file"
+                                        >
+                                          <Download className="w-3 h-3" />
+                                          <span>Download</span>
+                                        </a>
+                                      </div>
+
                                       <button
                                         type="button"
-                                        onClick={() => setAdminPreviewDoc(doc)}
-                                        className="text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 font-heading hover:underline cursor-pointer"
+                                        onClick={() => handleDeleteDoc(doc.id, doc.documentName || doc.name)}
+                                        disabled={deletingDocId === doc.id}
+                                        className="text-rose-600 hover:text-rose-800 font-bold flex items-center gap-1 font-heading hover:bg-rose-50 px-1.5 py-0.5 rounded transition-colors cursor-pointer disabled:opacity-50"
+                                        title="Delete document permanently"
                                       >
-                                        <Eye className="w-3 h-3" />
-                                        <span>Preview</span>
+                                        {deletingDocId === doc.id ? (
+                                          <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : (
+                                          <Trash2 className="w-3 h-3" />
+                                        )}
+                                        <span>Delete</span>
                                       </button>
-                                      <a
-                                        href={doc.previewUrl}
-                                        download={doc.name || 'document'}
-                                        className="text-slate-600 hover:text-slate-900 font-bold flex items-center gap-1 font-heading hover:underline"
-                                        title="Download document file"
-                                      >
-                                        <Download className="w-3 h-3" />
-                                        <span>Download</span>
-                                      </a>
                                     </div>
                                   </div>
                                 </div>
@@ -1977,12 +2025,22 @@ export const AdminEnquiriesPage: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950">
-              <img
-                src={adminPreviewDoc.previewUrl}
-                alt={adminPreviewDoc.name}
-                className="max-h-[72vh] max-w-full object-contain rounded-lg shadow-lg"
-              />
+            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950 min-h-[480px]">
+              {adminPreviewDoc.fileFormat === 'pdf' ||
+              adminPreviewDoc.type === 'application/pdf' ||
+              adminPreviewDoc.name.toLowerCase().endsWith('.pdf') ? (
+                <iframe
+                  src={adminPreviewDoc.previewUrl}
+                  title={adminPreviewDoc.name}
+                  className="w-full h-[72vh] rounded-lg shadow-lg bg-white border border-slate-700"
+                />
+              ) : (
+                <img
+                  src={adminPreviewDoc.previewUrl}
+                  alt={adminPreviewDoc.name}
+                  className="max-h-[72vh] max-w-full object-contain rounded-lg shadow-lg"
+                />
+              )}
             </div>
             <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-white">
               <span className="font-mono text-slate-600">

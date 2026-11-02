@@ -234,10 +234,16 @@ export interface UploadedDocument {
   name: string;
   size: number;
   type: string;
-  category: 'KYC' | 'Income' | 'Legal' | 'Technical' | 'Mortgage_LAP' | 'Vehicle' | 'General';
+  category: 'KYC' | 'Income' | 'Legal' | 'Technical' | 'Mortgage_LAP' | 'Vehicle' | 'General' | string;
   documentName: string;
   previewUrl: string;
   uploadedAt: string;
+  file?: File;
+  cloudinaryPublicId?: string;
+  resourceType?: string;
+  fileFormat?: string;
+  originalFilename?: string;
+  uploadedBy?: string;
 }
 
 export interface Enquiry {

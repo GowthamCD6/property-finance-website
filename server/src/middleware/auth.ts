@@ -147,3 +147,58 @@ export async function requireCustomerAuth(
     });
   }
 }
+
+/**
+ * Optional Auth Resolver: populates req.admin or req.customer if tokens are present,
+ * without rejecting unauthenticated requests (leaving fine-grained authorization to controller).
+ */
+export async function resolveOptionalAuth(
+  req: AuthenticatedRequest,
+  _res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    let token: string | undefined;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    } else if (req.cookies?.admin_token) {
+      token = req.cookies.admin_token;
+    } else if (req.cookies?.customer_token) {
+      token = req.cookies.customer_token;
+    }
+
+    if (!token) {
+      return next();
+    }
+
+    try {
+      const decoded = jwt.verify(token, config.jwtSecret) as any;
+      if (decoded.role === 'admin' || decoded.role === 'superadmin' || !decoded.type) {
+        const admin = await prisma.adminUser.findUnique({
+          where: { id: decoded.id },
+          select: { id: true, email: true, name: true, role: true, phone: true, avatar: true, isActive: true },
+        });
+        if (admin && admin.isActive) {
+          req.admin = admin;
+          return next();
+        }
+      }
+      
+      const customer = await prisma.customerUser.findUnique({
+        where: { id: decoded.id },
+        select: { id: true, email: true, name: true, picture: true, phone: true },
+      });
+      if (customer) {
+        req.customer = customer;
+      }
+    } catch {
+      // Non-blocking
+    }
+
+    next();
+  } catch {
+    next();
+  }
+}
+

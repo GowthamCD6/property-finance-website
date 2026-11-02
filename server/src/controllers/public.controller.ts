@@ -327,12 +327,10 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
       metadataItems.push(validatedData.additionalNotes);
     }
     const rawDocs = (req.body as any).documents;
-    let documentsMeta = '';
     if (Array.isArray(rawDocs) && rawDocs.length > 0) {
       metadataItems.push(`📁 Attached Reference Documents: ${rawDocs.length} file(s) submitted (${rawDocs.map((d: any) => d.documentName || d.name).join(', ')})`);
-      documentsMeta = `\n<!--DOCUMENTS_JSON:${JSON.stringify(rawDocs)}-->`;
     }
-    const finalNotes = (metadataItems.filter(Boolean).join('\n\n') + documentsMeta) || null;
+    const finalNotes = metadataItems.filter(Boolean).join('\n\n') || null;
 
     // Persist in transaction
     const result = await prisma.$transaction(async (tx) => {
@@ -360,6 +358,27 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
           consentGiven: true,
         },
       });
+
+      // Persist any pre-attached or structured Cloudinary documents
+      if (Array.isArray(rawDocs) && rawDocs.length > 0) {
+        for (const doc of rawDocs) {
+          if (doc.cloudinaryPublicId) {
+            await tx.enquiryDocument.create({
+              data: {
+                enquiryId: enquiry.id,
+                documentName: doc.documentName || doc.name || 'Document',
+                category: doc.category || 'KYC',
+                cloudinaryPublicId: doc.cloudinaryPublicId,
+                resourceType: doc.resourceType || 'image',
+                fileFormat: doc.fileFormat || doc.format || null,
+                fileSize: doc.fileSize || doc.size || null,
+                originalFilename: doc.name || doc.originalFilename || null,
+                uploadedBy: 'customer',
+              },
+            });
+          }
+        }
+      }
 
       // Create initial status history
       await tx.statusHistory.create({

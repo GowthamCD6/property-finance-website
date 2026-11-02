@@ -108,6 +108,85 @@ export function saveLocalEnquiry(enq: any, docs: any[]): void {
   }
 }
 
+// =========================================================================
+// CLOUDINARY SECURE DOCUMENT VAULT APIS
+// =========================================================================
+
+export async function uploadEnquiryDocumentApi(formData: FormData): Promise<any> {
+  const adminToken = localStorage.getItem('vpf_admin_token') || sessionStorage.getItem('vpf_admin_token');
+  const userToken = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = {};
+  if (adminToken) {
+    headers['Authorization'] = `Bearer ${adminToken}`;
+  } else if (userToken) {
+    headers['Authorization'] = `Bearer ${userToken}`;
+  }
+
+  const res = await fetch(`${API_BASE}/documents/upload`, {
+    method: 'POST',
+    headers,
+    credentials: 'include',
+    body: formData,
+  });
+  return handleResponse(res, 'Failed to upload document to secure vault');
+}
+
+export async function getEnquiryDocumentsApi(enquiryId: string, customerIdentifier?: string): Promise<any[]> {
+  const adminToken = localStorage.getItem('vpf_admin_token') || sessionStorage.getItem('vpf_admin_token');
+  const userToken = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = {};
+  if (adminToken) {
+    headers['Authorization'] = `Bearer ${adminToken}`;
+  } else if (userToken) {
+    headers['Authorization'] = `Bearer ${userToken}`;
+  }
+
+  const query = customerIdentifier ? `?customerIdentifier=${encodeURIComponent(customerIdentifier)}` : '';
+  const res = await fetch(`${API_BASE}/documents/enquiry/${enquiryId}${query}`, {
+    headers,
+    credentials: 'include',
+  });
+  const json = await handleResponse(res, 'Failed to fetch enquiry documents');
+  return json.data || [];
+}
+
+export async function getDocumentPreviewUrlApi(documentId: string, customerIdentifier?: string): Promise<any> {
+  const adminToken = localStorage.getItem('vpf_admin_token') || sessionStorage.getItem('vpf_admin_token');
+  const userToken = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = {};
+  if (adminToken) {
+    headers['Authorization'] = `Bearer ${adminToken}`;
+  } else if (userToken) {
+    headers['Authorization'] = `Bearer ${userToken}`;
+  }
+
+  const query = customerIdentifier ? `?customerIdentifier=${encodeURIComponent(customerIdentifier)}` : '';
+  const res = await fetch(`${API_BASE}/documents/${documentId}/preview${query}`, {
+    headers,
+    credentials: 'include',
+  });
+  const json = await handleResponse(res, 'Failed to generate secure preview URL');
+  return json.data;
+}
+
+export async function deleteEnquiryDocumentApi(documentId: string): Promise<any> {
+  const adminToken = localStorage.getItem('vpf_admin_token') || sessionStorage.getItem('vpf_admin_token');
+  const userToken = localStorage.getItem('vpf_user_token');
+  const headers: HeadersInit = {};
+  if (adminToken) {
+    headers['Authorization'] = `Bearer ${adminToken}`;
+  } else if (userToken) {
+    headers['Authorization'] = `Bearer ${userToken}`;
+  }
+
+  const res = await fetch(`${API_BASE}/documents/${documentId}`, {
+    method: 'DELETE',
+    headers,
+    credentials: 'include',
+  });
+  return handleResponse(res, 'Failed to delete document from vault');
+}
+
 export async function submitLoanEnquiry(data: any): Promise<any> {
   const documents = data.documents || [];
   const userToken = localStorage.getItem('vpf_user_token');
@@ -129,14 +208,28 @@ export async function submitLoanEnquiry(data: any): Promise<any> {
     }
     const createdEnquiry = json.data?.enquiry || json.data;
     if (createdEnquiry) {
-      if (createdEnquiry.id) saveLocalEnquiryDocuments(createdEnquiry.id, documents);
-      if (createdEnquiry.referenceNumber) saveLocalEnquiryDocuments(createdEnquiry.referenceNumber, documents);
-      saveLocalEnquiry(createdEnquiry, documents);
       if (json.data?.token) {
         localStorage.setItem('vpf_user_token', json.data.token);
       }
       if (json.data?.customer) {
         localStorage.setItem('vpf_user_profile', JSON.stringify(json.data.customer));
+      }
+
+      // Upload any attached binary files directly to Cloudinary document vault
+      if (Array.isArray(documents) && documents.length > 0) {
+        for (const doc of documents) {
+          if (doc.file) {
+            const formData = new FormData();
+            formData.append('file', doc.file);
+            formData.append('enquiryId', createdEnquiry.id || createdEnquiry.referenceNumber);
+            formData.append('documentName', doc.documentName || doc.name);
+            formData.append('category', doc.category || 'KYC');
+            formData.append('customerIdentifier', createdEnquiry.mobileNumber || '');
+            uploadEnquiryDocumentApi(formData).catch((err) =>
+              console.warn('Background upload to Cloudinary failed:', err)
+            );
+          }
+        }
       }
     }
     return json;

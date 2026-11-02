@@ -6,6 +6,7 @@ import { getApiKeySecurityDetails, rotateApiKey } from '../middleware/apiProtect
 import prisma from '../database/client';
 import { config } from '../config';
 import { generateEnquiryReference } from '../utils/reference';
+import { generateSignedDocumentPreviewUrl } from '../config/cloudinary';
 import {
   updateSiteContentSchema,
   serviceSchema,
@@ -162,6 +163,9 @@ export async function getEnquiries(req: AuthenticatedRequest, res: Response, nex
             take: 1,
             orderBy: { createdAt: 'desc' },
           },
+          documents: {
+            orderBy: { createdAt: 'desc' },
+          },
           _count: {
             select: { notes: true },
           },
@@ -171,17 +175,30 @@ export async function getEnquiries(req: AuthenticatedRequest, res: Response, nex
 
     const sanitizedEnquiries = enquiries.map((enq) => {
       const data: any = { ...enq };
+      const dbDocs = (enq.documents || []).map((doc) => ({
+        ...doc,
+        previewUrl: generateSignedDocumentPreviewUrl(
+          doc.cloudinaryPublicId,
+          doc.resourceType,
+          doc.fileFormat || undefined,
+          3600
+        ),
+      }));
+
+      let legacyDocs: any[] = [];
       if (enq.additionalNotes && enq.additionalNotes.includes('<!--DOCUMENTS_JSON:')) {
         try {
           const match = enq.additionalNotes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
           if (match && match[1]) {
-            data.documents = JSON.parse(match[1]);
+            legacyDocs = JSON.parse(match[1]);
           }
         } catch {
           // Non-blocking
         }
         data.additionalNotes = enq.additionalNotes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
       }
+
+      data.documents = dbDocs.length > 0 ? dbDocs : legacyDocs;
       return data;
     });
 
@@ -213,6 +230,9 @@ export async function getEnquiryById(req: AuthenticatedRequest, res: Response, n
         appointments: {
           orderBy: { createdAt: 'desc' },
         },
+        documents: {
+          orderBy: { createdAt: 'desc' },
+        },
         notes: {
           orderBy: { createdAt: 'desc' },
         },
@@ -228,17 +248,30 @@ export async function getEnquiryById(req: AuthenticatedRequest, res: Response, n
     }
 
     const enquiryData: any = { ...enquiry };
+    const dbDocs = (enquiry.documents || []).map((doc) => ({
+      ...doc,
+      previewUrl: generateSignedDocumentPreviewUrl(
+        doc.cloudinaryPublicId,
+        doc.resourceType,
+        doc.fileFormat || undefined,
+        3600
+      ),
+    }));
+
+    let legacyDocs: any[] = [];
     if (enquiry.additionalNotes && enquiry.additionalNotes.includes('<!--DOCUMENTS_JSON:')) {
       try {
         const match = enquiry.additionalNotes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
         if (match && match[1]) {
-          enquiryData.documents = JSON.parse(match[1]);
+          legacyDocs = JSON.parse(match[1]);
         }
       } catch {
         // Non-blocking
       }
       enquiryData.additionalNotes = enquiry.additionalNotes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
     }
+
+    enquiryData.documents = dbDocs.length > 0 ? dbDocs : legacyDocs;
 
     res.json({ success: true, data: enquiryData });
   } catch (err) {

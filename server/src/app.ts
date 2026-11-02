@@ -6,6 +6,7 @@ import { config } from './config';
 import publicRoutes from './routes/public.routes';
 import authRoutes from './routes/auth.routes';
 import adminRoutes from './routes/admin.routes';
+import documentRoutes from './routes/document.routes';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -65,6 +66,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/public', publicRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/documents', documentRoutes);
 
 // 404 Route Handler
 app.use((_req, res) => {

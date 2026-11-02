@@ -77,30 +77,52 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
     }
   };
 
-  // Handle single item upload
+  // Handle single item upload with JPG, PNG and PDF support
   const handleItemFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, item: DocumentItemDef) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     const file = files[0];
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    const isImage = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(file.name);
+
+    if (!isPdf && !isImage) {
+      alert('Invalid document format. Please upload a JPG, PNG, WEBP, or PDF file.');
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size exceeds 10MB limit. Please upload a smaller document.');
+      e.target.value = '';
+      return;
+    }
+
     try {
-      const base64 = await compressImageFile(file);
+      let previewUrl = '';
+      if (isPdf) {
+        previewUrl = URL.createObjectURL(file);
+      } else {
+        previewUrl = await compressImageFile(file);
+      }
+
       const newDoc: UploadedDocument = {
         id: `doc-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
         name: file.name,
-        size: Math.round((base64.length * 3) / 4),
-        type: file.type || 'image/jpeg',
+        size: file.size,
+        type: isPdf ? 'application/pdf' : file.type || 'image/jpeg',
         category: item.category,
         documentName: item.name,
-        previewUrl: base64,
+        previewUrl,
         uploadedAt: new Date().toISOString(),
+        file, // Retain raw file for Cloudinary upload
       };
 
       // Replace if document of same name exists, else append
       const updated = documents.filter((d) => d.documentName !== item.name).concat(newDoc);
       onDocumentsChange(updated);
     } catch (err) {
-      console.error('File reading and compression failed', err);
+      console.error('File reading failed', err);
     }
     // Reset file input
     e.target.value = '';
@@ -258,8 +280,13 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
                           className="w-10 h-10 object-cover rounded border border-brand-border cursor-pointer hover:opacity-80 transition-opacity shrink-0"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded bg-red-50 border border-red-200 flex items-center justify-center text-red-700 shrink-0 font-bold text-[10px]">
-                          PDF
+                        <div
+                          onClick={() => setPreviewModalDoc(uploadedDoc)}
+                          className="w-10 h-10 rounded bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-[10px] cursor-pointer hover:bg-red-100 transition-colors"
+                          title="Click to preview PDF"
+                        >
+                          <FileText className="w-4 h-4 text-red-600 mb-0.5" />
+                          <span>PDF</span>
                         </div>
                       )}
                       <div className="min-w-0">
@@ -273,16 +300,14 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
                     </div>
 
                     <div className="flex items-center gap-1 shrink-0">
-                      {uploadedDoc.type.includes('image') && (
-                        <button
-                          type="button"
-                          onClick={() => setPreviewModalDoc(uploadedDoc)}
-                          title="View Image"
-                          className="p-1.5 rounded text-brand-slate hover:text-brand-navy hover:bg-gray-100"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => setPreviewModalDoc(uploadedDoc)}
+                        title="Preview Document"
+                        className="p-1.5 rounded text-brand-slate hover:text-brand-navy hover:bg-gray-100"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
                       <button
                         type="button"
                         onClick={() => handleRemoveDoc(uploadedDoc.id)}
@@ -296,7 +321,7 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
                 ) : (
                   <label className="flex items-center justify-center gap-2 py-2 px-3 border border-dashed border-brand-border rounded-lg bg-brand-ivory/60 hover:bg-brand-teal-light/50 hover:border-brand-teal cursor-pointer transition-colors text-xs font-semibold text-brand-navy">
                     <UploadCloud className="w-4 h-4 text-brand-teal" />
-                    <span>Upload Image / Scan</span>
+                    <span>Upload Image / PDF</span>
                     <input
                       type="file"
                       accept="image/*,application/pdf"
@@ -312,10 +337,10 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
       </div>
 
 
-      {/* FULL IMAGE PREVIEW MODAL */}
+      {/* FULL DOCUMENT PREVIEW MODAL (IMAGE & PDF) */}
       {previewModalDoc && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="p-4 border-b border-brand-border flex items-center justify-between bg-brand-ivory">
               <div>
                 <span className="text-[10px] uppercase font-bold text-brand-teal tracking-wider block">
@@ -331,12 +356,20 @@ export const DocumentUploadIntake: React.FC<DocumentUploadIntakeProps> = ({
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-gray-900">
-              <img
-                src={previewModalDoc.previewUrl}
-                alt={previewModalDoc.name}
-                className="max-h-[75vh] object-contain rounded"
-              />
+            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-gray-900 min-h-[450px]">
+              {previewModalDoc.type === 'application/pdf' || previewModalDoc.name.toLowerCase().endsWith('.pdf') ? (
+                <iframe
+                  src={previewModalDoc.previewUrl}
+                  title={previewModalDoc.name}
+                  className="w-full h-[65vh] rounded bg-white border border-gray-700"
+                />
+              ) : (
+                <img
+                  src={previewModalDoc.previewUrl}
+                  alt={previewModalDoc.name}
+                  className="max-h-[75vh] object-contain rounded"
+                />
+              )}
             </div>
             <div className="p-3 border-t border-brand-border flex items-center justify-between text-xs text-brand-slate bg-white">
               <span>{previewModalDoc.name} ({formatFileSize(previewModalDoc.size)})</span>
