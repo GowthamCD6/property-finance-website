@@ -385,7 +385,7 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-[11px] font-semibold font-mono border border-teal-500/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>TiDB Cloud Synced</span>
+                <span>Live Operations Desk</span>
               </span>
               <span className="text-slate-500">&bull;</span>
               <span className="text-[11px] text-slate-300 font-mono font-medium">
@@ -406,7 +406,7 @@ export const AdminDashboardPage: React.FC = () => {
               {admin?.name ? `Welcome, ${admin.name}` : `${getGreeting()}, Administrator`}
             </h1>
             <p className="text-xs text-slate-400 font-sans">
-              Executive Console &bull; <span className="text-slate-200 font-medium">${admin?.email}</span> (${admin?.role?.toUpperCase() || 'ADMIN'})
+              Executive Console &bull; <span className="text-slate-200 font-medium">{admin?.email}</span> ({admin?.role?.toUpperCase() || 'ADMIN'})
             </p>
           </div>
         </div>

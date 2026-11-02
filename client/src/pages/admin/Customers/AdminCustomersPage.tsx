@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { UserAvatar } from '../../../components/common/UserAvatar';
 import {
@@ -13,7 +14,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
-  RefreshCw,
   ExternalLink,
   Building2,
   Video,
@@ -32,6 +32,18 @@ import {
 } from 'lucide-react';
 import { EnquiredCustomer, Enquiry } from '../../../types';
 import { getEnquiredCustomersApi } from '../../../services/api';
+
+// Globally Recognized Official WhatsApp SVG Icon
+const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+  </svg>
+);
 
 export const AdminCustomersPage: React.FC = () => {
   const [customers, setCustomers] = useState<EnquiredCustomer[]>([]);
@@ -77,6 +89,29 @@ export const AdminCustomersPage: React.FC = () => {
     setPage(1);
     fetchCustomers();
   };
+
+  // Handle Escape key to close customer dossier modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedCustomer) {
+        setSelectedCustomer(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedCustomer]);
+
+  // Lock background body scroll when modal is active
+  useEffect(() => {
+    if (selectedCustomer) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedCustomer]);
 
   const totalPages = Math.max(1, Math.ceil(customers.length / limit));
   const displayedCustomers = customers.slice((page - 1) * limit, page * limit);
@@ -180,13 +215,13 @@ export const AdminCustomersPage: React.FC = () => {
   return (
     <div className="space-y-5 font-sans">
       {/* Search & Actions Toolbar - Clean Single Row */}
-      <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Real-time Search Box */}
         <div className="relative flex-1 min-w-[260px]">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by Customer Name, Email, Phone, or City..."
+            placeholder="Search by customer name, email, phone, or location..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-9 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] font-sans placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
@@ -208,36 +243,30 @@ export const AdminCustomersPage: React.FC = () => {
 
         {/* Action Controls & Total Count */}
         <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-auto">
-          <div className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-heading font-bold text-slate-700 flex items-center gap-1.5 shadow-2xs">
-            <Users className="w-3.5 h-3.5 text-teal-600" />
+          <div className="px-3.5 py-2 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-heading font-bold text-slate-700 flex items-center gap-2 shadow-2xs">
+            {loading ? (
+              <Loader2 className="w-3.5 h-3.5 text-teal-600 animate-spin" />
+            ) : (
+              <Users className="w-3.5 h-3.5 text-teal-600" />
+            )}
             <span>{totalCount} {totalCount === 1 ? 'Customer' : 'Customers'}</span>
           </div>
-
-          <button
-            type="button"
-            onClick={fetchCustomers}
-            className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-heading font-bold shadow-2xs hover:shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
-            title="Refresh customer database"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-teal-600' : 'text-slate-500'}`} />
-            <span>Refresh</span>
-          </button>
         </div>
       </div>
 
       {/* Customer Directory Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50/90 border-b border-slate-200/90 text-slate-600 font-bold uppercase tracking-wider text-[11px] font-heading">
-                <th className="py-3.5 px-4 min-w-[210px]">Customer &amp; Google Account</th>
-                <th className="py-3.5 px-3 min-w-[130px]">Contact Phone</th>
+                <th className="py-3.5 px-4 min-w-[220px]">Customer &amp; Google Account</th>
+                <th className="py-3.5 px-3 min-w-[150px]">Contact Phone</th>
                 <th className="py-3.5 px-3 min-w-[120px]">Location</th>
                 <th className="py-3.5 px-3 min-w-[110px]">Applications</th>
                 <th className="py-3.5 px-3 min-w-[105px]">Registered On</th>
                 <th className="py-3.5 px-3 min-w-[115px]">Last Active</th>
-                <th className="py-3.5 px-4 text-right min-w-[100px]">Actions</th>
+                <th className="py-3.5 px-4 text-right min-w-[110px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
@@ -334,22 +363,26 @@ export const AdminCustomersPage: React.FC = () => {
                       {/* Contact Phone */}
                       <td className="py-3.5 px-3 whitespace-nowrap">
                         {c.phone ? (
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-slate-800 font-heading text-xs">{c.phone}</span>
-                            <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2.5">
+                            <span className="font-mono font-bold text-slate-800 text-xs tracking-tight">
+                              {c.phone}
+                            </span>
+                            <div className="flex items-center gap-1.5">
                               <a
-                                href={`https://wa.me/91${c.phone.replace(/\D/g, '')}`}
+                                href={`https://wa.me/91${c.phone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(
+                                  c.name
+                                )},%20this%20is%20Prime%20Associates%20Loans.`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition-colors"
-                                title="Chat on WhatsApp"
+                                className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#25D366] hover:text-[#20BD5A] border border-emerald-200/70 transition-all shadow-2xs hover:shadow-xs active:scale-95"
+                                title={`Chat with ${c.name} on WhatsApp`}
                               >
-                                <Phone className="w-3.5 h-3.5" />
+                                <WhatsAppIcon className="w-3.5 h-3.5" />
                               </a>
                               <a
                                 href={`tel:${c.phone}`}
-                                className="p-1 rounded-md text-teal-600 hover:bg-teal-50 transition-colors"
-                                title="Direct Call"
+                                className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 hover:text-teal-800 border border-teal-200/70 transition-all shadow-2xs hover:shadow-xs active:scale-95"
+                                title={`Direct call to ${c.phone}`}
                               >
                                 <PhoneCall className="w-3.5 h-3.5" />
                               </a>
@@ -499,29 +532,47 @@ export const AdminCustomersPage: React.FC = () => {
       {/* ====================================================================== */}
       {/* MODAL: CUSTOMER DOSSIER & COMPLETE ENQUIRY HISTORY */}
       {/* ====================================================================== */}
-      {selectedCustomer && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      {selectedCustomer && typeof document !== 'undefined' && createPortal(
+        <div
+          className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[100] bg-[#0c1a26]/75 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-4 md:p-6 animate-in fade-in duration-200"
+          style={{ zIndex: 100 }}
+          onClick={() => setSelectedCustomer(null)}
+        >
+          <div
+            className="bg-white rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-2xl max-h-[92vh] sm:max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Modal Header */}
-            <div className="px-6 py-5 bg-gradient-to-r from-slate-900 to-[#0c1a26] text-white flex items-center justify-between flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <UserAvatar
-                  src={selectedCustomer.picture}
-                  name={selectedCustomer.name}
-                  size={48}
-                  showGoogleBadge={true}
-                  className="border-2 border-teal-400 shadow-md shrink-0"
-                />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold font-heading">{selectedCustomer.name}</h3>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-400/20 text-teal-300 border border-teal-400/30">
-                      Verified Client
+            <div className="px-4 py-4 sm:px-6 sm:py-5 bg-gradient-to-r from-[#0c1a26] via-[#112338] to-[#0c1a26] text-white flex items-center justify-between gap-3 flex-shrink-0 border-b border-slate-800/80">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="relative shrink-0">
+                  <UserAvatar
+                    src={selectedCustomer.picture}
+                    name={selectedCustomer.name}
+                    size={46}
+                    showGoogleBadge={true}
+                    className="border-2 border-teal-400/90 shadow-md"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-sm sm:text-base font-extrabold font-heading text-white truncate max-w-[200px] sm:max-w-xs">
+                      {selectedCustomer.name}
+                    </h3>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold font-heading bg-teal-400/20 text-teal-300 border border-teal-400/30 shrink-0">
+                      <Sparkles className="w-2.5 h-2.5 text-teal-300" />
+                      <span>Verified Client</span>
                     </span>
                   </div>
-                  <p className="text-xs text-slate-300 font-sans mt-0.5">
+                  <p className="text-xs text-slate-300 font-sans mt-0.5 truncate max-w-[260px] sm:max-w-md">
                     {selectedCustomer.email} &bull; Member since{' '}
-                    {new Date(selectedCustomer.createdAt).toLocaleDateString('en-IN')}
+                    <span className="text-slate-200 font-medium">
+                      {new Date(selectedCustomer.createdAt).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -529,205 +580,294 @@ export const AdminCustomersPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedCustomer(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-xl text-slate-400 hover:text-white bg-white/5 hover:bg-white/15 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                title="Close Dossier (Esc)"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-5">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 admin-sidebar-scroll">
               {/* Client Quick Contact Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] text-slate-400 block font-heading">
-                      Mobile Number
+                {/* Mobile Contact Tile */}
+                <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90 flex flex-col justify-between gap-3 shadow-2xs hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 font-heading tracking-wider flex items-center gap-1.5">
+                      <Phone className="w-3 h-3 text-slate-400" />
+                      <span>Direct Mobile</span>
                     </span>
-                    <span className="text-xs font-bold text-[#0c1a26]">
-                      {selectedCustomer.phone || 'Not provided'}
-                    </span>
+                    {selectedCustomer.phone && (
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60 font-heading">
+                        Available
+                      </span>
+                    )}
                   </div>
+
+                  <div className="font-mono font-bold text-sm sm:text-base text-[#0c1a26] tracking-tight">
+                    {selectedCustomer.phone || (
+                      <span className="text-slate-400 italic font-sans font-normal text-xs">
+                        No phone number recorded
+                      </span>
+                    )}
+                  </div>
+
                   {selectedCustomer.phone && (
-                    <a
-                      href={`https://wa.me/91${selectedCustomer.phone.replace(/\D/g, '')}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold font-heading shadow-xs flex items-center gap-1.5 transition-colors"
-                    >
-                      <Phone className="w-3 h-3" />
-                      <span>WhatsApp</span>
-                    </a>
+                    <div className="flex items-center gap-2 pt-1">
+                      <a
+                        href={`https://wa.me/91${selectedCustomer.phone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(
+                          selectedCustomer.name
+                        )},%20this%20is%20Prime%20Associates%20Loans.`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-xl text-xs font-bold font-heading shadow-xs hover:shadow transition-all active:scale-95"
+                        title="Chat on WhatsApp"
+                      >
+                        <WhatsAppIcon className="w-3.5 h-3.5" />
+                        <span>WhatsApp</span>
+                      </a>
+                      <a
+                        href={`tel:${selectedCustomer.phone}`}
+                        className="inline-flex items-center justify-center w-9 h-9 bg-white hover:bg-teal-50 text-teal-700 hover:text-teal-800 border border-slate-200 rounded-xl transition-all shadow-2xs hover:shadow-xs active:scale-95"
+                        title="Direct Call"
+                      >
+                        <PhoneCall className="w-4 h-4" />
+                      </a>
+                    </div>
                   )}
                 </div>
 
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] text-slate-400 block font-heading">
-                      Google Account
+                {/* Google Account Tile */}
+                <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90 flex flex-col justify-between gap-3 shadow-2xs hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 font-heading tracking-wider flex items-center gap-1.5">
+                      <Mail className="w-3 h-3 text-slate-400" />
+                      <span>Google Account</span>
                     </span>
-                    <span className="text-xs font-bold text-[#0c1a26] truncate max-w-[160px] block">
-                      {selectedCustomer.email}
+                    <span className="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200/60 font-heading">
+                      Verified
                     </span>
                   </div>
-                  <a
-                    href={`mailto:${selectedCustomer.email}`}
-                    className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[11px] font-bold font-heading shadow-xs flex items-center gap-1.5 transition-colors"
+
+                  <div
+                    className="font-sans font-semibold text-xs sm:text-sm text-[#0c1a26] break-all select-all leading-snug"
+                    title={selectedCustomer.email}
                   >
-                    <Mail className="w-3 h-3" />
-                    <span>Send Email</span>
-                  </a>
+                    {selectedCustomer.email}
+                  </div>
+
+                  <div className="pt-1">
+                    <a
+                      href={`mailto:${selectedCustomer.email}`}
+                      className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading shadow-xs hover:shadow transition-all active:scale-95"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>Send Corporate Email</span>
+                    </a>
+                  </div>
                 </div>
               </div>
 
               {/* Loan Applications Submitted Header */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading flex items-center gap-2">
-                    <FileSpreadsheet className="w-4 h-4 text-teal-600" />
-                    <span>Submitted Loan Inquiries ({selectedCustomer.enquiries.length})</span>
-                  </h4>
-                  <span className="text-xs font-black text-emerald-700 font-heading">
-                    Total: {formatAmountINR(selectedCustomer.totalLoanAmount)}
+              <div className="space-y-3 pt-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-1 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-teal-50 flex items-center justify-center text-teal-700 border border-teal-200/60">
+                      <FileSpreadsheet className="w-3.5 h-3.5" />
+                    </div>
+                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#0c1a26] font-heading">
+                      Submitted Loan Inquiries ({selectedCustomer.enquiries.length})
+                    </h4>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-black font-heading shadow-2xs">
+                    <span>Aggregate:</span>
+                    <span className="tabular-nums">{formatAmountINR(selectedCustomer.totalLoanAmount)}</span>
                   </span>
                 </div>
 
                 {/* Applications List */}
                 <div className="space-y-3">
-                  {selectedCustomer.enquiries.map((enq) => (
-                    <div
-                      key={enq.id}
-                      className="p-4 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors space-y-3"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-2.5">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-extrabold text-[#0c1a26] font-heading text-xs">
-                              {enq.loanType}
-                            </span>
-                            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white text-slate-700 border border-slate-200 shadow-2xs">
-                              {enq.referenceNumber}
+                  {selectedCustomer.enquiries.map((enq) => {
+                    const doorstepAddress = enq.additionalNotes?.includes('📍 Doorstep Meeting Address:')
+                      ? enq.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim()
+                      : (enq.meetingMode === 'in_person' ? (enq.propertyLocation || enq.cityState) : null);
+
+                    return (
+                      <div
+                        key={enq.id}
+                        className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 shadow-2xs transition-all space-y-3.5"
+                      >
+                        {/* Top Facility & Financial Row */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100">
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-extrabold text-[#0c1a26] font-heading text-sm sm:text-base">
+                                {enq.loanType}
+                              </span>
+                              <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                                {enq.referenceNumber}
+                              </span>
+                            </div>
+                            <span className="text-[11px] text-slate-500 font-sans mt-0.5 block">
+                              Submitted on{' '}
+                              <span className="font-semibold text-slate-700">
+                                {new Date(enq.createdAt).toLocaleDateString('en-IN', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric',
+                                })}
+                              </span>
                             </span>
                           </div>
-                          <span className="text-[11px] text-slate-400 mt-0.5 block">
-                            Submitted on {new Date(enq.createdAt).toLocaleDateString('en-IN')}
-                          </span>
+
+                          <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
+                            <span
+                              className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold border font-heading ${getStatusBadge(
+                                enq.status
+                              )}`}
+                            >
+                              {formatStatusLabel(enq.status)}
+                            </span>
+                            <span className="text-sm sm:text-base font-black text-emerald-700 font-heading tabular-nums">
+                              {formatAmountINR(enq.loanAmount)}
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="flex items-center gap-2 self-start sm:self-auto">
-                          <span
-                            className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold border font-heading ${getStatusBadge(
-                              enq.status
-                            )}`}
-                          >
-                            {formatStatusLabel(enq.status)}
-                          </span>
-                          <span className="text-xs font-black text-emerald-700 font-heading">
-                            {formatAmountINR(enq.loanAmount)}
-                          </span>
+                        {/* Details Mini Grid - Responsive 2 to 4 cols */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                            <span className="text-[10px] uppercase font-bold text-slate-400 block font-heading tracking-wider">
+                              Property Type
+                            </span>
+                            <span className="font-bold text-[#0c1a26] capitalize text-xs mt-0.5 block truncate">
+                              {enq.propertyType}
+                            </span>
+                          </div>
+                          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                            <span className="text-[10px] uppercase font-bold text-slate-400 block font-heading tracking-wider">
+                              Location
+                            </span>
+                            <span
+                              className="font-bold text-[#0c1a26] text-xs mt-0.5 block truncate"
+                              title={enq.propertyLocation || enq.cityState}
+                            >
+                              {enq.propertyLocation || enq.cityState}
+                            </span>
+                          </div>
+                          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                            <span className="text-[10px] uppercase font-bold text-slate-400 block font-heading tracking-wider">
+                              Employment
+                            </span>
+                            <span className="font-bold text-[#0c1a26] capitalize text-xs mt-0.5 block truncate">
+                              {enq.employmentType?.replace('_', ' ')}
+                            </span>
+                          </div>
+                          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/70">
+                            <span className="text-[10px] uppercase font-bold text-slate-400 block font-heading tracking-wider">
+                              Ownership
+                            </span>
+                            <span className="font-bold text-[#0c1a26] capitalize text-xs mt-0.5 block truncate">
+                              {enq.propertyOwnershipStatus?.replace('_', ' ')}
+                            </span>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Details Grid */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">Property Type</span>
-                          <span className="font-semibold text-[#0c1a26] capitalize text-[11px]">
-                            {enq.propertyType}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">Location</span>
-                          <span className="font-semibold text-[#0c1a26] text-[11px] truncate block">
-                            {enq.propertyLocation || enq.cityState}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">Employment</span>
-                          <span className="font-semibold text-[#0c1a26] capitalize text-[11px]">
-                            {enq.employmentType?.replace('_', ' ')}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">Ownership</span>
-                          <span className="font-semibold text-[#0c1a26] capitalize text-[11px]">
-                            {enq.propertyOwnershipStatus?.replace('_', ' ')}
-                          </span>
-                        </div>
-                      </div>
+                        {/* Doorstep Visit Address Card (If applicable) */}
+                        {doorstepAddress && enq.meetingMode === 'in_person' && (
+                          <div className="p-3 bg-purple-50/60 rounded-xl border border-purple-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                            <div className="space-y-1 min-w-0 flex-1">
+                              <span className="text-[10px] font-bold text-purple-900 uppercase font-heading tracking-wider flex items-center gap-1">
+                                <MapPin className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                                <span>Doorstep Meeting Address</span>
+                              </span>
+                              <p className="text-purple-950 font-medium text-xs leading-relaxed break-words">
+                                {doorstepAddress}
+                              </p>
+                            </div>
+                            <a
+                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                doorstepAddress
+                              )}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white hover:bg-purple-100 text-purple-800 border border-purple-200 rounded-xl text-xs font-bold font-heading shrink-0 shadow-2xs transition-colors self-start sm:self-center"
+                            >
+                              <span>View on Maps</span>
+                              <ExternalLink className="w-3 h-3 text-purple-600" />
+                            </a>
+                          </div>
+                        )}
 
-                      {/* Doorstep Location & Consultation Slot */}
-                      {(() => {
-                        const doorstepAddress = enq.additionalNotes?.includes('📍 Doorstep Meeting Address:')
-                          ? enq.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim()
-                          : (enq.meetingMode === 'in_person' ? (enq.propertyLocation || enq.cityState) : null);
-
-                        return (
-                          <div className="space-y-2 pt-1 border-t border-slate-200/60">
-                            {doorstepAddress && enq.meetingMode === 'in_person' && (
-                              <div className="p-2.5 bg-purple-50/70 rounded-xl border border-purple-200 flex items-center justify-between text-xs">
-                                <div className="space-y-0.5 min-w-0 pr-2">
-                                  <span className="text-[10px] font-bold text-purple-900 font-heading block">
-                                    📍 Doorstep Area Visit Address
-                                  </span>
-                                  <span className="text-purple-950 font-medium text-[11px] truncate block">
-                                    {doorstepAddress}
-                                  </span>
-                                </div>
-                                <a
-                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(doorstepAddress)}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="inline-flex items-center gap-1 px-2 py-1 bg-white hover:bg-purple-100 text-purple-800 border border-purple-200 rounded-lg text-[10px] font-bold font-heading shrink-0 shadow-2xs"
-                                >
-                                  <MapPin className="w-3 h-3 text-purple-600" />
-                                  <span>Maps</span>
-                                  <ExternalLink className="w-2.5 h-2.5" />
-                                </a>
-                              </div>
-                            )}
-
-                            <div className="p-2.5 bg-white rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
-                              <div className="flex items-center gap-2 text-slate-700">
-                                <Calendar className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                                <span className="font-semibold text-[11px] text-[#0c1a26]">
-                                  {enq.preferredDate || 'Date Not Set'} &bull; {enq.preferredTimeSlot || 'Pending'}
-                                </span>
-                              </div>
-
-                              <div className="flex items-center gap-2">
-                                {getModeBadge(enq.meetingMode)}
-                                <Link
-                                  to={`/admin/appointments?allotEnquiryId=${enq.id}`}
-                                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-[10px] font-bold font-heading transition-colors shadow-2xs"
-                                >
-                                  <CalendarCheck2 className="w-3 h-3" />
-                                  <span>Allot Slot</span>
-                                </Link>
-                              </div>
+                        {/* Consultation Slot & Mode Card */}
+                        <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                          <div className="flex items-center gap-2.5 text-slate-700 min-w-0">
+                            <div className="w-8 h-8 rounded-xl bg-teal-50 border border-teal-200/70 flex items-center justify-center shrink-0">
+                              <Calendar className="w-4 h-4 text-teal-700" />
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-[10px] uppercase font-bold text-slate-400 block font-heading tracking-wider">
+                                Consultation Slot
+                              </span>
+                              <span className="font-bold text-xs text-[#0c1a26] truncate block">
+                                {(() => {
+                                  if (!enq.preferredDate) return 'Date Not Set';
+                                  try {
+                                    const parts = enq.preferredDate.split('-');
+                                    if (parts.length === 3) {
+                                      const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+                                      if (!isNaN(d.getTime())) {
+                                        return d.toLocaleDateString('en-IN', {
+                                          day: 'numeric',
+                                          month: 'short',
+                                          year: 'numeric',
+                                        });
+                                      }
+                                    }
+                                  } catch {}
+                                  return enq.preferredDate;
+                                })()}{' '}
+                                &bull; {enq.preferredTimeSlot || 'Pending'}
+                              </span>
                             </div>
                           </div>
-                        );
-                      })()}
-                    </div>
-                  ))}
+
+                          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center shrink-0">
+                            {getModeBadge(enq.meetingMode)}
+                            <Link
+                              to={`/admin/appointments?allotEnquiryId=${enq.id}`}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading transition-all shadow-2xs hover:shadow-xs active:scale-95"
+                            >
+                              <CalendarCheck2 className="w-3.5 h-3.5" />
+                              <span>Allot Slot</span>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
-              <span>Google ID: {selectedCustomer.googleId || 'Verified Profile'}</span>
+            <div className="px-5 py-4 bg-slate-50/95 border-t border-slate-200/90 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+              <span className="flex items-center gap-2 font-bold text-slate-700 font-heading">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Google Authenticated Borrower Profile</span>
+              </span>
               <button
                 type="button"
                 onClick={() => setSelectedCustomer(null)}
-                className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-bold font-heading text-xs transition-colors"
+                className="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200/90 rounded-xl font-bold font-heading text-xs transition-all shadow-2xs hover:shadow-xs active:scale-95 cursor-pointer text-center"
               >
                 Close Dossier
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
