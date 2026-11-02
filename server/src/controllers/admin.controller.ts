@@ -168,10 +168,26 @@ export async function getEnquiries(req: AuthenticatedRequest, res: Response, nex
       }),
     ]);
 
+    const sanitizedEnquiries = enquiries.map((enq) => {
+      const data: any = { ...enq };
+      if (enq.additionalNotes && enq.additionalNotes.includes('<!--DOCUMENTS_JSON:')) {
+        try {
+          const match = enq.additionalNotes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
+          if (match && match[1]) {
+            data.documents = JSON.parse(match[1]);
+          }
+        } catch {
+          // Non-blocking
+        }
+        data.additionalNotes = enq.additionalNotes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
+      }
+      return data;
+    });
+
     res.json({
       success: true,
       data: {
-        enquiries,
+        enquiries: sanitizedEnquiries,
         pagination: {
           total,
           page,
@@ -220,6 +236,7 @@ export async function getEnquiryById(req: AuthenticatedRequest, res: Response, n
       } catch {
         // Non-blocking
       }
+      enquiryData.additionalNotes = enquiry.additionalNotes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
     }
 
     res.json({ success: true, data: enquiryData });

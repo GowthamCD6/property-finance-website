@@ -458,9 +458,25 @@ export async function getCustomerEnquiries(req: AuthenticatedRequest, res: Respo
       orderBy: { createdAt: 'desc' },
     });
 
+    const sanitizedEnquiries = enquiries.map((enq) => {
+      const data: any = { ...enq };
+      if (enq.additionalNotes && enq.additionalNotes.includes('<!--DOCUMENTS_JSON:')) {
+        try {
+          const match = enq.additionalNotes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
+          if (match && match[1]) {
+            data.documents = JSON.parse(match[1]);
+          }
+        } catch {
+          // Non-blocking
+        }
+        data.additionalNotes = enq.additionalNotes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
+      }
+      return data;
+    });
+
     res.json({
       success: true,
-      data: enquiries,
+      data: sanitizedEnquiries,
     });
   } catch (err) {
     next(err);

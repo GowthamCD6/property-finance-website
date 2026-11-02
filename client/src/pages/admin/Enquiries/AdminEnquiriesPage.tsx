@@ -47,6 +47,76 @@ const ALL_STATUSES = [
   'Closed',
 ] as const;
 
+export interface ParsedEnquiryData {
+  documents: UploadedDocument[];
+  preferredBank?: string;
+  doorstepAddress?: string;
+  attachedDocsSummary?: string;
+  borrowerRemarks?: string;
+}
+
+export function parseEnquiryData(enquiry?: Enquiry | null): ParsedEnquiryData {
+  if (!enquiry) {
+    return { documents: [] };
+  }
+
+  let documents: UploadedDocument[] = Array.isArray(enquiry.documents) ? [...enquiry.documents] : [];
+  let notes = enquiry.additionalNotes || '';
+
+  // 1. Extract documents if not already populated or if DOCUMENTS_JSON is embedded
+  if (notes.includes('<!--DOCUMENTS_JSON:')) {
+    const match = notes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
+    if (match && match[1] && (!documents || documents.length === 0)) {
+      try {
+        const parsed = JSON.parse(match[1]);
+        if (Array.isArray(parsed)) {
+          documents = parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse DOCUMENTS_JSON from notes', e);
+      }
+    }
+    notes = notes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
+  }
+
+  // 2. Extract Preferred Bank / Channel Partner
+  let preferredBank = enquiry.preferredBank;
+  const bankMatch = notes.match(/(?:🏛️|🏛|\?\?|🏦)?\s*Preferred Bank \/ Channel:\s*([^\n\r]+)/i);
+  if (bankMatch && bankMatch[1]) {
+    preferredBank = bankMatch[1].trim();
+  }
+
+  // 3. Extract Doorstep Meeting Address
+  let doorstepAddress: string | undefined = undefined;
+  const doorstepMatch = notes.match(/(?:📍|\?\?|📌)?\s*Doorstep Meeting Address:\s*([^\n\r]+)/i);
+  if (doorstepMatch && doorstepMatch[1]) {
+    doorstepAddress = doorstepMatch[1].trim();
+  }
+
+  // 4. Extract Attached Reference Documents summary string
+  let attachedDocsSummary: string | undefined = undefined;
+  const docsSummaryMatch = notes.match(/(?:📁|\?\?|📄)?\s*Attached Reference Documents:\s*([^\n\r]+)/i);
+  if (docsSummaryMatch && docsSummaryMatch[1]) {
+    attachedDocsSummary = docsSummaryMatch[1].trim();
+  }
+
+  // 5. Clean pure borrower remarks
+  let cleanNotes = notes
+    .replace(/(?:🏛️|🏛|\?\?|🏦)?\s*Preferred Bank \/ Channel:[^\n\r]*(?:\r?\n|$)/gi, '')
+    .replace(/(?:📍|\?\?|📌)?\s*Doorstep Meeting Address:[^\n\r]*(?:\r?\n|$)/gi, '')
+    .replace(/(?:📁|\?\?|📄)?\s*Attached Reference Documents:[^\n\r]*(?:\r?\n|$)/gi, '')
+    .replace(/🚗 Vehicle Specifications:[^\n\r]*(?:\r?\n|$)/gi, '')
+    .trim();
+
+  return {
+    documents,
+    preferredBank,
+    doorstepAddress,
+    attachedDocsSummary,
+    borrowerRemarks: cleanNotes || undefined,
+  };
+}
+
 export const formatStatusLabel = (status?: string | null): string => {
   if (!status) return 'Pending';
   switch (status) {
@@ -92,6 +162,7 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
   const [detailTab, setDetailTab] = useState<'overview' | 'documents' | 'appointment' | 'notes' | 'history'>('overview');
   const [adminPreviewDoc, setAdminPreviewDoc] = useState<UploadedDocument | null>(null);
+  const [docCategoryFilter, setDocCategoryFilter] = useState<string>('ALL');
 
   // Status Change State
   const [newStatus, setNewStatus] = useState<string>('');
@@ -359,6 +430,9 @@ export const AdminEnquiriesPage: React.FC = () => {
     );
   };
 
+  const parsedDossier = parseEnquiryData(detailEnquiry);
+  const docsCount = parsedDossier.documents.length;
+
   return (
     <div className="space-y-6">
       {/* Search & Filters Toolbar - Single Row */}
@@ -549,6 +623,29 @@ export const AdminEnquiriesPage: React.FC = () => {
                                   <span>WA</span>
                                 </a>
                               )}
+                              {(() => {
+                                const rowDocs = parseEnquiryData(enq).documents;
+                                if (rowDocs.length > 0) {
+                                  return (
+                                    <>
+                                      <span className="text-slate-300">•</span>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleOpenDetail(enq.id, 'documents');
+                                        }}
+                                        className="inline-flex items-center gap-1 text-[10px] font-bold text-teal-800 bg-teal-50 hover:bg-teal-100 border border-teal-200/80 px-1.5 py-0.5 rounded transition-colors cursor-pointer"
+                                        title={`${rowDocs.length} reference documents attached - click to view`}
+                                      >
+                                        <FileCheck className="w-3 h-3 text-teal-600" />
+                                        <span>${rowDocs.length} docs</span>
+                                      </button>
+                                    </>
+                                  );
+                                }
+                                return null;
+                              })()}
                             </div>
                           </div>
                         </div>
@@ -771,8 +868,10 @@ export const AdminEnquiriesPage: React.FC = () => {
                 }`}
               >
                 <span>Documents</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600 text-[10px]">
-                  {detailEnquiry?.documents?.length || 0}
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  docsCount > 0 ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {docsCount}
                 </span>
               </button>
               <button
@@ -945,13 +1044,63 @@ export const AdminEnquiriesPage: React.FC = () => {
                             </span>
                           </div>
 
-                          {detailEnquiry.preferredBank && (
+                          {(parsedDossier.preferredBank || detailEnquiry.preferredBank) && (
                             <div className="col-span-2 pt-2 border-t border-slate-100">
-                              <span className="text-slate-400 block text-[11px]">Preferred Channel Partner / Bank</span>
+                              <span className="text-slate-400 block text-[11px] font-heading font-medium">Preferred Channel Partner / Bank</span>
                               <span className="inline-flex items-center gap-1.5 font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200/80 mt-1">
                                 <Landmark className="w-3.5 h-3.5 text-teal-600" />
-                                <span>{detailEnquiry.preferredBank}</span>
+                                <span>{parsedDossier.preferredBank || detailEnquiry.preferredBank}</span>
                               </span>
+                            </div>
+                          )}
+
+                          {parsedDossier.doorstepAddress && (
+                            <div className="col-span-2 p-3 bg-purple-50/70 rounded-xl border border-purple-200/80 flex items-start justify-between gap-3">
+                              <div className="space-y-0.5 min-w-0 flex-1">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-purple-900 flex items-center gap-1 font-heading">
+                                  <MapPin className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                                  Doorstep Consultation Address
+                                </span>
+                                <p className="text-xs font-semibold text-purple-950 font-sans break-words">
+                                  {parsedDossier.doorstepAddress}
+                                </p>
+                              </div>
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(parsedDossier.doorstepAddress)}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-purple-100 text-purple-800 border border-purple-200 rounded-lg text-[10px] font-bold shrink-0 shadow-2xs transition-colors"
+                              >
+                                <MapPin className="w-3 h-3 text-purple-600" />
+                                <span>Maps</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </div>
+                          )}
+
+                          {docsCount > 0 && (
+                            <div className="col-span-2 p-3 bg-teal-50/60 rounded-xl border border-teal-200/80 flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
+                                  <FileCheck className="w-4 h-4" />
+                                </div>
+                                <div className="min-w-0">
+                                  <span className="text-xs font-bold text-teal-950 block font-heading">
+                                    {docsCount} Reference {docsCount === 1 ? 'Document' : 'Documents'} Attached
+                                  </span>
+                                  <p className="text-[11px] text-teal-800 truncate">
+                                    {parsedDossier.attachedDocsSummary || 'Uploaded by borrower for pre-underwriting review'}
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setDetailTab('documents')}
+                                className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1 shadow-2xs cursor-pointer font-heading"
+                              >
+                                <span>View Documents ({docsCount})</span>
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
                             </div>
                           )}
                         </div>
@@ -1004,12 +1153,16 @@ export const AdminEnquiriesPage: React.FC = () => {
                           </div>
                         )}
 
-                        {detailEnquiry.additionalNotes && (
+                        {parsedDossier.borrowerRemarks && (
                           <div className="pt-3 border-t border-slate-100">
-                            <span className="text-slate-400 block text-[11px] mb-1">Applicant Remarks:</span>
-                            <p className="bg-slate-50 p-3 rounded-xl text-[#0c1a26] italic border border-slate-200/80">
-                              "{detailEnquiry.additionalNotes}"
-                            </p>
+                            <span className="text-slate-400 block text-[11px] mb-1 font-heading font-bold uppercase tracking-wider">
+                              Applicant Remarks &amp; Special Instructions:
+                            </span>
+                            <div className="bg-slate-50 p-3.5 rounded-xl text-[#0c1a26] border border-slate-200/80 font-sans text-xs">
+                              <p className="italic font-medium leading-relaxed">
+                                "{parsedDossier.borrowerRemarks}"
+                              </p>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1017,89 +1170,152 @@ export const AdminEnquiriesPage: React.FC = () => {
                   )}
 
                   {/* TAB 2: DOCUMENTS */}
-                  {detailTab === 'documents' && (
-                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-                      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <div className="flex items-center gap-2">
-                          <FileCheck className="w-4 h-4 text-teal-600" />
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading">
-                            Submitted Reference Documents
-                          </h4>
+                  {detailTab === 'documents' && (() => {
+                    const allDocs = parsedDossier.documents;
+                    const categories = Array.from(new Set(allDocs.map((d) => d.category || 'General').filter(Boolean)));
+                    const displayedDocs = docCategoryFilter === 'ALL'
+                      ? allDocs
+                      : allDocs.filter((d) => (d.category || 'General').toLowerCase() === docCategoryFilter.toLowerCase());
+
+                    return (
+                      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <FileCheck className="w-4 h-4 text-teal-600" />
+                              <h4 className="text-xs font-bold uppercase tracking-wider text-[#0c1a26] font-heading">
+                                Submitted Reference Documents
+                              </h4>
+                            </div>
+                            <p className="text-[11px] text-slate-500 font-sans">
+                              {allDocs.length} {allDocs.length === 1 ? 'file' : 'files'} submitted by applicant for credit appraisal &amp; pre-underwriting
+                            </p>
+                          </div>
+                          <span className="text-xs font-extrabold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200 self-start sm:self-auto font-heading">
+                            {allDocs.length} Files Attached
+                          </span>
                         </div>
-                        <span className="text-xs font-extrabold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
-                          {detailEnquiry.documents?.length || 0} Files
-                        </span>
-                      </div>
 
-                      {detailEnquiry.documents && detailEnquiry.documents.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                          {detailEnquiry.documents.map((doc) => (
-                            <div
-                              key={doc.id}
-                              className="p-3 rounded-xl border border-slate-200 hover:border-teal-400 bg-slate-50/50 hover:bg-white transition-all flex items-start gap-3 group"
+                        {/* Category Filter Pills */}
+                        {categories.length > 1 && (
+                          <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                            <button
+                              type="button"
+                              onClick={() => setDocCategoryFilter('ALL')}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold font-heading transition-colors cursor-pointer ${
+                                docCategoryFilter === 'ALL'
+                                  ? 'bg-teal-600 text-white shadow-2xs'
+                                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                              }`}
                             >
-                              {doc.type.includes('image') ? (
-                                <img
-                                  src={doc.previewUrl}
-                                  alt={doc.name}
-                                  onClick={() => setAdminPreviewDoc(doc)}
-                                  className="w-14 h-14 object-cover rounded-xl border border-slate-200 cursor-pointer hover:opacity-85 transition-opacity shrink-0 shadow-xs"
-                                />
-                              ) : (
-                                <div className="w-14 h-14 rounded-xl bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs">
-                                  <span>PDF</span>
-                                </div>
-                              )}
+                              All ({allDocs.length})
+                            </button>
+                            {categories.map((cat) => {
+                              const count = allDocs.filter((d) => (d.category || 'General') === cat).length;
+                              return (
+                                <button
+                                  key={cat}
+                                  type="button"
+                                  onClick={() => setDocCategoryFilter(cat)}
+                                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold font-heading transition-colors cursor-pointer ${
+                                    docCategoryFilter.toLowerCase() === cat.toLowerCase()
+                                      ? 'bg-teal-600 text-white shadow-2xs'
+                                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                  }`}
+                                >
+                                  {cat} ({count})
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
 
-                              <div className="min-w-0 flex-1 space-y-1">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/60">
-                                  {doc.category || 'Reference'}
-                                </span>
-                                <h5 className="text-xs font-bold text-[#0c1a26] truncate block mt-1" title={doc.documentName}>
-                                  {doc.documentName || doc.name}
-                                </h5>
-                                <div className="flex items-center justify-between pt-1 text-[10px] text-slate-500">
-                                  <span>{doc.size ? `${(doc.size / 1024).toFixed(0)} KB` : 'Verified'}</span>
-                                  <div className="flex items-center gap-2">
-                                    {doc.type.includes('image') && (
+                        {displayedDocs.length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            {displayedDocs.map((doc) => {
+                              const isImage = doc.type?.includes('image') || (doc.previewUrl && doc.previewUrl.startsWith('data:image'));
+                              return (
+                                <div
+                                  key={doc.id}
+                                  className="p-3.5 rounded-2xl border border-slate-200/90 hover:border-teal-400 bg-slate-50/40 hover:bg-white transition-all flex items-start gap-3 group shadow-2xs hover:shadow-xs"
+                                >
+                                  {isImage ? (
+                                    <div
+                                      onClick={() => setAdminPreviewDoc(doc)}
+                                      className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 cursor-pointer shrink-0 shadow-2xs group/img bg-slate-100 flex items-center justify-center"
+                                      title="Click to view full document"
+                                    >
+                                      <img
+                                        src={doc.previewUrl}
+                                        alt={doc.name}
+                                        className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-200"
+                                      />
+                                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                        <Eye className="w-4 h-4 drop-shadow" />
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="w-16 h-16 rounded-xl bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs shadow-2xs">
+                                      <span className="font-heading">PDF</span>
+                                      <span className="text-[9px] text-red-500 font-sans mt-0.5">Doc</span>
+                                    </div>
+                                  )}
+
+                                  <div className="min-w-0 flex-1 space-y-1">
+                                    <div className="flex items-center justify-between gap-1">
+                                      <span className="text-[9px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200/80 font-heading">
+                                        {doc.category || 'Reference'}
+                                      </span>
+                                      <span className="text-[10px] text-slate-400 font-sans tabular-nums">
+                                        {doc.size ? `${(doc.size / 1024).toFixed(0)} KB` : 'Verified'}
+                                      </span>
+                                    </div>
+                                    <h5 className="text-xs font-bold text-[#0c1a26] truncate block pt-0.5 font-heading" title={doc.documentName || doc.name}>
+                                      {doc.documentName || doc.name}
+                                    </h5>
+                                    <p className="text-[10px] text-slate-400 truncate font-mono">
+                                      {doc.name}
+                                    </p>
+                                    <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px]">
                                       <button
                                         type="button"
                                         onClick={() => setAdminPreviewDoc(doc)}
-                                        className="text-teal-700 hover:underline font-bold flex items-center gap-0.5"
+                                        className="text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 font-heading hover:underline cursor-pointer"
                                       >
-                                        <Eye className="w-3 h-3" /> View
+                                        <Eye className="w-3 h-3" />
+                                        <span>Preview</span>
                                       </button>
-                                    )}
-                                    <a
-                                      href={doc.previewUrl}
-                                      download={doc.name}
-                                      className="text-slate-600 hover:text-[#0c1a26] font-bold flex items-center gap-0.5"
-                                    >
-                                      <Download className="w-3 h-3" />
-                                    </a>
+                                      <a
+                                        href={doc.previewUrl}
+                                        download={doc.name || 'document'}
+                                        className="text-slate-600 hover:text-slate-900 font-bold flex items-center gap-1 font-heading hover:underline"
+                                        title="Download document file"
+                                      >
+                                        <Download className="w-3 h-3" />
+                                        <span>Download</span>
+                                      </a>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center space-y-2 text-xs text-slate-500">
-                          <ImageIcon className="w-8 h-8 text-slate-300 mx-auto" />
-                          <p className="font-bold text-[#0c1a26]">No Document Files Uploaded Yet</p>
-                          <p className="text-[11px] max-w-sm mx-auto">
-                            Applicant has chosen to submit document physical copies during the consultation or send them via WhatsApp.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center space-y-2 text-xs text-slate-500">
+                            <ImageIcon className="w-8 h-8 text-slate-300 mx-auto" />
+                            <p className="font-bold text-[#0c1a26] font-heading">No Document Files Uploaded Yet</p>
+                            <p className="text-[11px] max-w-sm mx-auto font-sans">
+                              Applicant has chosen to submit document physical copies during the consultation or send them via WhatsApp.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
 
                   {/* TAB 3: BORROWER REQUESTED CONSULTATION */}
                   {detailTab === 'appointment' && (() => {
-                    const doorstepAddress = detailEnquiry.additionalNotes?.includes('📍 Doorstep Meeting Address:')
-                      ? detailEnquiry.additionalNotes.split('📍 Doorstep Meeting Address:')[1]?.split('\n')[0]?.trim()
-                      : (detailEnquiry.meetingMode === 'in_person' ? (detailEnquiry.propertyLocation || detailEnquiry.cityState) : null);
+                    const doorstepAddress = parsedDossier.doorstepAddress || (detailEnquiry.meetingMode === 'in_person' ? (detailEnquiry.propertyLocation || detailEnquiry.cityState) : null);
 
                     return (
                       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
