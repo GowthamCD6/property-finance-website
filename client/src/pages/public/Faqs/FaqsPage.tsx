@@ -16,6 +16,15 @@ import {
   Phone,
   Shield,
   Tag,
+  Copy,
+  Check,
+  Share2,
+  ThumbsUp,
+  ThumbsDown,
+  MessageSquare,
+  Home,
+  Briefcase,
+  Layers,
 } from 'lucide-react';
 import { Faq } from '../../../types';
 import faqsHeroImage from '../../../assets/images/faqs-hero.webp';
@@ -62,6 +71,15 @@ export const FaqsPage: React.FC = () => {
       displayOrder: 4,
       isPublished: true,
     },
+    {
+      id: 'faq-19',
+      question: 'Can I secure a loan to construct a house on an unapproved or Village Panchayat layout plot?',
+      answer:
+        'Nationalized banks (such as SBI, Canara Bank) strictly require Directorate of Town and Country Planning (DTCP) or Corporation/CMDA layout approvals. However, for Village Panchayat plots without DTCP approval, we assist borrowers in two ways: (1) Guiding the borrower through Tamil Nadu’s official Unapproved Layout Regularization Scheme (G.O. Ms. No. 78) to obtain regularized plot orders and Sub-Registrar endorsement, or (2) Arranging construction finance through approved housing finance companies (HFCs) whose internal risk policies finance unapproved plots situated in developed residential zones with registered building plan sanctions.',
+      category: 'Land & Plot Loans',
+      displayOrder: 5,
+      isPublished: true,
+    },
 
     // Category: Home Loans
     {
@@ -70,7 +88,7 @@ export const FaqsPage: React.FC = () => {
       answer:
         'Banks use the Fixed Obligation to Income Ratio (FOIR). For salaried individuals earning above ₹1,00,000/month, banks generally permit a FOIR of 50% to 65%. This means your total monthly loan repayments (including the proposed new home loan EMI and existing car/personal EMIs) cannot exceed 50% - 65% of your net take-home salary. For self-employed individuals, FOIR can extend up to 70% based on audited cash flows and depreciation add-backs.',
       category: 'Home Loans',
-      displayOrder: 5,
+      displayOrder: 6,
       isPublished: true,
     },
     {
@@ -79,7 +97,7 @@ export const FaqsPage: React.FC = () => {
       answer:
         'RLLR (Repo-Linked Lending Rate) is pegged directly to the Reserve Bank of India’s benchmark repo rate. When the RBI raises or cuts rates, banks must pass the rate revision to retail borrowers within a quarterly reset window, ensuring complete transparency. MCLR (Marginal Cost of Funds Based Lending Rate) is tied to the bank’s internal cost of funds and resets only on predetermined annual or semi-annual dates. All new retail floating loans are governed by external benchmarks like RLLR.',
       category: 'Home Loans',
-      displayOrder: 6,
+      displayOrder: 7,
       isPublished: true,
     },
     {
@@ -88,7 +106,7 @@ export const FaqsPage: React.FC = () => {
       answer:
         'Under Section 24(b) of the Income Tax Act, you can deduct up to ₹2,00,000 annually against interest paid on a self-occupied residential property loan. Under Section 80C, you can claim up to ₹1,50,000 on the principal repayment component (within the overall 80C basket). For joint borrowers (e.g. husband and wife co-owning the property and co-borrowing), both applicants can claim these deductions individually, doubling tax savings up to ₹7,00,000 combined.',
       category: 'Home Loans',
-      displayOrder: 7,
+      displayOrder: 8,
       isPublished: true,
     },
     {
@@ -97,7 +115,16 @@ export const FaqsPage: React.FC = () => {
       answer:
         'Pre-EMI is the monthly interest payable only on the portion of the loan disbursed by the bank based on construction milestones (e.g., plinth, slab, brickwork). You do not pay any principal during this period. Full EMI (Principal + Interest) commences only once construction is completed and the final disbursement tranche is released.',
       category: 'Home Loans',
-      displayOrder: 8,
+      displayOrder: 9,
+      isPublished: true,
+    },
+    {
+      id: 'faq-15',
+      question: 'What documents and income proof are accepted if my salary is paid in cash or without Form 16?',
+      answer:
+        'While public sector banks prefer bank-credited salaries with Form 16, Prime Associates works with specialized housing finance companies and private banks that entertain cash/hand salary programs. Necessary documents include: (1) Salary Certificate on company letterhead signed by authorized director/proprietor, (2) 6 months consecutive salary payment vouchers or register extract, (3) 12 months savings bank statement showing regular household cash deposits or expenditure patterns, (4) Co-applicant addition (spouse, working parent, or business sibling) with documented bank banking to strengthen loan debt serviceability, and (5) Office physical verification confirmation.',
+      category: 'Home Loans',
+      displayOrder: 10,
       isPublished: true,
     },
 
@@ -108,7 +135,7 @@ export const FaqsPage: React.FC = () => {
       answer:
         'Lenders accept clear-title freehold residential properties (independent houses, villas, apartments), commercial offices, retail shops, and select industrial warehouses. The property must have approved building plans, clear 30-year mother deed records, and an Encumbrance Certificate Form 15 showing zero prior mortgages or attachments.',
       category: 'Loan Against Property (LAP)',
-      displayOrder: 9,
+      displayOrder: 11,
       isPublished: true,
     },
     {
@@ -117,7 +144,7 @@ export const FaqsPage: React.FC = () => {
       answer:
         'Residential properties typically command an LTV of 65% to 75% of fair market valuation, offering the lowest interest rates starting around 9.25% p.a. Commercial properties (office spaces, retail outlets) usually qualify for 50% to 65% LTV, while industrial or warehouse properties receive 45% to 55% LTV depending on location and structural approvals.',
       category: 'Loan Against Property (LAP)',
-      displayOrder: 10,
+      displayOrder: 12,
       isPublished: true,
     },
     {
@@ -126,7 +153,25 @@ export const FaqsPage: React.FC = () => {
       answer:
         'In a standard LAP, the loan amount is primarily evaluated on your business or personal income and property valuation. In Lease Rental Discounting (LRD), the loan is underwritten on the future rental cash flows of a corporate tenant occupying your commercial asset. Gross rent is paid directly into a tripartite escrow account, from which the bank deducts the EMI and sweeps the remaining surplus to the landlord.',
       category: 'Loan Against Property (LAP)',
-      displayOrder: 11,
+      displayOrder: 13,
+      isPublished: true,
+    },
+    {
+      id: 'faq-17',
+      question: 'How does a Home Loan Takeover (Balance Transfer) work, and can I get an additional Top-Up Loan?',
+      answer:
+        'A loan takeover allows you to shift your existing high-interest home loan or LAP from your current bank or NBFC to a prime lender at significantly lower interest rates (saving up to 1.50% - 2.50% p.a.). The new bank issues a takeover sanction letter based on your current outstanding balance and repayment track record (0 bounces in last 12 months). You obtain a Foreclosure Statement & List of Documents (LOD) from your present lender. The new lender issues a pay-order directly to clear the loan, retrieves the original parent deeds, registers a fresh MODT, and can disburse an additional Top-Up Loan (up to ₹50 Lakhs or 100% of original loan) for business capital, house expansion, or personal needs at home loan interest pricing.',
+      category: 'Loan Against Property (LAP)',
+      displayOrder: 14,
+      isPublished: true,
+    },
+    {
+      id: 'faq-18',
+      question: 'Can business owners or self-employed individuals qualify for a loan without 3 years of audited ITR?',
+      answer:
+        'Yes. Prime Associates coordinates with lenders offering Banking Surrogate and GST Turnover Underwriting programs. If you do not have 3 consecutive years of audited Income Tax Returns (ITR), lenders evaluate your eligibility based on: (1) 12 months Current Account bank statements verifying active business turnover, (2) 12 months GSTR-3B and GSTR-1 returns, (3) Average Monthly Balance (AMB) and Net Banking Inflow multiplier (granting loan eligibility up to 3x to 5x of annual turnover), and (4) Tangible asset backing through residential or commercial property collateral.',
+      category: 'Loan Against Property (LAP)',
+      displayOrder: 15,
       isPublished: true,
     },
 
@@ -137,7 +182,16 @@ export const FaqsPage: React.FC = () => {
       answer:
         'An Encumbrance Certificate (EC) issued by the Sub-Registrar office records all registered financial transactions and ownership transfers on a property. Form 15 lists all recorded transactions (sale deeds, mortgages, court attachments, gifts) over a specified period (typically 30 years). Form 16 (Nil Encumbrance) certifies that no registered encumbrances or charges exist on the property during the searched timeframe.',
       category: 'Legal & Title Due Diligence',
-      displayOrder: 12,
+      displayOrder: 16,
+      isPublished: true,
+    },
+    {
+      id: 'faq-16',
+      question: 'Why do banks in Tamil Nadu insist on a 30-year parent title deed chain and Encumbrance Certificate (EC Form 15)?',
+      answer:
+        'Under Section 17 of the Registration Act and banking panel lawyer underwriting rules in Tamil Nadu, a minimum 30-year uninterrupted title search is legally required to verify that the property has not been subject to prior mortgages, partition disputes, or pending court litigation. You must furnish: (1) Current Sale Deed / Settlement Deed, (2) Prior link documents (Mother Deeds) tracing ownership backward for 30 years, (3) Computerized online Patta/Chitta or Town Survey Land Register (TSLR) extract reflecting the seller’s name, and (4) Sub-Registrar EC Form 15 spanning 30 full financial years up to the date of search.',
+      category: 'Legal & Title Due Diligence',
+      displayOrder: 17,
       isPublished: true,
     },
     {
@@ -146,7 +200,7 @@ export const FaqsPage: React.FC = () => {
       answer:
         'MODT is a formal legal document executed by the borrower declaring that original property title deeds have been voluntarily deposited with the lender as security for the loan. The MODT must be formally registered at the local Sub-Registrar office, attracting state-mandated stamp duty and registration charges (usually 0.2% to 0.5% of the sanctioned loan amount).',
       category: 'Legal & Title Due Diligence',
-      displayOrder: 13,
+      displayOrder: 18,
       isPublished: true,
     },
     {
@@ -155,7 +209,7 @@ export const FaqsPage: React.FC = () => {
       answer:
         'Yes. Under RBI guidelines (FEMA), NRIs and OCIs can avail home and plot loans in India. Salaried NRIs require an NRE/NRO bank account, valid employment contract, salary slips attested by the Indian Embassy or verified through corporate email, and a designated Power of Attorney (POA) holder resident in India to execute local Sub-Registrar documentation.',
       category: 'Legal & Title Due Diligence',
-      displayOrder: 14,
+      displayOrder: 19,
       isPublished: true,
     },
   ];
@@ -225,6 +279,26 @@ export const FaqsPage: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  const [copiedFaqId, setCopiedFaqId] = useState<string | null>(null);
+  const [helpfulFeedback, setHelpfulFeedback] = useState<Record<string, 'yes' | 'no'>>({});
+
+  const handleCopyAnswer = (faq: Faq) => {
+    const textToCopy = `Q: ${faq.question}\n\nA: ${faq.answer}\n\n— Verified Property Finance Advisory | Prime Associates (+91 96555 66613)`;
+    navigator.clipboard.writeText(textToCopy);
+    setCopiedFaqId(faq.id || faq.question);
+    setTimeout(() => setCopiedFaqId(null), 2500);
+  };
+
+  const handleShareWhatsApp = (faq: Faq) => {
+    const message = `*Prime Associates Advisory Knowledge Base*\n\n*Q:* ${faq.question}\n\n*A:* ${faq.answer}\n\n*Need assistance?* Call Prime Associates: +91 96555 66613`;
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
+  const handleVote = (id: string, vote: 'yes' | 'no') => {
+    setHelpfulFeedback((prev) => ({ ...prev, [id]: vote }));
+  };
+
   const trendingTopics = [
     'A-Khata vs B-Khata',
     'Plot Loan',
@@ -236,6 +310,19 @@ export const FaqsPage: React.FC = () => {
   ];
 
   const categories = ['ALL', ...Array.from(new Set(allFaqs.map((f) => f.category)))];
+
+  const getCategoryCount = (cat: string) => {
+    if (cat === 'ALL') return allFaqs.length;
+    return allFaqs.filter((f) => f.category === cat).length;
+  };
+
+  const getCategoryIcon = (cat: string) => {
+    if (cat.includes('Home')) return <Home className="w-3.5 h-3.5" />;
+    if (cat.includes('Plot') || cat.includes('Land')) return <Landmark className="w-3.5 h-3.5" />;
+    if (cat.includes('LAP') || cat.includes('Property')) return <Building2 className="w-3.5 h-3.5" />;
+    if (cat.includes('Legal') || cat.includes('Title')) return <FileText className="w-3.5 h-3.5" />;
+    return <Layers className="w-3.5 h-3.5" />;
+  };
 
   const filteredFaqs = allFaqs.filter((f) => {
     const matchesCategory = selectedCategory === 'ALL' || f.category === selectedCategory;
@@ -522,13 +609,23 @@ export const FaqsPage: React.FC = () => {
                   setSelectedCategory(cat);
                   setOpenIndex(null);
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold font-heading transition-all cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-brand-teal text-white shadow-sm border border-brand-teal'
                     : 'bg-white text-slate-600 border border-brand-border/80 hover:bg-slate-50 hover:text-brand-navy shadow-xs'
                 }`}
               >
-                {cat === 'ALL' ? 'All Questions' : cat}
+                <span>{getCategoryIcon(cat)}</span>
+                <span>{cat === 'ALL' ? 'All Questions' : cat}</span>
+                <span
+                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                    selectedCategory === cat
+                      ? 'bg-white/20 text-white'
+                      : 'bg-slate-100 text-slate-600'
+                  }`}
+                >
+                  {getCategoryCount(cat)}
+                </span>
               </button>
             ))}
           </div>
@@ -560,6 +657,9 @@ export const FaqsPage: React.FC = () => {
               <div className="space-y-4">
                 {filteredFaqs.map((faq, idx) => {
                   const isOpen = openIndex === idx;
+                  const faqKey = faq.id || `faq-${idx}`;
+                  const isCopied = copiedFaqId === (faq.id || faq.question);
+                  const userVote = helpfulFeedback[faqKey];
 
                   return (
                     <div
@@ -595,14 +695,100 @@ export const FaqsPage: React.FC = () => {
                       </button>
 
                       {isOpen && (
-                        <div className="p-5 sm:p-6 pt-0 text-sm text-slate-700 bg-white leading-relaxed space-y-3">
+                        <div className="p-5 sm:p-6 pt-0 text-sm text-slate-700 bg-white leading-relaxed space-y-4">
                           <div className="pl-10.5 text-slate-700 leading-relaxed font-normal text-sm sm:text-base border-t border-slate-100 pt-4">
                             {faq.answer}
                           </div>
-                          <div className="pl-10.5 pt-1 flex items-center gap-2">
+
+                          {/* Category Badge & Verification Tag */}
+                          <div className="pl-10.5 flex flex-wrap items-center gap-2.5 pt-1">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-brand-teal bg-brand-teal-light px-2.5 py-1 rounded-md font-heading border border-brand-teal/20">
                               {faq.category}
                             </span>
+                            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>Verified Banking Rule</span>
+                            </span>
+                          </div>
+
+                          {/* Interactive Action Toolbar: Copy, WhatsApp Share & Helpful Feedback */}
+                          <div className="pl-10.5 pt-3 border-t border-slate-100/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+                            <div className="flex flex-wrap items-center gap-2">
+                              {/* Copy Answer */}
+                              <button
+                                type="button"
+                                onClick={() => handleCopyAnswer(faq)}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+                                  isCopied
+                                    ? 'bg-emerald-50 border-emerald-300 text-emerald-700 shadow-xs'
+                                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                                }`}
+                                title="Copy answer to clipboard"
+                              >
+                                {isCopied ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                    <span>Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3.5 h-3.5 text-slate-500" />
+                                    <span>Copy Answer</span>
+                                  </>
+                                )}
+                              </button>
+
+                              {/* WhatsApp Share */}
+                              <button
+                                type="button"
+                                onClick={() => handleShareWhatsApp(faq)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-800 border border-emerald-300 font-semibold text-xs transition-colors cursor-pointer"
+                                title="Share via WhatsApp"
+                              >
+                                <Share2 className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Share on WhatsApp</span>
+                              </button>
+
+                              {/* Ask Advisor Link */}
+                              <Link
+                                to={`/enquire?ref=${encodeURIComponent(faq.question)}`}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 font-semibold text-xs transition-colors"
+                              >
+                                <MessageSquare className="w-3.5 h-3.5 text-teal-600" />
+                                <span>Consult on this Topic</span>
+                              </Link>
+                            </div>
+
+                            {/* Helpful Feedback Buttons */}
+                            <div className="flex items-center gap-2 text-slate-500">
+                              <span className="text-[11px] font-medium hidden sm:inline">Helpful?</span>
+                              <button
+                                type="button"
+                                onClick={() => handleVote(faqKey, 'yes')}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                                  userVote === 'yes'
+                                    ? 'bg-emerald-100 border-emerald-400 text-emerald-800 font-bold'
+                                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                                }`}
+                                title="Helpful"
+                              >
+                                <ThumbsUp className="w-3 h-3 text-emerald-600" />
+                                <span>Yes</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleVote(faqKey, 'no')}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                                  userVote === 'no'
+                                    ? 'bg-rose-100 border-rose-400 text-rose-800 font-bold'
+                                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                                }`}
+                                title="Not helpful"
+                              >
+                                <ThumbsDown className="w-3 h-3 text-rose-600" />
+                                <span>No</span>
+                              </button>
+                            </div>
                           </div>
                         </div>
                       )}

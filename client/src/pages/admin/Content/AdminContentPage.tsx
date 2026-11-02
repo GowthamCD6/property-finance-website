@@ -65,7 +65,8 @@ type TabType =
   | 'testimonials'
   | 'branches'
   | 'calculator'
-  | 'legal';
+  | 'legal'
+  | 'footer';
 
 export const AdminContentPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -854,9 +855,26 @@ export const AdminContentPage: React.FC = () => {
       keyFeatures: ['RERA Registration No.', 'Direct Lending Disclaimer', 'RBI Regulatory Notice', 'Official Copyright Policy'],
       summary: 'Compliance disclosure and regulatory safeguarding',
     },
+    {
+      id: 'footer' as TabType,
+      number: '11',
+      title: 'Global Footer & Advisory Hub',
+      category: 'Footer & Legal',
+      publicRoute: 'Site-wide Footer',
+      previewUrl: '/#contact',
+      icon: Globe,
+      colorScheme: {
+        bg: 'bg-cyan-50',
+        text: 'text-cyan-700',
+        border: 'border-cyan-200',
+      },
+      shortDesc: 'Manage brand mission narrative, central office address, multiple helpline numbers, working hours, consultation ethics disclosure, social channels, and copyright baseline.',
+      keyFeatures: ['Brand Mission & Tagline', 'Central Office Postal Address', 'Multi-Phone Helplines', 'Consultation Ethics Statement', 'Social Media & Maps'],
+      summary: 'Live across all desktop & mobile page footers',
+    },
   ];
 
-  const categories = ['ALL', 'Home Page', 'About Us', 'Contact & Branches', 'Tools & Compliance'];
+  const categories = ['ALL', 'Home Page', 'About Us', 'Contact & Branches', 'Tools & Compliance', 'Footer & Legal'];
 
   const filteredModules = CONTENT_MODULES.filter((mod) => {
     const matchesCat = catalogFilter === 'ALL' || mod.category === catalogFilter;
@@ -2992,6 +3010,307 @@ export const AdminContentPage: React.FC = () => {
                     onChange={handleChange}
                     className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 11. GLOBAL FOOTER MANAGEMENT */}
+        {activeTab === 'footer' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Main Footer Content Editor */}
+            <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-6">
+              <div className="flex items-center gap-2 pb-3 border-b border-brand-border text-brand-navy">
+                <Globe className="w-5 h-5 text-brand-teal" />
+                <div>
+                  <h3 className="text-base font-bold">Site-wide Footer &amp; Corporate Advisory Hub</h3>
+                  <p className="text-xs text-brand-slate">
+                    Manage the global footer content displayed across every public page (Home, Loans, Calculator, FAQs, About, Contact).
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-5 text-xs sm:text-sm">
+                {/* Brand Mission */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-brand-navy">
+                      Brand Mission Statement / Tagline (Under Logo)
+                    </label>
+                    <span className="text-[11px] text-slate-400 font-medium">Column 1 summary paragraph</span>
+                  </div>
+                  <textarea
+                    rows={3}
+                    name="tagline"
+                    value={content.tagline || ''}
+                    onChange={handleChange}
+                    placeholder="Get your home loans and mortgage loans at lowest interest rates with government subsidy across government and private banks..."
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white leading-relaxed"
+                  />
+                </div>
+
+                {/* Consultation Ethics */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-brand-navy">
+                      Consultation Ethics &amp; Lending Disclosure (Column 4)
+                    </label>
+                    <span className="text-[11px] text-slate-400 font-medium">Compliance assurance note</span>
+                  </div>
+                  <textarea
+                    rows={3}
+                    name="registrationDetails"
+                    value={content.registrationDetails || ''}
+                    onChange={handleChange}
+                    placeholder="We uphold responsible lending guidelines. We do not guarantee loan approvals, charge unverified upfront sanction fees, or mislead applicants regarding terms."
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white leading-relaxed"
+                  />
+                </div>
+
+                {/* Office Contact Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                      Main Advisory Office Postal Address
+                    </label>
+                    <input
+                      type="text"
+                      name="officeAddress"
+                      value={content.officeAddress || ''}
+                      onChange={handleChange}
+                      placeholder="No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601"
+                      className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                      Customer Helpline Phone Numbers (Comma-separated for multiple)
+                    </label>
+                    <input
+                      type="text"
+                      name="businessPhone"
+                      value={content.businessPhone || ''}
+                      onChange={handleChange}
+                      placeholder="+91 96555 66613, +91 95144 66600"
+                      className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                    />
+                    <p className="text-[11px] text-slate-400 mt-1">Each phone number becomes clickable to dial directly.</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                      Official Customer Support Email
+                    </label>
+                    <input
+                      type="email"
+                      name="businessEmail"
+                      value={content.businessEmail || ''}
+                      onChange={handleChange}
+                      placeholder="primeassociates2008@gmail.com"
+                      className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                      Working &amp; Consultation Hours
+                    </label>
+                    <input
+                      type="text"
+                      name="businessHours"
+                      value={content.businessHours || ''}
+                      onChange={handleChange}
+                      placeholder="Monday – Saturday: 9:30 AM – 6:30 PM (IST)"
+                      className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                      Copyright Notice (Bottom Baseline)
+                    </label>
+                    <input
+                      type="text"
+                      name="copyrightText"
+                      value={content.copyrightText || ''}
+                      onChange={handleChange}
+                      placeholder="Prime Associates — Loans & Constructions. All rights reserved."
+                      className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Channels Configurator */}
+            <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-5">
+              <div className="flex items-center gap-2 pb-3 border-b border-brand-border text-brand-navy">
+                <Compass className="w-5 h-5 text-brand-teal" />
+                <div>
+                  <h3 className="text-base font-bold">Footer Social Links &amp; Map Coordinates</h3>
+                  <p className="text-xs text-brand-slate">
+                    Social icons appear automatically in Column 1 when URLs are filled in.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                <div>
+                  <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                    Facebook Page URL
+                  </label>
+                  <input
+                    type="url"
+                    value={socialLinksState.facebook || ''}
+                    onChange={(e) =>
+                      setSocialLinksState({ ...socialLinksState, facebook: e.target.value })
+                    }
+                    placeholder="https://facebook.com/primeassociates"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                    Instagram Profile URL
+                  </label>
+                  <input
+                    type="url"
+                    value={socialLinksState.instagram || ''}
+                    onChange={(e) =>
+                      setSocialLinksState({ ...socialLinksState, instagram: e.target.value })
+                    }
+                    placeholder="https://instagram.com/primeassociates"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                    LinkedIn Company Page
+                  </label>
+                  <input
+                    type="url"
+                    value={socialLinksState.linkedin || ''}
+                    onChange={(e) =>
+                      setSocialLinksState({ ...socialLinksState, linkedin: e.target.value })
+                    }
+                    placeholder="https://linkedin.com/company/primeassociates"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-brand-navy mb-1.5">
+                    Google Maps Pin Location URL
+                  </label>
+                  <input
+                    type="url"
+                    value={socialLinksState.mapUrl || ''}
+                    onChange={(e) =>
+                      setSocialLinksState({ ...socialLinksState, mapUrl: e.target.value })
+                    }
+                    placeholder="https://maps.google.com/?q=..."
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Live Interactive Footer Preview Box */}
+            <div className="bg-[#183247] text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-white/10 space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-brand-teal" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-teal-light font-heading">
+                    Live Footer Preview
+                  </span>
+                </div>
+                <span className="text-[11px] text-gray-400 bg-white/5 px-2.5 py-1 rounded-md">
+                  Renders in real-time as you type
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-xs text-gray-300">
+                {/* Column 1 */}
+                <div className="space-y-3">
+                  <div className="font-heading font-black text-white text-base tracking-tight">
+                    {content.businessName || 'Prime Associates — Loans & Constructions'}
+                  </div>
+                  <p className="leading-relaxed line-clamp-4">
+                    {content.tagline ||
+                      'Get your home loans and mortgage loans at lowest interest rates with government subsidy across government and private banks.'}
+                  </p>
+                  <div className="flex items-center gap-2 pt-1 text-brand-teal-light">
+                    {socialLinksState.facebook && <span className="bg-white/10 px-2 py-0.5 rounded">Facebook</span>}
+                    {socialLinksState.instagram && <span className="bg-white/10 px-2 py-0.5 rounded">Instagram</span>}
+                    {socialLinksState.linkedin && <span className="bg-white/10 px-2 py-0.5 rounded">LinkedIn</span>}
+                    {socialLinksState.mapUrl && <span className="bg-white/10 px-2 py-0.5 rounded">Maps Pin</span>}
+                  </div>
+                </div>
+
+                {/* Column 2 */}
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-brand-teal-light mb-3">
+                    Loan Solutions
+                  </h4>
+                  <ul className="space-y-1.5 text-gray-300">
+                    <li>• Home Loans &amp; Construction</li>
+                    <li>• Mortgage Loans (LAP)</li>
+                    <li>• Purchase Loans &amp; Commercial</li>
+                    <li>• Vehicle Loans &amp; Takeover</li>
+                    <li>• Knowledge Base &amp; FAQs</li>
+                  </ul>
+                </div>
+
+                {/* Column 3 */}
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-brand-teal-light mb-3">
+                    Advisory Office
+                  </h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-start gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-brand-teal mt-0.5 shrink-0" />
+                      <span className="line-clamp-2">{content.officeAddress || 'No. 48, 49, P.R. Complex, Binny Compound...'}</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-brand-teal mt-0.5 shrink-0" />
+                      <span>{content.businessPhone || '+91 96555 66613'}</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-brand-teal mt-0.5 shrink-0" />
+                      <span>{content.businessEmail || 'primeassociates2008@gmail.com'}</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-brand-teal mt-0.5 shrink-0" />
+                      <span>{content.businessHours || 'Mon – Sat: 9:30 AM – 6:30 PM'}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Column 4 */}
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-brand-teal-light mb-3">
+                    Consultation Ethics
+                  </h4>
+                  <p className="text-[11px] leading-relaxed text-gray-300 mb-3 line-clamp-4">
+                    {content.registrationDetails ||
+                      'We uphold responsible lending guidelines. We do not guarantee loan approvals, charge unverified upfront sanction fees, or mislead applicants regarding terms.'}
+                  </p>
+                  <div className="py-1.5 px-3 bg-brand-teal text-white text-[11px] font-bold rounded text-center">
+                    Schedule an Assessment
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 gap-2">
+                <div>&copy; {new Date().getFullYear()} {content.copyrightText || 'Prime Associates — Loans & Constructions. All rights reserved.'}</div>
+                <div className="flex gap-4">
+                  <span>Privacy Policy</span>
+                  <span>Terms &amp; Disclaimers</span>
+                  <span>Admin Access</span>
                 </div>
               </div>
             </div>

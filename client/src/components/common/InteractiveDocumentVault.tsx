@@ -12,8 +12,22 @@ import {
   Truck,
   FileSpreadsheet,
   Layers,
+  Printer,
+  Share2,
+  CheckSquare,
+  Square,
+  Sparkles,
+  PhoneCall,
+  Download,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+// Official WhatsApp Vector Icon
+const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+  </svg>
+);
 
 export interface InteractiveDocumentVaultProps {
   loanType?: 'home-loans' | 'loan-against-property' | 'property-backed-funding' | 'loan-consultation' | 'vehicle-loans' | 'all';
@@ -769,50 +783,94 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
 
   const config = getProfilesForLoanType();
   const [selectedId, setSelectedId] = useState<string>(config.profiles[0].id);
+  const [checkedDocs, setCheckedDocs] = useState<Record<string, boolean>>({});
 
   // If loanType changes, fallback to first profile
   const current = config.profiles.find((p) => p.id === selectedId) || config.profiles[0];
 
+  const totalDocsCount = current.docs.length;
+  const readyDocsCount = current.docs.filter((d) => checkedDocs[d.name]).length;
+  const progressPercent = Math.round((readyDocsCount / totalDocsCount) * 100);
+
+  const toggleDocChecked = (name: string) => {
+    setCheckedDocs((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
+
+  const handleSelectAll = () => {
+    const allChecked = current.docs.every((d) => checkedDocs[d.name]);
+    const updated: Record<string, boolean> = { ...checkedDocs };
+    current.docs.forEach((d) => {
+      updated[d.name] = !allChecked;
+    });
+    setCheckedDocs(updated);
+  };
+
   const handleCopyChecklist = () => {
     const textToCopy =
-      `${config.sectionTitle} - ${current.title}\n\n` +
+      `📋 ${config.sectionTitle} - ${current.title}\n\n` +
       current.docs
-        .map((d, i) => `${i + 1}. ${d.name} [${d.tag}]\n   ${d.desc}`)
+        .map((d, i) => `${checkedDocs[d.name] ? '✅' : '⬜'} ${i + 1}. ${d.name} [${d.tag}]\n   ${d.desc}`)
         .join('\n\n') +
-      `\n\nAdvisory assistance provided by Prime Associates — Loans & Constructions. Contact: +91 96555 66613`;
+      `\n\n📌 Prepared for Prime Associates — Loans & Constructions Consultation.\n📞 Helpline: +91 96555 66613 | 🌐 www.primeassociates.in`;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleWhatsAppChecklist = () => {
+    const readyList = current.docs
+      .map((d, i) => `${checkedDocs[d.name] ? '✅' : '⬜'} ${i + 1}. *${d.name}* (${d.tag})`)
+      .join('\n');
+    const message = encodeURIComponent(
+      `*📋 ${config.sectionTitle}*\n_Category: ${current.title}_\n_Status: ${readyDocsCount} of ${totalDocsCount} documents ready (${progressPercent}%)_\n\n*Required Documents:*\n${readyList}\n\n*Consultation Desk:* Prime Associates Loans & Constructions\n📞 Contact: +91 96555 66613\n📍 Tirupur, Tamil Nadu`
+    );
+    window.open(`https://wa.me/919655566613?text=${message}`, '_blank');
+  };
+
+  const handlePrintChecklist = () => {
+    window.print();
+  };
+
+  const getTagBadgeClass = (tag: string) => {
+    const t = tag.toLowerCase();
+    if (t.includes('mandatory')) return 'bg-rose-50 text-rose-700 border-rose-200/80 font-bold';
+    if (t.includes('primary') || t.includes('legal') || t.includes('deed')) return 'bg-emerald-50 text-emerald-800 border-emerald-200/80 font-bold';
+    if (t.includes('income') || t.includes('salaried') || t.includes('turnover') || t.includes('self-employed')) return 'bg-amber-50 text-amber-800 border-amber-200/80 font-bold';
+    if (t.includes('civil') || t.includes('estimate') || t.includes('plan')) return 'bg-indigo-50 text-indigo-800 border-indigo-200/80 font-bold';
+    return 'bg-slate-100 text-slate-700 border-slate-200 font-medium';
   };
 
   const contentBody = (
     <div className={embedded ? 'w-full' : 'w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto'}>
       {/* Header */}
       <div className={`text-center max-w-3xl mx-auto ${embedded ? 'mb-6 space-y-2' : 'mb-10 sm:mb-12 space-y-3'}`}>
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase">
-          <FileCheck className="w-3.5 h-3.5" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200/60 text-xs font-bold tracking-wider uppercase font-heading shadow-2xs">
+          <FileCheck className="w-4 h-4 text-teal-600" />
           <span>{config.sectionBadge}</span>
         </div>
-        <h2 className={embedded ? 'text-xl sm:text-2xl font-extrabold text-brand-navy tracking-tight font-heading' : 'text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading'}>
+        <h2 className={embedded ? 'text-xl sm:text-2xl font-extrabold text-[#0c1a26] tracking-tight font-heading' : 'text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0c1a26] tracking-tight font-heading'}>
           {config.sectionTitle}
         </h2>
-        <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
           {config.sectionSubtitle}
         </p>
       </div>
 
       {/* Profile Switcher Tabs */}
-      <div className={`flex flex-wrap items-center justify-center gap-2 ${embedded ? 'mb-6' : 'mb-10 gap-2.5'}`}>
+      <div className={`flex flex-wrap items-center justify-center gap-2 ${embedded ? 'mb-6' : 'mb-8 gap-2.5'}`}>
         {config.profiles.map((p) => {
           const isSelected = p.id === current.id;
           return (
             <button
               key={p.id}
               onClick={() => setSelectedId(p.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-heading font-bold transition-all duration-200 cursor-pointer shadow-2xs ${
                 isSelected
-                  ? 'bg-brand-navy text-white border-brand-navy shadow-sm'
-                  : 'bg-white text-brand-navy border-brand-border hover:border-brand-teal'
+                  ? 'bg-[#0c1a26] text-white border-[#0c1a26] shadow-md ring-2 ring-teal-500/30'
+                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
               }`}
             >
               {p.icon}
@@ -823,76 +881,176 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
       </div>
 
       {/* Checklist Container */}
-      <div className={`bg-white rounded-3xl border border-brand-border ${embedded ? 'p-5 sm:p-7' : 'p-6 sm:p-10'} shadow-sm max-w-4xl mx-auto`}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 mb-5 border-b border-brand-border gap-4">
+      <div className={`bg-white rounded-3xl border border-slate-200/90 ${embedded ? 'p-5 sm:p-7' : 'p-6 sm:p-9'} shadow-md max-w-4xl mx-auto`}>
+        {/* Top Header & Actions Toolbar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 mb-5 border-b border-slate-100 gap-4">
           <div>
-            <h3 className="text-base sm:text-lg font-extrabold text-brand-navy tracking-tight font-heading">
-              {current.title}
-            </h3>
-            <p className="text-xs text-brand-slate mt-0.5 leading-relaxed">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse"></span>
+              <h3 className="text-base sm:text-lg font-extrabold text-[#0c1a26] tracking-tight font-heading">
+                {current.title}
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed font-sans">
               {current.subtitle}
             </p>
           </div>
 
-          <button
-            onClick={handleCopyChecklist}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-50 border border-brand-border text-brand-navy text-xs font-bold rounded-corporate shadow-2xs transition-colors self-start sm:self-auto shrink-0"
-            title="Copy checklist to clipboard"
-          >
-            {copied ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-emerald-700">Checklist Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3.5 h-3.5 text-brand-slate" />
-                <span>Copy Checklist</span>
-              </>
-            )}
-          </button>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto shrink-0">
+            <button
+              type="button"
+              onClick={handleSelectAll}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer"
+              title="Toggle all checkboxes"
+            >
+              {current.docs.every((d) => checkedDocs[d.name]) ? (
+                <>
+                  <Square className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Clear All</span>
+                </>
+              ) : (
+                <>
+                  <CheckSquare className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Check All</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCopyChecklist}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+              title="Copy checklist to clipboard"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-700">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Copy</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleWhatsAppChecklist}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-2xs"
+              title="Send checklist to WhatsApp"
+            >
+              <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600" />
+              <span>WhatsApp List</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handlePrintChecklist}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer hidden md:inline-flex"
+              title="Print official checklist"
+            >
+              <Printer className="w-3.5 h-3.5 text-slate-500" />
+              <span>Print</span>
+            </button>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          {current.docs.map((item, idx) => (
+        {/* Readiness Progress Strip */}
+        <div className="mb-5 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80">
+          <div className="flex items-center justify-between text-xs mb-1.5 font-sans">
+            <span className="font-bold text-[#0c1a26]">
+              Your Dossier Readiness:
+            </span>
+            <span className="font-mono font-bold text-teal-700">
+              {readyDocsCount} of {totalDocsCount} Collected ({progressPercent}%)
+            </span>
+          </div>
+          <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
             <div
-              key={idx}
-              className="bg-white p-3.5 sm:p-4 rounded-2xl border border-brand-border hover:border-brand-teal/40 transition-all shadow-subtle flex items-start gap-3"
-            >
-              <div className="w-5 h-5 rounded-full bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-              </div>
-              <div className="flex-grow">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="text-xs sm:text-sm font-bold text-brand-navy">
-                    {item.name}
-                  </h4>
-                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand-ivory text-brand-teal border border-brand-teal/20">
-                    {item.tag}
-                  </span>
+              className="bg-gradient-to-r from-teal-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${Math.max(progressPercent, 4)}%` }}
+            />
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1.5 font-sans">
+            Click on any document card below to check off papers you already have ready for consultation.
+          </p>
+        </div>
+
+        {/* Interactive Documents List */}
+        <div className="space-y-2.5">
+          {current.docs.map((item, idx) => {
+            const isChecked = !!checkedDocs[item.name];
+            return (
+              <div
+                key={idx}
+                onClick={() => toggleDocChecked(item.name)}
+                className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-150 cursor-pointer flex items-start gap-3.5 ${
+                  isChecked
+                    ? 'bg-emerald-50/50 border-emerald-300 ring-1 ring-emerald-300/40 shadow-xs'
+                    : 'bg-white border-slate-200 hover:border-teal-400/60 hover:bg-slate-50/50 shadow-2xs'
+                }`}
+              >
+                {/* Checkbox Trigger */}
+                <div className="mt-0.5 shrink-0">
+                  {isChecked ? (
+                    <div className="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                      <Check className="w-3.5 h-3.5" />
+                    </div>
+                  ) : (
+                    <div className="w-5 h-5 rounded-lg border-2 border-slate-300 hover:border-teal-500 bg-white transition-colors" />
+                  )}
                 </div>
-                <p className="text-xs text-brand-slate mt-1 leading-relaxed">
-                  {item.desc}
-                </p>
+
+                <div className="flex-grow">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h4
+                      className={`text-xs sm:text-sm font-bold font-heading transition-colors ${
+                        isChecked ? 'text-emerald-950 line-through opacity-85' : 'text-[#0c1a26]'
+                      }`}
+                    >
+                      {item.name}
+                    </h4>
+                    <span
+                      className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border ${getTagBadgeClass(
+                        item.tag
+                      )}`}
+                    >
+                      {item.tag}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed font-sans">
+                    {item.desc}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Advisory Assistance Box */}
-        <div className="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 bg-brand-teal-light/40 p-4 rounded-2xl border border-brand-teal/20">
-          <div className="flex items-center gap-2.5">
-            <Info className="w-4 h-4 text-brand-teal shrink-0" />
-            <p className="text-xs text-brand-navy font-medium leading-relaxed">
-              Missing a specific parent title deed or having non-standard income records? Our advisory team conducts surrogate banking programs and pre-submission title verification.
-            </p>
+        <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-teal-50/60 p-4 sm:p-5 rounded-2xl border border-teal-200/80">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <h5 className="text-xs sm:text-sm font-bold text-[#0c1a26] font-heading">
+                Missing Mother Deeds, Chitta, or Patta Records?
+              </h5>
+              <p className="text-xs text-slate-600 font-sans mt-0.5 leading-relaxed">
+                Don't worry if you cannot find older parent deeds or revenue mutation extracts. Prime Associates conducts direct Sub-Registrar 30-year EC searches, patta transfers, and bank legal vetting on your behalf.
+              </p>
+            </div>
           </div>
           {!embedded && (
             <a
               href="#enquiry-form"
-              className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-corporate shadow-sm whitespace-nowrap transition-colors shrink-0"
+              className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-xs font-bold font-heading rounded-xl shadow-sm whitespace-nowrap transition-all shrink-0 cursor-pointer"
             >
-              Get Pre-Verification
+              Get Free Legal Vetting
             </a>
           )}
         </div>
@@ -905,7 +1063,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
   }
 
   return (
-    <section className="pt-12 sm:pt-16 pb-0 bg-[#f7f7f3]">
+    <section id="documents-checklist" className="pt-12 sm:pt-16 pb-0 bg-[#f7f7f3]">
       {contentBody}
     </section>
   );

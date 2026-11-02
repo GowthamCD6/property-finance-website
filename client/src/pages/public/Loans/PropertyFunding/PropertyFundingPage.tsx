@@ -7,6 +7,7 @@ import {
   Sparkles,
   FileSpreadsheet,
   ShieldCheck,
+  FileText,
 } from 'lucide-react';
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../../components/common/InteractiveDocumentVault';
@@ -218,12 +219,19 @@ export const PropertyFundingPage: React.FC = () => {
                   <span>Request Purchase &amp; Takeover Assessment</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
+                <a
+                  href="#documents-checklist"
+                  className="px-5 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 hover:border-emerald-400/50 backdrop-blur-md shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
+                >
+                  <FileText className="w-4 h-4 text-emerald-300" />
+                  <span>Required Documents</span>
+                </a>
                 <Link
                   to="/calculator"
-                  className="px-6 py-3.5 rounded-full bg-slate-900/85 hover:bg-slate-800/90 text-white font-bold text-xs sm:text-sm border border-white/20 hover:border-teal-400/50 backdrop-blur-md shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
+                  className="px-5 py-3.5 rounded-full bg-slate-900/85 hover:bg-slate-800/90 text-white font-bold text-xs sm:text-sm border border-white/20 hover:border-teal-400/50 backdrop-blur-md shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
                 >
                   <FileSpreadsheet className="w-4 h-4 text-brand-teal" />
-                  <span>Calculate Takeover Savings</span>
+                  <span>Calculate Savings</span>
                 </Link>
               </div>
 
