@@ -182,7 +182,7 @@ model Enquiry {
   preferredDate          String          // YYYY-MM-DD
   preferredTimeSlot      String          // e.g. 10:00 AM - 11:00 AM
   meetingMode            String          @default("phone") // phone, video, in_person
-  additionalNotes        String?         @db.Text
+  additionalNotes        String?         @db.LongText
   
   status                 String          @default("New") 
   consentGiven           Boolean         @default(false)
@@ -221,7 +221,7 @@ model EnquiryNote {
   enquiryId  String
   enquiry    Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
   authorName String   @default("Consultant")
-  content    String   @db.Text
+  content    String   @db.LongText
   createdAt  DateTime @default(now())
 }
 
