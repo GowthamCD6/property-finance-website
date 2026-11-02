@@ -955,6 +955,15 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
               <Printer className="w-3.5 h-3.5 text-slate-500" />
               <span>Print</span>
             </button>
+
+            <Link
+              to="/admin/content?section=loan-docs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 text-xs font-bold font-heading rounded-xl transition-all shadow-2xs hover:shadow-xs"
+              title="Configure and edit required loan files & documents in Admin Panel"
+            >
+              <FileCheck className="w-3.5 h-3.5 text-teal-600" />
+              <span>Edit Loan Files</span>
+            </Link>
           </div>
         </div>
 

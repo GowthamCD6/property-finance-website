@@ -40,6 +40,9 @@ import {
   CheckCheck,
   Globe,
   SlidersHorizontal,
+  FileCheck,
+  User,
+  RotateCcw,
 } from 'lucide-react';
 import {
   SiteContent,
@@ -64,6 +67,7 @@ type TabType =
   | 'about'
   | 'testimonials'
   | 'branches'
+  | 'loan-docs'
   | 'calculator'
   | 'legal'
   | 'footer';
@@ -80,6 +84,9 @@ export const AdminContentPage: React.FC = () => {
   const [saving, setSaving] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Sub-tab for Loan Services Document Checklists
+  const [loanDocTab, setLoanDocTab] = useState<'salaried' | 'selfEmployed' | 'property'>('salaried');
 
   // Parsed structured states
   const [rotatingWordsList, setRotatingWordsList] = useState<string[]>([]);
@@ -528,6 +535,67 @@ export const AdminContentPage: React.FC = () => {
     setBranchOfficesList(branchOfficesList.filter((b) => b.id !== id));
   };
 
+  // Loan Document Checklist Handlers
+  const addSalariedDoc = () => {
+    if (!newSalariedDoc.trim()) return;
+    setSalariedDocsList([...salariedDocsList, newSalariedDoc.trim()]);
+    setNewSalariedDoc('');
+  };
+
+  const removeSalariedDoc = (index: number) => {
+    setSalariedDocsList(salariedDocsList.filter((_, i) => i !== index));
+  };
+
+  const addSelfEmployedDoc = () => {
+    if (!newSelfEmployedDoc.trim()) return;
+    setSelfEmployedDocsList([...selfEmployedDocsList, newSelfEmployedDoc.trim()]);
+    setNewSelfEmployedDoc('');
+  };
+
+  const removeSelfEmployedDoc = (index: number) => {
+    setSelfEmployedDocsList(selfEmployedDocsList.filter((_, i) => i !== index));
+  };
+
+  const addPropertyDoc = () => {
+    if (!newPropertyDoc.trim()) return;
+    setPropertyDocsList([...propertyDocsList, newPropertyDoc.trim()]);
+    setNewPropertyDoc('');
+  };
+
+  const removePropertyDoc = (index: number) => {
+    setPropertyDocsList(propertyDocsList.filter((_, i) => i !== index));
+  };
+
+  const resetSalariedDocsToDefault = () => {
+    setSalariedDocsList([
+      'PAN Card & Aadhaar Card (Applicant & Co-applicant)',
+      'Last 3 Months Salary Slips (with official seal & HR signature)',
+      'Form 16 / ITR with Computation for last 2 assessment years',
+      'Last 6 Months Bank Statement (Salary Credited Account)',
+      'Proof of Employment / Official ID Card / Appointment Letter',
+    ]);
+  };
+
+  const resetSelfEmployedDocsToDefault = () => {
+    setSelfEmployedDocsList([
+      'PAN Card, Aadhaar Card & Business Entity Proof (GST / Udyam / Registration)',
+      'ITR with Computation, Balance Sheet & P&L Statement (Last 3 Years attested by CA)',
+      'Last 12 Months Current Account Bank Statements',
+      'GST Registration Certificate & 3B Monthly Tax Returns',
+      'Business Continuity Proof (Shop Act / MSME / Partnership Deed / MOA)',
+    ]);
+  };
+
+  const resetPropertyDocsToDefault = () => {
+    setPropertyDocsList([
+      'Parent Title Deeds & Registered Sale Deed (Chronological link documents for 30 years)',
+      'Patta, Chitta, Adangal & FMB Sketch / Land Revenue Records',
+      'Approved Building Plan & Town & Country Planning (DTCP / CMDA) Approval',
+      'Latest Property Tax Receipt & Encumbrance Certificate (EC) for 30 years',
+      'Detailed Construction Cost Estimate & Stage Specification (from Chartered Civil Engineer)',
+    ]);
+  };
+
   if (loading) {
     return (
       <div className="space-y-6 max-w-7xl pb-1 font-sans animate-pulse">
@@ -822,9 +890,31 @@ export const AdminContentPage: React.FC = () => {
       summary: `${branchOfficesList.length} physical office branches listed`,
     },
     {
-      id: 'calculator' as TabType,
+      id: 'loan-docs' as TabType,
       number: '09',
-      title: 'Calculator Benchmarks & Document Lists',
+      title: 'Loan Services & Required Document Checklists',
+      category: 'Loan Services & Checklists',
+      publicRoute: '/services/home-loans#documents',
+      previewUrl: '/services/home-loans',
+      icon: FileCheck,
+      colorScheme: {
+        bg: 'bg-emerald-50',
+        text: 'text-emerald-700',
+        border: 'border-emerald-200',
+      },
+      shortDesc: 'Manage borrower loan file requirements and required document checklists for Home Loans, Mortgage (LAP), Property Funding, and Vehicle Loans for Salaried & Self-Employed.',
+      keyFeatures: [
+        'Salaried Income Proofs',
+        'Self-Employed ITR & Bank Statements',
+        'Property Title Deeds (Patta, EC, Chitta)',
+        'Building Plan & Technical Approvals',
+      ],
+      summary: `${salariedDocsList.length + selfEmployedDocsList.length + propertyDocsList.length} required documents configured across 3 loan streams`,
+    },
+    {
+      id: 'calculator' as TabType,
+      number: '10',
+      title: 'EMI Calculator Benchmarks & Parameters',
       category: 'Tools & Compliance',
       publicRoute: '/calculator',
       previewUrl: '/calculator',
@@ -834,13 +924,13 @@ export const AdminContentPage: React.FC = () => {
         text: 'text-purple-700',
         border: 'border-purple-200',
       },
-      shortDesc: 'Default interest rates, max tenure limits for the loan calculator, and required document checklists for Salaried, Self-Employed & Property.',
-      keyFeatures: ['Default Calculator Rates', 'Tenure Limit Settings', 'Salaried & Business Docs', 'Property Deed Checklists'],
-      summary: '3 Complete borrower document checklists configured',
+      shortDesc: 'Default starting interest rates for Home Loans and LAP, loan amount presets, and max repayment tenure limits for the public EMI calculator.',
+      keyFeatures: ['Default Calculator Rates', 'Tenure Limit Settings', 'Loan Amount Presets', 'Auto-Amortization Defaults'],
+      summary: 'Configures default values for the online EMI and FOIR tools',
     },
     {
       id: 'legal' as TabType,
-      number: '10',
+      number: '11',
       title: 'Compliance, Disclaimers & Legal Notice',
       category: 'Tools & Compliance',
       publicRoute: '/terms',
@@ -857,7 +947,7 @@ export const AdminContentPage: React.FC = () => {
     },
     {
       id: 'footer' as TabType,
-      number: '11',
+      number: '12',
       title: 'Global Footer & Advisory Hub',
       category: 'Footer & Legal',
       publicRoute: 'Site-wide Footer',
@@ -874,7 +964,7 @@ export const AdminContentPage: React.FC = () => {
     },
   ];
 
-  const categories = ['ALL', 'Home Page', 'About Us', 'Contact & Branches', 'Tools & Compliance', 'Footer & Legal'];
+  const categories = ['ALL', 'Home Page', 'Loan Services & Checklists', 'About Us', 'Contact & Branches', 'Tools & Compliance', 'Footer & Legal'];
 
   const filteredModules = CONTENT_MODULES.filter((mod) => {
     const matchesCat = catalogFilter === 'ALL' || mod.category === catalogFilter;
@@ -2859,7 +2949,350 @@ export const AdminContentPage: React.FC = () => {
           </div>
         )}
 
-        {/* 9. CALCULATOR BENCHMARKS */}
+        {/* 09. LOAN SERVICES & REQUIRED DOCUMENT CHECKLISTS */}
+        {activeTab === 'loan-docs' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Header Card */}
+            <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-brand-border">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shrink-0">
+                    <FileCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-[#0c1a26] font-heading">
+                      Loan Services &amp; Required Document Checklists
+                    </h3>
+                    <p className="text-xs text-brand-slate font-sans mt-0.5">
+                      Configure the official document requirements and loan files displayed across Home Loans, Mortgage (LAP), Property Funding, and Consultation pages.
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href="/services/home-loans#documents"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl transition-colors shrink-0 self-start sm:self-auto font-heading"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Preview on Loan Service Page</span>
+                  <ExternalLink className="w-3 h-3 text-teal-500" />
+                </a>
+              </div>
+
+              {/* Sub-Tab Switcher */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                {[
+                  {
+                    id: 'salaried',
+                    label: 'Salaried Applicants',
+                    icon: <User className="w-4 h-4" />,
+                    count: salariedDocsList.length,
+                    badge: 'Form 16 & Salary Slips',
+                  },
+                  {
+                    id: 'selfEmployed',
+                    label: 'Self-Employed / Business',
+                    icon: <Building className="w-4 h-4" />,
+                    count: selfEmployedDocsList.length,
+                    badge: 'ITR, Balance Sheet & GST',
+                  },
+                  {
+                    id: 'property',
+                    label: 'Property Title Deeds & Approvals',
+                    icon: <Landmark className="w-4 h-4" />,
+                    count: propertyDocsList.length,
+                    badge: 'Patta, EC & Blueprint Plans',
+                  },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setLoanDocTab(tab.id as any)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-bold font-heading transition-all cursor-pointer ${
+                      loanDocTab === tab.id
+                        ? 'bg-[#0c1a26] text-white border-[#0c1a26] shadow-sm ring-2 ring-teal-500/20'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    {tab.icon}
+                    <span>{tab.label}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                        loanDocTab === tab.id ? 'bg-teal-500 text-white' : 'bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {tab.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* ─── TAB 1: SALARIED APPLICANTS CHECKLIST ─── */}
+              {loanDocTab === 'salaried' && (
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 font-heading">
+                        Salaried Borrower Loan File Checklist
+                      </h4>
+                      <p className="text-xs text-slate-500">
+                        Required income, taxation, and KYC papers for corporate, IT, and government employees.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={resetSalariedDocsToDefault}
+                      className="text-xs font-bold text-slate-500 hover:text-teal-700 hover:underline flex items-center gap-1 cursor-pointer"
+                      title="Reset to institutional banking standard checklist"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Reset Standard List</span>
+                    </button>
+                  </div>
+
+                  {/* Add New Document Input Bar */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newSalariedDoc}
+                      onChange={(e) => setNewSalariedDoc(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addSalariedDoc();
+                        }
+                      }}
+                      placeholder="Add new required document for salaried borrowers (e.g. Form 16, Offer Letter)..."
+                      className="flex-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 font-sans"
+                    />
+                    <button
+                      type="button"
+                      onClick={addSalariedDoc}
+                      className="px-4 py-2.5 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Add File</span>
+                    </button>
+                  </div>
+
+                  {/* List of Documents */}
+                  <div className="space-y-2 pt-1">
+                    {salariedDocsList.map((doc, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/90 flex items-center justify-between gap-3 hover:bg-white hover:border-teal-300 transition-all group"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="w-6 h-6 rounded-lg bg-teal-50 text-teal-800 text-[11px] font-mono font-bold flex items-center justify-center shrink-0 border border-teal-200/70">
+                            {idx + 1}
+                          </span>
+                          <span className="text-xs sm:text-sm font-semibold text-slate-800 font-sans truncate">
+                            {doc}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md font-heading">
+                            Salaried File
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeSalariedDoc(idx)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Remove document requirement"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ─── TAB 2: SELF-EMPLOYED APPLICANTS CHECKLIST ─── */}
+              {loanDocTab === 'selfEmployed' && (
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 font-heading">
+                        Self-Employed &amp; Business Loan File Checklist
+                      </h4>
+                      <p className="text-xs text-slate-500">
+                        Required GST, audited financial statements, and business continuity records for business proprietors &amp; MSMEs.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={resetSelfEmployedDocsToDefault}
+                      className="text-xs font-bold text-slate-500 hover:text-teal-700 hover:underline flex items-center gap-1 cursor-pointer"
+                      title="Reset to institutional banking standard checklist"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Reset Standard List</span>
+                    </button>
+                  </div>
+
+                  {/* Add New Document Input Bar */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newSelfEmployedDoc}
+                      onChange={(e) => setNewSelfEmployedDoc(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addSelfEmployedDoc();
+                        }
+                      }}
+                      placeholder="Add new required document for business owners (e.g. Audit Report, GST 3B, Udyam)..."
+                      className="flex-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 font-sans"
+                    />
+                    <button
+                      type="button"
+                      onClick={addSelfEmployedDoc}
+                      className="px-4 py-2.5 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Add File</span>
+                    </button>
+                  </div>
+
+                  {/* List of Documents */}
+                  <div className="space-y-2 pt-1">
+                    {selfEmployedDocsList.map((doc, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/90 flex items-center justify-between gap-3 hover:bg-white hover:border-teal-300 transition-all group"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="w-6 h-6 rounded-lg bg-teal-50 text-teal-800 text-[11px] font-mono font-bold flex items-center justify-center shrink-0 border border-teal-200/70">
+                            {idx + 1}
+                          </span>
+                          <span className="text-xs sm:text-sm font-semibold text-slate-800 font-sans truncate">
+                            {doc}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md font-heading">
+                            Business / ITR
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeSelfEmployedDoc(idx)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Remove document requirement"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ─── TAB 3: PROPERTY TITLE DEEDS CHECKLIST ─── */}
+              {loanDocTab === 'property' && (
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 font-heading">
+                        Property Title Deeds &amp; Technical Approvals Checklist
+                      </h4>
+                      <p className="text-xs text-slate-500">
+                        Essential land ownership, parent deeds, revenue records, and building approvals required by bank legal panels.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={resetPropertyDocsToDefault}
+                      className="text-xs font-bold text-slate-500 hover:text-teal-700 hover:underline flex items-center gap-1 cursor-pointer"
+                      title="Reset to institutional banking standard checklist"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Reset Standard List</span>
+                    </button>
+                  </div>
+
+                  {/* Add New Document Input Bar */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newPropertyDoc}
+                      onChange={(e) => setNewPropertyDoc(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addPropertyDoc();
+                        }
+                      }}
+                      placeholder="Add new title deed or technical approval (e.g. EC 30 Years, Patta, DTCP Plan)..."
+                      className="flex-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 font-sans"
+                    />
+                    <button
+                      type="button"
+                      onClick={addPropertyDoc}
+                      className="px-4 py-2.5 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Add File</span>
+                    </button>
+                  </div>
+
+                  {/* List of Documents */}
+                  <div className="space-y-2 pt-1">
+                    {propertyDocsList.map((doc, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/90 flex items-center justify-between gap-3 hover:bg-white hover:border-teal-300 transition-all group"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="w-6 h-6 rounded-lg bg-teal-50 text-teal-800 text-[11px] font-mono font-bold flex items-center justify-center shrink-0 border border-teal-200/70">
+                            {idx + 1}
+                          </span>
+                          <span className="text-xs sm:text-sm font-semibold text-slate-800 font-sans truncate">
+                            {doc}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md font-heading">
+                            Legal Deed
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removePropertyDoc(idx)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Remove document requirement"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Informational Guidance Callout */}
+              <div className="p-3.5 bg-gradient-to-r from-teal-50/70 to-slate-50 rounded-xl border border-teal-100 flex items-start gap-2.5 text-xs text-slate-600">
+                <Sparkles className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Live Synchronization:</strong> Changes saved here appear directly on public loan service pages (Home Loans, Loan Against Property, Property Funding, Vehicle Loans), the EMI Calculator page, and inside borrower consultation confirmation emails.
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 10. CALCULATOR BENCHMARKS */}
         {activeTab === 'calculator' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-5">
