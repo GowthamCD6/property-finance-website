@@ -333,6 +333,13 @@ export interface CustomerUser {
   name: string;
   picture?: string | null;
   phone?: string | null;
+  sessionHash?: string;
+  security?: {
+    hashAlgorithm: string;
+    antiReplayToleranceMs: number;
+    rateLimitPolicy: string;
+    status: string;
+  };
 }
 
 export interface EnquiredCustomer {

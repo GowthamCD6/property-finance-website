@@ -33,9 +33,16 @@ app.use(
       'Content-Type',
       'Authorization',
       'x-admin-api-key',
+      'x-client-api-key',
+      'x-client-signature',
       'x-api-key',
       'x-request-timestamp',
       'x-request-signature',
+      'x-session-hash',
+    ],
+    exposedHeaders: [
+      'x-session-verified',
+      'x-request-timestamp',
     ],
   })
 );

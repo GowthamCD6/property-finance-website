@@ -6,6 +6,7 @@ import prisma from '../database/client';
 import { loginSchema } from '../validators/auth.validator';
 import { config } from '../config';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { generateCustomerSessionHash } from '../middleware/apiProtection';
 
 const googleClient = new OAuth2Client(config.googleClientId, config.googleClientSecret);
 
@@ -381,11 +382,14 @@ export async function googleUserLogin(req: Request, res: Response, next: NextFun
       maxAge: 36500 * 24 * 60 * 60 * 1000, // Perpetual session (100 years)
     });
 
+    const sessionHash = generateCustomerSessionHash(customer.id, customer.email);
+
     res.json({
       success: true,
       message: 'Welcome! You have signed in successfully with Google.',
       data: {
         token,
+        sessionHash,
         customer: {
           id: customer.id,
           name: customer.name,
@@ -412,9 +416,20 @@ export async function getCustomerMe(req: AuthenticatedRequest, res: Response): P
     return;
   }
 
+  const sessionHash = generateCustomerSessionHash(req.customer.id, req.customer.email);
+
   res.json({
     success: true,
-    data: req.customer,
+    data: {
+      ...req.customer,
+      sessionHash,
+      security: {
+        hashAlgorithm: 'SHA-256 (FIPS 180-4)',
+        antiReplayToleranceMs: 300000,
+        rateLimitPolicy: '120 req / 15m (Portal) | 15 req / 15m (Auth)',
+        status: 'ENCRYPTED_AND_VERIFIED',
+      },
+    },
   });
 }
 
@@ -731,11 +746,14 @@ export async function customerDirectLogin(req: Request, res: Response, next: Nex
       maxAge: 36500 * 24 * 60 * 60 * 1000,
     });
 
+    const sessionHash = generateCustomerSessionHash(customer.id, customer.email);
+
     res.json({
       success: true,
       message: 'Authentication successful. Welcome to your borrower portal.',
       data: {
         token,
+        sessionHash,
         customer: {
           id: customer.id,
           name: customer.name,

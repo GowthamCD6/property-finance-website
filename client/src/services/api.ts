@@ -199,10 +199,33 @@ export async function loginAdminWithGoogleApi(credential: string): Promise<{ tok
   return json.data;
 }
 
-export async function loginUserWithGoogleApi(credential: string): Promise<{ token: string; customer: CustomerUser }> {
+export const PUBLIC_CLIENT_KEY =
+  (import.meta as any).env?.VITE_PUBLIC_CLIENT_KEY || 'vpf_pub_9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d';
+
+/**
+ * Returns security-hardened headers for public and customer portal requests.
+ * Injects client API signature, anti-replay millisecond timestamp, and customer token.
+ */
+export function getCustomerAuthHeaders(customHeaders: Record<string, string> = {}): Record<string, string> {
+  const token = localStorage.getItem('vpf_user_token');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'x-client-api-key': PUBLIC_CLIENT_KEY,
+    'x-request-timestamp': Date.now().toString(),
+    ...customHeaders,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return headers;
+}
+
+export async function loginUserWithGoogleApi(credential: string): Promise<{ token: string; customer: CustomerUser; sessionHash?: string }> {
   const res = await fetch(`${API_BASE}/auth/google/user`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getCustomerAuthHeaders(),
     credentials: 'include',
     body: JSON.stringify({ credential }),
   });
@@ -211,10 +234,10 @@ export async function loginUserWithGoogleApi(credential: string): Promise<{ toke
   return json.data;
 }
 
-export async function loginCustomerDirectApi(identifier: string): Promise<{ token: string; customer: CustomerUser }> {
+export async function loginCustomerDirectApi(identifier: string): Promise<{ token: string; customer: CustomerUser; sessionHash?: string }> {
   const res = await fetch(`${API_BASE}/auth/customer/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getCustomerAuthHeaders(),
     credentials: 'include',
     body: JSON.stringify({ identifier }),
   });
@@ -224,22 +247,20 @@ export async function loginCustomerDirectApi(identifier: string): Promise<{ toke
 }
 
 export async function getCustomerProfileApi(): Promise<CustomerUser> {
-  const token = localStorage.getItem('vpf_user_token');
-  const headers: HeadersInit = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE}/auth/customer/me`, { headers, credentials: 'include' });
+  const res = await fetch(`${API_BASE}/auth/customer/me`, {
+    headers: getCustomerAuthHeaders(),
+    credentials: 'include',
+  });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to verify customer session');
   return json.data;
 }
 
 export async function getCustomerEnquiriesApi(): Promise<Enquiry[]> {
-  const token = localStorage.getItem('vpf_user_token');
-  const headers: HeadersInit = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE}/auth/customer/enquiries`, { headers, credentials: 'include' });
+  const res = await fetch(`${API_BASE}/auth/customer/enquiries`, {
+    headers: getCustomerAuthHeaders(),
+    credentials: 'include',
+  });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to load enquiries');
   return json.data;
@@ -252,13 +273,9 @@ export async function submitCustomerReviewApi(data: {
   amount?: string;
   location?: string;
 }): Promise<Testimonial> {
-  const token = localStorage.getItem('vpf_user_token');
-  const headers: HeadersInit = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
   const res = await fetch(`${API_BASE}/auth/customer/review`, {
     method: 'POST',
-    headers,
+    headers: getCustomerAuthHeaders(),
     credentials: 'include',
     body: JSON.stringify(data),
   });
@@ -268,24 +285,19 @@ export async function submitCustomerReviewApi(data: {
 }
 
 export async function getCustomerReviewApi(): Promise<Testimonial | null> {
-  const token = localStorage.getItem('vpf_user_token');
-  const headers: HeadersInit = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE}/auth/customer/review`, { headers, credentials: 'include' });
+  const res = await fetch(`${API_BASE}/auth/customer/review`, {
+    headers: getCustomerAuthHeaders(),
+    credentials: 'include',
+  });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to load feedback');
   return json.data;
 }
 
 export async function deleteCustomerReviewApi(): Promise<void> {
-  const token = localStorage.getItem('vpf_user_token');
-  const headers: HeadersInit = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
   const res = await fetch(`${API_BASE}/auth/customer/review`, {
     method: 'DELETE',
-    headers,
+    headers: getCustomerAuthHeaders(),
     credentials: 'include',
   });
   const json = await res.json();
