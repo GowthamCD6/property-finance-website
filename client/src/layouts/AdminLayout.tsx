@@ -86,7 +86,7 @@ export const AdminLayout: React.FC = () => {
         {
           name: 'Dashboard',
           path: '/admin/dashboard',
-          icon: <LayoutDashboard className="w-4 h-4 flex-shrink-0" />,
+          icon: <LayoutDashboard className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: null,
         },
       ],
@@ -97,21 +97,21 @@ export const AdminLayout: React.FC = () => {
         {
           name: 'Loan Enquiries',
           path: '/admin/enquiries',
-          icon: <FileSpreadsheet className="w-4 h-4 flex-shrink-0" />,
+          icon: <FileSpreadsheet className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: pendingCount > 0 ? `${pendingCount} New` : null,
           badgeColor: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/35 font-bold',
         },
         {
           name: 'Enquired Customers',
           path: '/admin/customers',
-          icon: <Users className="w-4 h-4 flex-shrink-0" />,
+          icon: <Users className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: 'Google',
           badgeColor: 'bg-sky-500/15 text-sky-300 border border-sky-500/30',
         },
         {
           name: 'Appointments & Slots',
           path: '/admin/appointments',
-          icon: <CalendarCheck2 className="w-4 h-4 flex-shrink-0" />,
+          icon: <CalendarCheck2 className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: null,
         },
       ],
@@ -122,20 +122,20 @@ export const AdminLayout: React.FC = () => {
         {
           name: 'Website Content',
           path: '/admin/content',
-          icon: <FileEdit className="w-4 h-4 flex-shrink-0" />,
+          icon: <FileEdit className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: 'Live CMS',
           badgeColor: 'bg-teal-500/15 text-teal-300 border border-teal-500/30',
         },
         {
           name: 'Loan Services',
           path: '/admin/services',
-          icon: <Layers className="w-4 h-4 flex-shrink-0" />,
+          icon: <Layers className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: null,
         },
         {
           name: 'Advisory FAQs',
           path: '/admin/faqs',
-          icon: <HelpCircle className="w-4 h-4 flex-shrink-0" />,
+          icon: <HelpCircle className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: null,
         },
       ],
@@ -146,14 +146,14 @@ export const AdminLayout: React.FC = () => {
         {
           name: 'Admin Team & Roles',
           path: '/admin/team',
-          icon: <ShieldCheck className="w-4 h-4 flex-shrink-0" />,
+          icon: <ShieldCheck className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: 'Access',
           badgeColor: 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30',
         },
         {
           name: 'Working Hours & Slots',
           path: '/admin/settings',
-          icon: <Clock className="w-4 h-4 flex-shrink-0" />,
+          icon: <Clock className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: null,
         },
       ],
@@ -202,7 +202,7 @@ export const AdminLayout: React.FC = () => {
         <nav className="p-3.5 space-y-4 flex-1 overflow-y-auto admin-sidebar-scroll">
           {navigationGroups.map((grp, gIdx) => (
             <div key={gIdx} className="space-y-1">
-              <div className="px-3 pt-2 pb-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-400/90 font-heading">
+              <div className="px-3 pt-2.5 pb-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400 font-heading">
                 {grp.group}
               </div>
 
@@ -211,10 +211,10 @@ export const AdminLayout: React.FC = () => {
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all duration-200 ${
+                    `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[14px] transition-all duration-200 ${
                       isActive
                         ? 'bg-gradient-to-r from-teal-500/20 via-teal-500/12 to-emerald-500/5 text-white font-bold border border-teal-500/35 shadow-[0_2px_12px_rgba(20,184,166,0.15)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-r-full before:bg-gradient-to-b before:from-teal-400 before:to-emerald-400'
-                        : 'text-slate-300/90 hover:text-white hover:bg-slate-800/40 hover:border-slate-700/30 border border-transparent font-medium hover:translate-x-0.5'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/40 hover:border-slate-700/30 border border-transparent font-medium hover:translate-x-0.5'
                     }`
                   }
                 >
@@ -222,12 +222,12 @@ export const AdminLayout: React.FC = () => {
                     <span className="transition-all duration-200 flex-shrink-0 text-slate-400 group-hover:text-teal-300 group-hover:scale-110">
                       {item.icon}
                     </span>
-                    <span className="truncate font-heading tracking-tight text-[12px]">{item.name}</span>
+                    <span className="truncate font-heading tracking-tight text-[13.5px] sm:text-[14px] font-semibold">{item.name}</span>
                   </div>
 
                   {item.badge && (
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide flex-shrink-0 shadow-xs ${
+                      className={`px-2 py-0.5 rounded-full text-[10.5px] font-bold tracking-wide flex-shrink-0 shadow-xs ${
                         item.badgeColor || 'bg-slate-800 text-slate-200 border border-slate-700'
                       }`}
                     >
@@ -249,16 +249,16 @@ export const AdminLayout: React.FC = () => {
                 <UserAvatar
                   src={admin?.avatar}
                   name={admin?.name || 'Admin'}
-                  size={36}
+                  size={38}
                   showGoogleBadge={true}
                 />
               </div>
 
               <div className="overflow-hidden min-w-0 flex-1">
-                <div className="text-xs font-bold text-white truncate font-heading leading-tight">
+                <div className="text-sm font-bold text-white truncate font-heading leading-tight">
                   {admin?.name || 'Administrator'}
                 </div>
-                <div className="text-[10px] text-slate-400 truncate font-sans mt-0.5">
+                <div className="text-xs text-slate-400 truncate font-sans mt-0.5">
                   {admin?.email}
                 </div>
               </div>
@@ -271,7 +271,7 @@ export const AdminLayout: React.FC = () => {
               className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold font-heading text-slate-300 hover:text-white bg-slate-800/80 hover:bg-rose-500/20 border border-slate-700/60 hover:border-rose-500/40 rounded-xl transition-all duration-200 cursor-pointer shadow-xs active:scale-[0.98] group"
               title="Log Out"
             >
-              <LogOut className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-400 transition-colors" />
+              <LogOut className="w-4 h-4 text-slate-400 group-hover:text-rose-400 transition-colors" />
               <span>Log Out</span>
             </button>
           </div>
@@ -311,7 +311,7 @@ export const AdminLayout: React.FC = () => {
             <nav className="p-3.5 space-y-4 flex-1 overflow-y-auto admin-sidebar-scroll">
               {navigationGroups.map((grp, gIdx) => (
                 <div key={gIdx} className="space-y-1">
-                  <div className="px-3 pt-2 pb-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-400/90 font-heading">
+                  <div className="px-3 pt-2.5 pb-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400 font-heading">
                     {grp.group}
                   </div>
                   {grp.items.map((item) => (
@@ -320,10 +320,10 @@ export const AdminLayout: React.FC = () => {
                       to={item.path}
                       onClick={() => setMobileSidebarOpen(false)}
                       className={({ isActive }) =>
-                        `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all duration-200 ${
+                        `group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[14px] transition-all duration-200 ${
                           isActive
                             ? 'bg-gradient-to-r from-teal-500/20 via-teal-500/12 to-emerald-500/5 text-white font-bold border border-teal-500/35 shadow-[0_2px_12px_rgba(20,184,166,0.15)] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:rounded-r-full before:bg-gradient-to-b before:from-teal-400 before:to-emerald-400'
-                            : 'text-slate-300/90 hover:text-white hover:bg-slate-800/40 hover:border-slate-700/30 border border-transparent font-medium'
+                            : 'text-slate-300 hover:text-white hover:bg-slate-800/40 hover:border-slate-700/30 border border-transparent font-medium'
                         }`
                       }
                     >
@@ -331,11 +331,11 @@ export const AdminLayout: React.FC = () => {
                         <span className="text-slate-400 group-hover:text-teal-300">
                           {item.icon}
                         </span>
-                        <span className="truncate font-heading tracking-tight text-[12px]">{item.name}</span>
+                        <span className="truncate font-heading tracking-tight text-[13.5px] sm:text-[14px] font-semibold">{item.name}</span>
                       </div>
                       {item.badge && (
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide flex-shrink-0 ${
+                          className={`px-2 py-0.5 rounded-full text-[10.5px] font-bold tracking-wide flex-shrink-0 ${
                             item.badgeColor || 'bg-slate-800 text-slate-200 border border-slate-700'
                           }`}
                         >
@@ -356,15 +356,15 @@ export const AdminLayout: React.FC = () => {
                     <UserAvatar
                       src={admin?.avatar}
                       name={admin?.name || 'Admin'}
-                      size={32}
+                      size={36}
                       showGoogleBadge={true}
                     />
                   </div>
                   <div className="overflow-hidden min-w-0 flex-1">
-                    <div className="text-xs font-bold text-white truncate font-heading">
+                    <div className="text-sm font-bold text-white truncate font-heading">
                       {admin?.name || 'Administrator'}
                     </div>
-                    <div className="text-[10px] text-slate-400 truncate font-sans">{admin?.email}</div>
+                    <div className="text-xs text-slate-400 truncate font-sans">{admin?.email}</div>
                   </div>
                 </div>
 
@@ -373,7 +373,7 @@ export const AdminLayout: React.FC = () => {
                   onClick={handleLogout}
                   className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-rose-500/20 rounded-xl border border-slate-700/60 hover:border-rose-500/40 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
                 >
-                  <LogOut className="w-3.5 h-3.5 text-slate-400" />
+                  <LogOut className="w-4 h-4 text-slate-400" />
                   <span>Log Out</span>
                 </button>
               </div>

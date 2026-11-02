@@ -51,7 +51,7 @@ export async function getAvailability(req: Request, res: Response, next: NextFun
     const blockedDates = await prisma.blockedDate.findMany();
     const blockedSet = new Set(blockedDates.map((b) => b.date));
 
-    // Standard business slots
+    // Standard business slots fallback
     const standardWeekdaySlots = [
       '10:00 AM - 11:00 AM',
       '11:30 AM - 12:30 PM',
@@ -64,6 +64,39 @@ export async function getAvailability(req: Request, res: Response, next: NextFun
       '11:30 AM - 12:30 PM',
       '01:00 PM - 02:00 PM',
     ];
+
+    const generateSlotsFromConfig = (
+      startTime: string = '10:00',
+      endTime: string = '18:00',
+      durationMinutes: number = 60
+    ): string[] => {
+      const slots: string[] = [];
+      const [startH, startM] = startTime.split(':').map(Number);
+      const [endH, endM] = endTime.split(':').map(Number);
+
+      let curMinutes = (isNaN(startH) ? 10 : startH) * 60 + (isNaN(startM) ? 0 : startM);
+      const endMinutes = (isNaN(endH) ? 18 : endH) * 60 + (isNaN(endM) ? 0 : endM);
+      const step = durationMinutes > 0 ? durationMinutes : 60;
+
+      const formatTime = (totalMins: number) => {
+        const h = Math.floor(totalMins / 60);
+        const m = totalMins % 60;
+        const period = h >= 12 ? 'PM' : 'AM';
+        const displayH = h % 12 === 0 ? 12 : h % 12;
+        const padM = m < 10 ? `0${m}` : m;
+        const padH = displayH < 10 ? `0${displayH}` : displayH;
+        return `${padH}:${padM} ${period}`;
+      };
+
+      while (curMinutes + step <= endMinutes) {
+        const slotStart = formatTime(curMinutes);
+        const slotEnd = formatTime(curMinutes + step);
+        slots.push(`${slotStart} - ${slotEnd}`);
+        curMinutes += step;
+      }
+
+      return slots.length > 0 ? slots : standardWeekdaySlots;
+    };
 
     if (dateParam) {
       // Validate date format YYYY-MM-DD
@@ -103,7 +136,10 @@ export async function getAvailability(req: Request, res: Response, next: NextFun
         return;
       }
 
-      const baseSlots = dayOfWeek === 6 ? saturdaySlots : standardWeekdaySlots;
+      const baseSlots =
+        dayConfig.startTime && dayConfig.endTime
+          ? generateSlotsFromConfig(dayConfig.startTime, dayConfig.endTime, dayConfig.slotDurationMinutes || 60)
+          : (dayOfWeek === 6 ? saturdaySlots : standardWeekdaySlots);
 
       // Find any already confirmed appointments for that date
       const bookedAppointments = await prisma.appointment.findMany({
