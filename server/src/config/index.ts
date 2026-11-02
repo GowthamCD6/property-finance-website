@@ -18,4 +18,13 @@ export const config = {
   timezone: process.env.TIMEZONE || 'Asia/Kolkata',
   googleClientId: process.env.GOOGLE_CLIENT_ID || '',
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  database: {
+    host: process.env.TIDB_HOST || 'gateway01.ap-northeast-1.prod.aws.tidbcloud.com',
+    port: parseInt(process.env.TIDB_PORT || '4000', 10),
+    user: process.env.TIDB_USER || 'Lb42jcaozRttqQZ.root',
+    password: process.env.TIDB_PASSWORD || 'W0fPaVWUF0GUFuxL',
+    name: process.env.TIDB_DATABASE || 'prime_associates',
+    sslCa: process.env.TIDB_SSL_CA || 'certs/isrgrootx1.pem',
+    url: process.env.DATABASE_URL || '',
+  },
 };
