@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { UserAvatar } from '../../../components/common/UserAvatar';
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -781,17 +782,12 @@ export const AdminAppointmentsPage: React.FC = () => {
                           {/* Applicant & Dossier */}
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-3">
-                              {enq.customer?.picture ? (
-                                <img
-                                  src={enq.customer.picture} referrerPolicy="no-referrer" crossOrigin="anonymous"
-                                  alt={enq.fullName}
-                                  className="w-9 h-9 rounded-xl object-cover border border-slate-200 shadow-2xs shrink-0"
-                                />
-                              ) : (
-                                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-600 to-teal-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs font-heading shrink-0">
-                                  {initials}
-                                </div>
-                              )}
+                              <UserAvatar
+                                src={enq.customer?.picture}
+                                name={enq.fullName}
+                                size={36}
+                                showGoogleBadge={isGoogleUser}
+                              />
                               <div className="space-y-0.5 min-w-0">
                                 <div className="flex items-center gap-1.5">
                                   <span className="font-bold text-[#0c1a26] font-heading text-xs group-hover:text-teal-700 transition-colors truncate">
@@ -1182,17 +1178,12 @@ export const AdminAppointmentsPage: React.FC = () => {
                           {/* Applicant Column */}
                           <td className="py-4 px-4">
                             <div className="flex items-center gap-3">
-                              {appt.enquiry?.customer?.picture ? (
-                                <img
-                                  src={appt.enquiry.customer.picture} referrerPolicy="no-referrer" crossOrigin="anonymous"
-                                  alt={appt.enquiry.fullName}
-                                  className="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0"
-                                />
-                              ) : (
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs">
-                                  {initials}
-                                </div>
-                              )}
+                              <UserAvatar
+                                src={appt.enquiry?.customer?.picture}
+                                name={appt.enquiry?.fullName || 'Applicant'}
+                                size={36}
+                                showGoogleBadge={Boolean(appt.enquiry?.customer?.email || appt.enquiry?.customerId)}
+                              />
                               <div>
                                 <div className="font-bold text-[#0c1a26] text-xs sm:text-sm font-heading flex items-center gap-1.5">
                                   <span>{appt.enquiry?.fullName || 'N/A'}</span>

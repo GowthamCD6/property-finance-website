@@ -978,9 +978,29 @@ export async function getAdminTeam(_req: AuthenticatedRequest, res: Response, ne
       orderBy: { createdAt: 'desc' },
     });
 
+    // Auto-link Google profile picture if avatar is null
+    const teamWithAvatars = await Promise.all(
+      team.map(async (member) => {
+        if (!member.avatar && member.email) {
+          try {
+            const cust = await prisma.customerUser.findUnique({
+              where: { email: member.email.toLowerCase() },
+              select: { picture: true },
+            });
+            if (cust && cust.picture) {
+              return { ...member, avatar: cust.picture };
+            }
+          } catch {
+            // Ignore
+          }
+        }
+        return member;
+      })
+    );
+
     res.json({
       success: true,
-      data: team,
+      data: teamWithAvatars,
     });
   } catch (err) {
     next(err);

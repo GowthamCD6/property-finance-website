@@ -51,7 +51,7 @@ export async function requireAdminAuth(
 
     const admin = await prisma.adminUser.findUnique({
       where: { id: decoded.id },
-      select: { id: true, email: true, name: true, role: true, isActive: true },
+      select: { id: true, email: true, name: true, role: true, phone: true, avatar: true, isActive: true },
     });
 
     if (!admin || !admin.isActive) {
@@ -60,6 +60,25 @@ export async function requireAdminAuth(
         message: 'Administrator session is invalid, expired, or the account has been deactivated.',
       });
       return;
+    }
+
+    // Auto-link Google profile picture from customer account if admin avatar is null
+    if (!admin.avatar && admin.email) {
+      try {
+        const cust = await prisma.customerUser.findUnique({
+          where: { email: admin.email.toLowerCase() },
+          select: { picture: true },
+        });
+        if (cust && cust.picture) {
+          admin.avatar = cust.picture;
+          prisma.adminUser.update({
+            where: { id: admin.id },
+            data: { avatar: cust.picture },
+          }).catch(() => {});
+        }
+      } catch {
+        // Non-blocking
+      }
     }
 
     req.admin = admin;

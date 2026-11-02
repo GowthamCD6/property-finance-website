@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { UserAvatar } from '../../../components/common/UserAvatar';
 import {
   Users,
   Search,
@@ -295,22 +296,12 @@ export const AdminCustomersPage: React.FC = () => {
                       {/* Customer Profile & Google Email */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
-                          {c.picture ? (
-                            <img
-                              src={c.picture}
-                              alt={c.name}
-                              className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-xs flex-shrink-0"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 text-white font-bold font-heading text-xs flex items-center justify-center border border-slate-700 shadow-xs flex-shrink-0">
-                              {c.name
-                                .split(' ')
-                                .map((n) => n[0])
-                                .join('')
-                                .substring(0, 2)
-                                .toUpperCase()}
-                            </div>
-                          )}
+                          <UserAvatar
+                            src={c.picture}
+                            name={c.name}
+                            size={40}
+                            showGoogleBadge={true}
+                          />
 
                           <div className="space-y-0.5 min-w-0">
                             <div className="flex items-center gap-1.5">
@@ -514,22 +505,13 @@ export const AdminCustomersPage: React.FC = () => {
             {/* Modal Header */}
             <div className="px-6 py-5 bg-gradient-to-r from-slate-900 to-[#0c1a26] text-white flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
-                {selectedCustomer.picture ? (
-                  <img
-                    src={selectedCustomer.picture}
-                    alt={selectedCustomer.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-teal-400 shadow-md flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-teal-500 text-slate-950 font-bold font-heading text-sm flex items-center justify-center flex-shrink-0">
-                    {selectedCustomer.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')
-                      .substring(0, 2)
-                      .toUpperCase()}
-                  </div>
-                )}
+                <UserAvatar
+                  src={selectedCustomer.picture}
+                  name={selectedCustomer.name}
+                  size={48}
+                  showGoogleBadge={true}
+                  className="border-2 border-teal-400 shadow-md shrink-0"
+                />
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-base font-bold font-heading">{selectedCustomer.name}</h3>

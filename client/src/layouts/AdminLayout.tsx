@@ -447,15 +447,27 @@ export const AdminLayout: React.FC = () => {
               <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-teal-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
 
-            {/* Quick Admin Profile Chip */}
-            <div className="flex items-center gap-2 pl-1">
+            {/* Executive Admin Profile Chip with Google Avatar, Name & Role */}
+            <Link
+              to="/admin/settings"
+              className="flex items-center gap-2.5 pl-2 py-1 pr-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all duration-200 group shadow-2xs hover:shadow-xs cursor-pointer"
+              title="Administrator Profile & Settings"
+            >
               <UserAvatar
                 src={admin?.avatar}
                 name={admin?.name || 'Admin'}
-                size={32}
+                size={34}
                 showGoogleBadge={true}
               />
-            </div>
+              <div className="hidden sm:flex flex-col text-left min-w-0">
+                <span className="text-xs font-bold text-slate-800 font-heading leading-tight truncate max-w-[140px] group-hover:text-teal-700 transition-colors">
+                  {admin?.name || 'Administrator'}
+                </span>
+                <span className="text-[10px] font-semibold text-teal-700 uppercase tracking-wider font-sans leading-none mt-0.5">
+                  {admin?.role?.replace('_', ' ') || 'Admin'}
+                </span>
+              </div>
+            </Link>
           </div>
         </header>
 

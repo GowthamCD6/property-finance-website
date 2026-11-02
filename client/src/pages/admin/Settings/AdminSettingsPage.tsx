@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
+import { UserAvatar } from '../../../components/common/UserAvatar';
 import {
   Clock,
   Calendar,
@@ -8,6 +11,8 @@ import {
   Trash2,
   Loader2,
   Shield,
+  ShieldCheck,
+  Users,
   Globe,
   CalendarOff,
   Check,
@@ -57,6 +62,7 @@ const DURATION_OPTIONS = [
 ];
 
 export const AdminSettingsPage: React.FC = () => {
+  const { admin } = useAuth();
   const [weeklyConfigs, setWeeklyConfigs] = useState<WeeklyConfig[]>([]);
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -379,6 +385,46 @@ export const AdminSettingsPage: React.FC = () => {
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold font-heading bg-teal-50 text-teal-700 border border-teal-200">
             Auto Slot Sync
           </span>
+        </div>
+      </div>
+
+      {/* Administrator Profile & Google Account Card */}
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <UserAvatar
+            src={admin?.avatar}
+            name={admin?.name || 'Admin'}
+            size={56}
+            showGoogleBadge={true}
+            className="ring-2 ring-teal-500/20 shadow-md shrink-0"
+          />
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base sm:text-lg font-bold font-heading text-slate-900">
+                {admin?.name || 'Administrator'}
+              </h2>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 font-heading">
+                {admin?.role?.replace('_', ' ') || 'Admin'}
+              </span>
+              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold border border-emerald-200">
+                <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                <span>Google Verified Administrator</span>
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 font-sans">
+              Google Workspace Account: <span className="font-semibold text-slate-700">{admin?.email}</span>
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <Link
+            to="/admin/team"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold font-heading text-teal-700 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 border border-teal-200/80 transition-colors shadow-2xs"
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>Manage Team Accounts</span>
+          </Link>
         </div>
       </div>
 

@@ -32,6 +32,7 @@ import {
   Share2,
 } from 'lucide-react';
 import { Enquiry, UploadedDocument } from '../../../types';
+import { UserAvatar } from '../../../components/common/UserAvatar';
 import {
   getEnquiriesApi,
   getEnquiryByIdApi,
@@ -554,35 +555,12 @@ export const AdminEnquiriesPage: React.FC = () => {
                       {/* Applicant & Contact with clean embedded Reference */}
                       <td className="py-4 px-5 min-w-[280px]">
                         <div className="flex items-center gap-3">
-                          {enq.customer?.picture ? (
-                            <div className="relative shrink-0">
-                              <img
-                                src={enq.customer.picture}
-                                alt={enq.fullName}
-                                className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-2xs"
-                              />
-                              <span
-                                className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
-                                title="Google Authenticated"
-                              >
-                                ✓
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="relative shrink-0">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-600 to-teal-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs font-heading">
-                                {initials}
-                              </div>
-                              {(enq.customer?.email || enq.customerId) && (
-                                <span
-                                  className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
-                                  title="Google Authenticated"
-                                >
-                                  ✓
-                                </span>
-                              )}
-                            </div>
-                          )}
+                          <UserAvatar
+                            src={enq.customer?.picture}
+                            name={enq.fullName}
+                            size={40}
+                            showGoogleBadge={Boolean(enq.customer?.email || enq.customerId)}
+                          />
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <span className="font-bold text-slate-900 font-heading text-sm group-hover:text-teal-700 transition-colors">
@@ -970,6 +948,20 @@ export const AdminEnquiriesPage: React.FC = () => {
                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 font-heading">
                           Applicant Dossier
                         </h4>
+                        <div className="flex items-center gap-3.5 pb-2 border-b border-slate-100">
+                          <UserAvatar
+                            src={detailEnquiry.customer?.picture}
+                            name={detailEnquiry.fullName}
+                            size={44}
+                            showGoogleBadge={Boolean(detailEnquiry.customer?.email || detailEnquiry.customerId)}
+                          />
+                          <div>
+                            <span className="font-bold text-[#0c1a26] text-sm font-heading block">{detailEnquiry.fullName}</span>
+                            <span className="text-[11px] text-slate-400 font-sans">
+                              {detailEnquiry.customer?.email ? 'Google Authenticated Borrower' : 'Direct Advisory Intake'}
+                            </span>
+                          </div>
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <span className="text-slate-400 block text-[11px]">Full Name</span>

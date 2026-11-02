@@ -39,6 +39,7 @@ import {
 import { DashboardStats } from '../../../types';
 import { getDashboardStatsApi, getAppointmentsApi } from '../../../services/api';
 import { useAuth } from '../../../context/AuthContext';
+import { UserAvatar } from '../../../components/common/UserAvatar';
 
 export const AdminDashboardPage: React.FC = () => {
   const { admin } = useAuth();
@@ -372,26 +373,42 @@ export const AdminDashboardPage: React.FC = () => {
           1. EXECUTIVE COMMAND HERO BANNER (SUBTITLE REMOVED)
           ──────────────────────────────────────────────────────────── */}
       <div className="rounded-2xl bg-[#0b1924] p-5 sm:p-6 text-white shadow-md border border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-[11px] font-semibold font-mono border border-teal-500/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>TiDB Cloud Synced</span>
-            </span>
-            <span className="text-slate-500">&bull;</span>
-            <span className="text-[11px] text-slate-300 font-mono font-medium">
-              {new Date().toLocaleDateString('en-IN', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })}
-            </span>
-          </div>
+        <div className="flex items-center gap-4">
+          <UserAvatar
+            src={admin?.avatar}
+            name={admin?.name || 'Admin'}
+            size={52}
+            showGoogleBadge={true}
+            className="ring-2 ring-white/15 shadow-md shrink-0"
+          />
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-[11px] font-semibold font-mono border border-teal-500/30">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>TiDB Cloud Synced</span>
+              </span>
+              <span className="text-slate-500">&bull;</span>
+              <span className="text-[11px] text-slate-300 font-mono font-medium">
+                {new Date().toLocaleDateString('en-IN', {
+                  weekday: 'short',
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <span>Google Verified Admin</span>
+              </span>
+            </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-heading text-white">
-            {admin?.name ? `Welcome, ${admin.name}` : `${getGreeting()}, Administrator`}
-          </h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-heading text-white">
+              {admin?.name ? `Welcome, ${admin.name}` : `${getGreeting()}, Administrator`}
+            </h1>
+            <p className="text-xs text-slate-400 font-sans">
+              Executive Console &bull; <span className="text-slate-200 font-medium">${admin?.email}</span> (${admin?.role?.toUpperCase() || 'ADMIN'})
+            </p>
+          </div>
         </div>
 
         {/* Quick Action Tools */}
