@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { AdminUser, CreateAdminPayload, UpdateAdminPayload } from '../../../types';
 import { useAuth } from '../../../context/AuthContext';
+import { UserAvatar } from '../../../components/common/UserAvatar';
 import {
   getAdminTeamApi,
   createAdminMemberApi,
@@ -470,22 +471,12 @@ export const AdminTeamPage: React.FC = () => {
                       {/* Name & Avatar */}
                       <td className="py-4 px-5">
                         <div className="flex items-center gap-3">
-                          {member.avatar ? (
-                            <img
-                              src={member.avatar}
-                              alt={member.name}
-                              className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-xs"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 text-white font-bold font-heading text-xs flex items-center justify-center border border-slate-700 shadow-xs">
-                              {member.name
-                                .split(' ')
-                                .map((n) => n[0])
-                                .join('')
-                                .substring(0, 2)
-                                .toUpperCase()}
-                            </div>
-                          )}
+                          <UserAvatar
+                            src={member.avatar}
+                            name={member.name}
+                            size={40}
+                            showGoogleBadge={true}
+                          />
                           <div>
                             <div className="flex items-center gap-1.5">
                               <span className="font-bold text-[#0c1a26] font-heading group-hover:text-teal-700 transition-colors">

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
+import { UserAvatar } from '../common/UserAvatar';
 import { triggerGoogleOAuth } from '../../utils/googleAuth';
 import { SiteContent } from '../../types';
 import { WealthAnchorLogo } from '../common/WealthAnchorLogo';
@@ -444,31 +445,24 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
                 <button
                   type="button"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="group relative flex items-center justify-center w-10 h-10 rounded-full border border-slate-200/90 hover:border-brand-teal/50 bg-white hover:bg-slate-50 shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-teal/30"
+                  className="group relative flex items-center justify-center p-0.5 rounded-full border border-slate-200/90 hover:border-brand-teal bg-white hover:bg-slate-50 shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-teal/30"
                   aria-label="User Account Menu"
-                  title={isAuthenticated && customer ? `${customer.name} (${customer.email})` : 'Client Account & Application Tracking'}
+                  title={isAuthenticated && customer ? `${customer.name} (${customer.email})` : 'Borrower Account & Application Tracking'}
                 >
                   {isAuthenticated && customer ? (
-                    customer.picture ? (
-                      <img
-                        src={customer.picture}
-                        alt={customer.name}
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full rounded-full bg-gradient-to-tr from-brand-teal to-[#114b48] text-white text-xs font-bold flex items-center justify-center">
-                        {customer.name.charAt(0).toUpperCase()}
-                      </div>
-                    )
+                    <UserAvatar
+                      src={customer.picture}
+                      name={customer.name}
+                      size={36}
+                      showGoogleBadge={true}
+                    />
                   ) : (
-                    <div className="w-full h-full rounded-full flex items-center justify-center text-slate-500 group-hover:text-brand-teal bg-slate-50 transition-colors">
+                    <div className="relative flex items-center justify-center w-9 h-9 rounded-full bg-slate-50 group-hover:bg-teal-50/50 text-slate-500 group-hover:text-brand-teal transition-all">
                       <User className="w-4 h-4" />
+                      <span className="absolute -bottom-0.5 -right-0.5 rounded-full bg-white p-0.5 shadow-2xs ring-1 ring-slate-200 flex items-center justify-center">
+                        <GoogleIcon size={11} />
+                      </span>
                     </div>
-                  )}
-
-                  {/* Online dot indicator for active customer */}
-                  {isAuthenticated && customer && (
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
                   )}
                 </button>
 
@@ -478,22 +472,18 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
                     {isAuthenticated && customer ? (
                       <>
                         <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-3">
-                          {customer.picture ? (
-                            <img
-                              src={customer.picture}
-                              alt={customer.name}
-                              className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-brand-teal text-white font-bold text-sm flex items-center justify-center shrink-0">
-                              {customer.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
+                          <UserAvatar
+                            src={customer.picture}
+                            name={customer.name}
+                            size="md"
+                            showGoogleBadge={true}
+                          />
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-bold text-brand-navy truncate">{customer.name}</p>
                             <p className="text-[11px] text-slate-500 truncate">{customer.email}</p>
-                            <span className="inline-block mt-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                              ● Google Verified
+                            <span className="inline-flex items-center gap-1 mt-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/50">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              Google Verified Profile
                             </span>
                           </div>
                         </div>
@@ -853,13 +843,12 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             ) : (
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
                 <div className="flex items-center gap-2.5">
-                  {customer.picture ? (
-                    <img src={customer.picture} alt={customer.name} className="w-8 h-8 rounded-full object-cover border border-slate-300" />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-brand-teal text-white font-bold text-xs flex items-center justify-center">
-                      {customer.name.charAt(0)}
-                    </div>
-                  )}
+                  <UserAvatar
+                    src={customer.picture}
+                    name={customer.name}
+                    size="sm"
+                    showGoogleBadge={true}
+                  />
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-brand-navy truncate">{customer.name}</p>
                     <p className="text-[10px] text-slate-500 truncate">{customer.email}</p>

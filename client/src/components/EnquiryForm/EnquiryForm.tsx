@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { GoogleIcon } from '../common/GoogleIcon';
+import { UserAvatar } from '../common/UserAvatar';
 import { triggerGoogleOAuth } from '../../utils/googleAuth';
 import { Service, UploadedDocument } from '../../types';
 import { submitLoanEnquiry, getPublicAvailability } from '../../services/api';
@@ -1692,17 +1693,12 @@ export const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   <div className="space-y-4">
                     <div className="p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-xl flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        {customer.picture ? (
-                          <img
-                            src={customer.picture}
-                            alt={customer.name}
-                            className="w-8 h-8 rounded-full border border-emerald-300 object-cover"
-                          />
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-emerald-700 text-white font-bold flex items-center justify-center text-xs">
-                            {customer.name.charAt(0)}
-                          </div>
-                        )}
+                        <UserAvatar
+                          src={customer.picture}
+                          name={customer.name}
+                          size={36}
+                          showGoogleBadge={true}
+                        />
                         <div>
                           <div className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
                             <span>Ready to Submit as: {customer.name}</span>

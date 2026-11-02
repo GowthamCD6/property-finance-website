@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { useCustomerAuth } from '../../../context/CustomerAuthContext';
 import { GoogleIcon } from '../../../components/common/GoogleIcon';
+import { UserAvatar } from '../../../components/common/UserAvatar';
 import { triggerGoogleOAuth } from '../../../utils/googleAuth';
 import { Enquiry, Testimonial } from '../../../types';
 import {
@@ -388,17 +389,13 @@ export const MyEnquiriesPage: React.FC = () => {
         {/* User Welcome Banner */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-[0_4px_24px_-2px_rgba(24,50,71,0.06)] flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            {customer.picture ? (
-              <img
-                src={customer.picture}
-                alt={customer.name}
-                className="w-16 h-16 rounded-2xl border-2 border-brand-teal/20 shadow-xs object-cover"
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-2xl bg-brand-teal text-white text-2xl font-black font-heading flex items-center justify-center shadow-xs">
-                {customer.name.charAt(0)}
-              </div>
-            )}
+            <UserAvatar
+              src={customer.picture}
+              name={customer.name}
+              size={64}
+              showGoogleBadge={true}
+              className="border-2 border-brand-teal/20 shadow-xs"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-black font-heading text-brand-navy">Welcome, {customer.name}</h1>
@@ -1257,17 +1254,12 @@ export const MyEnquiriesPage: React.FC = () => {
                   {/* 4. Verification Identity Box */}
                   <div className="p-3.5 bg-white rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-3">
-                      {customer.picture ? (
-                        <img
-                          src={customer.picture}
-                          alt={customer.name}
-                          className="w-9 h-9 rounded-xl object-cover border border-slate-200"
-                        />
-                      ) : (
-                        <div className="w-9 h-9 rounded-xl bg-brand-teal text-white font-bold flex items-center justify-center font-heading">
-                          {customer.name.charAt(0)}
-                        </div>
-                      )}
+                      <UserAvatar
+                        src={customer.picture}
+                        name={customer.name}
+                        size={36}
+                        showGoogleBadge={true}
+                      />
                       <div>
                         <span className="font-bold text-slate-800 font-heading block">
                           Submitting as: {customer.name}

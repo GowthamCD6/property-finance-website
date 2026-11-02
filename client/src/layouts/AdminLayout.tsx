@@ -19,6 +19,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { UserAvatar } from '../components/common/UserAvatar';
 import logoImg from '../assets/images/logo.png';
 import logoDarkImg from '../assets/images/logo-dark.png';
 import { getDashboardStatsApi } from '../services/api';
@@ -245,12 +246,11 @@ export const AdminLayout: React.FC = () => {
             {/* User Details */}
             <div className="flex items-center gap-2.5">
               <div className="relative flex-shrink-0">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-md ring-1 ring-teal-400/30">
-                  {admin?.name?.charAt(0) || 'A'}
-                </div>
-                <span
-                  className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-[#0e1726]"
-                  title="Authorized Session Active"
+                <UserAvatar
+                  src={admin?.avatar}
+                  name={admin?.name || 'Admin'}
+                  size={36}
+                  showGoogleBadge={true}
                 />
               </div>
 
@@ -353,10 +353,12 @@ export const AdminLayout: React.FC = () => {
               <div className="p-3 rounded-2xl bg-gradient-to-b from-[#0e1726] to-[#09101b] border border-slate-800/90 shadow-lg space-y-3">
                 <div className="flex items-center gap-2.5">
                   <div className="relative flex-shrink-0">
-                    <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
-                      {admin?.name?.charAt(0) || 'A'}
-                    </div>
-                    <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full ring-2 ring-[#0e1726]" />
+                    <UserAvatar
+                      src={admin?.avatar}
+                      name={admin?.name || 'Admin'}
+                      size={32}
+                      showGoogleBadge={true}
+                    />
                   </div>
                   <div className="overflow-hidden min-w-0 flex-1">
                     <div className="text-xs font-bold text-white truncate font-heading">
@@ -447,12 +449,12 @@ export const AdminLayout: React.FC = () => {
 
             {/* Quick Admin Profile Chip */}
             <div className="flex items-center gap-2 pl-1">
-              <div
-                className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-slate-100"
-                title={admin?.name || 'Administrator'}
-              >
-                {admin?.name?.charAt(0) || 'A'}
-              </div>
+              <UserAvatar
+                src={admin?.avatar}
+                name={admin?.name || 'Admin'}
+                size={32}
+                showGoogleBadge={true}
+              />
             </div>
           </div>
         </header>

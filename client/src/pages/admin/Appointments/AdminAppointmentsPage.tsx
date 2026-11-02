@@ -783,7 +783,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                             <div className="flex items-center gap-3">
                               {enq.customer?.picture ? (
                                 <img
-                                  src={enq.customer.picture}
+                                  src={enq.customer.picture} referrerPolicy="no-referrer" crossOrigin="anonymous"
                                   alt={enq.fullName}
                                   className="w-9 h-9 rounded-xl object-cover border border-slate-200 shadow-2xs shrink-0"
                                 />
@@ -1184,7 +1184,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                             <div className="flex items-center gap-3">
                               {appt.enquiry?.customer?.picture ? (
                                 <img
-                                  src={appt.enquiry.customer.picture}
+                                  src={appt.enquiry.customer.picture} referrerPolicy="no-referrer" crossOrigin="anonymous"
                                   alt={appt.enquiry.fullName}
                                   className="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0"
                                 />
