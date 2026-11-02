@@ -179,7 +179,7 @@ export const AdminLayout: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           1. FIXED DESKTOP SIDEBAR WITH SLEEK BRAND LOGO & NEAT FINTECH STYLING
           ──────────────────────────────────────────────────────────── */}
-      <aside className="hidden md:flex flex-col bg-[#080e18] bg-gradient-to-b from-[#0b1424] via-[#080e18] to-[#050910] text-white h-screen w-[292px] flex-shrink-0 select-none z-30 border-r border-slate-800/80 shadow-[4px_0_30px_rgba(0,0,0,0.35)] relative">
+      <aside className="hidden lg:flex flex-col bg-[#080e18] bg-gradient-to-b from-[#0b1424] via-[#080e18] to-[#050910] text-white h-screen w-[260px] xl:w-[280px] flex-shrink-0 select-none z-30 border-r border-slate-800/80 shadow-[4px_0_30px_rgba(0,0,0,0.35)] relative">
         {/* Brand Logo Header */}
         <div className="h-20 px-5 border-b border-slate-800/80 flex items-center justify-center bg-gradient-to-b from-[#0e192c]/70 to-transparent flex-shrink-0 text-center relative overflow-hidden">
           {/* Subtle Ambient Backlight */}
@@ -279,11 +279,11 @@ export const AdminLayout: React.FC = () => {
       </aside>
 
       {/* ────────────────────────────────────────────────────────────
-          2. MOBILE SIDEBAR DRAWER (OVERLAY)
+          2. MOBILE & TABLET SIDEBAR DRAWER (OVERLAY)
           ──────────────────────────────────────────────────────────── */}
       {mobileSidebarOpen && (
-        <div className="fixed inset-0 z-50 md:hidden bg-slate-950/75 backdrop-blur-xs flex">
-          <div className="w-[292px] bg-[#080e18] bg-gradient-to-b from-[#0b1424] via-[#080e18] to-[#050910] text-white h-full flex flex-col border-r border-slate-800/80 shadow-2xl animate-in slide-in-from-left duration-200">
+        <div className="fixed inset-0 z-50 lg:hidden bg-slate-950/75 backdrop-blur-xs flex">
+          <div className="w-[280px] sm:w-[300px] bg-[#080e18] bg-gradient-to-b from-[#0b1424] via-[#080e18] to-[#050910] text-white h-full flex flex-col border-r border-slate-800/80 shadow-2xl animate-in slide-in-from-left duration-200">
             {/* Mobile Header with Centered Dark Logo & Close Button */}
             <div className="h-20 px-4 border-b border-slate-800/80 flex items-center justify-between flex-shrink-0 bg-gradient-to-b from-[#0e192c]/70 to-transparent relative">
               <Link
@@ -388,35 +388,35 @@ export const AdminLayout: React.FC = () => {
           ──────────────────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#f4f6f8]">
         {/* Corporate Top Navbar */}
-        <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 sm:px-6 lg:px-8 flex-shrink-0 z-20 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
-          <div className="flex items-center gap-3">
+        <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-3 sm:px-6 lg:px-8 flex-shrink-0 z-20 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
               aria-label="Open Mobile Menu"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {/* Elegant Breadcrumb Hierarchy */}
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 font-heading">
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100/90 text-slate-600 text-xs font-semibold border border-slate-200/70">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 sm:gap-2 font-heading min-w-0">
+              <span className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100/90 text-slate-600 text-xs font-semibold border border-slate-200/70 shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />
                 Prime Associates
               </span>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 hidden sm:inline" />
-              <span className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 hidden md:inline shrink-0" />
+              <span className="text-xs sm:text-sm lg:text-base font-bold text-slate-900 tracking-tight truncate max-w-[130px] xs:max-w-[180px] sm:max-w-[280px] md:max-w-none">
                 {getCurrentPageTitle()}
               </span>
             </nav>
           </div>
 
           {/* Right Header Badges & Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Live IST Time Desk Clock */}
             {currentTime && (
-              <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
+              <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -439,7 +439,7 @@ export const AdminLayout: React.FC = () => {
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold font-heading text-slate-700 hover:text-teal-700 bg-white hover:bg-teal-50/50 border border-slate-200 hover:border-teal-300 shadow-2xs hover:shadow-xs transition-all duration-200 group active:scale-95"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold font-heading text-slate-700 hover:text-teal-700 bg-white hover:bg-teal-50/50 border border-slate-200 hover:border-teal-300 shadow-2xs hover:shadow-xs transition-all duration-200 group active:scale-95"
               title="Open Public User Website in New Tab"
             >
               <Globe className="w-3.5 h-3.5 text-teal-600 group-hover:rotate-12 transition-transform duration-300" />
@@ -450,17 +450,17 @@ export const AdminLayout: React.FC = () => {
             {/* Executive Admin Profile Chip with Google Avatar, Name & Role */}
             <Link
               to="/admin/settings"
-              className="flex items-center gap-2.5 pl-2 py-1 pr-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all duration-200 group shadow-2xs hover:shadow-xs cursor-pointer"
+              className="flex items-center gap-2 sm:gap-2.5 pl-1.5 sm:pl-2 py-1 pr-2 sm:pr-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all duration-200 group shadow-2xs hover:shadow-xs cursor-pointer"
               title="Administrator Profile & Settings"
             >
               <UserAvatar
                 src={admin?.avatar}
                 name={admin?.name || 'Admin'}
-                size={34}
+                size={32}
                 showGoogleBadge={true}
               />
-              <div className="hidden sm:flex flex-col text-left min-w-0">
-                <span className="text-xs font-bold text-slate-800 font-heading leading-tight truncate max-w-[140px] group-hover:text-teal-700 transition-colors">
+              <div className="hidden md:flex flex-col text-left min-w-0">
+                <span className="text-xs font-bold text-slate-800 font-heading leading-tight truncate max-w-[130px] group-hover:text-teal-700 transition-colors">
                   {admin?.name || 'Administrator'}
                 </span>
                 <span className="text-[10px] font-semibold text-teal-700 uppercase tracking-wider font-sans leading-none mt-0.5">
@@ -472,7 +472,7 @@ export const AdminLayout: React.FC = () => {
         </header>
 
         {/* Page Content Viewport */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3.5 sm:p-5 lg:p-6">
           {isLoading && !admin ? (
             <div className="space-y-6 animate-pulse">
               <div className="h-8 w-64 bg-slate-200 rounded-xl" />

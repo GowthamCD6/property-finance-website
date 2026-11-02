@@ -440,48 +440,48 @@ export const MyEnquiriesPage: React.FC = () => {
         {/* =========================================================================
             1. PRESTIGIOUS BORROWER EXECUTIVE HEADER BANNER
             ========================================================================= */}
-        <div className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="bg-white rounded-2xl p-5 sm:p-7 border border-slate-200 shadow-sm">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
             
             {/* User Profile Block */}
-            <div className="flex items-start sm:items-center gap-4 sm:gap-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 sm:gap-5">
               <div className="relative shrink-0">
                 <UserAvatar
                   src={customer.picture}
                   name={customer.name}
-                  size={64}
+                  size={58}
                   showGoogleBadge={true}
                   className="border border-slate-200 shadow-xs"
                 />
               </div>
 
               <div className="space-y-1">
-                <div className="flex flex-wrap items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-xl sm:text-2xl font-bold font-heading text-brand-navy tracking-tight">
                     Welcome, {customer.name}
                   </h1>
-                  <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold font-heading px-2.5 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold font-heading px-2 py-0.5 rounded-full">
                     <BadgeCheck className="w-3.5 h-3.5 text-emerald-600" />
                     <span>Google Verified</span>
                   </span>
                 </div>
 
-                <p className="text-xs text-brand-slate font-sans">
+                <p className="text-xs text-brand-slate font-sans break-all sm:break-normal">
                   {customer.email}
                 </p>
 
                 {/* Micro Meta Strip */}
-                <div className="flex flex-wrap items-center gap-3 pt-1 text-[11px] font-heading text-slate-500">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 text-[11px] font-heading text-slate-500">
                   <span className="flex items-center gap-1">
                     <Building className="w-3.5 h-3.5 text-brand-teal" />
                     <span>Tirupur Credit Desk</span>
                   </span>
-                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-300 hidden sm:inline">•</span>
                   <span className="flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Zero Brokerage Guaranteed</span>
+                    <span>Zero Brokerage</span>
                   </span>
-                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-300 hidden sm:inline">•</span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-slate-500" />
                     <span>
@@ -493,10 +493,10 @@ export const MyEnquiriesPage: React.FC = () => {
             </div>
 
             {/* Quick Action Controls */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+            <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100 w-full lg:w-auto">
               <Link
                 to="/enquire"
-                className="px-4 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-semibold font-heading rounded-xl shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto px-4 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-semibold font-heading rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <PlusCircle className="w-4 h-4" />
                 <span>New Loan Enquiry</span>
@@ -508,7 +508,7 @@ export const MyEnquiriesPage: React.FC = () => {
                   setActiveTab('review');
                   if (!customerReview) setIsEditingReview(true);
                 }}
-                className={`px-4 py-2.5 text-xs font-semibold font-heading rounded-xl border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                className={`w-full sm:w-auto px-4 py-2.5 text-xs font-semibold font-heading rounded-xl border transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                   customerReview
                     ? 'bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100'
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
@@ -521,11 +521,11 @@ export const MyEnquiriesPage: React.FC = () => {
               <button
                 type="button"
                 onClick={logout}
-                className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 text-xs font-semibold font-heading rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="w-full sm:w-auto px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 text-xs font-semibold font-heading rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 title="Sign out of portal"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Sign Out</span>
+                <span>Sign Out</span>
               </button>
             </div>
           </div>
@@ -534,20 +534,20 @@ export const MyEnquiriesPage: React.FC = () => {
         {/* =========================================================================
             2. STREAMLINED EXECUTIVE TAB DOCK
             ========================================================================= */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-1.5 rounded-xl border border-slate-200 shadow-2xs">
-          <div className="flex items-center gap-1">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-white p-2 rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 w-full md:w-auto">
             <button
               type="button"
               onClick={() => setActiveTab('enquiries')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold font-heading transition-all flex items-center gap-2 cursor-pointer ${
+              className={`px-3 sm:px-4 py-2.5 rounded-xl text-xs font-semibold font-heading transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 activeTab === 'enquiries'
                   ? 'bg-slate-900 text-white shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              <FileText className={`w-3.5 h-3.5 ${activeTab === 'enquiries' ? 'text-teal-300' : 'text-slate-500'}`} />
-              <span>Loan Enquiries &amp; Consultations</span>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-heading ${
+              <FileText className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'enquiries' ? 'text-teal-300' : 'text-slate-500'}`} />
+              <span className="truncate">Loan Enquiries &amp; Consultations</span>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-heading shrink-0 ${
                 activeTab === 'enquiries' ? 'bg-slate-800 text-teal-300' : 'bg-slate-100 text-slate-600'
               }`}>
                 {enquiries.length}
@@ -557,28 +557,28 @@ export const MyEnquiriesPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveTab('review')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold font-heading transition-all flex items-center gap-2 cursor-pointer ${
+              className={`px-3 sm:px-4 py-2.5 rounded-xl text-xs font-semibold font-heading transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 activeTab === 'review'
                   ? 'bg-slate-900 text-white shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-              <span>Borrower Review &amp; Feedback</span>
+              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
+              <span className="truncate">Borrower Feedback</span>
               {customerReview ? (
-                <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1 shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Live
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-600 font-bold">
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-600 font-bold shrink-0">
                   Share
                 </span>
               )}
             </button>
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-auto px-2">
+          <div className="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 px-1">
             <button
               type="button"
               onClick={handleManualRefresh}
@@ -742,7 +742,59 @@ export const MyEnquiriesPage: React.FC = () => {
                           <span className="font-semibold text-slate-500 font-heading">Application Lifecycle</span>
                           <span className="font-bold text-brand-teal font-heading">Stage {currentStage} of 5</span>
                         </div>
-                        <div className="grid grid-cols-5 gap-2 text-center">
+
+                        {/* Mobile Stepper View (< sm) */}
+                        <div className="sm:hidden space-y-2.5">
+                          <div className="flex items-center justify-between relative px-2 py-1">
+                            <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-slate-200 -translate-y-1/2 z-0" />
+                            <div
+                              className="absolute top-1/2 left-4 h-0.5 bg-teal-600 -translate-y-1/2 z-0 transition-all duration-300"
+                              style={{ width: `${Math.max(0, ((currentStage - 1) / 4) * 100)}%` }}
+                            />
+                            {[1, 2, 3, 4, 5].map((stepNum) => {
+                              const isDone = currentStage >= stepNum;
+                              const isCurrent = currentStage === stepNum;
+                              return (
+                                <div
+                                  key={stepNum}
+                                  className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold font-heading transition-colors ${
+                                    isDone
+                                      ? isCurrent
+                                        ? 'bg-brand-teal text-white ring-4 ring-teal-500/20 shadow-xs'
+                                        : 'bg-emerald-600 text-white'
+                                      : 'bg-white text-slate-400 border-2 border-slate-200'
+                                  }`}
+                                >
+                                  {isDone && !isCurrent ? <Check className="w-3.5 h-3.5" /> : stepNum}
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {/* Active Stage Callout on Mobile */}
+                          {(() => {
+                            const steps = [
+                              { num: 1, label: 'Enquiry Received', desc: 'Dossier Logged' },
+                              { num: 2, label: 'Advisor Assigned', desc: 'Desk Allotment' },
+                              { num: 3, label: 'Consultation', desc: isAllotted ? 'Slot Booked' : 'Queueing' },
+                              { num: 4, label: 'Bank Appraisal', desc: 'Credit Review' },
+                              { num: 5, label: 'Sanction & Payout', desc: 'Disbursal' },
+                            ];
+                            const curStep = steps.find((s) => s.num === currentStage) || steps[0];
+                            return (
+                              <div className="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-center">
+                                <span className="text-[11px] font-bold text-brand-navy font-heading">
+                                  Stage {currentStage}: {curStep.label}
+                                </span>
+                                <span className="text-[10px] text-slate-500 font-sans block mt-0.5">
+                                  {curStep.desc}
+                                </span>
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        {/* Tablet & Laptop 5-Column Stepper (>= sm) */}
+                        <div className="hidden sm:grid sm:grid-cols-5 gap-2 text-center">
                           {[
                             { num: 1, label: 'Enquiry Received', desc: 'Dossier Logged' },
                             { num: 2, label: 'Advisor Assigned', desc: 'Desk Allotment' },

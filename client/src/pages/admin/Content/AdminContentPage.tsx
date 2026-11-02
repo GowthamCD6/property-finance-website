@@ -3319,8 +3319,8 @@ export const AdminContentPage: React.FC = () => {
           </div>
 
           {/* ─── BOTTOM SAVE BAR FOR DEDICATED SECTION ─── */}
-          <div className="sticky bottom-1 z-20 bg-white/95 backdrop-blur-md py-2.5 px-4 rounded-xl border border-slate-200 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 font-sans mt-3">
-            <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="sticky bottom-1 z-20 bg-white/95 backdrop-blur-md py-2.5 px-3.5 sm:px-4 rounded-xl border border-slate-200 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 font-sans mt-3">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => selectModule(null)}
@@ -3333,7 +3333,7 @@ export const AdminContentPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => selectModule(prevModule.id)}
-                  className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1 transition-colors cursor-pointer"
+                  className="px-2.5 sm:px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1 transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Prev: {prevModule.title.split(' ')[0]}</span>
@@ -3343,7 +3343,7 @@ export const AdminContentPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => selectModule(nextModule.id)}
-                  className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1 transition-colors cursor-pointer"
+                  className="px-2.5 sm:px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold font-heading inline-flex items-center gap-1 transition-colors cursor-pointer"
                 >
                   <span className="hidden sm:inline">Next: {nextModule.title.split(' ')[0]}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -3351,17 +3351,17 @@ export const AdminContentPage: React.FC = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-              <div className="flex items-center gap-2 text-[11px] text-slate-500">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+              <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-500">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="hidden sm:inline">Unsaved edits remain in draft until published.</span>
+                <span>Unsaved edits remain in draft until published.</span>
               </div>
 
               <button
                 type="button"
                 onClick={() => handleSaveAll()}
                 disabled={saving}
-                className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs font-heading rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 text-white font-extrabold text-xs font-heading rounded-xl shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
               >
                 {saving ? (
                   <>

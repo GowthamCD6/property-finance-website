@@ -141,17 +141,17 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* 5 KPI Cards Skeleton (Without left line color) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-xs space-y-3">
+            <div key={i} className="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/90 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-slate-200" />
-                <div className="w-14 h-4 rounded bg-slate-100" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-200" />
+                <div className="w-12 sm:w-14 h-4 rounded bg-slate-100" />
               </div>
               <div className="space-y-2">
-                <div className="h-7 w-12 bg-slate-300 rounded-lg" />
-                <div className="h-3.5 w-24 bg-slate-200 rounded" />
-                <div className="h-2.5 w-32 bg-slate-100 rounded" />
+                <div className="h-6 sm:h-7 w-12 bg-slate-300 rounded-lg" />
+                <div className="h-3.5 w-20 sm:w-24 bg-slate-200 rounded" />
+                <div className="h-2.5 w-28 sm:w-32 bg-slate-100 rounded" />
               </div>
             </div>
           ))}
@@ -412,7 +412,7 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Quick Action Tools */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => fetchDashboardData(true)}
@@ -424,7 +424,7 @@ export const AdminDashboardPage: React.FC = () => {
 
           <Link
             to="/admin/customers"
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-semibold font-heading transition-colors"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-semibold font-heading transition-colors"
           >
             <Users className="w-4 h-4 text-teal-300" />
             <span>Borrower Accounts</span>
@@ -432,7 +432,7 @@ export const AdminDashboardPage: React.FC = () => {
 
           <Link
             to="/admin/appointments"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-xs sm:text-sm font-bold font-heading shadow-md shadow-teal-500/20 transition-all cursor-pointer active:scale-[0.98]"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-xs sm:text-sm font-bold font-heading shadow-md shadow-teal-500/20 transition-all cursor-pointer active:scale-[0.98]"
           >
             <CalendarCheck2 className="w-4 h-4" />
             <span>Appointments Hub</span>
@@ -443,11 +443,11 @@ export const AdminDashboardPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. FIVE KEY PERFORMANCE INDICATOR CARDS (CLEAN - NO LINE COLOR)
           ──────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
         {kpis.map((k, idx) => (
           <div
             key={idx}
-            className="group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 hover:-translate-y-0.5"
+            className="group bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 hover:-translate-y-0.5"
           >
             <div className="flex items-center justify-between mb-3">
               <div className={`p-2 rounded-xl border ${k.bgIcon} transition-transform group-hover:scale-105 duration-200`}>
