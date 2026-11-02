@@ -115,12 +115,50 @@ function computeSlotString(hour: number, minute: number, period: 'AM' | 'PM', du
   return `${startStr} - ${endStr}`;
 }
 
-// Ultra-Professional Time Picker Modal Component
+// Helper to extract 24-hour "HH:MM" from slot string
+function get24HourFromSlot(slotStr: string): string {
+  const p = parseSlotString(slotStr);
+  let h = p.hour % 12;
+  if (p.period === 'PM') h += 12;
+  return `${String(h).padStart(2, '0')}:${String(p.minute).padStart(2, '0')}`;
+}
+
+// Helper to compute slot string from 24-hour "HH:MM" and duration
+function computeSlotFrom24(time24: string, durationMin: number = 60): string {
+  if (!time24) return '11:30 AM - 12:30 PM';
+  const parts = time24.split(':');
+  const h24 = parseInt(parts[0], 10) || 0;
+  const minute = parseInt(parts[1], 10) || 0;
+  const period: 'AM' | 'PM' = h24 >= 12 ? 'PM' : 'AM';
+  let hour12 = h24 % 12;
+  if (hour12 === 0) hour12 = 12;
+  return computeSlotString(hour12, minute, period, durationMin);
+}
+
+// Helper to format date in readable format
+function formatDateReadable(dateStr: string): string {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-IN', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+// Clean Default Date and Time Picker Modal Component
 interface TimePickerModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentSlot: string;
   onApplySlot: (newSlot: string) => void;
+  currentDate?: string;
+  onApplyDate?: (newDate: string) => void;
   title?: string;
 }
 
@@ -129,42 +167,25 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
   onClose,
   currentSlot,
   onApplySlot,
+  currentDate,
+  onApplyDate,
   title = 'Select Consultation Time Slot',
 }) => {
-  const parsed = parseSlotString(currentSlot);
-  const [selectedHour, setSelectedHour] = useState<number>(parsed.hour);
-  const [selectedMinute, setSelectedMinute] = useState<number>(parsed.minute);
-  const [selectedPeriod, setSelectedPeriod] = useState<'AM' | 'PM'>(parsed.period);
-  const [selectedDuration, setSelectedDuration] = useState<number>(parsed.durationMin || 60);
+  const [slotDate, setSlotDate] = useState<string>(currentDate || '');
+  const [startTime24, setStartTime24] = useState<string>(() => get24HourFromSlot(currentSlot));
+  const [durationMin, setDurationMin] = useState<number>(() => parseSlotString(currentSlot).durationMin || 60);
 
   useEffect(() => {
     if (isOpen) {
-      const p = parseSlotString(currentSlot);
-      setSelectedHour(p.hour);
-      setSelectedMinute(p.minute);
-      setSelectedPeriod(p.period);
-      setSelectedDuration(p.durationMin || 60);
+      setSlotDate(currentDate || '');
+      setStartTime24(get24HourFromSlot(currentSlot));
+      setDurationMin(parseSlotString(currentSlot).durationMin || 60);
     }
-  }, [isOpen, currentSlot]);
+  }, [isOpen, currentSlot, currentDate]);
 
   if (!isOpen || typeof document === 'undefined') return null;
 
-  const calculatedSlot = computeSlotString(
-    selectedHour,
-    selectedMinute,
-    selectedPeriod,
-    selectedDuration
-  );
-
-  const hoursList = [9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7];
-  const minutesList = [0, 15, 30, 45];
-  const durationsList = [
-    { label: '30 Min', value: 30 },
-    { label: '45 Min', value: 45 },
-    { label: '60 Min (1 Hr)', value: 60 },
-    { label: '90 Min (1.5 Hr)', value: 90 },
-    { label: '2 Hours', value: 120 },
-  ];
+  const liveCalculatedSlot = computeSlotFrom24(startTime24, durationMin);
 
   const standardPresets = [
     { label: 'Morning Slot 1', slot: '10:00 AM - 11:00 AM' },
@@ -174,12 +195,18 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
     { label: 'Evening Slot', slot: '05:00 PM - 06:00 PM' },
   ];
 
-  const handlePresetClick = (slot: string) => {
-    const p = parseSlotString(slot);
-    setSelectedHour(p.hour);
-    setSelectedMinute(p.minute);
-    setSelectedPeriod(p.period);
-    setSelectedDuration(p.durationMin);
+  const handlePresetClick = (presetSlot: string) => {
+    setStartTime24(get24HourFromSlot(presetSlot));
+    const p = parseSlotString(presetSlot);
+    setDurationMin(p.durationMin || 60);
+  };
+
+  const handleApply = () => {
+    onApplySlot(liveCalculatedSlot);
+    if (onApplyDate && slotDate) {
+      onApplyDate(slotDate);
+    }
+    onClose();
   };
 
   return createPortal(
@@ -189,21 +216,21 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200/90 animate-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto"
+        className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200/90 animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-start justify-between pb-3.5 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center border border-teal-200/60 shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center border border-teal-200/60 shadow-xs">
               <Clock className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-[#0c1a26] font-heading leading-tight">
+              <h3 className="font-extrabold text-base sm:text-lg text-[#0c1a26] font-heading leading-tight">
                 {title}
               </h3>
               <p className="text-[11px] text-slate-500 font-sans">
-                Set consultation start time and session duration
+                Set consultation schedule using standard picker
               </p>
             </div>
           </div>
@@ -222,147 +249,100 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
             <div className="text-[10px] font-bold uppercase tracking-wider text-teal-300 font-heading">
               Selected Consultation Window
             </div>
-            <div className="text-lg sm:text-xl font-mono font-bold tracking-tight text-white mt-0.5">
-              {calculatedSlot}
+            <div className="text-base sm:text-lg font-mono font-bold tracking-tight text-white mt-0.5">
+              {liveCalculatedSlot}
             </div>
+            {slotDate && (
+              <div className="text-[11px] text-slate-300 font-sans mt-0.5">
+                {formatDateReadable(slotDate)}
+              </div>
+            )}
           </div>
           <div className="text-right">
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-teal-400/20 text-teal-200 border border-teal-400/30">
-              {selectedDuration} Mins
+              {durationMin} Mins
             </span>
           </div>
         </div>
 
-        {/* Quick Standard Slots */}
-        <div className="mt-4">
-          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 font-heading">
-            Quick Standard Slots
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-            {standardPresets.map((preset) => {
-              const isSelected = calculatedSlot === preset.slot;
-              return (
-                <button
-                  key={preset.slot}
-                  type="button"
-                  onClick={() => handlePresetClick(preset.slot)}
-                  className={`px-2.5 py-2 rounded-xl text-left border text-xs font-mono font-semibold transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-teal-50 border-teal-500 text-teal-900 ring-2 ring-teal-500/20 shadow-xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
-                  }`}
-                >
-                  <span className="block text-[10px] text-slate-400 font-sans font-medium">
-                    {preset.label}
-                  </span>
-                  <span className="block text-[#0c1a26] font-bold">{preset.slot.split(' - ')[0]}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* Default Pickers */}
+        <div className="mt-4 space-y-3.5">
+          {currentDate !== undefined && (
+            <div>
+              <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
+                Consultation Date
+              </label>
+              <div className="relative">
+                <CalendarIcon className="w-4 h-4 text-teal-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="date"
+                  min={new Date().toISOString().split('T')[0]}
+                  value={slotDate}
+                  onChange={(e) => setSlotDate(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                />
+              </div>
+            </div>
+          )}
 
-        {/* Custom Start Time Picker */}
-        <div className="mt-4 pt-3.5 border-t border-slate-100 space-y-3.5">
-          <div className="flex items-center justify-between">
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider font-heading">
-              Custom Time Builder
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
+                Start Time (Default Picker)
+              </label>
+              <div className="relative">
+                <Clock className="w-4 h-4 text-teal-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="time"
+                  required
+                  value={startTime24}
+                  onChange={(e) => setStartTime24(e.target.value)}
+                  className="w-full pl-9 pr-2 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-mono font-bold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
+                Session Duration
+              </label>
+              <select
+                value={durationMin}
+                onChange={(e) => setDurationMin(parseInt(e.target.value, 10))}
+                className="w-full py-2.5 px-3 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+              >
+                <option value={30}>30 Minutes</option>
+                <option value={45}>45 Minutes</option>
+                <option value={60}>60 Min (1 Hour)</option>
+                <option value={90}>90 Min (1.5 Hr)</option>
+                <option value={120}>120 Min (2 Hours)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Quick Standard Slots */}
+          <div>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 font-heading">
+              Quick Preset Slots
             </label>
-            {/* AM / PM Toggle */}
-            <div className="inline-flex rounded-xl bg-slate-100 p-0.5 border border-slate-200/80">
-              <button
-                type="button"
-                onClick={() => setSelectedPeriod('AM')}
-                className={`px-3 py-1 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
-                  selectedPeriod === 'AM'
-                    ? 'bg-[#0c1a26] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                AM (Morning)
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedPeriod('PM')}
-                className={`px-3 py-1 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
-                  selectedPeriod === 'PM'
-                    ? 'bg-[#0c1a26] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                PM (Afternoon / Eve)
-              </button>
-            </div>
-          </div>
-
-          {/* Hour Selector */}
-          <div>
-            <span className="text-[11px] font-bold text-slate-600 mb-1.5 block">Start Hour:</span>
-            <div className="grid grid-cols-6 sm:grid-cols-11 gap-1.5">
-              {hoursList.map((h) => {
-                const isHSelected = selectedHour === h;
-                const displayH = h < 10 ? `0${h}` : `${h}`;
+            <div className="grid grid-cols-2 gap-1.5">
+              {standardPresets.map((preset) => {
+                const isSelected = liveCalculatedSlot === preset.slot;
                 return (
                   <button
-                    key={h}
+                    key={preset.slot}
                     type="button"
-                    onClick={() => setSelectedHour(h)}
-                    className={`py-1.5 rounded-lg text-xs font-mono font-bold text-center border transition-all cursor-pointer ${
-                      isHSelected
-                        ? 'bg-[#187C78] text-white border-[#187C78] shadow-xs'
-                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    onClick={() => handlePresetClick(preset.slot)}
+                    className={`px-2.5 py-1.5 rounded-xl text-left border text-xs font-mono font-semibold transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-teal-50 border-teal-500 text-teal-900 ring-2 ring-teal-500/20 shadow-xs'
+                        : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                     }`}
                   >
-                    {displayH}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Minute Selector */}
-          <div>
-            <span className="text-[11px] font-bold text-slate-600 mb-1.5 block">Start Minute:</span>
-            <div className="grid grid-cols-4 gap-2">
-              {minutesList.map((m) => {
-                const isMSelected = selectedMinute === m;
-                const displayM = m < 10 ? `0${m}` : `${m}`;
-                return (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => setSelectedMinute(m)}
-                    className={`py-1.5 rounded-lg text-xs font-mono font-bold text-center border transition-all cursor-pointer ${
-                      isMSelected
-                        ? 'bg-[#187C78] text-white border-[#187C78] shadow-xs'
-                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    :{displayM}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Duration Selector */}
-          <div>
-            <span className="text-[11px] font-bold text-slate-600 mb-1.5 block">Session Duration:</span>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {durationsList.map((d) => {
-                const isDSelected = selectedDuration === d.value;
-                return (
-                  <button
-                    key={d.value}
-                    type="button"
-                    onClick={() => setSelectedDuration(d.value)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border transition-all cursor-pointer ${
-                      isDSelected
-                        ? 'bg-teal-50 text-teal-900 border-teal-500 ring-2 ring-teal-500/20'
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    {d.label}
+                    <span className="block text-[10px] text-slate-400 font-sans font-medium">
+                      {preset.label}
+                    </span>
+                    <span className="block text-[#0c1a26] font-bold">{preset.slot.split(' - ')[0]}</span>
                   </button>
                 );
               })}
@@ -381,10 +361,7 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => {
-              onApplySlot(calculatedSlot);
-              onClose();
-            }}
+            onClick={handleApply}
             className="px-5 py-2 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs sm:text-sm font-heading font-bold shadow-sm hover:shadow transition-all cursor-pointer flex items-center gap-1.5"
           >
             <Check className="w-4 h-4" />
@@ -441,6 +418,8 @@ export const AdminAppointmentsPage: React.FC = () => {
     return d.toISOString().split('T')[0];
   });
   const [allotSlot, setAllotSlot] = useState('11:30 AM - 12:30 PM');
+  const [allotStartTime, setAllotStartTime] = useState(() => get24HourFromSlot('11:30 AM - 12:30 PM'));
+  const [allotDuration, setAllotDuration] = useState<number>(60);
   const [allotMode, setAllotMode] = useState<'phone' | 'video' | 'in_person'>('phone');
   const [allotNotes, setAllotNotes] = useState('');
   const [allotLoading, setAllotLoading] = useState(false);
@@ -464,6 +443,8 @@ export const AdminAppointmentsPage: React.FC = () => {
   // Reschedule form
   const [newDate, setNewDate] = useState('');
   const [newSlot, setNewSlot] = useState('');
+  const [rescheduleStartTime, setRescheduleStartTime] = useState('11:30');
+  const [rescheduleDuration, setRescheduleDuration] = useState<number>(60);
   const [rescheduleReason, setRescheduleReason] = useState('');
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
@@ -571,9 +552,26 @@ export const AdminAppointmentsPage: React.FC = () => {
     } else {
       setAllotMode('phone');
     }
+    if (enquiry.preferredTimeSlot && enquiry.preferredTimeSlot.includes('-')) {
+      setAllotSlot(enquiry.preferredTimeSlot);
+      setAllotStartTime(get24HourFromSlot(enquiry.preferredTimeSlot));
+      setAllotDuration(parseSlotString(enquiry.preferredTimeSlot).durationMin || 60);
+    }
     setAllotError(null);
     setAllotNotes('');
     setIsAllotModalOpen(true);
+  };
+
+  // Helper to apply borrower preference directly inside allotment modal
+  const handleApplyBorrowerPreference = (enquiry: Enquiry) => {
+    if (enquiry.meetingMode) {
+      setAllotMode(enquiry.meetingMode as 'phone' | 'video' | 'in_person');
+    }
+    if (enquiry.preferredTimeSlot && enquiry.preferredTimeSlot.includes('-')) {
+      setAllotSlot(enquiry.preferredTimeSlot);
+      setAllotStartTime(get24HourFromSlot(enquiry.preferredTimeSlot));
+      setAllotDuration(parseSlotString(enquiry.preferredTimeSlot).durationMin || 60);
+    }
   };
 
   // Open generic Allot Modal (allows choosing any applicant from list)
@@ -1647,6 +1645,8 @@ export const AdminAppointmentsPage: React.FC = () => {
                                   setActiveModal({ type: 'reschedule', appointment: appt });
                                   setNewDate(appt.date);
                                   setNewSlot(appt.timeSlot);
+                                  setRescheduleStartTime(get24HourFromSlot(appt.timeSlot));
+                                  setRescheduleDuration(parseSlotString(appt.timeSlot).durationMin || 60);
                                   setRescheduleReason('');
                                 }}
                                 className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl font-bold text-xs font-heading transition-colors cursor-pointer"
@@ -1778,22 +1778,32 @@ export const AdminAppointmentsPage: React.FC = () => {
           onClick={() => setIsAllotModalOpen(false)}
         >
           <div
-            className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200/90 animate-in zoom-in-95 duration-150 my-8"
+            className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200/90 animate-in zoom-in-95 duration-150 my-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 font-heading block">
-                  Advisor Consultation Allotment
-                </span>
-                <h3 className="font-extrabold text-lg sm:text-xl text-[#0c1a26] font-heading">
-                  Allot Time Slot to Applicant
-                </h3>
+            {/* Header */}
+            <div className="flex items-start justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 text-white flex items-center justify-center shadow-md shadow-teal-600/20 shrink-0">
+                  <CalendarCheck2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-teal-700 font-heading block">
+                    Advisor Consultation Allotment
+                  </span>
+                  <h3 className="font-extrabold text-lg sm:text-xl text-[#0c1a26] font-heading leading-tight">
+                    Allot Time Slot to Applicant
+                  </h3>
+                  <p className="text-[11px] text-slate-500 font-sans mt-0.5">
+                    Assign consultation schedule &amp; advisor dispatch details
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAllotModalOpen(false)}
                 className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                title="Close"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1807,39 +1817,72 @@ export const AdminAppointmentsPage: React.FC = () => {
             )}
 
             <form onSubmit={handleAllotSubmit} className="mt-5 space-y-4 text-xs sm:text-sm">
-              {/* If specific applicant was preselected, show card; otherwise dropdown */}
+              {/* If specific applicant was preselected, show executive dossier card; otherwise dropdown */}
               {selectedEnquiry ? (
-                <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-200/80 space-y-2">
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-50 via-teal-50/25 to-slate-50 border border-teal-200/90 shadow-2xs space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-teal-800 font-heading">
-                      Selected Applicant Dossier
-                    </span>
-                    <span className="font-mono text-teal-800 font-bold text-xs bg-white px-2 py-0.5 rounded border border-teal-200">
-                      {selectedEnquiry.referenceNumber}
+                    <div className="flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-900 font-heading">
+                        Verified Applicant Dossier
+                      </span>
+                    </div>
+                    <span className="font-mono text-xs font-bold text-slate-800 bg-white px-2.5 py-0.5 rounded-lg border border-teal-200/80 shadow-2xs">
+                      Ref: {selectedEnquiry.referenceNumber}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-teal-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0">
-                      {selectedEnquiry.fullName.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-extrabold text-[#0c1a26] text-sm font-heading">
-                        {selectedEnquiry.fullName}
-                      </h4>
-                      <p className="text-xs text-slate-600">
-                        {selectedEnquiry.loanType} &bull; <strong className="text-teal-700 font-mono">{formatAmountINR(selectedEnquiry.loanAmount)}</strong> &bull; {selectedEnquiry.mobileNumber}
-                      </p>
+
+                  <div className="flex items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0c1a26] to-teal-800 text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-xs ring-2 ring-white">
+                        {selectedEnquiry.fullName.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="font-extrabold text-[#0c1a26] text-sm sm:text-base font-heading leading-snug">
+                          {selectedEnquiry.fullName}
+                        </h4>
+                        <div className="flex flex-wrap items-center gap-2 mt-1">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-white text-slate-700 border border-slate-200/80">
+                            {selectedEnquiry.loanType}
+                          </span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold font-mono bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            {formatAmountINR(selectedEnquiry.loanAmount)}
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-medium text-slate-600">
+                            <Phone className="w-3 h-3 text-teal-600" />
+                            {selectedEnquiry.mobileNumber}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Applicant's Preferred Window Notice */}
-                  <div className="mt-2 pt-2 border-t border-teal-100 flex items-center gap-2 text-[11px] text-teal-900">
-                    <Clock className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                    <span>
-                      Borrower requested window:{' '}
-                      <strong>{selectedEnquiry.preferredTimeSlot || selectedEnquiry.preferredContactMethod || 'Any Time'}</strong> via{' '}
-                      <strong className="capitalize">{selectedEnquiry.meetingMode?.replace('_', ' ') || 'phone'}</strong>
-                    </span>
+                  {/* Applicant's Preferred Window Notice & 1-Click Apply */}
+                  <div className="pt-2.5 border-t border-teal-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-1.5 text-teal-950">
+                      <Clock className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                      <span>
+                        Borrower requested window:{' '}
+                        <strong className="text-[#0c1a26] font-semibold">
+                          {selectedEnquiry.preferredTimeSlot || selectedEnquiry.preferredContactMethod || 'Any Time'}
+                        </strong>{' '}
+                        via{' '}
+                        <strong className="capitalize text-[#0c1a26]">
+                          {selectedEnquiry.meetingMode?.replace('_', ' ') || 'Direct Phone'}
+                        </strong>
+                      </span>
+                    </div>
+
+                    {(selectedEnquiry.preferredTimeSlot || selectedEnquiry.meetingMode) && (
+                      <button
+                        type="button"
+                        onClick={() => handleApplyBorrowerPreference(selectedEnquiry)}
+                        className="text-[11px] font-bold font-heading text-teal-700 hover:text-teal-900 bg-white hover:bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200/90 shadow-2xs transition-all cursor-pointer flex items-center gap-1"
+                      >
+                        <Sparkles className="w-3 h-3 text-teal-600" />
+                        <span>Apply Preference</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -1865,6 +1908,11 @@ export const AdminAppointmentsPage: React.FC = () => {
                           if (enq.meetingMode) {
                             setAllotMode(enq.meetingMode as 'phone' | 'video' | 'in_person');
                           }
+                          if (enq.preferredTimeSlot && enq.preferredTimeSlot.includes('-')) {
+                            setAllotSlot(enq.preferredTimeSlot);
+                            setAllotStartTime(get24HourFromSlot(enq.preferredTimeSlot));
+                            setAllotDuration(parseSlotString(enq.preferredTimeSlot).durationMin || 60);
+                          }
                         }
                       }}
                       className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20"
@@ -1882,95 +1930,141 @@ export const AdminAppointmentsPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Date and Time Slot Allocation */}
+              {/* Consultation Date & Default Time Picker */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
-                    Consultation Date
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={allotDate}
-                    onChange={(e) => setAllotDate(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:bg-white"
-                  />
-                </div>
-
+                {/* Consultation Date */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-xs font-bold text-[#0c1a26] font-heading">
-                      Time Slot Allocation
+                      Consultation Date <span className="text-red-500">*</span>
+                    </label>
+                    <span className="text-[10px] text-teal-700 font-semibold font-sans">
+                      {formatDateReadable(allotDate)}
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <CalendarIcon className="w-4 h-4 text-teal-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="date"
+                      required
+                      min={new Date().toISOString().split('T')[0]}
+                      value={allotDate}
+                      onChange={(e) => setAllotDate(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-teal-500 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                {/* Consultation Time (Default Time Picker + Duration) */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-[#0c1a26] font-heading">
+                      Consultation Time Slot <span className="text-red-500">*</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setTimePickerTarget('allot')}
                       className="text-[11px] font-bold text-teal-700 hover:text-teal-800 flex items-center gap-1 cursor-pointer"
                     >
-                      <span>Custom Time Picker</span>
+                      <span>Time Picker Modal</span>
                       <Sparkles className="w-3 h-3 text-teal-600" />
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setTimePickerTarget('allot')}
-                    className="w-full flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/90 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer group text-left"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform" />
-                      <span className="font-mono text-xs sm:text-sm font-bold text-[#0c1a26]">
-                        {allotSlot || 'Select Time Slot'}
-                      </span>
+                  <div className="flex items-center gap-2">
+                    {/* Default Native Time Picker */}
+                    <div className="relative flex-1">
+                      <Clock className="w-4 h-4 text-teal-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="time"
+                        required
+                        value={allotStartTime}
+                        onChange={(e) => {
+                          const newTime = e.target.value;
+                          setAllotStartTime(newTime);
+                          setAllotSlot(computeSlotFrom24(newTime, allotDuration));
+                        }}
+                        className="w-full pl-9 pr-2 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-teal-500 rounded-xl text-xs sm:text-sm font-mono font-bold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                      />
                     </div>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200/60 group-hover:bg-teal-100 transition-colors">
-                      Pick Slot
-                      <ChevronRight className="w-3 h-3" />
-                    </span>
-                  </button>
+                    {/* Duration Select */}
+                    <select
+                      value={allotDuration}
+                      onChange={(e) => {
+                        const newDur = parseInt(e.target.value, 10);
+                        setAllotDuration(newDur);
+                        setAllotSlot(computeSlotFrom24(allotStartTime, newDur));
+                      }}
+                      className="w-28 sm:w-32 py-2.5 px-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-teal-500 rounded-xl text-xs font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                    >
+                      <option value={30}>30 mins</option>
+                      <option value={45}>45 mins</option>
+                      <option value={60}>60 mins (1 Hr)</option>
+                      <option value={90}>90 mins (1.5 Hr)</option>
+                      <option value={120}>120 mins (2 Hr)</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
-              {/* Quick Slots Shortcuts */}
-              <div className="flex flex-wrap items-center gap-1.5 -mt-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-heading mr-0.5">
-                  Quick Slots:
-                </span>
-                {['10:00 AM - 11:00 AM', '11:30 AM - 12:30 PM', '02:00 PM - 03:00 PM', '03:30 PM - 04:30 PM', '05:00 PM - 06:00 PM'].map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setAllotSlot(s)}
-                    className={`px-2 py-0.5 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer ${
-                      allotSlot === s
-                        ? 'bg-[#0c1a26] text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 border border-slate-200/60'
-                    }`}
-                  >
-                    {s.split(' - ')[0]}
-                  </button>
-                ))}
+              {/* Live Formatted Slot Banner & Quick Slot Chips */}
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-heading">
+                    Allotted Window:
+                  </span>
+                  <span className="font-mono text-xs sm:text-sm font-bold text-teal-800 bg-white px-2 py-0.5 rounded-md border border-teal-200/70 shadow-2xs">
+                    {allotSlot}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-heading mr-0.5">
+                    Quick:
+                  </span>
+                  {STANDARD_SLOTS.map((s) => {
+                    const isSelected = allotSlot === s;
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => {
+                          setAllotSlot(s);
+                          setAllotStartTime(get24HourFromSlot(s));
+                          setAllotDuration(parseSlotString(s).durationMin || 60);
+                        }}
+                        className={`px-2 py-1 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#0c1a26] text-white shadow-xs'
+                            : 'bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+                        }`}
+                      >
+                        {s.split(' - ')[0]}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Consultation Meeting Mode */}
               <div>
                 <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">
-                  Consultation Mode
+                  Consultation Mode <span className="text-red-500">*</span>
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2.5">
                   <button
                     type="button"
                     onClick={() => {
                       setAllotMode('phone');
                       if (allotNotes.includes('meet.google.com')) setAllotNotes('');
                     }}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                       allotMode === 'phone'
-                        ? 'bg-emerald-50 text-emerald-900 border-emerald-400 ring-2 ring-emerald-400/30 font-bold'
+                        ? 'bg-emerald-50/80 text-emerald-950 border-emerald-500 ring-2 ring-emerald-500/20 font-bold shadow-xs'
                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
                     <Phone className="w-4 h-4 mx-auto mb-1 text-emerald-600" />
-                    <span className="text-[11px] block font-heading">Direct Phone</span>
+                    <span className="text-xs block font-heading font-bold">Direct Phone</span>
+                    <span className="text-[10px] text-slate-400 font-sans block mt-0.5">Direct phone call</span>
                   </button>
 
                   <button
@@ -1982,14 +2076,15 @@ export const AdminAppointmentsPage: React.FC = () => {
                         setAllotNotes(`https://meet.google.com/vpf-${randomCode}`);
                       }
                     }}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                       allotMode === 'video'
-                        ? 'bg-sky-50 text-sky-900 border-sky-400 ring-2 ring-sky-400/30 font-bold'
+                        ? 'bg-sky-50/80 text-sky-950 border-sky-500 ring-2 ring-sky-500/20 font-bold shadow-xs'
                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
                     <Video className="w-4 h-4 mx-auto mb-1 text-sky-600" />
-                    <span className="text-[11px] block font-heading">Google Meet</span>
+                    <span className="text-xs block font-heading font-bold">Google Meet</span>
+                    <span className="text-[10px] text-slate-400 font-sans block mt-0.5">Video consultation</span>
                   </button>
 
                   <button
@@ -1998,14 +2093,15 @@ export const AdminAppointmentsPage: React.FC = () => {
                       setAllotMode('in_person');
                       if (allotNotes.includes('meet.google.com')) setAllotNotes('');
                     }}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                       allotMode === 'in_person'
-                        ? 'bg-purple-50 text-purple-900 border-purple-400 ring-2 ring-purple-400/30 font-bold'
+                        ? 'bg-purple-50/80 text-purple-950 border-purple-500 ring-2 ring-purple-500/20 font-bold shadow-xs'
                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
                     <Building2 className="w-4 h-4 mx-auto mb-1 text-purple-600" />
-                    <span className="text-[11px] block font-heading">Doorstep Visit</span>
+                    <span className="text-xs block font-heading font-bold">Doorstep Visit</span>
+                    <span className="text-[10px] text-slate-400 font-sans block mt-0.5">Field advisor visit</span>
                   </button>
                 </div>
               </div>
@@ -2110,18 +2206,18 @@ export const AdminAppointmentsPage: React.FC = () => {
               )}
 
               {/* Modal Actions */}
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsAllotModalOpen(false)}
-                  className="px-4 py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                  className="px-5 py-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={allotLoading || !selectedEnquiryId}
-                  className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:bg-slate-300 text-white rounded-xl text-xs font-bold font-heading shadow-sm transition-all flex items-center gap-2 cursor-pointer active:scale-[0.98]"
+                  className="px-6 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 disabled:bg-slate-300 text-white rounded-xl text-xs sm:text-sm font-bold font-heading shadow-md shadow-teal-700/20 transition-all flex items-center gap-2 cursor-pointer active:scale-[0.98]"
                 >
                   {allotLoading ? (
                     <>
@@ -2275,73 +2371,91 @@ export const AdminAppointmentsPage: React.FC = () => {
               </p>
 
               <div>
-                <label className="block text-xs font-bold text-[#0c1a26] mb-1.5 font-heading">New Date</label>
-                <input
-                  type="date"
-                  required
-                  value={newDate}
-                  onChange={(e) => setNewDate(e.target.value)}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[#0c1a26] font-semibold text-xs sm:text-sm"
-                />
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-[#0c1a26] font-heading">
+                    New Consultation Date <span className="text-red-500">*</span>
+                  </label>
+                  <span className="text-[10px] text-teal-700 font-semibold font-sans">
+                    {formatDateReadable(newDate)}
+                  </span>
+                </div>
+                <div className="relative">
+                  <CalendarIcon className="w-4 h-4 text-teal-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="date"
+                    required
+                    min={new Date().toISOString().split('T')[0]}
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                  />
+                </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-bold text-[#0c1a26] font-heading">Available Slot</label>
-                  <button
-                    type="button"
-                    onClick={() => setTimePickerTarget('reschedule')}
-                    className="text-[11px] font-bold text-teal-700 hover:text-teal-800 flex items-center gap-1 cursor-pointer"
-                  >
-                    <span>Custom Time Picker</span>
-                    <Sparkles className="w-3 h-3 text-teal-600" />
-                  </button>
+                  <label className="block text-xs font-bold text-[#0c1a26] font-heading">
+                    New Time Slot <span className="text-red-500">*</span>
+                  </label>
+                  <span className="text-[11px] font-mono font-bold text-teal-800 bg-teal-50 border border-teal-200/70 px-2 py-0.5 rounded-md">
+                    {newSlot}
+                  </span>
                 </div>
-                {slotsLoading ? (
-                  <div className="p-2.5 border border-slate-200 rounded-xl text-xs text-slate-500 flex items-center gap-2">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-600" />
-                    <span>Verifying calendar availability...</span>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Clock className="w-4 h-4 text-teal-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="time"
+                      required
+                      value={rescheduleStartTime}
+                      onChange={(e) => {
+                        const newTime = e.target.value;
+                        setRescheduleStartTime(newTime);
+                        setNewSlot(computeSlotFrom24(newTime, rescheduleDuration));
+                      }}
+                      className="w-full pl-9 pr-2 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-mono font-bold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                    />
                   </div>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => setTimePickerTarget('reschedule')}
-                      className="w-full flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/90 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer group text-left"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform" />
-                        <span className="font-mono text-xs sm:text-sm font-bold text-[#0c1a26]">
-                          {newSlot || 'Select Time Slot'}
-                        </span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200/60 group-hover:bg-teal-100 transition-colors">
-                        Pick Slot
-                        <ChevronRight className="w-3 h-3" />
-                      </span>
-                    </button>
-                    {availableSlots.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-heading mr-0.5">
-                          Quick:
-                        </span>
-                        {availableSlots.map((s) => (
-                          <button
-                            key={s}
-                            type="button"
-                            onClick={() => setNewSlot(s)}
-                            className={`px-2 py-0.5 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer ${
-                              newSlot === s
-                                ? 'bg-[#0c1a26] text-white shadow-xs'
-                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 border border-slate-200/60'
-                            }`}
-                          >
-                            {s.split(' - ')[0]}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </>
+                  <select
+                    value={rescheduleDuration}
+                    onChange={(e) => {
+                      const newDur = parseInt(e.target.value, 10);
+                      setRescheduleDuration(newDur);
+                      setNewSlot(computeSlotFrom24(rescheduleStartTime, newDur));
+                    }}
+                    className="w-28 py-2.5 px-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0c1a26] focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all cursor-pointer"
+                  >
+                    <option value={30}>30 mins</option>
+                    <option value={45}>45 mins</option>
+                    <option value={60}>60 mins (1 Hr)</option>
+                    <option value={90}>90 mins (1.5 Hr)</option>
+                    <option value={120}>120 mins (2 Hr)</option>
+                  </select>
+                </div>
+                {availableSlots.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-heading mr-0.5">
+                      Available:
+                    </span>
+                    {availableSlots.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => {
+                          setNewSlot(s);
+                          setRescheduleStartTime(get24HourFromSlot(s));
+                          setRescheduleDuration(parseSlotString(s).durationMin || 60);
+                        }}
+                        className={`px-2 py-0.5 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer ${
+                          newSlot === s
+                            ? 'bg-[#0c1a26] text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 border border-slate-200/60'
+                        }`}
+                      >
+                        {s.split(' - ')[0]}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
 
@@ -2553,12 +2667,24 @@ export const AdminAppointmentsPage: React.FC = () => {
         isOpen={timePickerTarget !== null}
         onClose={() => setTimePickerTarget(null)}
         currentSlot={timePickerTarget === 'allot' ? allotSlot : newSlot}
+        currentDate={timePickerTarget === 'allot' ? allotDate : newDate}
         title={timePickerTarget === 'allot' ? 'Select Allotment Time Slot' : 'Reschedule Time Slot'}
+        onApplyDate={(date) => {
+          if (timePickerTarget === 'allot') {
+            setAllotDate(date);
+          } else if (timePickerTarget === 'reschedule') {
+            setNewDate(date);
+          }
+        }}
         onApplySlot={(slot) => {
           if (timePickerTarget === 'allot') {
             setAllotSlot(slot);
+            setAllotStartTime(get24HourFromSlot(slot));
+            setAllotDuration(parseSlotString(slot).durationMin || 60);
           } else if (timePickerTarget === 'reschedule') {
             setNewSlot(slot);
+            setRescheduleStartTime(get24HourFromSlot(slot));
+            setRescheduleDuration(parseSlotString(slot).durationMin || 60);
           }
         }}
       />
