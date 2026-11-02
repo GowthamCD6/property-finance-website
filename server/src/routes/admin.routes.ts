@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { requireAdminAuth } from '../middleware/auth';
+import { requireAdminApiKey, adminApiRateLimiter } from '../middleware/apiProtection';
 import {
   getDashboardStats,
   getEnquiries,
@@ -31,12 +32,20 @@ import {
   updateAdminMember,
   deleteAdminMember,
   getEnquiredCustomers,
+  getApiKeyStatusController,
+  rotateApiKeyController,
 } from '../controllers/admin.controller';
 
 const router = Router();
 
-// Protect all admin endpoints with requireAdminAuth
+// Protect all admin endpoints with Rate Limiting, Cryptographic API Key Verification, and JWT Session
+router.use(adminApiRateLimiter);
+router.use(requireAdminApiKey);
 router.use(requireAdminAuth);
+
+// API Security & Key Protection
+router.get('/security/api-key-status', getApiKeyStatusController);
+router.post('/security/rotate-api-key', rotateApiKeyController);
 
 // Dashboard
 router.get('/dashboard-stats', getDashboardStats);

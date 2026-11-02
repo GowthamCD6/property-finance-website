@@ -16,11 +16,16 @@ import {
 } from '../types';
 
 const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
+export const ADMIN_API_KEY =
+  (import.meta as any).env?.VITE_ADMIN_API_KEY ||
+  'vpf_sec_7a9f2b8c3d1e4f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('vpf_admin_token');
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'x-admin-api-key': ADMIN_API_KEY,
+    'x-request-timestamp': Date.now().toString(),
   };
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
@@ -733,3 +738,36 @@ export async function getEnquiredCustomersApi(search?: string): Promise<{ data: 
   if (!res.ok) throw new Error(json.message || 'Failed to fetch enquired customers');
   return json;
 }
+
+// ============================================================================
+// API SECURITY & CRYPTOGRAPHIC KEY PROTECTION
+// ============================================================================
+
+export interface ApiSecurityStatus {
+  status: string;
+  maskedKey: string;
+  keyHash: string;
+  hashAlgorithm: string;
+  signatureMechanism: string;
+  rateLimitPolicy: string;
+  replayProtectionWindowMs: number;
+  lastRotatedAt: string;
+}
+
+export async function getApiKeyStatusApi(): Promise<ApiSecurityStatus> {
+  const res = await fetch(`${API_BASE}/admin/security/api-key-status`, {
+    headers: getAuthHeaders(),
+  });
+  const json = await handleResponse(res, 'Failed to fetch API key security status');
+  return json.data;
+}
+
+export async function rotateApiKeyApi(): Promise<{ newKey: string; newHash: string; rotatedAt: string }> {
+  const res = await fetch(`${API_BASE}/admin/security/rotate-api-key`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+  const json = await handleResponse(res, 'Failed to rotate Admin API key');
+  return json.data;
+}
+

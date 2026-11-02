@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { getApiKeySecurityDetails, rotateApiKey } from '../middleware/apiProtection';
 import prisma from '../database/client';
 import { config } from '../config';
 import { generateEnquiryReference } from '../utils/reference';
@@ -1291,3 +1292,58 @@ export async function getEnquiredCustomers(req: AuthenticatedRequest, res: Respo
     next(err);
   }
 }
+
+/**
+ * GET /api/admin/security/api-key-status
+ * Returns current API protection status, rate limit metrics, and SHA-256 key fingerprint
+ */
+export async function getApiKeyStatusController(
+  _req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const details = getApiKeySecurityDetails();
+    res.json({
+      success: true,
+      message: 'Administrator API key cryptographic protection details retrieved.',
+      data: details,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * POST /api/admin/security/rotate-api-key
+ * Hot-rotates administrator API key, recomputes SHA-256 cryptographic hash
+ */
+export async function rotateApiKeyController(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    if (req.admin?.role !== 'superadmin' && req.admin?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        message: 'Insufficient administrative privileges to rotate master API key.',
+      });
+      return;
+    }
+
+    const { newKey, newHash } = rotateApiKey();
+    res.json({
+      success: true,
+      message: 'Administrator API Key rotated successfully. New SHA-256 hash has been activated across all endpoints.',
+      data: {
+        newKey,
+        newHash,
+        rotatedAt: new Date().toISOString(),
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+

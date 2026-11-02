@@ -29,7 +29,14 @@ app.use(
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-admin-api-key',
+      'x-api-key',
+      'x-request-timestamp',
+      'x-request-signature',
+    ],
   })
 );
 
