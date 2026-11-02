@@ -27,6 +27,7 @@ import { AdminFaqsPage } from '../pages/admin/Faqs/AdminFaqsPage';
 import { AdminSettingsPage } from '../pages/admin/Settings/AdminSettingsPage';
 import { AdminTeamPage } from '../pages/admin/Team/AdminTeamPage';
 import { AdminCustomersPage } from '../pages/admin/Customers/AdminCustomersPage';
+import { AdminSecurityPage } from '../pages/admin/Security/AdminSecurityPage';
 import { ScrollToTop } from '../components/common/ScrollToTop';
 
 export const AppRouting: React.FC = () => {
@@ -79,6 +80,7 @@ export const AppRouting: React.FC = () => {
         <Route path="faqs" element={<AdminFaqsPage />} />
         <Route path="settings" element={<AdminSettingsPage />} />
         <Route path="team" element={<AdminTeamPage />} />
+        <Route path="security" element={<AdminSecurityPage />} />
       </Route>
 
       {/* 404 FALLBACK */}

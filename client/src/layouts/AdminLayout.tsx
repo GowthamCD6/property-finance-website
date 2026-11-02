@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   Users,
   ChevronRight,
+  Lock,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserAvatar } from '../components/common/UserAvatar';
@@ -155,6 +156,13 @@ export const AdminLayout: React.FC = () => {
           path: '/admin/settings',
           icon: <Clock className="w-[18px] h-[18px] flex-shrink-0" />,
           badge: null,
+        },
+        {
+          name: 'API Security & Keys',
+          path: '/admin/security',
+          icon: <Lock className="w-[18px] h-[18px] flex-shrink-0" />,
+          badge: 'SHA-256',
+          badgeColor: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30',
         },
       ],
     },
