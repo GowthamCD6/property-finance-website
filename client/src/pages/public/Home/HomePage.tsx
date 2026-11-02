@@ -1216,7 +1216,8 @@ const RateComparisonMatrix: React.FC<{ content?: SiteContent | null }> = ({ cont
           return parsed.map((item: any) => ({
             lender: item.bankName,
             category:
-              item.bankName.includes('SBI') ||
+              item.category ||
+              (item.bankName.includes('SBI') ||
               item.bankName.includes('State Bank') ||
               item.bankName.includes('PNB') ||
               item.bankName.includes('Baroda') ||
@@ -1226,7 +1227,7 @@ const RateComparisonMatrix: React.FC<{ content?: SiteContent | null }> = ({ cont
                   item.bankName.includes('Tata') ||
                   item.bankName.includes('LIC')
                 ? 'HFC / NBFC'
-                : 'Private Bank',
+                : 'Private Bank'),
             homeLoanRate: item.homeLoanRate,
             lapRate: item.lapRate,
             maxTenureHL: item.maxTenure || '30 Years',

@@ -1976,6 +1976,7 @@ export const AdminContentPage: React.FC = () => {
                     setEditingRate({
                       id: '',
                       bankName: '',
+                      category: 'Public Bank',
                       homeLoanRate: '8.40% - 9.15%',
                       lapRate: '9.60% - 10.50%',
                       maxTenure: '30 Years',
@@ -1997,6 +1998,7 @@ export const AdminContentPage: React.FC = () => {
                   <thead>
                     <tr className="bg-brand-ivory text-brand-navy border-b border-brand-border font-bold">
                       <th className="p-3">Bank / Lending Partner</th>
+                      <th className="p-3">Sector</th>
                       <th className="p-3">Home Loan Rate</th>
                       <th className="p-3">Mortgage (LAP) Rate</th>
                       <th className="p-3">Max Tenure</th>
@@ -2010,6 +2012,31 @@ export const AdminContentPage: React.FC = () => {
                     {rateMatrixItems.map((item) => (
                       <tr key={item.id} className="hover:bg-slate-50 transition-colors">
                         <td className="p-3 font-bold text-brand-navy">{item.bankName}</td>
+                        <td className="p-3">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              item.category === 'Public Bank'
+                                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                : item.category === 'HFC / NBFC'
+                                ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            }`}
+                          >
+                            {item.category || (
+                              item.bankName.includes('SBI') ||
+                              item.bankName.includes('State Bank') ||
+                              item.bankName.includes('PNB') ||
+                              item.bankName.includes('Baroda') ||
+                              item.bankName.includes('Canara')
+                                ? 'Public Bank'
+                                : item.bankName.includes('Bajaj') ||
+                                  item.bankName.includes('Tata') ||
+                                  item.bankName.includes('LIC')
+                                ? 'HFC / NBFC'
+                                : 'Private Bank'
+                            )}
+                          </span>
+                        </td>
                         <td className="p-3 text-emerald-700 font-semibold">{item.homeLoanRate}</td>
                         <td className="p-3 text-brand-navy">{item.lapRate}</td>
                         <td className="p-3 text-brand-slate">{item.maxTenure}</td>
@@ -3830,15 +3857,37 @@ export const AdminContentPage: React.FC = () => {
             </div>
 
             <div className="space-y-3 text-xs">
-              <div>
-                <label className="block font-bold text-brand-navy mb-1">Bank / Institution Name</label>
-                <input
-                  type="text"
-                  value={editingRate.bankName}
-                  onChange={(e) => setEditingRate({ ...editingRate, bankName: e.target.value })}
-                  placeholder="e.g. State Bank of India (SBI)"
-                  className="w-full p-2 border border-brand-border rounded"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">Bank / Institution Name</label>
+                  <input
+                    type="text"
+                    value={editingRate.bankName}
+                    onChange={(e) => setEditingRate({ ...editingRate, bankName: e.target.value })}
+                    placeholder="e.g. State Bank of India (SBI)"
+                    className="w-full p-2 border border-brand-border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">
+                    Bank Sector / Category <span className="text-brand-teal font-normal">(Card Badge)</span>
+                  </label>
+                  <select
+                    value={editingRate.category || 'Public Bank'}
+                    onChange={(e) =>
+                      setEditingRate({
+                        ...editingRate,
+                        category: e.target.value as 'Public Bank' | 'Private Bank' | 'HFC / NBFC',
+                      })
+                    }
+                    className="w-full p-2 border border-brand-border rounded font-semibold text-brand-navy bg-white"
+                  >
+                    <option value="Public Bank">🏛️ Public Bank (e.g. SBI, PNB, BOB, Canara)</option>
+                    <option value="Private Bank">🏦 Private Bank (e.g. HDFC, ICICI, Axis, Kotak)</option>
+                    <option value="HFC / NBFC">🏢 HFC / NBFC (e.g. Bajaj Finserv, LIC HFL, Tata)</option>
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

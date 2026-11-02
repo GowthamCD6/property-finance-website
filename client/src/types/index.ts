@@ -1,6 +1,7 @@
 export interface RateMatrixItem {
   id: string;
   bankName: string;
+  category?: 'Public Bank' | 'Private Bank' | 'HFC / NBFC';
   homeLoanRate: string;
   lapRate: string;
   maxTenure: string;
