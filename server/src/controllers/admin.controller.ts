@@ -371,8 +371,8 @@ export async function updateEnquiryStatus(req: AuthenticatedRequest, res: Respon
         },
       });
 
-      // If status set to 'Appointment Confirmed', auto-confirm any requested appointment
-      if (status === 'Appointment Confirmed') {
+      // If status set to 'Appointment Confirmed' or 'Slot Booked', auto-confirm any requested appointment
+      if (status === 'Appointment Confirmed' || status === 'Slot Booked') {
         await tx.appointment.updateMany({
           where: { enquiryId: id, status: 'Requested' },
           data: { status: 'Confirmed' },

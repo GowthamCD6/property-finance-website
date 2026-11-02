@@ -419,10 +419,17 @@ export async function getEnquiryByIdApi(id: string): Promise<Enquiry> {
 }
 
 export async function updateEnquiryStatusApi(id: string, status: string, note?: string): Promise<Enquiry> {
+  // Normalize pipeline labels to canonical API enum values for full compatibility
+  let normalizedStatus = status;
+  if (status === 'Pending') normalizedStatus = 'New';
+  else if (status === 'Slot Booked') normalizedStatus = 'Appointment Confirmed';
+  else if (status === 'Process Started') normalizedStatus = 'In Review';
+  else if (status === 'Closed') normalizedStatus = 'Closed';
+
   const res = await fetch(`${API_BASE}/admin/enquiries/${id}/status`, {
     method: 'PATCH',
     headers: getAuthHeaders(),
-    body: JSON.stringify({ status, note }),
+    body: JSON.stringify({ status: normalizedStatus, note }),
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to update enquiry status');

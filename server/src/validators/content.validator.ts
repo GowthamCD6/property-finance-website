@@ -111,16 +111,11 @@ export const faqSchema = z.object({
 });
 
 export const updateEnquiryStatusSchema = z.object({
-  status: z.enum([
-    'New',
-    'Contacted',
-    'Follow-up Required',
-    'Appointment Requested',
-    'Appointment Confirmed',
-    'In Review',
-    'Converted',
-    'Closed',
-  ]),
+  status: z
+    .string()
+    .trim()
+    .min(1, 'Status cannot be empty')
+    .max(60),
   note: z.string().trim().max(1000).optional(),
 });
 
