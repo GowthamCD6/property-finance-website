@@ -323,18 +323,18 @@ export const AdminCustomersPage: React.FC = () => {
                   return (
                     <tr key={c.id} className="hover:bg-slate-50/70 transition-colors group">
                       {/* Customer Profile & Google Email */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-3.5 px-4 min-w-[210px] sm:min-w-[230px]">
                         <div className="flex items-center gap-3">
                           <UserAvatar
                             src={c.picture}
                             name={c.name}
-                            size={40}
+                            size={36}
                             showGoogleBadge={true}
                           />
 
                           <div className="space-y-0.5 min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <span className="font-bold text-[#0c1a26] font-heading text-xs group-hover:text-teal-700 transition-colors truncate">
+                              <span className="font-bold text-slate-900 font-heading text-xs sm:text-sm group-hover:text-teal-700 transition-colors truncate">
                                 {c.name}
                               </span>
                               <span
@@ -346,7 +346,7 @@ export const AdminCustomersPage: React.FC = () => {
                               </span>
                             </div>
 
-                            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 truncate">
+                            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium truncate">
                               <Mail className="w-3 h-3 text-slate-400 shrink-0" />
                               <a
                                 href={`mailto:${c.email}`}
@@ -361,12 +361,15 @@ export const AdminCustomersPage: React.FC = () => {
                       </td>
 
                       {/* Contact Phone */}
-                      <td className="py-3.5 px-3 whitespace-nowrap">
+                      <td className="py-3.5 px-3 whitespace-nowrap min-w-[160px]">
                         {c.phone ? (
                           <div className="flex items-center gap-2.5">
-                            <span className="font-mono font-bold text-slate-800 text-xs tracking-tight">
+                            <a
+                              href={`tel:${c.phone}`}
+                              className="font-mono text-xs font-semibold text-slate-800 hover:text-teal-700 hover:underline tracking-tight"
+                            >
                               {c.phone}
-                            </span>
+                            </a>
                             <div className="flex items-center gap-1.5">
                               <a
                                 href={`https://wa.me/91${c.phone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(
@@ -395,15 +398,15 @@ export const AdminCustomersPage: React.FC = () => {
 
                       {/* City / State Location */}
                       <td className="py-3.5 px-3">
-                        <div className="flex items-center gap-1.5 text-xs text-slate-700">
+                        <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium">
                           <MapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                           <span className="truncate">{c.latestEnquiry?.cityState || 'Tamil Nadu'}</span>
                         </div>
                       </td>
 
                       {/* Total Applications Submitted */}
-                      <td className="py-3.5 px-3 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold font-heading bg-slate-100 text-slate-800 border border-slate-200">
+                      <td className="py-3.5 px-3 whitespace-nowrap min-w-[130px]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold font-heading bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs">
                           <FileSpreadsheet className="w-3 h-3 text-teal-600" />
                           <span>{c.totalEnquiries} {c.totalEnquiries === 1 ? 'Application' : 'Applications'}</span>
                         </span>
@@ -411,26 +414,26 @@ export const AdminCustomersPage: React.FC = () => {
 
                       {/* Registration Date */}
                       <td className="py-3.5 px-3 whitespace-nowrap text-xs text-slate-600">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 font-sans">
                           <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span>{new Date(c.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                          <span className="font-semibold text-slate-700">{new Date(c.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                         </div>
                       </td>
 
                       {/* Last Active */}
                       <td className="py-3.5 px-3 whitespace-nowrap text-xs text-slate-600">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 font-sans">
                           <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span>{formatDate(c.lastLoginAt || c.createdAt)}</span>
                         </div>
                       </td>
 
                       {/* Actions */}
-                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                      <td className="py-3.5 px-4 text-right whitespace-nowrap min-w-[110px]">
                         <button
                           type="button"
                           onClick={() => setSelectedCustomer(c)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#0c1a26] text-slate-700 hover:text-white rounded-xl text-xs font-extrabold font-heading transition-all border border-slate-200 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 group"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading transition-all border border-slate-900 hover:border-teal-700 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 group"
                         >
                           <Eye className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
                           <span>View Profile</span>

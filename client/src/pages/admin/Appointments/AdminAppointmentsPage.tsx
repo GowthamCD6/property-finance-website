@@ -1187,7 +1187,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                       return (
                         <tr key={enq.id} className="hover:bg-slate-50/70 transition-colors group">
                           {/* Applicant & Dossier */}
-                          <td className="py-3.5 px-4">
+                          <td className="py-3.5 px-4 min-w-[210px] sm:min-w-[230px]">
                             <div className="flex items-center gap-3">
                               <UserAvatar
                                 src={enq.customer?.picture}
@@ -1197,7 +1197,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                               />
                               <div className="space-y-0.5 min-w-0">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="font-bold text-[#0c1a26] font-heading text-xs group-hover:text-teal-700 transition-colors truncate">
+                                  <span className="font-bold text-slate-900 font-heading text-xs sm:text-sm group-hover:text-teal-700 transition-colors truncate">
                                     {enq.fullName}
                                   </span>
                                   {isGoogleUser && (
@@ -1210,8 +1210,8 @@ export const AdminAppointmentsPage: React.FC = () => {
                                     </span>
                                   )}
                                 </div>
-                                <div className="flex items-center gap-1 text-[11px] text-slate-500 truncate">
-                                  <span className="font-mono text-teal-700 font-bold text-[10px]">
+                                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 truncate">
+                                  <span className="font-mono text-[10px] font-bold text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200/70 tracking-tight whitespace-nowrap shadow-2xs">
                                     {enq.referenceNumber}
                                   </span>
                                   {enq.email && (
@@ -1226,11 +1226,14 @@ export const AdminAppointmentsPage: React.FC = () => {
                           </td>
 
                           {/* Contact Phone */}
-                          <td className="py-3.5 px-3 whitespace-nowrap">
+                          <td className="py-3.5 px-3 whitespace-nowrap min-w-[160px]">
                             <div className="flex items-center gap-2.5">
-                              <span className="font-mono font-bold text-slate-800 text-xs tracking-tight">
+                              <a
+                                href={`tel:${cleanPhone}`}
+                                className="font-mono text-xs font-semibold text-slate-800 hover:text-teal-700 hover:underline tracking-tight"
+                              >
                                 {enq.mobileNumber}
-                              </span>
+                              </a>
                               {cleanPhone && (
                                 <div className="flex items-center gap-1.5">
                                   <a
@@ -1257,18 +1260,18 @@ export const AdminAppointmentsPage: React.FC = () => {
                           </td>
 
                           {/* Facility Requested */}
-                          <td className="py-3.5 px-3 whitespace-nowrap">
-                            <span className="font-bold text-[#0c1a26] text-xs block font-heading">
+                          <td className="py-3.5 px-3 whitespace-nowrap min-w-[140px]">
+                            <span className="inline-block px-2.5 py-1 rounded-lg text-xs font-bold font-heading border border-slate-200 bg-slate-50 text-slate-800 shadow-2xs mb-1">
                               {enq.loanType}
                             </span>
-                            <span className="text-xs font-extrabold text-teal-700 font-heading tabular-nums">
+                            <div className="font-heading font-extrabold text-sm text-slate-900 tracking-tight tabular-nums">
                               {formatAmountINR(enq.loanAmount)}
-                            </span>
+                            </div>
                           </td>
 
                           {/* Location */}
                           <td className="py-3.5 px-3">
-                            <div className="flex items-center gap-1 text-xs text-slate-700">
+                            <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium">
                               <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                               <span className="truncate">{enq.cityState || 'Tamil Nadu'}</span>
                             </div>
@@ -1278,27 +1281,27 @@ export const AdminAppointmentsPage: React.FC = () => {
                           <td className="py-3.5 px-3">
                             <div className="space-y-1">
                               <div>{getModeBadge(enq.meetingMode)}</div>
-                              <div className="flex items-center gap-1 text-[11px] text-slate-600">
+                              <div className="flex items-center gap-1 text-[11px] text-slate-600 font-medium">
                                 <Clock className="w-3 h-3 text-amber-600 shrink-0" />
-                                <span className="truncate">{requestedWindow}</span>
+                                <span className="truncate font-semibold text-slate-800">{requestedWindow}</span>
                               </div>
                             </div>
                           </td>
 
                           {/* Submitted Date */}
                           <td className="py-3.5 px-3 whitespace-nowrap text-xs text-slate-600">
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 font-sans">
                               <CalendarIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                              <span>{new Date(enq.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                              <span className="font-semibold text-slate-700">{new Date(enq.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                             </div>
                           </td>
 
                           {/* Actions */}
-                          <td className="py-3.5 px-4 text-right whitespace-nowrap space-x-1.5">
+                          <td className="py-3.5 px-4 text-right whitespace-nowrap space-x-1.5 min-w-[160px]">
                             <button
                               type="button"
                               onClick={() => handleAllotForApplicant(enq)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl text-xs font-extrabold font-heading shadow-xs hover:shadow-sm active:scale-95 transition-all cursor-pointer"
+                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-900 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-heading shadow-2xs hover:shadow-xs active:scale-95 transition-all cursor-pointer"
                             >
                               <CalendarCheck2 className="w-3.5 h-3.5" />
                               <span>Allot Slot</span>
@@ -1432,16 +1435,16 @@ export const AdminAppointmentsPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] font-heading">
-                    <th className="py-3.5 px-4">Scheduled Slot</th>
-                    <th className="py-3.5 px-4">Applicant &amp; Reference</th>
-                    <th className="py-3.5 px-4">Loan Details</th>
-                    <th className="py-3.5 px-4">Meeting Mode</th>
-                    <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4 text-right">Consultation Controls</th>
+                  <tr className="bg-slate-50/90 border-b border-slate-200/90 text-slate-600 font-bold uppercase tracking-wider text-[11px] font-heading">
+                    <th className="py-3.5 px-4 min-w-[160px]">Scheduled Slot</th>
+                    <th className="py-3.5 px-4 min-w-[230px]">Applicant &amp; Reference</th>
+                    <th className="py-3.5 px-4 min-w-[150px]">Loan Details</th>
+                    <th className="py-3.5 px-4 min-w-[130px]">Meeting Mode</th>
+                    <th className="py-3.5 px-4 min-w-[120px]">Status</th>
+                    <th className="py-3.5 px-4 text-right min-w-[160px]">Consultation Controls</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 font-sans">
                   {loading ? (
                     <>
                       {Array.from({ length: 5 }).map((_, idx) => (
@@ -1481,9 +1484,9 @@ export const AdminAppointmentsPage: React.FC = () => {
                     </>
                   ) : filteredAppointments.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-16 text-center text-slate-500 space-y-2">
+                      <td colSpan={6} className="py-16 text-center text-slate-500 space-y-2 font-sans">
                         <CalendarCheck2 className="w-9 h-9 text-slate-300 mx-auto" />
-                        <div className="font-bold text-[#0c1a26] text-sm font-heading">No Consultations Found</div>
+                        <div className="font-bold text-slate-900 text-sm font-heading">No Consultations Found</div>
                         <p className="text-xs text-slate-400 max-w-sm mx-auto font-sans">
                           No consultations match your selected filters. Click "Allot Consultation Slot" to allocate a slot.
                         </p>
@@ -1493,12 +1496,6 @@ export const AdminAppointmentsPage: React.FC = () => {
                     displayedAppointments.map((appt) => {
                       const isToday = appt.date === todayStr;
                       const cleanPhone = (appt.enquiry?.mobileNumber || '').replace(/[^0-9]/g, '');
-                      const initials = (appt.enquiry?.fullName || 'AP')
-                        .split(' ')
-                        .map((n: string) => n[0])
-                        .slice(0, 2)
-                        .join('')
-                        .toUpperCase();
 
                       return (
                         <tr
@@ -1510,7 +1507,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                           {/* Slot Column */}
                           <td className="py-4 px-4 whitespace-nowrap">
                             <div className="flex items-center gap-2">
-                              <span className="font-extrabold text-[#0c1a26] text-xs font-heading">
+                              <span className="font-extrabold text-slate-900 text-xs sm:text-sm font-heading">
                                 {formatDate(appt.date)}
                               </span>
                               {isToday && (
@@ -1519,9 +1516,9 @@ export const AdminAppointmentsPage: React.FC = () => {
                                 </span>
                               )}
                             </div>
-                            <div className="text-[11px] text-slate-600 flex items-center gap-1.5 mt-1 font-sans">
+                            <div className="text-[11px] text-slate-600 flex items-center gap-1.5 mt-1 font-medium font-sans">
                               <Clock className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
-                              <span className="font-semibold">{appt.timeSlot}</span>
+                              <span className="font-semibold text-slate-800">{appt.timeSlot}</span>
                             </div>
                             {appt.adminNotes && (
                               <div
@@ -1534,7 +1531,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                           </td>
 
                           {/* Applicant Column */}
-                          <td className="py-4 px-4">
+                          <td className="py-4 px-4 min-w-[210px] sm:min-w-[230px]">
                             <div className="flex items-center gap-3">
                               <UserAvatar
                                 src={appt.enquiry?.customer?.picture}
@@ -1542,26 +1539,29 @@ export const AdminAppointmentsPage: React.FC = () => {
                                 size={36}
                                 showGoogleBadge={Boolean(appt.enquiry?.customer?.email || appt.enquiry?.customerId)}
                               />
-                              <div>
-                                <div className="font-bold text-[#0c1a26] text-xs sm:text-sm font-heading flex items-center gap-1.5">
-                                  <span>{appt.enquiry?.fullName || 'N/A'}</span>
+                              <div className="space-y-0.5 min-w-0">
+                                <div className="font-bold text-slate-900 text-xs sm:text-sm font-heading flex items-center gap-1.5">
+                                  <span className="truncate">{appt.enquiry?.fullName || 'N/A'}</span>
                                   {appt.enquiry?.customer?.email && (
                                     <span title="Google Verified">
-                                      <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                                     </span>
                                   )}
                                 </div>
-                                <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
-                                  <span className="font-mono text-teal-700 font-bold">
+                                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-0.5">
+                                  <span className="font-mono text-[10px] font-bold text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200/70 tracking-tight whitespace-nowrap shadow-2xs">
                                     {appt.enquiry?.referenceNumber}
                                   </span>
                                   <span>&bull;</span>
-                                  <span>{appt.enquiry?.cityState || 'Tamil Nadu'}</span>
+                                  <span className="truncate">{appt.enquiry?.cityState || 'Tamil Nadu'}</span>
                                 </div>
-                                <div className="flex items-center gap-2 mt-1.5">
-                                  <span className="font-mono font-bold text-slate-800 text-xs">
+                                <div className="flex items-center gap-2 mt-1">
+                                  <a
+                                    href={`tel:${cleanPhone}`}
+                                    className="font-mono text-xs font-semibold text-slate-800 hover:text-teal-700 hover:underline tracking-tight"
+                                  >
                                     {appt.enquiry?.mobileNumber}
-                                  </span>
+                                  </a>
                                   {cleanPhone && (
                                     <div className="flex items-center gap-1">
                                       <a
@@ -1590,22 +1590,22 @@ export const AdminAppointmentsPage: React.FC = () => {
                           </td>
 
                           {/* Loan Column */}
-                          <td className="py-4 px-4 whitespace-nowrap">
-                            <span className="font-bold text-[#0c1a26] text-xs block font-heading">
+                          <td className="py-4 px-4 whitespace-nowrap min-w-[140px]">
+                            <span className="inline-block px-2.5 py-1 rounded-lg text-xs font-bold font-heading border border-slate-200 bg-slate-50 text-slate-800 shadow-2xs mb-1">
                               {appt.enquiry?.loanType || 'Loan Facility'}
                             </span>
-                            <span className="text-xs font-extrabold text-teal-700 font-heading tabular-nums">
+                            <div className="text-sm font-extrabold text-slate-900 font-heading tabular-nums tracking-tight">
                               {formatAmountINR(appt.enquiry?.loanAmount)}
-                            </span>
+                            </div>
                           </td>
 
                           {/* Mode Column */}
-                          <td className="py-4 px-4 whitespace-nowrap">{getModeBadge(appt.meetingMode)}</td>
+                          <td className="py-4 px-4 whitespace-nowrap min-w-[120px]">{getModeBadge(appt.meetingMode)}</td>
 
                           {/* Status Column */}
-                          <td className="py-4 px-4 whitespace-nowrap">
+                          <td className="py-4 px-4 whitespace-nowrap min-w-[120px]">
                             <span
-                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border font-heading ${getStatusBadge(
+                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border font-heading shadow-2xs ${getStatusBadge(
                                 appt.status
                               )}`}
                             >
@@ -1614,13 +1614,13 @@ export const AdminAppointmentsPage: React.FC = () => {
                           </td>
 
                           {/* Controls Column */}
-                          <td className="py-4 px-4 text-right space-x-1.5 whitespace-nowrap">
+                          <td className="py-4 px-4 text-right space-x-1.5 whitespace-nowrap min-w-[160px]">
                             {/* Quick Confirm Button */}
                             {appt.status === 'Requested' && (
                               <button
                                 type="button"
                                 onClick={() => handleConfirm(appt.id)}
-                                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-[11px] font-heading shadow-xs transition-colors cursor-pointer"
+                                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs font-heading shadow-xs transition-colors cursor-pointer"
                               >
                                 Confirm Slot
                               </button>
@@ -1631,7 +1631,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => handleMarkCompleted(appt.id)}
-                                className="px-2.5 py-1.5 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 rounded-xl font-bold text-[11px] font-heading transition-colors inline-flex items-center gap-1 cursor-pointer"
+                                className="px-2.5 py-1.5 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 rounded-xl font-bold text-xs font-heading transition-colors inline-flex items-center gap-1 cursor-pointer"
                                 title="Mark Consultation Completed"
                               >
                                 <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -1649,7 +1649,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                                   setNewSlot(appt.timeSlot);
                                   setRescheduleReason('');
                                 }}
-                                className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl font-bold text-[11px] font-heading transition-colors cursor-pointer"
+                                className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl font-bold text-xs font-heading transition-colors cursor-pointer"
                               >
                                 Reschedule
                               </button>
@@ -1663,7 +1663,7 @@ export const AdminAppointmentsPage: React.FC = () => {
                                   setActiveModal({ type: 'cancel', appointment: appt });
                                   setCancellationReason('');
                                 }}
-                                className="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl font-bold text-[11px] font-heading transition-colors cursor-pointer"
+                                className="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl font-bold text-xs font-heading transition-colors cursor-pointer"
                               >
                                 Cancel
                               </button>
@@ -1673,10 +1673,11 @@ export const AdminAppointmentsPage: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => setActiveModal({ type: 'viewEnquiry', appointment: appt })}
-                              className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-xl text-[11px] font-semibold transition-colors cursor-pointer"
+                              className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold font-heading transition-colors cursor-pointer inline-flex items-center gap-1"
                               title="View Full Loan Application"
                             >
                               <FileText className="w-3.5 h-3.5" />
+                              <span>Dossier</span>
                             </button>
                           </td>
                         </tr>
