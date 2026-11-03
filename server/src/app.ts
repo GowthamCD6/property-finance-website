@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes';
 import adminRoutes from './routes/admin.routes';
 import documentRoutes from './routes/document.routes';
 import { errorHandler } from './middleware/errorHandler';
+import prisma from './database/client';
 
 const app = express();
 
@@ -92,14 +93,44 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser());
 
-// Health Check
-app.get('/api/health', (_req, res) => {
-  res.json({
+// Health Check & Uptime Endpoints (for Render, UptimeRobot, cron jobs, etc.)
+const healthCheckHandler = async (req: express.Request, res: express.Response) => {
+  // Prevent any caching by reverse proxies or CDNs
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
+  // Handle HEAD requests immediately for bandwidth-saving uptime pingers
+  if (req.method === 'HEAD') {
+    return res.status(200).end();
+  }
+
+  let dbStatus = 'skipped';
+  // If db query requested or default, run a quick lightweight query with a 2s timeout
+  if (req.query.db !== 'false') {
+    try {
+      const dbPingPromise = prisma.$queryRaw`SELECT 1`;
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Database ping timeout')), 2000)
+      );
+      await Promise.race([dbPingPromise, timeoutPromise]);
+      dbStatus = 'connected';
+    } catch {
+      dbStatus = 'disconnected';
+    }
+  }
+
+  return res.status(200).json({
     status: 'ok',
     service: 'Prime Associates Loans API',
+    uptime: `${Math.floor(process.uptime())}s`,
     timestamp: new Date().toISOString(),
+    environment: config.nodeEnv,
+    database: dbStatus,
   });
-});
+};
+
+app.all(['/health', '/api/health', '/ping', '/api/ping'], healthCheckHandler);
 
 // Mount Routes
 app.use('/api/public', publicRoutes);
