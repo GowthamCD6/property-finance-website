@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.primeassoicatesloans.in/api/:path*"
+      "destination": "https://api.primeassociatesloans.in/api/:path*"
     },
     {
       "source": "/((?!api/).*)",

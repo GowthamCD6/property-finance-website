@@ -143,7 +143,9 @@ const healthCheckHandler = async (req: express.Request, res: express.Response) =
   });
 };
 
-app.all(['/health', '/api/health', '/ping', '/api/ping'], healthCheckHandler);
+// Health Check & Uptime Endpoints (for Render, UptimeRobot, cron jobs, etc.)
+// Also handles the root '/' endpoint so visiting the base domain directly returns 200 OK
+app.all(['/', '/health', '/api/health', '/ping', '/api/ping'], healthCheckHandler);
 
 // Mount Routes
 app.use('/api/public', publicRoutes);

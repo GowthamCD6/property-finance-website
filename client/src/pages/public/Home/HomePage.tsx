@@ -361,21 +361,21 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.70s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.70s',
             }}
-            className="flex flex-row items-center justify-center gap-2 xs:gap-3 sm:gap-4 pt-2 sm:pt-4 w-full max-w-lg sm:max-w-none mx-auto px-1 sm:px-0"
+            className="flex flex-row items-center justify-center gap-2 xs:gap-3 sm:gap-4 md:gap-5 pt-3 sm:pt-5 w-full max-w-lg sm:max-w-none mx-auto px-1 sm:px-0"
           >
             <Link
               to="/enquire"
-              className="hero-btn-primary flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 px-3 xs:px-5 sm:px-8 py-2.5 xs:py-3 sm:py-4 text-[11px] xs:text-xs sm:text-sm md:text-base font-bold text-white text-center cursor-pointer tracking-tight whitespace-nowrap shadow-md"
+              className="hero-btn-primary flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 sm:gap-3 px-3.5 xs:px-5 sm:px-9 md:px-11 py-2.5 xs:py-3 sm:py-4 md:py-4.5 text-xs xs:text-sm sm:text-base md:text-[17px] font-bold text-white text-center cursor-pointer tracking-wide whitespace-nowrap shadow-lg"
             >
               <span>{content?.heroCtaText || 'Discuss Your Loan'}</span>
-              <ArrowRight className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 hero-btn-arrow shrink-0" />
+              <ArrowRight className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 md:w-5.5 md:h-5.5 hero-btn-arrow shrink-0" />
             </Link>
 
             <Link
               to="/calculator"
-              className="hero-btn-secondary flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 px-3 xs:px-5 sm:px-7 py-2.5 xs:py-3 sm:py-4 text-[11px] xs:text-xs sm:text-sm md:text-base font-bold text-white text-center cursor-pointer tracking-tight whitespace-nowrap shadow-md"
+              className="hero-btn-secondary flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 sm:gap-3 px-3.5 xs:px-5 sm:px-8.5 md:px-10.5 py-2.5 xs:py-3 sm:py-4 md:py-4.5 text-xs xs:text-sm sm:text-base md:text-[17px] font-bold text-white text-center cursor-pointer tracking-wide whitespace-nowrap shadow-lg"
             >
-              <Calculator className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 text-teal-300 hero-calc-icon shrink-0" />
+              <Calculator className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 md:w-5.5 md:h-5.5 text-teal-300 hero-calc-icon shrink-0" />
               <span>Simulate EMI</span>
             </Link>
           </div>
@@ -825,6 +825,17 @@ const LenderCard: React.FC<{
 }> = ({ partner: p, ariaHidden, onHoverChange }) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Sector badge styling
+  const sectorBadge = useMemo(() => {
+    if (p.category === 'psu') {
+      return { label: 'Govt Bank', bg: 'bg-blue-50 text-blue-700 border-blue-200/80' };
+    }
+    if (p.category === 'private') {
+      return { label: 'Private Bank', bg: 'bg-indigo-50 text-indigo-700 border-indigo-200/80' };
+    }
+    return { label: 'HFC / NBFC', bg: 'bg-amber-50 text-amber-800 border-amber-200/80' };
+  }, [p.category]);
+
   return (
     <Link
       to={`/enquire?lender=${encodeURIComponent(p.name)}`}
@@ -842,89 +853,95 @@ const LenderCard: React.FC<{
       onMouseUp={() => onHoverChange(false)}
       onTouchStart={() => onHoverChange(true)}
       onTouchEnd={() => onHoverChange(false)}
-      className="group relative bg-white p-4.5 sm:p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 shrink-0 w-[270px] xs:w-[300px] sm:w-[350px] lg:w-[370px] overflow-hidden no-underline cursor-pointer block"
+      className="group relative bg-white rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 shrink-0 w-[275px] xs:w-[295px] sm:w-[335px] overflow-hidden no-underline cursor-pointer block border border-slate-200/90 hover:border-teal-400/80 shadow-[0_4px_18px_rgba(24,50,71,0.06)] hover:shadow-[0_16px_36px_rgba(32,178,170,0.18)]"
       style={{
-        border: isHovered
-          ? `2px solid ${p.accentColor}`
-          : '2px solid rgba(229, 231, 235, 0.85)',
-        boxShadow: isHovered
-          ? `0 18px 38px -6px ${p.accentColor}35, 0 8px 18px rgba(24, 50, 71, 0.08)`
-          : '0 3px 14px rgba(24, 50, 71, 0.05)',
+        borderTop: isHovered ? `3px solid ${p.accentColor}` : '3px solid rgba(229, 231, 235, 0.9)',
       }}
     >
+      {/* Top subtle brand glow */}
       <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
-        style={{
-          background: `radial-gradient(circle at top right, ${p.accentColor}14, transparent 65%)`,
-        }}
+        className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none blur-2xl"
+        style={{ backgroundColor: `${p.accentColor}18` }}
       />
 
-      <div>
-        <div className="flex items-center justify-between gap-3 mb-4.5 h-12 relative z-10">
-          <div className="flex items-center h-full max-w-[170px]">
+      <div className="relative z-10">
+        {/* Top Header Row: Bank Logo in dedicated frame + Category Tag + Circular Arrow */}
+        <div className="flex items-center justify-between gap-2.5 mb-3.5">
+          <div className="h-10 px-3 py-1 bg-slate-50/90 rounded-xl border border-slate-100 flex items-center justify-center max-w-[155px]">
             <img
               src={p.logoUrl}
               alt={`${p.name} official logo`}
-              className="h-8.5 max-h-10 w-auto max-w-[160px] object-contain object-left transition-transform duration-300 group-hover:scale-105"
+              className="h-6 sm:h-7 w-auto max-w-[130px] object-contain transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
             />
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
             <span
-              className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full transition-colors"
-              style={{
-                backgroundColor: isHovered ? `${p.accentColor}15` : '#f1f5f9',
-                color: isHovered ? p.accentColor : '#475569',
-              }}
+              className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${sectorBadge.bg}`}
             >
-              {p.short}
+              {sectorBadge.label}
             </span>
             <div
-              className="w-6.5 h-6.5 rounded-full flex items-center justify-center transition-all"
-              style={{
-                backgroundColor: isHovered ? `${p.accentColor}15` : 'transparent',
-                color: isHovered ? p.accentColor : '#94a3b8',
-              }}
+              className="w-6.5 h-6.5 rounded-full flex items-center justify-center transition-all bg-slate-100 group-hover:bg-brand-teal group-hover:text-white text-slate-400"
             >
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
         </div>
 
-        <div className="relative z-10">
+        {/* Bank Type & Sanction Track */}
+        <div className="mb-3.5">
           <h3
-            className="font-bold text-[15px] sm:text-base tracking-tight leading-snug transition-colors font-heading truncate"
-            style={{ color: isHovered ? p.accentColor : '#183247' }}
+            className="font-extrabold text-[15px] sm:text-base text-brand-navy tracking-tight leading-snug transition-colors font-heading truncate group-hover:text-brand-teal"
           >
             {p.name}
           </h3>
-          <span className="text-xs text-brand-slate block mt-0.5 font-medium truncate">
-            {p.type}
-          </span>
+          <div className="flex items-center gap-1.5 text-xs text-brand-slate mt-0.5 font-medium">
+            <Landmark className="w-3 h-3 text-slate-400 shrink-0" />
+            <span className="truncate">{p.type}</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-emerald-600 font-semibold text-[11px] flex items-center gap-0.5 shrink-0">
+              <ShieldCheck className="w-3 h-3" /> Empanelled
+            </span>
+          </div>
         </div>
 
+        {/* Premium Benchmark Rate Banner */}
         <div
-          className="mt-4 rounded-xl px-3.5 py-2.5 border flex items-center justify-between relative z-10 transition-colors"
-          style={{
-            backgroundColor: isHovered ? '#ffffff' : '#f8f8f4',
-            borderColor: isHovered ? `${p.accentColor}40` : '#e5e7eb',
-          }}
+          className="rounded-xl p-3 border transition-colors flex items-center justify-between bg-gradient-to-r from-slate-50 via-teal-50/30 to-emerald-50/30 border-slate-200/80 group-hover:border-teal-300"
         >
-          <span className="text-xs text-brand-slate font-medium">Home Loan</span>
-          <span
-            className="text-sm font-extrabold font-heading transition-colors"
-            style={{ color: isHovered ? p.accentColor : '#183247' }}
-          >
-            {p.ratesFrom}*
-          </span>
+          <div>
+            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500 block">
+              Home Loan ROI
+            </span>
+            <div className="text-xs font-bold text-slate-800 flex items-center gap-1 mt-0.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span>Benchmark Rate</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div
+              className="text-lg sm:text-xl font-black font-heading tracking-tight"
+              style={{ color: isHovered ? p.accentColor : '#187C78' }}
+            >
+              {p.ratesFrom}*
+            </div>
+            <span className="text-[10px] text-slate-400 font-medium block">p.a. onwards</span>
+          </div>
         </div>
       </div>
 
-      <div className="mt-4.5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs relative z-10">
-        <span className="inline-flex items-center gap-1.5 text-emerald-800 font-semibold bg-emerald-50 px-3 py-1.5 rounded-lg text-[11px] border border-emerald-100/80 tracking-tight truncate">
+      {/* Card Footer: Advantage Badge + Apply Callout */}
+      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs relative z-10">
+        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100/90 truncate max-w-[190px]">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span className="truncate">{p.badge}</span>
+        </span>
+
+        <span className="text-[11px] font-bold text-brand-teal group-hover:text-teal-700 inline-flex items-center gap-0.5 shrink-0 transition-colors">
+          <span>Apply</span>
+          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
         </span>
       </div>
     </Link>
@@ -2417,17 +2434,17 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex flex-row lg:flex-col gap-2.5 xs:gap-3.5 w-full sm:w-auto z-10 shrink-0">
+            <div className="flex flex-row lg:flex-col gap-2.5 xs:gap-3.5 sm:gap-4 w-full sm:w-auto z-10 shrink-0">
               <Link
                 to="/enquire"
-                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 px-3 xs:px-6 sm:px-8 py-3 sm:py-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs xs:text-sm rounded-corporate shadow-md transition-all hover:scale-[1.02] text-center whitespace-nowrap"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 sm:gap-2.5 px-3.5 xs:px-6 sm:px-9 lg:px-10 py-2.5 xs:py-3 sm:py-4 md:py-4.5 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs xs:text-sm sm:text-base rounded-corporate shadow-md transition-all hover:scale-[1.02] text-center whitespace-nowrap"
               >
                 <span>Schedule Meeting</span>
-                <ArrowRight className="w-3.5 h-3.5 xs:w-4 xs:h-4 shrink-0" />
+                <ArrowRight className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 shrink-0" />
               </Link>
               <Link
                 to="/services/home-loans"
-                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 px-3 xs:px-6 sm:px-8 py-3 sm:py-4 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs xs:text-sm rounded-corporate border border-white/15 transition-colors text-center whitespace-nowrap"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 sm:gap-2.5 px-3.5 xs:px-6 sm:px-9 lg:px-10 py-2.5 xs:py-3 sm:py-4 md:py-4.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs xs:text-sm sm:text-base rounded-corporate border border-white/15 transition-colors text-center whitespace-nowrap"
               >
                 <span>Loan Solutions</span>
               </Link>

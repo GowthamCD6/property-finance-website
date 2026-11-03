@@ -19,7 +19,8 @@ export const resolveApiBase = (): string => {
 
   // If explicitly configured with an absolute URL (e.g. in Vercel project environment variables)
   if (envUrl && envUrl.startsWith('http')) {
-    const clean = envUrl.replace(/\/+$/, '');
+    const sanitized = envUrl.replace('primeassoicatesloans.in', 'primeassociatesloans.in');
+    const clean = sanitized.replace(/\/+$/, '');
     return clean.endsWith('/api') ? clean : `${clean}/api`;
   }
 
@@ -27,10 +28,10 @@ export const resolveApiBase = (): string => {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     if (
-      hostname.includes('primeassoicatesloans.in') ||
-      hostname.includes('primeassociatesloans.in')
+      hostname.includes('primeassociatesloans.in') ||
+      hostname.includes('primeassoicatesloans.in')
     ) {
-      return 'https://api.primeassoicatesloans.in/api';
+      return 'https://api.primeassociatesloans.in/api';
     }
   }
 
