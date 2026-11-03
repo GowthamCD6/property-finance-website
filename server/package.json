@@ -5,12 +5,12 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "prisma generate && tsc",
-    "postinstall": "prisma generate",
+    "build": "npx prisma generate && tsc",
+    "postinstall": "npx prisma generate",
     "start": "node dist/index.js",
     "seed": "tsx src/database/seed.ts",
-    "db:push": "prisma db push",
-    "db:generate": "prisma generate",
+    "db:push": "npx prisma db push",
+    "db:generate": "npx prisma generate",
     "migrate:docs": "tsx src/scripts/migrateDocumentsToCloudinary.ts",
     "test": "vitest run"
   },
