@@ -165,10 +165,11 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     });
 
     // Set secure cookie (8 hours for Administrator)
+    const isProduction = config.nodeEnv === 'production';
     res.cookie('admin_token', token, {
       httpOnly: true,
-      secure: config.nodeEnv === 'production',
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 8 * 60 * 60 * 1000,
     });
 
@@ -251,10 +252,11 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
       { expiresIn: config.jwtExpiresIn }
     );
 
+    const isProduction = config.nodeEnv === 'production';
     res.cookie('admin_token', token, {
       httpOnly: true,
-      secure: config.nodeEnv === 'production',
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 8 * 60 * 60 * 1000,
     });
 
@@ -281,8 +283,14 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
 }
 
 export async function logout(_req: Request, res: Response): Promise<void> {
-  res.clearCookie('admin_token');
-  res.clearCookie('customer_token');
+  const isProduction = config.nodeEnv === 'production';
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
+  };
+  res.clearCookie('admin_token', cookieOptions);
+  res.clearCookie('customer_token', cookieOptions);
   res.json({
     success: true,
     message: 'Logged out successfully.',
@@ -376,10 +384,11 @@ export async function googleUserLogin(req: Request, res: Response, next: NextFun
       config.jwtSecret
     );
 
+    const isProduction = config.nodeEnv === 'production';
     res.cookie('customer_token', token, {
       httpOnly: true,
-      secure: config.nodeEnv === 'production',
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 36500 * 24 * 60 * 60 * 1000, // Perpetual session (100 years)
     });
 
@@ -756,10 +765,11 @@ export async function customerDirectLogin(req: Request, res: Response, next: Nex
       config.jwtSecret
     );
 
+    const isProduction = config.nodeEnv === 'production';
     res.cookie('customer_token', token, {
       httpOnly: true,
-      secure: config.nodeEnv === 'production',
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 36500 * 24 * 60 * 60 * 1000,
     });
 

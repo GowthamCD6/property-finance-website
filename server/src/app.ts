@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -11,6 +13,25 @@ import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
 
+// Trust reverse proxy (Essential for Render, AWS ALB, Cloudflare, Vercel)
+app.set('trust proxy', 1);
+
+// Parse configured origins (supports comma-separated origins, trailing slash removal)
+const configuredOrigins = config.clientUrl
+  ? config.clientUrl.split(',').map((u) => u.trim().replace(/\/+$/, ''))
+  : [];
+
+const defaultDevOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5174',
+  'http://localhost:3000',
+  'http://localhost:4173',
+];
+
+const allowedOrigins = Array.from(new Set([...configuredOrigins, ...defaultDevOrigins])).filter(Boolean);
+
 // Security HTTP headers
 app.use(
   helmet({
@@ -21,13 +42,31 @@ app.use(
 // CORS configuration
 app.use(
   cors({
-    origin: [
-      config.clientUrl,
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://localhost:5174',
-      'http://127.0.0.1:5174',
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, Postman, health checks)
+      if (!origin) return callback(null, true);
+
+      const cleanOrigin = origin.replace(/\/+$/, '');
+
+      // Allow if explicit match or wildcard is set or standard cloud deploy previews
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        allowedOrigins.includes('*') ||
+        cleanOrigin.endsWith('.vercel.app') ||
+        cleanOrigin.endsWith('.onrender.com') ||
+        cleanOrigin.endsWith('.netlify.app')
+      ) {
+        return callback(null, true);
+      }
+
+      // In non-production, allow all
+      if (config.nodeEnv !== 'production') {
+        return callback(null, true);
+      }
+
+      // Fallback: allow to prevent unexpected preflight blockage
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
@@ -68,7 +107,19 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/documents', documentRoutes);
 
-// 404 Route Handler
+// Optional Static Client Serving (for unified full-stack single-service deployment)
+const clientDistPath = path.resolve(__dirname, '../../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
+
+// 404 Route Handler for unmatched API endpoints
 app.use((_req, res) => {
   res.status(404).json({
     success: false,

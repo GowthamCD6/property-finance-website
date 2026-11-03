@@ -421,10 +421,11 @@ export async function createEnquiry(req: Request, res: Response, next: NextFunct
         config.jwtSecret
       );
 
+      const isProduction = config.nodeEnv === 'production';
       res.cookie('customer_token', generatedCustomerToken, {
         httpOnly: true,
-        secure: config.nodeEnv === 'production',
-        sameSite: 'lax',
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
         maxAge: 36500 * 24 * 60 * 60 * 1000,
       });
     }

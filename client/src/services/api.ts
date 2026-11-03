@@ -14,8 +14,13 @@ import {
   EnquiredCustomer,
   Testimonial,
 } from '../types';
-
-const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
+const rawApiUrl = ((import.meta as any).env?.VITE_API_URL as string | undefined)?.trim();
+const normalizeApiBase = (url?: string): string => {
+  if (!url) return '/api';
+  const clean = url.replace(/\/+$/, '');
+  return clean.endsWith('/api') ? clean : `${clean}/api`;
+};
+const API_BASE = normalizeApiBase(rawApiUrl);
 export const ADMIN_API_KEY =
   (import.meta as any).env?.VITE_ADMIN_API_KEY ||
   'vpf_sec_7a9f2b8c3d1e4f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a';
