@@ -14,13 +14,31 @@ import {
   EnquiredCustomer,
   Testimonial,
 } from '../types';
-const rawApiUrl = ((import.meta as any).env?.VITE_API_URL as string | undefined)?.trim();
-const normalizeApiBase = (url?: string): string => {
-  if (!url) return '/api';
-  const clean = url.replace(/\/+$/, '');
-  return clean.endsWith('/api') ? clean : `${clean}/api`;
+export const resolveApiBase = (): string => {
+  const envUrl = ((import.meta as any).env?.VITE_API_URL as string | undefined)?.trim();
+
+  // If explicitly configured with an absolute URL (e.g. in Vercel project environment variables)
+  if (envUrl && envUrl.startsWith('http')) {
+    const clean = envUrl.replace(/\/+$/, '');
+    return clean.endsWith('/api') ? clean : `${clean}/api`;
+  }
+
+  // When running in the browser on the production domain
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (
+      hostname.includes('primeassoicatesloans.in') ||
+      hostname.includes('primeassociatesloans.in')
+    ) {
+      return 'https://api.primeassoicatesloans.in/api';
+    }
+  }
+
+  // Default to relative /api (works with local Vite proxy and Vercel rewrites)
+  return '/api';
 };
-const API_BASE = normalizeApiBase(rawApiUrl);
+
+export const API_BASE = resolveApiBase();
 export const ADMIN_API_KEY =
   (import.meta as any).env?.VITE_ADMIN_API_KEY ||
   'vpf_sec_7a9f2b8c3d1e4f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a';
@@ -52,7 +70,40 @@ async function handleResponse<T = any>(res: Response, defaultErrorMsg: string): 
   return res.json();
 }
 
-// 1. PUBLIC API
+// 1. PUBLIC API — UNIFIED BOOTSTRAP DATA (Single-call aggregator)
+export interface PublicBootstrapData {
+  content: SiteContent;
+  services: Service[];
+  faqs: Faq[];
+}
+
+/**
+ * Fetches all core public site data (content, services, FAQs) in a single unified API call
+ * to minimize round-trip latency and avoid request waterfalls.
+ */
+export async function getPublicBootstrapData(): Promise<PublicBootstrapData> {
+  try {
+    const res = await fetch(`${API_BASE}/public/bootstrap`);
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data && json.data.content) {
+        return json.data;
+      }
+    }
+  } catch (err) {
+    console.warn('Bootstrap API unreachable, falling back to individual endpoints', err);
+  }
+
+  // Graceful fallback to individual endpoints in parallel
+  const [content, services, faqs] = await Promise.all([
+    getPublicSiteContent().catch(() => ({} as SiteContent)),
+    getPublicServices().catch(() => []),
+    getPublicFaqs().catch(() => []),
+  ]);
+
+  return { content, services, faqs };
+}
+
 export async function getPublicSiteContent(): Promise<SiteContent> {
   const res = await fetch(`${API_BASE}/public/site-content`);
   const json = await handleResponse(res, 'Failed to load site content');

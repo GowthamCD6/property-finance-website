@@ -31,7 +31,18 @@ const defaultDevOrigins = [
   'http://localhost:4173',
 ];
 
-const allowedOrigins = Array.from(new Set([...configuredOrigins, ...defaultDevOrigins])).filter(Boolean);
+const defaultProdOrigins = [
+  'https://primeassoicatesloans.in',
+  'https://www.primeassoicatesloans.in',
+  'https://api.primeassoicatesloans.in',
+  'https://primeassociatesloans.in',
+  'https://www.primeassociatesloans.in',
+  'https://api.primeassociatesloans.in',
+];
+
+const allowedOrigins = Array.from(
+  new Set([...configuredOrigins, ...defaultDevOrigins, ...defaultProdOrigins])
+).filter(Boolean);
 
 // Security HTTP headers
 app.use(
@@ -55,7 +66,9 @@ app.use(
         allowedOrigins.includes('*') ||
         cleanOrigin.endsWith('.vercel.app') ||
         cleanOrigin.endsWith('.onrender.com') ||
-        cleanOrigin.endsWith('.netlify.app')
+        cleanOrigin.endsWith('.netlify.app') ||
+        cleanOrigin.includes('primeassoicatesloans.in') ||
+        cleanOrigin.includes('primeassociatesloans.in')
       ) {
         return callback(null, true);
       }

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  getPublicBootstrap,
   getSiteContent,
   getServices,
   getFaqs,
@@ -9,6 +10,8 @@ import {
 import { enquiryRateLimiter, generalApiLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
+
+router.get('/bootstrap', generalApiLimiter, getPublicBootstrap);
 
 router.get('/site-content', generalApiLimiter, getSiteContent);
 router.get('/services', generalApiLimiter, getServices);

@@ -6,6 +6,34 @@ import { createEnquirySchema } from '../validators/enquiry.validator';
 import { generateEnquiryReference } from '../utils/reference';
 import { notifyAdminNewEnquiry } from '../utils/notifications';
 
+export async function getPublicBootstrap(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const [content, services, faqs] = await Promise.all([
+      prisma.siteContent.findUnique({
+        where: { id: 'default_content' },
+      }),
+      prisma.service.findMany({
+        where: { isActive: true },
+        orderBy: { displayOrder: 'asc' },
+      }),
+      prisma.faq.findMany({
+        where: { isPublished: true },
+        orderBy: { displayOrder: 'asc' },
+      }),
+    ]);
+    res.json({
+      success: true,
+      data: {
+        content,
+        services,
+        faqs,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getSiteContent(_req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const content = await prisma.siteContent.findUnique({
