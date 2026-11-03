@@ -45,6 +45,11 @@ import tataLogo from '../../../assets/images/lenders/tata.svg';
 import pnbLogo from '../../../assets/images/lenders/pnb.svg';
 import licLogo from '../../../assets/images/lenders/lic.png';
 
+import homeLoanImg from '../../../assets/images/home-loan.jpg';
+import lapLoanImg from '../../../assets/images/lap-loan.jpg';
+import purchaseLoanImg from '../../../assets/images/purchase-loan.jpg';
+import vehicleLoanImg from '../../../assets/images/vehicle-loan.avif';
+
 /* ────────────────────────────────────────────────────────────
    1. ANIMATED HEADLINE COMPONENT
    ──────────────────────────────────────────────────────────── */
@@ -99,6 +104,7 @@ const AnimatedHeadline: React.FC<{ words?: string[] }> = ({ words }) => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      if (typeof window === 'undefined' || window.innerWidth < 768) return;
       const { innerWidth, innerHeight } = window;
       const x = (e.clientX / innerWidth - 0.5) * 8;
       const y = -(e.clientY / innerHeight - 0.5) * 8;
@@ -119,7 +125,7 @@ const AnimatedHeadline: React.FC<{ words?: string[] }> = ({ words }) => {
       }}
       className="will-change-transform block w-full"
     >
-      <h1 className="text-[23px] xs:text-[27px] sm:text-[38px] md:text-[48px] lg:text-[58px] font-extrabold text-white tracking-tight leading-[1.2] sm:leading-[1.15] font-heading drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)] max-w-4xl mx-auto select-none px-2">
+      <h1 className="text-[22px] xs:text-[25px] sm:text-[34px] md:text-[44px] lg:text-[54px] font-extrabold text-white tracking-tight leading-[1.25] sm:leading-[1.15] font-heading drop-shadow-[0_3px_10px_rgba(0,0,0,0.9)] max-w-4xl mx-auto select-none px-2">
         <span
           className="relative inline-block overflow-hidden"
           style={{
@@ -133,7 +139,7 @@ const AnimatedHeadline: React.FC<{ words?: string[] }> = ({ words }) => {
         </span>
         <br className="hidden sm:inline" />{' '}
         <span
-          className="inline-flex items-center justify-center flex-wrap gap-x-2"
+          className="inline-flex items-center justify-center flex-wrap gap-x-1.5 xs:gap-x-2"
           style={{
             opacity: mounted ? 1 : 0,
             transform: mounted ? 'translateY(0)' : 'translateY(32px)',
@@ -142,9 +148,8 @@ const AnimatedHeadline: React.FC<{ words?: string[] }> = ({ words }) => {
         >
           <span>Anchored in</span>{' '}
           <span
-            className="inline-block relative overflow-visible"
+            className="inline-block relative overflow-visible min-w-[130px] xs:min-w-[155px] sm:min-w-[175px]"
             style={{
-              minWidth: '170px',
               textAlign: 'left',
               verticalAlign: 'baseline',
             }}
@@ -357,7 +362,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.70s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.70s',
             }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-3 sm:pt-4 max-w-md sm:max-w-none mx-auto"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-3 sm:pt-4 w-full max-w-xs xs:max-w-md sm:max-w-none mx-auto px-1 sm:px-0"
           >
             <Link
               to="/enquire"
@@ -377,7 +382,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
 
             <Link
               to="/services/home-loans"
-              className="hero-btn-tertiary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-4 text-xs xs:text-sm sm:text-base font-semibold text-slate-200 hover:text-white transition-all text-center group cursor-pointer hover:-translate-y-0.5"
+              className="hero-btn-tertiary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 sm:py-4 text-xs xs:text-sm sm:text-base font-semibold text-slate-200 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-full transition-all text-center group cursor-pointer hover:-translate-y-0.5 shadow-xs"
             >
               <span>Explore All Solutions</span>
               <span className="hero-explore-arrow">→</span>
@@ -390,9 +395,9 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.85s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.85s',
             }}
-            className="w-full mt-6 sm:mt-8 pt-3.5 pb-3.5 px-4 sm:px-8 rounded-xl bg-slate-950/65 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-200"
+            className="w-full mt-6 sm:mt-8 pt-3.5 pb-3.5 px-4 sm:px-6 rounded-xl bg-slate-950/75 backdrop-blur-md border border-slate-800/80 shadow-lg flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-200"
           >
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
+            <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2 justify-center md:justify-start">
               {(() => {
                 if (!content?.heroBadges) {
                   return ['Zero Advance Fees', '40+ Partner Lenders', '24–48h Rapid Sanction'];
@@ -412,16 +417,16 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
                   .map((b: string) => b.replace(/^["'\[\]\s]+|["'\[\]\s]+$/g, ''))
                   .filter(Boolean);
               })().map((badgeText: string, bIdx: number) => (
-                <div key={bIdx} className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#20B2AA] flex-shrink-0" />
-                  <span className="font-semibold text-white">{badgeText}</span>
+                <div key={bIdx} className="flex items-center gap-1.5 xs:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-[#20B2AA] flex-shrink-0" />
+                  <span className="font-semibold text-white text-[11px] xs:text-xs sm:text-sm">{badgeText}</span>
                 </div>
               ))}
             </div>
 
-            <div className="flex items-center gap-2 text-slate-300 text-xs justify-center mx-auto sm:mx-0">
-              <ShieldCheck className="w-4 h-4 text-[#20B2AA]" />
-              <span>Institutional Banking Partners: <strong className="text-white">SBI • HDFC • ICICI • AXIS • KOTAK</strong></span>
+            <div className="flex items-center gap-2 text-slate-300 text-[11px] xs:text-xs justify-center mx-auto md:mx-0 pt-1 md:pt-0 border-t md:border-t-0 border-slate-800/70 w-full md:w-auto">
+              <ShieldCheck className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-[#20B2AA] shrink-0" />
+              <span className="text-center md:text-left">Banking Partners: <strong className="text-white">SBI • HDFC • ICICI • AXIS • KOTAK</strong></span>
             </div>
           </div>
         </div>
@@ -599,27 +604,194 @@ const StatsBar: React.FC<{ content?: SiteContent | null }> = ({ content }) => {
   ];
 
   return (
-    <section className="relative z-20 -mt-6 sm:-mt-8 lg:-mt-12 px-3 sm:px-4 pb-0">
-      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto p-6 sm:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
-        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+    <section className="relative z-20 -mt-6 sm:-mt-8 lg:-mt-12 px-2 xs:px-3 sm:px-4 pb-0">
+      <div className="w-[94%] xs:w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto p-3.5 xs:p-4 sm:p-6 lg:p-8 rounded-2xl bg-white border border-brand-border/80 shadow-xl shadow-brand-navy/10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 xs:gap-3.5 sm:gap-4 lg:gap-6">
           {stats.map((s, idx) => (
             <div
               key={idx}
-              className="flex items-start gap-4 p-4 rounded-xl bg-brand-ivory/40 border border-brand-border/60 hover:bg-white hover:border-brand-teal/40 hover:shadow-subtle transition-all duration-200"
+              className="flex flex-col sm:flex-row items-start gap-2 sm:gap-3.5 p-2.5 xs:p-3 sm:p-4 rounded-xl bg-brand-ivory/50 border border-brand-border/70 hover:bg-white hover:border-brand-teal/40 hover:shadow-subtle transition-all duration-200"
             >
-              <div className="w-10 h-10 rounded-lg bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 rounded-lg bg-brand-teal-light text-brand-teal flex items-center justify-center shrink-0">
                 {s.icon}
               </div>
-              <div>
-                <span className="text-xl xs:text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-navy block font-heading">
+              <div className="min-w-0 flex-1">
+                <span className="text-base xs:text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-brand-navy block font-heading truncate">
                   {s.value}
                 </span>
-                <span className="text-xs sm:text-sm font-bold text-brand-navy block mt-0.5">
+                <span className="text-[10px] xs:text-[11px] sm:text-xs font-bold text-brand-navy block mt-0.5 line-clamp-1">
                   {s.label}
                 </span>
-                <span className="text-[11px] text-brand-slate block mt-0.5 leading-snug">
+                <span className="text-[9px] xs:text-[10px] sm:text-[11px] text-brand-slate block mt-0.5 leading-snug line-clamp-2">
                   {s.sub}
                 </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ────────────────────────────────────────────────────────────
+   3.5 CORE LOAN SOLUTIONS SECTION
+   ──────────────────────────────────────────────────────────── */
+interface LoanProduct {
+  id: string;
+  title: string;
+  slug: string;
+  rateFrom: string;
+  badge: string;
+  image: string;
+  description: string;
+  features: string[];
+}
+
+const CoreLoanSolutions: React.FC = () => {
+  const products: LoanProduct[] = [
+    {
+      id: 'hl',
+      title: 'Home Loans & Self Construction',
+      slug: '/services/home-loans',
+      rateFrom: 'From 7.25% p.a.*',
+      badge: 'Govt. Subsidy Assistance',
+      image: homeLoanImg,
+      description: 'Funding for self-construction on owned land, plot purchase + construction, and new or old residential homes.',
+      features: [
+        'Central & State Govt. Subsidy Guidance',
+        'Owned plot & self-construction funding',
+        'Tiled house & heritage property financing',
+        'Extended repayment tenures up to 30 years',
+      ],
+    },
+    {
+      id: 'lap',
+      title: 'Mortgage Loans (LAP)',
+      slug: '/services/loan-against-property',
+      rateFrom: 'From 8.50% p.a.*',
+      badge: 'Concrete & Empty Land',
+      image: lapLoanImg,
+      description: 'Liquidity against registered concrete buildings, traditional tiled houses, empty plots, and commercial assets.',
+      features: [
+        'Concrete houses, tiled structures & empty land',
+        'High borrowing LTV up to 75% of market value',
+        'Business working capital & personal expansion',
+        'Multi-bank rate comparison for lowest EMI',
+      ],
+    },
+    {
+      id: 'pl',
+      title: 'Purchase Loans & Takeover',
+      slug: '/services/purchase-loans',
+      rateFrom: 'From 8.40% p.a.*',
+      badge: 'Low ROI PSU Switch',
+      image: purchaseLoanImg,
+      description: 'Financing for residential plots, commercial properties, and low-interest loan transfer from private to govt banks.',
+      features: [
+        'Plot purchase with immediate construction option',
+        'Private NBFC to PSU Bank takeover (Save up to 350 bps)',
+        'Commercial showroom & godown purchases',
+        '30-year parent deed & legal pre-scrutiny',
+      ],
+    },
+    {
+      id: 'vl',
+      title: 'Vehicle Loans & Refinance',
+      slug: '/services/vehicle-loans',
+      rateFrom: 'From 9.25% p.a.*',
+      badge: 'Rapid 24h Sanction',
+      image: vehicleLoanImg,
+      description: 'End-to-end auto financing covering new cars, used cars, used car refinancing, and commercial vehicle fleets.',
+      features: [
+        'New & pre-owned personal cars',
+        'Used car refinancing & cash liquidity release',
+        'Commercial transport vehicles & fleet funding',
+        'Minimal documentation & doorstep processing',
+      ],
+    },
+  ];
+
+  return (
+    <section id="loan-solutions" className="pt-12 sm:pt-16 pb-0 bg-transparent">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-teal-light text-brand-teal text-xs font-bold tracking-wider uppercase mb-3">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Specialized Loan Advisory</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy tracking-tight font-heading">
+            Institutional Funding Solutions for Every Property Need
+          </h2>
+          <p className="mt-2.5 text-sm sm:text-base text-brand-slate leading-relaxed">
+            Tailored syndication across 40+ premier banks and NBFCs with zero upfront fees, maximized borrowing limits, and end-to-end legal clearance.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {products.map((prod) => (
+            <div
+              key={prod.id}
+              className="group bg-white rounded-2xl border border-brand-border/80 shadow-2xs hover:shadow-card hover:border-brand-teal/40 transition-all duration-300 flex flex-col justify-between overflow-hidden relative"
+            >
+              {/* Product Thumbnail */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img
+                  src={prod.image}
+                  alt={prod.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+                
+                {/* Rate Badge */}
+                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-xs">
+                  <span className="font-extrabold font-heading text-sm text-[#20B2AA] drop-shadow-sm">
+                    {prod.rateFrom}
+                  </span>
+                  <span className="bg-slate-950/70 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-semibold border border-white/15">
+                    {prod.badge}
+                  </span>
+                </div>
+              </div>
+
+              {/* Product Content */}
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-base font-bold text-brand-navy font-heading group-hover:text-brand-teal transition-colors mb-1.5 leading-snug">
+                    {prod.title}
+                  </h3>
+                  <p className="text-xs text-brand-slate leading-relaxed mb-3.5 line-clamp-2">
+                    {prod.description}
+                  </p>
+
+                  <ul className="space-y-1.5 mb-4 text-[11px] text-slate-700">
+                    {prod.features.slice(0, 3).map((feat, fIdx) => (
+                      <li key={fIdx} className="flex items-start gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#20B2AA] shrink-0 mt-0.5" />
+                        <span className="line-clamp-1">{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-3 border-t border-gray-100 flex items-center gap-2">
+                  <Link
+                    to={`/enquire?service=${encodeURIComponent(prod.title)}`}
+                    className="flex-1 py-2 px-3 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-semibold rounded-lg text-center transition-colors shadow-xs"
+                  >
+                    Apply Now
+                  </Link>
+                  <Link
+                    to={prod.slug}
+                    className="py-2 px-3 bg-brand-ivory hover:bg-gray-100 text-brand-navy text-xs font-semibold rounded-lg border border-brand-border transition-colors text-center inline-flex items-center justify-center gap-1"
+                    title="View Full Details"
+                  >
+                    <span>Details</span>
+                    <ArrowRight className="w-3 h-3 text-brand-teal" />
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
@@ -1278,25 +1450,26 @@ const RateComparisonMatrix: React.FC<{ content?: SiteContent | null }> = ({ cont
               </button>
               <button
                 onClick={() => setActiveTab('lap')}
-                className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
+                className={`flex-1 sm:flex-initial text-center px-3 sm:px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap ${
                   activeTab === 'lap'
                     ? 'bg-brand-teal text-white shadow-xs'
                     : 'text-brand-slate hover:text-brand-navy'
                 }`}
               >
-                Loan Against Property (LAP)
+                <span className="hidden sm:inline">Loan Against Property (LAP)</span>
+                <span className="sm:hidden">Mortgage (LAP)</span>
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0 text-xs w-full sm:w-auto">
-              <span className="text-brand-slate font-medium mr-1 flex items-center gap-1">
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0 text-xs w-full sm:w-auto -mx-1 px-1">
+              <span className="text-brand-slate font-medium mr-1 flex items-center gap-1 shrink-0">
                 <SlidersHorizontal className="w-3.5 h-3.5" /> Filter:
               </span>
               {(['All', 'Public Bank', 'Private Bank', 'HFC / NBFC'] as const).map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setFilterCategory(cat)}
-                  className={`px-3 py-1.5 rounded-full font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-full font-medium transition-colors shrink-0 ${
                     filterCategory === cat
                       ? 'bg-brand-navy text-white shadow-2xs'
                       : 'bg-white border border-brand-border text-brand-slate hover:bg-gray-50'
@@ -1314,15 +1487,15 @@ const RateComparisonMatrix: React.FC<{ content?: SiteContent | null }> = ({ cont
           {filtered.map((row, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-2xl border border-brand-border/80 p-4 shadow-sm hover:shadow-md transition-shadow space-y-3"
+              className="bg-white rounded-2xl border border-brand-border/80 p-3.5 xs:p-4 shadow-sm hover:shadow-md transition-shadow space-y-3"
             >
               <div className="flex items-start justify-between gap-2 border-b border-gray-100 pb-2.5">
                 <div>
-                  <h3 className="font-bold text-sm text-brand-navy font-heading">
+                  <h3 className="font-bold text-xs xs:text-sm text-brand-navy font-heading">
                     {row.lender}
                   </h3>
                   <span
-                    className={`inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded ${
+                    className={`inline-block mt-1 text-[9px] xs:text-[10px] font-semibold px-2 py-0.5 rounded ${
                       row.category === 'Public Bank'
                         ? 'bg-blue-50 text-blue-700 border border-blue-200'
                         : row.category === 'Private Bank'
@@ -1334,31 +1507,31 @@ const RateComparisonMatrix: React.FC<{ content?: SiteContent | null }> = ({ cont
                   </span>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className="text-[10px] uppercase font-bold text-brand-slate block">
+                  <span className="text-[9px] xs:text-[10px] uppercase font-bold text-brand-slate block">
                     {activeTab === 'home' ? 'Home Loan Rate' : 'LAP Rate'}
                   </span>
-                  <span className="text-base font-extrabold text-brand-teal font-heading block">
+                  <span className="text-sm xs:text-base font-extrabold text-brand-teal font-heading block">
                     {activeTab === 'home' ? row.homeLoanRate : row.lapRate}
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-center bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-xs">
+              <div className="grid grid-cols-3 gap-1.5 xs:gap-2 text-center bg-slate-50/80 p-2 xs:p-2.5 rounded-xl border border-slate-100 text-xs">
                 <div>
-                  <span className="text-[10px] text-brand-slate block">Max Tenure</span>
-                  <span className="font-semibold text-brand-navy block text-[11px] mt-0.5">
+                  <span className="text-[9px] xs:text-[10px] text-brand-slate block">Tenure</span>
+                  <span className="font-semibold text-brand-navy block text-[10px] xs:text-[11px] mt-0.5 truncate">
                     {activeTab === 'home' ? row.maxTenureHL : row.maxTenureLAP}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-brand-slate block">Indicative LTV</span>
-                  <span className="font-semibold text-brand-navy block text-[11px] mt-0.5 truncate" title={row.maxLtv}>
+                  <span className="text-[9px] xs:text-[10px] text-brand-slate block">LTV</span>
+                  <span className="font-semibold text-brand-navy block text-[10px] xs:text-[11px] mt-0.5 truncate" title={row.maxLtv}>
                     {row.maxLtv.split('(')[0].trim()}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-brand-slate block">Est. Fee</span>
-                  <span className="font-semibold text-brand-navy block text-[11px] mt-0.5 truncate" title={row.processingFee}>
+                  <span className="text-[9px] xs:text-[10px] text-brand-slate block">Est. Fee</span>
+                  <span className="font-semibold text-brand-navy block text-[10px] xs:text-[11px] mt-0.5 truncate" title={row.processingFee}>
                     {row.processingFee.split('(')[0].trim()}
                   </span>
                 </div>
@@ -1439,6 +1612,266 @@ const RateComparisonMatrix: React.FC<{ content?: SiteContent | null }> = ({ cont
           <p className="leading-relaxed text-[11px] sm:text-xs">
             <strong>Advisory Notice &amp; Compliance:</strong> Prime Associates Loans is an authorized loan advisor and corporate channel liaison. Rates presented are indicative published floating rates linked to EBLR / Repo Rate as of Q4 2024. Final interest rate, sanction amount, and legal eligibility depend strictly on lender underwriting policy, CIBIL score (&gt;750 preferred), title clearance, and property valuation. No guarantee of interest rate or approval is implied.
           </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ────────────────────────────────────────────────────────────
+   5.5 INTERACTIVE QUICK EMI SIMULATOR
+   ──────────────────────────────────────────────────────────── */
+const QuickEmiSimulator: React.FC<{ content?: SiteContent | null }> = ({ content }) => {
+  const defaultAmount = content?.calcDefaultAmount || 5000000;
+  const defaultRate = content?.calcDefaultHomeRate || 7.25;
+  const defaultTenure = content?.calcDefaultTenure || 20;
+
+  const [amount, setAmount] = useState<number>(defaultAmount);
+  const [rate, setRate] = useState<number>(defaultRate);
+  const [tenureYears, setTenureYears] = useState<number>(defaultTenure);
+
+  const calculations = useMemo(() => {
+    const P = amount;
+    const r = rate / 12 / 100;
+    const n = tenureYears * 12;
+
+    if (P <= 0 || r <= 0 || n <= 0) {
+      return { emi: 0, totalInterest: 0, totalPayment: 0, requiredIncome: 0 };
+    }
+
+    const emi = Math.round((P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+    const totalPayment = emi * n;
+    const totalInterest = Math.max(0, totalPayment - P);
+    const requiredIncome = Math.round(emi * 2);
+
+    return { emi, totalInterest, totalPayment, requiredIncome };
+  }, [amount, rate, tenureYears]);
+
+  const formatLakhCrore = (val: number) => {
+    if (val >= 10000000) {
+      return `₹${(val / 10000000).toFixed(2)} Cr`;
+    }
+    if (val >= 100000) {
+      return `₹${(val / 100000).toFixed(1)} Lakhs`;
+    }
+    return `₹${val.toLocaleString('en-IN')}`;
+  };
+
+  return (
+    <section id="emi-simulator" className="pt-12 sm:pt-16 pb-0 bg-transparent">
+      <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card p-4 xs:p-6 sm:p-8 lg:p-10 relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6 sm:mb-8 border-b border-gray-100 pb-5">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2">
+                <Calculator className="w-3.5 h-3.5" />
+                <span>Interactive Live Calculator</span>
+              </div>
+              <h2 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight font-heading">
+                Instant EMI &amp; Borrowing Headroom Simulator
+              </h2>
+              <p className="text-xs sm:text-sm text-brand-slate mt-1 max-w-2xl">
+                Simulate monthly installment, overall interest payout, and FOIR eligibility in seconds before file submission.
+              </p>
+            </div>
+
+            <Link
+              to="/calculator"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-ivory hover:bg-gray-100 text-brand-navy text-xs font-semibold rounded-lg border border-brand-border transition-colors self-start lg:self-auto shrink-0"
+            >
+              <span>Full Amortization &amp; FOIR Engine</span>
+              <ArrowRight className="w-3.5 h-3.5 text-brand-teal" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-stretch">
+            {/* Sliders Column */}
+            <div className="lg:col-span-7 space-y-5 sm:space-y-6">
+              {/* 1. Loan Amount */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs sm:text-sm font-bold text-brand-navy">
+                    Loan Amount Required
+                  </label>
+                  <span className="text-sm xs:text-base sm:text-lg font-black text-brand-teal font-heading">
+                    {formatLakhCrore(amount)}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={500000}
+                  max={50000000}
+                  step={500000}
+                  value={amount}
+                  onChange={(e) => setAmount(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
+                />
+                {/* Presets */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {[2500000, 5000000, 7500000, 10000000, 20000000].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setAmount(preset)}
+                      className={`text-[10px] xs:text-[11px] px-2.5 py-1 rounded-md font-medium transition-colors ${
+                        amount === preset
+                          ? 'bg-brand-navy text-white'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {preset >= 10000000 ? `₹${preset / 10000000} Cr` : `₹${preset / 100000}L`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Interest Rate */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs sm:text-sm font-bold text-brand-navy">
+                    Interest Rate (% p.a.)
+                  </label>
+                  <span className="text-sm xs:text-base sm:text-lg font-black text-brand-teal font-heading">
+                    {rate.toFixed(2)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={7.0}
+                  max={15.0}
+                  step={0.05}
+                  value={rate}
+                  onChange={(e) => setRate(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
+                />
+                {/* Presets */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {[
+                    { label: '7.25% (Govt HL)', val: 7.25 },
+                    { label: '8.50% (LAP)', val: 8.5 },
+                    { label: '8.75% (Private HL)', val: 8.75 },
+                    { label: '9.25% (Vehicle)', val: 9.25 },
+                  ].map((p) => (
+                    <button
+                      key={p.val}
+                      type="button"
+                      onClick={() => setRate(p.val)}
+                      className={`text-[10px] xs:text-[11px] px-2.5 py-1 rounded-md font-medium transition-colors ${
+                        Math.abs(rate - p.val) < 0.01
+                          ? 'bg-brand-navy text-white'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. Loan Tenure */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs sm:text-sm font-bold text-brand-navy">
+                    Repayment Tenure
+                  </label>
+                  <span className="text-sm xs:text-base sm:text-lg font-black text-brand-teal font-heading">
+                    {tenureYears} Years ({tenureYears * 12} Mos)
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={30}
+                  step={1}
+                  value={tenureYears}
+                  onChange={(e) => setTenureYears(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
+                />
+                {/* Presets */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {[5, 10, 15, 20, 25, 30].map((yr) => (
+                    <button
+                      key={yr}
+                      type="button"
+                      onClick={() => setTenureYears(yr)}
+                      className={`text-[10px] xs:text-[11px] px-2.5 py-1 rounded-md font-medium transition-colors ${
+                        tenureYears === yr
+                          ? 'bg-brand-navy text-white'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {yr} Yrs
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Live Result Card Column */}
+            <div className="lg:col-span-5 bg-gradient-to-br from-[#12263a] to-[#183247] text-white p-5 sm:p-6 rounded-2xl flex flex-col justify-between shadow-lg relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-brand-teal/15 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="relative z-10 space-y-4">
+                <div className="border-b border-white/10 pb-3.5">
+                  <span className="text-[11px] uppercase tracking-wider text-slate-300 font-bold block mb-1">
+                    Calculated Monthly Installment
+                  </span>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl xs:text-3xl sm:text-4xl font-black text-[#20B2AA] font-heading">
+                      ₹{calculations.emi.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-xs text-slate-300 font-medium">/ month</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                    <span className="text-[10px] text-slate-300 block">Principal Amount</span>
+                    <span className="font-bold text-white text-xs sm:text-sm mt-0.5 block truncate">
+                      {formatLakhCrore(amount)}
+                    </span>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                    <span className="text-[10px] text-slate-300 block">Total Interest</span>
+                    <span className="font-bold text-teal-300 text-xs sm:text-sm mt-0.5 block truncate">
+                      {formatLakhCrore(calculations.totalInterest)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs space-y-1.5">
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-slate-300">Total Repayment:</span>
+                    <span className="font-bold text-white font-heading">
+                      {formatLakhCrore(calculations.totalPayment)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-slate-300">Suggested Min. Monthly Income (50% FOIR):</span>
+                    <span className="font-bold text-emerald-400 font-heading">
+                      ₹{calculations.requiredIncome.toLocaleString('en-IN')}+
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative z-10 pt-4 mt-4 border-t border-white/10 flex flex-col sm:flex-row gap-2.5">
+                <Link
+                  to={`/enquire?amount=${amount}&rate=${rate}&tenure=${tenureYears}`}
+                  className="flex-1 py-3 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-lg text-center transition-all shadow-md flex items-center justify-center gap-1.5"
+                >
+                  <span>Apply for this Loan</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  to="/calculator"
+                  className="py-3 px-4 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold rounded-lg text-center transition-colors border border-white/15"
+                >
+                  Detailed Schedule
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -2005,18 +2438,18 @@ const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
               {aboutText}
             </p>
 
-            <div className="space-y-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 pt-2">
               {benefits.map((b, idx) => (
                 <div
                   key={idx}
-                  className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white border border-brand-border/70 hover:border-brand-teal/40 transition-all shadow-2xs"
+                  className="flex items-start gap-3 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white border border-brand-border/70 hover:border-brand-teal/40 transition-all shadow-2xs"
                 >
                   <div className="p-2 rounded-xl bg-brand-teal-light text-brand-teal flex-shrink-0 mt-0.5">
                     {b.icon}
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-brand-navy mb-0.5 font-heading">{b.title}</h4>
-                    <p className="text-xs sm:text-sm text-brand-slate leading-relaxed">{b.desc}</p>
+                    <h4 className="text-xs sm:text-sm font-bold text-brand-navy mb-0.5 font-heading">{b.title}</h4>
+                    <p className="text-[11px] sm:text-xs text-brand-slate leading-relaxed">{b.desc}</p>
                   </div>
                 </div>
               ))}
@@ -2158,47 +2591,17 @@ export const HomePage: React.FC = () => {
       {/* 2. Live Key Stats Counter */}
       <StatsBar content={content} />
 
-      {/* 3. Premier Lender Partners Network */}
+      {/* 3. Core Loan Solutions Showcase */}
+      <CoreLoanSolutions />
+
+      {/* 4. Premier Lender Partners Network */}
       <LenderPartners />
 
-      {/* 4. Live Multi-Lender Rate Comparison Matrix */}
+      {/* 5. Live Multi-Lender Rate Comparison Matrix */}
       <RateComparisonMatrix content={content} />
 
-      {/* 5. Dynamic EMI & FOIR Calculator Banner */}
-      <section className="pt-12 sm:pt-16 pb-0 bg-transparent">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="p-6 sm:p-10 lg:p-12 rounded-2xl sm:rounded-3xl bg-white border border-brand-border/80 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 shadow-card">
-            <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider">
-                <Calculator className="w-3.5 h-3.5" />
-                <span>Interactive Estimation Engine</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight">
-                Simulate Repayments &amp; Banking FOIR Eligibility
-              </h2>
-              <p className="text-sm sm:text-base text-brand-slate leading-relaxed">
-                Estimate monthly EMIs, total interest amortization, and maximum permissible borrowing capacity based on Indian banking FOIR limits before logging your file.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
-              <Link
-                to="/calculator"
-                className="px-6 py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-semibold rounded-corporate shadow-sm flex items-center justify-center gap-2 transition-colors text-center"
-              >
-                <span>Open Dynamic Calculator</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                to="/services/home-loans"
-                className="px-6 py-3.5 bg-brand-ivory hover:bg-gray-100 text-brand-navy border border-brand-border text-xs sm:text-sm font-semibold rounded-corporate text-center transition-colors"
-              >
-                Home Loan Options
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 6. Dynamic Interactive EMI & FOIR Calculator */}
+      <QuickEmiSimulator content={content} />
 
       {/* 6. 4-Step Digital Application Journey */}
       <HowItWorks content={content} />
