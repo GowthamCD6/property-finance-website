@@ -410,125 +410,127 @@ export const HowItWorksPage: React.FC = () => {
                   transform: mounted ? 'translateY(0)' : 'translateY(28px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
                 }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
+                className="grid grid-cols-2 sm:grid-cols-4 gap-2 xs:gap-2.5 sm:gap-3.5 pt-1"
               >
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-2.5 xs:p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-1.5 xs:px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Fast-Track
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading tabular-nums">
+                  <div className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight font-heading tabular-nums">
                     {counterValues.turnaround}–12d
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  <div className="text-[11px] xs:text-xs font-bold text-slate-200 mt-1 font-heading">
                     Sanction to Credit
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[9px] xs:text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     vs 45d Branch Queue
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-2.5 xs:p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-1.5 xs:px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Zonal Panel
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading tabular-nums min-w-[50px]">
+                  <div className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight font-heading tabular-nums">
                     {counterValues.lenders}+
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  <div className="text-[11px] xs:text-xs font-bold text-slate-200 mt-1 font-heading">
                     Partner Banks
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[9px] xs:text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     PSU, Private &amp; NBFCs
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-2.5 xs:p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-1.5 xs:px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Pre-Audited
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-emerald-400 font-heading tabular-nums min-w-[70px]">
+                  <div className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-emerald-400 font-heading tabular-nums">
                     {counterValues.sanction}%
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  <div className="text-[11px] xs:text-xs font-bold text-slate-200 mt-1 font-heading">
                     Sanction Ratio
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[9px] xs:text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     30-Yr Legal Due Diligence
                   </div>
                 </div>
 
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="relative group p-2.5 xs:p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-1.5 xs:px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
                       Volume
                     </span>
                   </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading tabular-nums min-w-[70px]">
+                  <div className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight font-heading tabular-nums">
                     ₹{counterValues.capital}+ Cr
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
+                  <div className="text-[11px] xs:text-xs font-bold text-slate-200 mt-1 font-heading">
                     Capital Facilitated
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
+                  <div className="text-[9px] xs:text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
                     15-Year Practice
                   </div>
                 </div>
               </div>
 
-              {/* Call-to-Action Group */}
+              {/* Call-to-Action Group - Single Row on Mobile, Full on Desktop */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(16px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s',
                 }}
-                className="pt-1 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3"
+                className="pt-1 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3"
               >
-                <Link
-                  to="/enquire"
-                  className="hero-btn-primary inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 text-white font-bold text-xs sm:text-sm font-heading shadow-lg shadow-teal-900/40 text-center cursor-pointer tracking-wide"
-                >
-                  <Sparkles className="w-4 h-4 text-teal-100" />
-                  <span>Initiate Pre-Approval Application</span>
-                  <ArrowRight className="w-4 h-4 hero-btn-arrow" />
-                </Link>
+                <div className="flex flex-row items-center gap-2 xs:gap-2.5 sm:gap-3.5 w-full sm:w-auto">
+                  <Link
+                    to="/enquire"
+                    className="hero-btn-primary flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 px-3 xs:px-5 sm:px-7 py-3 sm:py-3.5 text-white font-bold text-xs xs:text-sm font-heading shadow-lg shadow-teal-900/40 text-center cursor-pointer tracking-wide whitespace-nowrap"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-100 shrink-0" />
+                    <span>Initiate Pre-Approval</span>
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 hero-btn-arrow shrink-0" />
+                  </Link>
 
-                <a
-                  href="#cockpit-breakdown"
-                  className="hero-btn-secondary inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 text-white font-semibold text-xs sm:text-sm font-heading shadow-sm backdrop-blur-sm text-center cursor-pointer"
-                >
-                  <FileCheck2 className="w-4 h-4 text-teal-300" />
-                  <span>Explore 4-Stage Protocol</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
-                </a>
+                  <a
+                    href="#cockpit-breakdown"
+                    className="hero-btn-secondary flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2 px-3 xs:px-4 sm:px-6 py-3 sm:py-3.5 text-white font-semibold text-xs xs:text-sm font-heading shadow-sm backdrop-blur-sm text-center cursor-pointer whitespace-nowrap"
+                  >
+                    <FileCheck2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300 shrink-0" />
+                    <span>4-Stage Protocol</span>
+                    <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 shrink-0 hidden xs:inline-block" />
+                  </a>
+                </div>
 
                 <a
                   href="tel:+919655566613"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-teal-300 border border-white/20 text-xs font-semibold font-heading backdrop-blur-md transition-colors shadow-sm text-center"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-teal-300 border border-white/20 text-xs font-semibold font-heading backdrop-blur-md transition-colors shadow-sm text-center w-full sm:w-auto"
                 >
-                  <PhoneCall className="w-3.5 h-3.5 text-teal-300" />
-                  <span>+91 96555 66613</span>
+                  <PhoneCall className="w-3.5 h-3.5 text-teal-300 shrink-0" />
+                  <span>Direct Desk: +91 96555 66613</span>
                 </a>
               </div>
 
               {/* Institutional Safety Pillars Strip */}
-              <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-sans font-medium">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-teal-400" />
+              <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-1.5 text-[11px] sm:text-xs text-slate-300 font-sans font-medium">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-400 shrink-0" />
                   <span>RBI Fair Practice Code Compliant</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-teal-400" />
+                <div className="flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 text-teal-400 shrink-0" />
                   <span>Zero Unauthorized Bureau Hard Pings</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Scale className="w-4 h-4 text-teal-400" />
+                <div className="flex items-center gap-1.5">
+                  <Scale className="w-3.5 h-3.5 text-teal-400 shrink-0" />
                   <span>Zero Cash Collection Guarantee</span>
                 </div>
               </div>
@@ -539,7 +541,7 @@ export const HowItWorksPage: React.FC = () => {
               {/* Luminous Glass Glow Behind Card to Match Side Cards Refraction */}
               <div className="absolute -inset-1.5 bg-gradient-to-tr from-teal-500/20 via-white/10 to-sky-500/20 rounded-[32px] blur-xl pointer-events-none" />
 
-              <div className="relative rounded-3xl bg-white/[0.12] backdrop-blur-xl border border-white/25 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-1 ring-white/15 space-y-4 font-sans text-white overflow-hidden transition-all duration-300">
+              <div className="relative rounded-2xl sm:rounded-3xl bg-white/[0.12] backdrop-blur-xl border border-white/25 p-4 xs:p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-1 ring-white/15 space-y-3.5 sm:space-y-4 font-sans text-white overflow-hidden transition-all duration-300">
                 {/* Ambient Glassmorphic Highlights & Radiant Depth */}
                 <div className="absolute -top-24 -right-24 w-60 h-60 bg-teal-400/20 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
@@ -548,12 +550,12 @@ export const HowItWorksPage: React.FC = () => {
                 {/* Console Header with Brand Heading Typography */}
                 <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/20">
                   <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
+                    <Activity className="w-4 h-4 text-emerald-400 animate-pulse shrink-0" />
                     <span className="text-xs uppercase font-extrabold tracking-wider text-teal-200 font-heading">
                       Live Syndication Simulator
                     </span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 border border-emerald-400/40 text-[10px] font-heading font-bold text-emerald-200 backdrop-blur-md shadow-sm">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-emerald-500/25 border border-emerald-400/40 text-[9px] xs:text-[10px] font-heading font-bold text-emerald-200 backdrop-blur-md shadow-sm shrink-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
                     <span>Live Benchmarks</span>
                   </div>
@@ -564,7 +566,7 @@ export const HowItWorksPage: React.FC = () => {
                   <span className="text-[10px] uppercase font-bold text-slate-200 font-heading tracking-wider block mb-2">
                     Select Credit Facility
                   </span>
-                  <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-white/[0.08] backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                  <div className="grid grid-cols-4 gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-white/[0.08] backdrop-blur-md rounded-xl sm:rounded-2xl border border-white/20 shadow-inner">
                     {(
                       [
                         { id: 'home', label: 'Home Loan', rate: '8.35%' },
@@ -579,14 +581,14 @@ export const HowItWorksPage: React.FC = () => {
                           key={facility.id}
                           type="button"
                           onClick={() => handleSelectFacility(facility.id)}
-                          className={`py-2 px-1 rounded-xl text-center transition-all cursor-pointer font-heading ${
+                          className={`py-1.5 sm:py-2 px-0.5 sm:px-1 rounded-lg sm:rounded-xl text-center transition-all cursor-pointer font-heading ${
                             isSel
                               ? 'bg-teal-500/90 text-white font-bold shadow-[0_4px_16px_rgba(20,184,166,0.4)] border border-teal-300/40'
                               : 'text-slate-200 hover:text-white hover:bg-white/[0.12] font-semibold border border-transparent'
                           }`}
                         >
-                          <span className="text-[11px] block leading-tight font-heading font-bold">{facility.label}</span>
-                          <span className="text-[10px] block text-teal-200 opacity-95 font-heading font-extrabold mt-0.5">{facility.rate}</span>
+                          <span className="text-[10px] xs:text-[11px] block leading-tight font-heading font-bold truncate">{facility.label}</span>
+                          <span className="text-[9px] xs:text-[10px] block text-teal-200 opacity-95 font-heading font-extrabold mt-0.5">{facility.rate}</span>
                         </button>
                       );
                     })}
@@ -594,12 +596,12 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Interactive Dual-Control Sliders & Inputs */}
-                <div className="relative z-10 space-y-4 pt-1">
+                <div className="relative z-10 space-y-3.5 sm:space-y-4 pt-1">
                   {/* Loan Quantum Control */}
                   <div>
                     <div className="flex items-center justify-between text-xs mb-1.5">
                       <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
-                        <Wallet className="w-3.5 h-3.5 text-teal-400" /> Loan Quantum Required:
+                        <Wallet className="w-3.5 h-3.5 text-teal-400 shrink-0" /> Quantum:
                       </span>
                       <div className="flex items-center gap-1.5 bg-white/[0.12] backdrop-blur-md border border-white/25 rounded-xl px-2.5 py-1 focus-within:border-teal-400 focus-within:bg-white/[0.18] focus-within:shadow-[0_0_15px_rgba(45,212,191,0.25)] transition-all">
                         <span className="text-teal-400 font-extrabold text-xs font-heading">₹</span>
@@ -627,15 +629,15 @@ export const HowItWorksPage: React.FC = () => {
                       onChange={(e) => setSimAmountLakhs(Number(e.target.value))}
                       className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-teal-400 backdrop-blur-sm"
                     />
-                    <div className="flex items-center justify-between text-[10px] text-slate-200 pt-1 font-heading font-bold">
+                    <div className="flex items-center justify-between text-[10px] text-slate-200 pt-1 font-heading font-bold flex-wrap gap-1">
                       <span>₹10L</span>
-                      <div className="flex gap-1">
+                      <div className="flex flex-wrap gap-1 justify-center">
                         {[25, 50, 75, 100, 200].map((amt) => (
                           <button
                             key={amt}
                             type="button"
                             onClick={() => setSimAmountLakhs(amt)}
-                            className={`px-2 py-0.5 rounded-lg text-[10px] font-heading font-bold backdrop-blur-sm transition-all cursor-pointer ${
+                            className={`px-1.5 xs:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] xs:text-[10px] font-heading font-bold backdrop-blur-sm transition-all cursor-pointer ${
                               simAmountLakhs === amt
                                 ? 'bg-teal-500/40 text-teal-100 border border-teal-300/60 shadow-[0_0_12px_rgba(20,184,166,0.3)]'
                                 : 'bg-white/[0.10] border border-white/20 text-slate-200 hover:text-white hover:bg-white/[0.18]'
@@ -655,7 +657,7 @@ export const HowItWorksPage: React.FC = () => {
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1.5">
                         <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-sky-400" /> Tenure:
+                          <Clock className="w-3.5 h-3.5 text-sky-400 shrink-0" /> Tenure:
                         </span>
                         <div className="flex items-center gap-1.5 bg-white/[0.12] backdrop-blur-md border border-white/25 rounded-xl px-2.5 py-1 focus-within:border-sky-400 focus-within:bg-white/[0.18] focus-within:shadow-[0_0_15px_rgba(56,189,248,0.25)] transition-all">
                           <input
@@ -693,7 +695,7 @@ export const HowItWorksPage: React.FC = () => {
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1.5">
                         <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
-                          <Percent className="w-3.5 h-3.5 text-emerald-400" /> Interest:
+                          <Percent className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> Interest:
                         </span>
                         <div className="flex items-center gap-1.5 bg-white/[0.12] backdrop-blur-md border border-white/25 rounded-xl px-2.5 py-1 focus-within:border-emerald-400 focus-within:bg-white/[0.18] focus-within:shadow-[0_0_15px_rgba(52,211,153,0.25)] transition-all">
                           <input
@@ -742,51 +744,51 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
 
                 {/* Dynamic Computation Result Cards - Matched to Side Card Pure Glassmorphism */}
-                <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
-                  <div className="p-3 rounded-2xl bg-teal-500/30 backdrop-blur-md border border-teal-400/50 shadow-[0_8px_20px_rgba(20,184,166,0.25)] text-center transition-all hover:border-teal-300/80 hover:bg-teal-500/40">
-                    <span className="text-[10px] text-teal-100 uppercase font-extrabold font-heading tracking-wider block">
+                <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 pt-1.5">
+                  <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-teal-500/30 backdrop-blur-md border border-teal-400/50 shadow-[0_8px_20px_rgba(20,184,166,0.25)] text-center transition-all hover:border-teal-300/80 hover:bg-teal-500/40">
+                    <span className="text-[9px] xs:text-[10px] text-teal-100 uppercase font-extrabold font-heading tracking-wider block">
                       Monthly EMI
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight truncate">
                       ₹{estimatedEmi.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-teal-200 font-sans font-medium block mt-0.5">
+                    <span className="text-[9px] xs:text-[10px] text-teal-200 font-sans font-medium block mt-0.5 truncate">
                       @{currentRate}% p.a.
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-white/[0.12] backdrop-blur-md border border-white/25 shadow-lg text-center transition-all hover:bg-white/[0.18] hover:border-white/35">
-                    <span className="text-[10px] text-slate-200 uppercase font-extrabold font-heading tracking-wider block">
+                  <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.12] backdrop-blur-md border border-white/25 shadow-lg text-center transition-all hover:bg-white/[0.18] hover:border-white/35">
+                    <span className="text-[9px] xs:text-[10px] text-slate-200 uppercase font-extrabold font-heading tracking-wider block">
                       Total Interest
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight truncate">
                       ₹{totalInterest.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-sky-300 font-sans font-medium block mt-0.5">
+                    <span className="text-[9px] xs:text-[10px] text-sky-300 font-sans font-medium block mt-0.5 truncate">
                       Over {simTenureYears}y
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-white/[0.12] backdrop-blur-md border border-white/25 shadow-lg text-center transition-all hover:bg-white/[0.18] hover:border-white/35">
-                    <span className="text-[10px] text-slate-200 uppercase font-extrabold font-heading tracking-wider block">
+                  <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.12] backdrop-blur-md border border-white/25 shadow-lg text-center transition-all hover:bg-white/[0.18] hover:border-white/35">
+                    <span className="text-[9px] xs:text-[10px] text-slate-200 uppercase font-extrabold font-heading tracking-wider block">
                       Total Payable
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight truncate">
                       ₹{totalRepayment.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-slate-200 font-sans font-medium block mt-0.5">
+                    <span className="text-[9px] xs:text-[10px] text-slate-200 font-sans font-medium block mt-0.5 truncate">
                       Principal + Int
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-emerald-500/30 backdrop-blur-md border border-emerald-400/50 shadow-[0_8px_20px_rgba(16,185,129,0.25)] text-center transition-all hover:border-emerald-300/80 hover:bg-emerald-500/40">
-                    <span className="text-[10px] text-emerald-100 uppercase font-extrabold font-heading tracking-wider block">
+                  <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-emerald-500/30 backdrop-blur-md border border-emerald-400/50 shadow-[0_8px_20px_rgba(16,185,129,0.25)] text-center transition-all hover:border-emerald-300/80 hover:bg-emerald-500/40">
+                    <span className="text-[9px] xs:text-[10px] text-emerald-100 uppercase font-extrabold font-heading tracking-wider block">
                       Fee Saved
                     </span>
-                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
+                    <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight truncate">
                       ₹{estimatedFeeSaved.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-emerald-200 font-sans font-medium block mt-0.5">
+                    <span className="text-[9px] xs:text-[10px] text-emerald-200 font-sans font-medium block mt-0.5 truncate">
                       0.50% Waiver
                     </span>
                   </div>
@@ -796,10 +798,10 @@ export const HowItWorksPage: React.FC = () => {
                 <div className="relative z-10 pt-1">
                   <Link
                     to={`/enquire?amount=${simAmountLakhs * 100000}&tenure=${simTenureYears}&rate=${currentRate}&type=${simLoanType}`}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-teal-500 via-brand-teal to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_10px_25px_rgba(24,124,120,0.4)] border border-teal-300/30 backdrop-blur-md hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer font-heading tracking-wide"
+                    className="w-full py-3 sm:py-3.5 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-teal-500 via-brand-teal to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_10px_25px_rgba(24,124,120,0.4)] border border-teal-300/30 backdrop-blur-md hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer font-heading tracking-wide"
                   >
-                    <Zap className="w-4 h-4 text-white fill-white" />
-                    <span>Fast-Track Pre-Approval for ₹{simAmountLakhs} Lakhs</span>
+                    <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white fill-white shrink-0" />
+                    <span className="truncate">Fast-Track Pre-Approval for ₹{simAmountLakhs} Lakhs</span>
                   </Link>
                 </div>
               </div>
@@ -868,48 +870,48 @@ export const HowItWorksPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           2. DETAILED ACTIVE PHASE COCKPIT & INTERACTIVE ENGINE
           ──────────────────────────────────────────────────────────── */}
-      <section id="cockpit-breakdown" className="pt-12 sm:pt-16 pb-0 bg-[#f8f8f4]">
+      <section id="cockpit-breakdown" className="pt-10 sm:pt-16 pb-0 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           {advisoryPhases
             .filter((p) => p.phase === activePhase)
             .map((curr) => (
               <div
                 key={curr.phase}
-                className="bg-white rounded-3xl border border-brand-border shadow-card p-6 sm:p-10 lg:p-12 transition-all animate-in fade-in zoom-in-95 duration-200"
+                className="bg-white rounded-2xl sm:rounded-3xl border border-brand-border shadow-card p-4 xs:p-6 sm:p-10 lg:p-12 transition-all animate-in fade-in zoom-in-95 duration-200"
               >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-start">
                   
                   {/* Left Column: Full Phase Narrative & Key Advisory Actions */}
-                  <div className="lg:col-span-7 space-y-6">
+                  <div className="lg:col-span-7 space-y-5 sm:space-y-6">
                     <div className="space-y-2">
-                      <div className="flex flex-wrap items-center gap-2.5">
-                        <span className="text-xs font-extrabold uppercase tracking-wider text-teal-800 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                        <span className="text-[11px] xs:text-xs font-extrabold uppercase tracking-wider text-teal-800 bg-teal-50 px-2.5 sm:px-3 py-1 rounded-full border border-teal-200">
                           Phase {curr.number} • {curr.badgeText}
                         </span>
-                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 font-mono">
+                        <span className="text-[11px] xs:text-xs font-bold px-2.5 sm:px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 font-mono">
                           {curr.turnaround}
                         </span>
                       </div>
 
-                      <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-navy font-heading pt-1">
+                      <h2 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-brand-navy font-heading pt-1">
                         {curr.title}
                       </h2>
 
-                      <p className="text-slate-600 text-sm sm:text-base leading-relaxed pt-1">
+                      <p className="text-slate-600 text-xs sm:text-sm md:text-base leading-relaxed pt-0.5">
                         {curr.summary}
                       </p>
                     </div>
 
                     {/* Step Actions Checklist */}
-                    <div className="space-y-3 pt-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <div className="space-y-2.5 sm:space-y-3 pt-1">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 font-heading">
                         Institutional Protocol Executed in this Phase:
                       </h4>
-                      <div className="space-y-2.5">
+                      <div className="space-y-2 sm:space-y-2.5">
                         {curr.steps.map((st, sIdx) => (
                           <div
                             key={sIdx}
-                            className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs sm:text-sm text-slate-800 font-medium"
+                            className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs sm:text-sm text-slate-800 font-medium"
                           >
                             <CheckCircle2 className="w-4 h-4 text-brand-teal flex-shrink-0 mt-0.5" />
                             <span className="leading-snug">{st}</span>
@@ -919,10 +921,10 @@ export const HowItWorksPage: React.FC = () => {
                     </div>
 
                     {/* Phase Deliverable Banner */}
-                    <div className="p-4 bg-teal-50/70 rounded-2xl border border-teal-200 flex items-center gap-3 text-xs sm:text-sm font-bold text-teal-950">
-                      <Sparkles className="w-5 h-5 text-brand-teal flex-shrink-0" />
+                    <div className="p-3.5 sm:p-4 bg-teal-50/70 rounded-xl sm:rounded-2xl border border-teal-200 flex items-center gap-3 text-xs sm:text-sm font-bold text-teal-950">
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-brand-teal flex-shrink-0" />
                       <div>
-                        <span className="text-slate-500 font-medium block text-[11px] uppercase tracking-wider">
+                        <span className="text-slate-500 font-medium block text-[10px] sm:text-[11px] uppercase tracking-wider">
                           Certified Phase Milestone:
                         </span>
                         <span className="text-teal-900 font-bold">{curr.deliverable}</span>
@@ -931,52 +933,52 @@ export const HowItWorksPage: React.FC = () => {
                   </div>
 
                   {/* Right Column: High-Tech Interactive Cockpit Card */}
-                  <div className="lg:col-span-5 bg-gradient-to-br from-[#102235] to-[#0a1826] text-white p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6 border border-white/15">
-                    <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                  <div className="lg:col-span-5 bg-gradient-to-br from-[#102235] to-[#0a1826] text-white p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl space-y-5 sm:space-y-6 border border-white/15">
+                    <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10">
                       <div className="flex items-center gap-2">
-                        <Zap className="w-4 h-4 text-emerald-400" />
+                        <Zap className="w-4 h-4 text-emerald-400 shrink-0" />
                         <span className="text-xs uppercase font-bold tracking-wider text-brand-teal-light font-heading">
                           Workflow Position
                         </span>
                       </div>
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-mono">
+                      <span className="text-[11px] xs:text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-mono">
                         Step {curr.number} of 04
                       </span>
                     </div>
 
                     {/* Phase Metric Hero Pill */}
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
                       <div>
-                        <span className="text-[11px] text-gray-400 uppercase tracking-wider block font-semibold">
+                        <span className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider block font-semibold">
                           {curr.metricLabel}
                         </span>
-                        <span className="text-2xl sm:text-3xl font-extrabold text-white font-heading">
+                        <span className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-heading">
                           {curr.metric}
                         </span>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-300 border border-emerald-400/30">
-                        <Check className="w-5 h-5" />
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-300 border border-emerald-400/30">
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
                     </div>
 
                     {/* Interactive Step Switcher */}
-                    <div className="space-y-2.5">
-                      <span className="text-[11px] uppercase font-bold tracking-wider text-gray-400 block font-heading">
+                    <div className="space-y-2 sm:space-y-2.5">
+                      <span className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-gray-400 block font-heading">
                         Jump to Phase:
                       </span>
                       {advisoryPhases.map((item) => (
                         <div
                           key={item.phase}
                           onClick={() => setActivePhase(item.phase)}
-                          className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                          className={`p-2.5 sm:p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                             item.phase === curr.phase
                               ? 'bg-brand-teal text-white shadow-sm border-brand-teal'
                               : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                           }`}
                         >
-                          <div className="flex items-center gap-2.5">
+                          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
                             <span
-                              className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs ${
+                              className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center font-bold text-[11px] sm:text-xs shrink-0 ${
                                 item.phase === curr.phase
                                   ? 'bg-white text-slate-900'
                                   : 'bg-white/10 text-slate-300'
@@ -984,11 +986,11 @@ export const HowItWorksPage: React.FC = () => {
                             >
                               {item.number}
                             </span>
-                            <span className="text-xs font-semibold truncate max-w-[170px] font-heading">
+                            <span className="text-xs font-semibold truncate font-heading">
                               {item.title.split('&')[0]}
                             </span>
                           </div>
-                          <span className="text-[10px] text-emerald-400 font-mono font-bold">
+                          <span className="text-[10px] text-emerald-400 font-mono font-bold shrink-0">
                             {item.turnaround}
                           </span>
                         </div>
@@ -996,14 +998,14 @@ export const HowItWorksPage: React.FC = () => {
                     </div>
 
                     {/* Call to Action */}
-                    <div className="pt-2">
+                    <div className="pt-1">
                       <Link
                         to="/enquire"
-                        className="w-full py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-950/40"
+                        className="w-full py-3 sm:py-3.5 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-corporate text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-950/40"
                       >
-                        <Sparkles className="w-4 h-4 text-emerald-300" />
+                        <Sparkles className="w-4 h-4 text-emerald-300 shrink-0" />
                         <span>Initiate Step 01 Intake Now</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4 shrink-0" />
                       </Link>
                     </div>
                   </div>
@@ -1035,16 +1037,16 @@ export const HowItWorksPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Glassmorphism Table Container (Clean Normal Color) */}
-          <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl border border-brand-border/80 bg-white/90 backdrop-blur-xl shadow-card ring-1 ring-slate-900/5 overflow-hidden">
+          {/* Desktop/Tablet Glassmorphism Table (>= 640px) */}
+          <div className="hidden sm:block max-w-4xl mx-auto rounded-2xl sm:rounded-3xl border border-brand-border/80 bg-white/90 backdrop-blur-xl shadow-card ring-1 ring-slate-900/5 overflow-hidden">
             <div className="grid grid-cols-12 bg-slate-50/90 backdrop-blur-md border-b border-brand-border p-4 sm:p-5 text-xs font-extrabold uppercase tracking-wider text-slate-700 font-heading">
-              <div className="col-span-4 sm:col-span-4 flex items-center gap-2 text-brand-navy">
+              <div className="col-span-4 flex items-center gap-2 text-brand-navy">
                 <span>Evaluation Metric</span>
               </div>
-              <div className="col-span-4 sm:col-span-4 text-slate-500 font-semibold">
+              <div className="col-span-4 text-slate-500 font-semibold">
                 Retail Branch Walk-In
               </div>
-              <div className="col-span-4 sm:col-span-4 text-brand-teal font-extrabold flex items-center gap-1.5">
+              <div className="col-span-4 text-brand-teal font-extrabold flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
                 <span>Prime Associates Desk</span>
               </div>
@@ -1075,6 +1077,50 @@ export const HowItWorksPage: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Mobile Card-Based Comparison (< 640px) */}
+          <div className="sm:hidden space-y-3 max-w-md mx-auto">
+            {comparisonData.map((row, idx) => (
+              <div
+                key={idx}
+                className={`bg-white/95 backdrop-blur-md p-4 rounded-2xl border ${
+                  row.highlight ? 'border-teal-300 shadow-sm bg-teal-50/20' : 'border-brand-border/80 shadow-2xs'
+                } space-y-2.5`}
+              >
+                <div className="text-xs font-extrabold uppercase tracking-wider text-brand-navy border-b border-slate-100 pb-2 font-heading flex items-center justify-between">
+                  <span>{row.metric}</span>
+                  {row.highlight && (
+                    <span className="text-[9px] font-bold text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded-full">
+                      Key Benchmark
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-2 text-xs font-sans">
+                  <div className="flex items-start gap-2 p-2.5 rounded-xl bg-red-50/70 border border-red-200/60 text-red-800">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 font-heading shrink-0 mt-0.5">
+                      Branch Walk-In:
+                    </span>
+                    <span className="line-through text-red-700/90 leading-tight">
+                      {row.traditional}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-2.5 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-900 shadow-2xs">
+                    <CheckCircle2 className="w-4 h-4 text-brand-teal shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 font-heading block">
+                        Prime Associates Desk:
+                      </span>
+                      <span className="font-semibold text-teal-950 leading-tight">
+                        {row.prime}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1333,7 +1379,7 @@ export const HowItWorksPage: React.FC = () => {
           ──────────────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-16 bg-[#f8f8f4]">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="bg-gradient-to-br from-[#091522] to-[#102235] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-14 relative overflow-hidden shadow-xl text-center">
+          <div className="bg-gradient-to-br from-[#091522] to-[#102235] text-white border border-white/10 rounded-2xl sm:rounded-3xl p-5 xs:p-7 sm:p-10 lg:p-14 relative overflow-hidden shadow-xl text-center">
             {/* Visual Background Integration */}
             <div className="absolute inset-0 z-0">
               <img
@@ -1347,38 +1393,39 @@ export const HowItWorksPage: React.FC = () => {
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="max-w-4xl mx-auto space-y-6 relative z-10">
+            <div className="max-w-4xl mx-auto space-y-5 sm:space-y-6 relative z-10">
               <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal-light text-xs font-bold uppercase tracking-wider">
                 <Sparkles className="w-4 h-4 text-emerald-400" />
                 <span>Fast-Track Pre-Underwriting</span>
               </span>
 
-              <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-heading leading-tight">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-heading leading-tight">
                 Ready to Secure Institutional Financing <br className="hidden sm:inline" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-400 to-sky-300">
                   Without the Standard Bank Hassle?
                 </span>
               </h2>
 
-              <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-xs sm:text-sm md:text-base text-gray-300 max-w-2xl mx-auto leading-relaxed">
                 Book a confidential Phase 1 consultation or submit your property loan dossier with attached reference documents for preliminary 24–48h review.
               </p>
 
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
+              <div className="pt-2 flex flex-row items-center justify-center gap-2 xs:gap-3 sm:gap-4 w-full sm:w-auto mx-auto max-w-xl">
                 <Link
                   to="/enquire"
-                  className="w-full sm:w-auto px-8 py-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm rounded-corporate shadow-xl shadow-teal-950/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                  className="flex-1 sm:flex-initial px-3.5 xs:px-6 sm:px-8 py-3 sm:py-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs xs:text-sm rounded-corporate shadow-xl shadow-teal-950/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 xs:gap-2 whitespace-nowrap"
                 >
-                  <span>Initiate Phase 1 Consultation</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>Phase 1 Consultation</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 </Link>
 
                 <a
                   href="tel:+919655566613"
-                  className="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/15 text-white font-semibold text-sm rounded-corporate border border-white/20 backdrop-blur-sm transition-all flex items-center justify-center gap-2"
+                  className="flex-1 sm:flex-initial px-3.5 xs:px-5 sm:px-6 py-3 sm:py-4 bg-white/10 hover:bg-white/15 text-white font-semibold text-xs xs:text-sm rounded-corporate border border-white/20 backdrop-blur-sm transition-all flex items-center justify-center gap-1.5 xs:gap-2 whitespace-nowrap"
                 >
-                  <PhoneCall className="w-4 h-4 text-teal-300" />
-                  <span>Call Advisory Desk: +91 96555 66613</span>
+                  <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300 shrink-0" />
+                  <span className="hidden sm:inline">Call Advisory Desk: +91 96555 66613</span>
+                  <span className="sm:hidden">Call Desk</span>
                 </a>
               </div>
             </div>
