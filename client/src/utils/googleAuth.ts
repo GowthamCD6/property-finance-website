@@ -5,7 +5,7 @@
 
 export const GOOGLE_CLIENT_ID =
   (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID ||
-  '187538648042-d9c0epul3h74dbseub2qh4plnfn506tv.apps.googleusercontent.com';
+  '187538648042-aelj4qoois1b8tk3srfalm07mrt62bpq.apps.googleusercontent.com';
 
 declare global {
   interface Window {
