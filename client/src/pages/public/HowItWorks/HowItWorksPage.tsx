@@ -535,23 +535,26 @@ export const HowItWorksPage: React.FC = () => {
             </div>
 
             {/* ── RIGHT COLUMN: Interactive Live Loan Syndication Console & Simulator ── */}
-            <div className="lg:col-span-5">
-              <div className="relative rounded-3xl bg-white/[0.07] backdrop-blur-2xl border border-white/25 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-1 ring-white/15 space-y-4 font-sans text-white overflow-hidden">
+            <div className="lg:col-span-5 relative">
+              {/* Luminous Glass Glow Behind Card to Match Side Cards Refraction */}
+              <div className="absolute -inset-1.5 bg-gradient-to-tr from-teal-500/20 via-white/10 to-sky-500/20 rounded-[32px] blur-xl pointer-events-none" />
+
+              <div className="relative rounded-3xl bg-white/[0.12] backdrop-blur-xl border border-white/25 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-1 ring-white/15 space-y-4 font-sans text-white overflow-hidden transition-all duration-300">
                 {/* Ambient Glassmorphic Highlights & Radiant Depth */}
-                <div className="absolute -top-24 -right-24 w-60 h-60 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-sky-500/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.12] via-transparent to-white/[0.03] pointer-events-none" />
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
+                <div className="absolute -top-24 -right-24 w-60 h-60 bg-teal-400/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.15] via-white/[0.04] to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
 
                 {/* Console Header with Brand Heading Typography */}
-                <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/15">
+                <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/20">
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
                     <span className="text-xs uppercase font-extrabold tracking-wider text-teal-200 font-heading">
                       Live Syndication Simulator
                     </span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-heading font-bold text-emerald-300 backdrop-blur-md shadow-sm">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 border border-emerald-400/40 text-[10px] font-heading font-bold text-emerald-200 backdrop-blur-md shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
                     <span>Live Benchmarks</span>
                   </div>
@@ -559,10 +562,10 @@ export const HowItWorksPage: React.FC = () => {
 
                 {/* Loan Archetype Switcher Pills */}
                 <div className="relative z-10 pt-1">
-                  <span className="text-[10px] uppercase font-bold text-slate-300 font-heading tracking-wider block mb-2">
+                  <span className="text-[10px] uppercase font-bold text-slate-200 font-heading tracking-wider block mb-2">
                     Select Credit Facility
                   </span>
-                  <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-white/[0.05] backdrop-blur-md rounded-2xl border border-white/10 shadow-inner">
+                  <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-white/[0.08] backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
                     {(
                       [
                         { id: 'home', label: 'Home Loan', rate: '8.35%' },
@@ -579,8 +582,8 @@ export const HowItWorksPage: React.FC = () => {
                           onClick={() => handleSelectFacility(facility.id)}
                           className={`py-2 px-1 rounded-xl text-center transition-all cursor-pointer font-heading ${
                             isSel
-                              ? 'bg-gradient-to-r from-brand-teal to-teal-700 text-white font-bold shadow-[0_4px_16px_rgba(20,184,166,0.35)] border border-teal-300/30'
-                              : 'text-slate-300 hover:text-white hover:bg-white/10 font-semibold border border-transparent'
+                              ? 'bg-teal-500/90 text-white font-bold shadow-[0_4px_16px_rgba(20,184,166,0.4)] border border-teal-300/40'
+                              : 'text-slate-200 hover:text-white hover:bg-white/[0.12] font-semibold border border-transparent'
                           }`}
                         >
                           <span className="text-[11px] block leading-tight font-heading font-bold">{facility.label}</span>
@@ -599,7 +602,7 @@ export const HowItWorksPage: React.FC = () => {
                       <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
                         <Wallet className="w-3.5 h-3.5 text-teal-400" /> Loan Quantum Required:
                       </span>
-                      <div className="flex items-center gap-1.5 bg-white/[0.08] backdrop-blur-md border border-white/20 rounded-xl px-2.5 py-1 focus-within:border-teal-400 focus-within:bg-white/[0.12] focus-within:shadow-[0_0_15px_rgba(45,212,191,0.25)] transition-all">
+                      <div className="flex items-center gap-1.5 bg-white/[0.12] backdrop-blur-md border border-white/25 rounded-xl px-2.5 py-1 focus-within:border-teal-400 focus-within:bg-white/[0.18] focus-within:shadow-[0_0_15px_rgba(45,212,191,0.25)] transition-all">
                         <span className="text-teal-400 font-extrabold text-xs font-heading">₹</span>
                         <input
                           type="number"
@@ -623,9 +626,9 @@ export const HowItWorksPage: React.FC = () => {
                       step={5}
                       value={simAmountLakhs || 10}
                       onChange={(e) => setSimAmountLakhs(Number(e.target.value))}
-                      className="w-full h-2 bg-white/15 rounded-lg appearance-none cursor-pointer accent-teal-400 backdrop-blur-sm"
+                      className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-teal-400 backdrop-blur-sm"
                     />
-                    <div className="flex items-center justify-between text-[10px] text-slate-300 pt-1 font-heading font-bold">
+                    <div className="flex items-center justify-between text-[10px] text-slate-200 pt-1 font-heading font-bold">
                       <span>₹10L</span>
                       <div className="flex gap-1">
                         {[25, 50, 75, 100, 200].map((amt) => (
@@ -635,8 +638,8 @@ export const HowItWorksPage: React.FC = () => {
                             onClick={() => setSimAmountLakhs(amt)}
                             className={`px-2 py-0.5 rounded-lg text-[10px] font-heading font-bold backdrop-blur-sm transition-all cursor-pointer ${
                               simAmountLakhs === amt
-                                ? 'bg-teal-500/30 text-teal-200 border border-teal-400/50 shadow-[0_0_10px_rgba(20,184,166,0.2)]'
-                                : 'bg-white/[0.06] border border-white/12 text-slate-300 hover:text-white hover:bg-white/15'
+                                ? 'bg-teal-500/40 text-teal-100 border border-teal-300/60 shadow-[0_0_12px_rgba(20,184,166,0.3)]'
+                                : 'bg-white/[0.10] border border-white/20 text-slate-200 hover:text-white hover:bg-white/[0.18]'
                             }`}
                           >
                             ₹{amt >= 100 ? `${amt / 100}Cr` : `${amt}L`}
@@ -655,7 +658,7 @@ export const HowItWorksPage: React.FC = () => {
                         <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5 text-sky-400" /> Tenure:
                         </span>
-                        <div className="flex items-center gap-1.5 bg-white/[0.08] backdrop-blur-md border border-white/20 rounded-xl px-2.5 py-1 focus-within:border-sky-400 focus-within:bg-white/[0.12] focus-within:shadow-[0_0_15px_rgba(56,189,248,0.25)] transition-all">
+                        <div className="flex items-center gap-1.5 bg-white/[0.12] backdrop-blur-md border border-white/25 rounded-xl px-2.5 py-1 focus-within:border-sky-400 focus-within:bg-white/[0.18] focus-within:shadow-[0_0_15px_rgba(56,189,248,0.25)] transition-all">
                           <input
                             type="number"
                             min={1}
@@ -678,9 +681,9 @@ export const HowItWorksPage: React.FC = () => {
                         step={1}
                         value={simTenureYears || 1}
                         onChange={(e) => setSimTenureYears(Number(e.target.value))}
-                        className="w-full h-2 bg-white/15 rounded-lg appearance-none cursor-pointer accent-sky-400 backdrop-blur-sm"
+                        className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-sky-400 backdrop-blur-sm"
                       />
-                      <div className="flex justify-between text-[10px] text-slate-300 pt-1 font-heading font-bold">
+                      <div className="flex justify-between text-[10px] text-slate-200 pt-1 font-heading font-bold">
                         <span>1y</span>
                         <span>{n} Mos</span>
                         <span>30y</span>
@@ -693,7 +696,7 @@ export const HowItWorksPage: React.FC = () => {
                         <span className="text-slate-200 font-medium font-heading flex items-center gap-1.5">
                           <Percent className="w-3.5 h-3.5 text-emerald-400" /> Interest:
                         </span>
-                        <div className="flex items-center gap-1.5 bg-white/[0.08] backdrop-blur-md border border-white/20 rounded-xl px-2.5 py-1 focus-within:border-emerald-400 focus-within:bg-white/[0.12] focus-within:shadow-[0_0_15px_rgba(52,211,153,0.25)] transition-all">
+                        <div className="flex items-center gap-1.5 bg-white/[0.12] backdrop-blur-md border border-white/25 rounded-xl px-2.5 py-1 focus-within:border-emerald-400 focus-within:bg-white/[0.18] focus-within:shadow-[0_0_15px_rgba(52,211,153,0.25)] transition-all">
                           <input
                             type="number"
                             min={5.0}
@@ -716,9 +719,9 @@ export const HowItWorksPage: React.FC = () => {
                         step={0.05}
                         value={simCustomRate || 8.35}
                         onChange={(e) => setSimCustomRate(Number(e.target.value))}
-                        className="w-full h-2 bg-white/15 rounded-lg appearance-none cursor-pointer accent-emerald-400 backdrop-blur-sm"
+                        className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-emerald-400 backdrop-blur-sm"
                       />
-                      <div className="flex justify-between text-[10px] text-slate-300 pt-1 font-heading font-bold">
+                      <div className="flex justify-between text-[10px] text-slate-200 pt-1 font-heading font-bold">
                         <span>6.5%</span>
                         <span>p.a.</span>
                         <span>16%</span>
@@ -739,22 +742,22 @@ export const HowItWorksPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Dynamic Computation Result Cards */}
+                {/* Dynamic Computation Result Cards - Matched to Side Card Pure Glassmorphism */}
                 <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
-                  <div className="p-3 rounded-2xl bg-gradient-to-b from-teal-500/25 to-teal-500/10 backdrop-blur-md border border-teal-400/35 shadow-[0_8px_20px_rgba(20,184,166,0.18)] text-center transition-all hover:border-teal-300/60">
-                    <span className="text-[10px] text-teal-200 uppercase font-extrabold font-heading tracking-wider block">
+                  <div className="p-3 rounded-2xl bg-teal-500/30 backdrop-blur-md border border-teal-400/50 shadow-[0_8px_20px_rgba(20,184,166,0.25)] text-center transition-all hover:border-teal-300/80 hover:bg-teal-500/40">
+                    <span className="text-[10px] text-teal-100 uppercase font-extrabold font-heading tracking-wider block">
                       Monthly EMI
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
                       ₹{estimatedEmi.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-teal-300/90 font-sans font-medium block mt-0.5">
+                    <span className="text-[10px] text-teal-200 font-sans font-medium block mt-0.5">
                       @{currentRate}% p.a.
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 shadow-lg text-center transition-all hover:bg-white/[0.1] hover:border-white/25">
-                    <span className="text-[10px] text-slate-300 uppercase font-extrabold font-heading tracking-wider block">
+                  <div className="p-3 rounded-2xl bg-white/[0.12] backdrop-blur-md border border-white/25 shadow-lg text-center transition-all hover:bg-white/[0.18] hover:border-white/35">
+                    <span className="text-[10px] text-slate-200 uppercase font-extrabold font-heading tracking-wider block">
                       Total Interest
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
@@ -765,26 +768,26 @@ export const HowItWorksPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/15 shadow-lg text-center transition-all hover:bg-white/[0.1] hover:border-white/25">
-                    <span className="text-[10px] text-slate-300 uppercase font-extrabold font-heading tracking-wider block">
+                  <div className="p-3 rounded-2xl bg-white/[0.12] backdrop-blur-md border border-white/25 shadow-lg text-center transition-all hover:bg-white/[0.18] hover:border-white/35">
+                    <span className="text-[10px] text-slate-200 uppercase font-extrabold font-heading tracking-wider block">
                       Total Payable
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
                       ₹{totalRepayment.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-slate-300 font-sans font-medium block mt-0.5">
+                    <span className="text-[10px] text-slate-200 font-sans font-medium block mt-0.5">
                       Principal + Int
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-emerald-500/20 backdrop-blur-md border border-emerald-400/35 shadow-[0_8px_20px_rgba(16,185,129,0.18)] text-center transition-all hover:border-emerald-300/60">
-                    <span className="text-[10px] text-emerald-200 uppercase font-extrabold font-heading tracking-wider block">
+                  <div className="p-3 rounded-2xl bg-emerald-500/30 backdrop-blur-md border border-emerald-400/50 shadow-[0_8px_20px_rgba(16,185,129,0.25)] text-center transition-all hover:border-emerald-300/80 hover:bg-emerald-500/40">
+                    <span className="text-[10px] text-emerald-100 uppercase font-extrabold font-heading tracking-wider block">
                       Fee Saved
                     </span>
                     <span className="text-xs sm:text-sm font-extrabold text-white font-heading tabular-nums block mt-1 tracking-tight">
                       ₹{estimatedFeeSaved.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-emerald-300 font-sans font-medium block mt-0.5">
+                    <span className="text-[10px] text-emerald-200 font-sans font-medium block mt-0.5">
                       0.50% Waiver
                     </span>
                   </div>
