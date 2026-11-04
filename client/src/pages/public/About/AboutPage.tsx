@@ -36,7 +36,7 @@ import {
 } from 'lucide-react';
 import { SiteContent } from '../../../types';
 import { AboutHero3D, SceneMode } from './AboutHero3D';
-import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const aboutHeroImage = CDN_IMAGES.aboutHeroTeam;
 
@@ -413,9 +413,13 @@ export const AboutPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={aboutHeroImage}
+            srcSet={getHeroSrcSet(aboutHeroImage)}
+            sizes="100vw"
             alt="Prime Associates Advisory Team"
             className="w-full h-full object-cover object-left md:object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Calibrated lightweight translucent overlays to maximize image visibility while keeping text crisp */}
           <div className="absolute inset-0 bg-black/10" />

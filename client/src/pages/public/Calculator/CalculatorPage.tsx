@@ -32,7 +32,7 @@ import {
   BadgePercent,
   ChevronRight,
 } from 'lucide-react';
-import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const emiHeroImage = CDN_IMAGES.emiHero;
 
@@ -411,9 +411,13 @@ export const CalculatorPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={emiHeroImage}
+            srcSet={getHeroSrcSet(emiHeroImage)}
+            sizes="100vw"
             alt="Institutional Mortgage & EMI Financial Analytics"
             className="w-full h-full object-cover object-center brightness-[1.12] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Calibrated lightweight translucent overlays so image is vividly visible and bright while text remains crisp */}
           <div className="absolute inset-0 bg-black/10" />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { CDN_IMAGES } from '../../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../../constants/cloudinaryImages';
 
 const lapHeroImage = CDN_IMAGES.lapLoan;
 import {
@@ -154,9 +154,13 @@ export const MortgageLoansPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={lapHeroImage}
+            srcSet={getHeroSrcSet(lapHeroImage)}
+            sizes="100vw"
             alt="Secured Mortgage Equity & Loan Against Property Desk"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Calibrated lightweight translucent overlays */}
           <div className="absolute inset-0 bg-black/10" />

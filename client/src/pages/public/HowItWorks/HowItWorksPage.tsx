@@ -33,7 +33,7 @@ import {
   Percent,
 } from 'lucide-react';
 import { CHANNEL_PARTNERS, ChannelPartnersGroup } from '../../../constants/loanDocuments';
-import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const howItsWorkHero = CDN_IMAGES.howItsWork;
 const faqVisualImage = CDN_IMAGES.faqsHero;
@@ -330,9 +330,13 @@ export const HowItWorksPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={howItsWorkHero}
+            srcSet={getHeroSrcSet(howItsWorkHero)}
+            sizes="100vw"
             alt="Institutional Property Finance Architecture & Workflow"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Calibrated lightweight translucent overlays so image is clearly visible and bright while text remains crisp */}
           <div className="absolute inset-0 bg-black/10" />

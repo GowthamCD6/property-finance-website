@@ -16,7 +16,7 @@ import {
 import { EnquiryForm } from '../../../components/EnquiryForm/EnquiryForm';
 import { Service } from '../../../types';
 import { useOutletContext } from 'react-router-dom';
-import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const enquiryHeroImg = CDN_IMAGES.enquiryHero;
 
@@ -93,9 +93,13 @@ export const EnquiryPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={enquiryHeroImg}
+            srcSet={getHeroSrcSet(enquiryHeroImg)}
+            sizes="100vw"
             alt="Property Loan Consultation & Dossier Intake"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Calibrated lightweight translucent overlays so image is visible while foreground text remains crisp */}
           <div className="absolute inset-0 bg-black/45" />

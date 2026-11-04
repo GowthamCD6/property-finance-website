@@ -4,16 +4,16 @@
  */
 
 export const CLOUDINARY_ASSETS = {
-  "about-hero-team.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767218/prime-associates/assets/about-hero-team.jpg",
-  "contact-hero.webp": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767219/prime-associates/assets/contact-hero.webp",
-  "emi.webp": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767219/prime-associates/assets/emi.webp",
-  "enquiry-hero.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767221/prime-associates/assets/enquiry-hero.jpg",
-  "faqs-hero.webp": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767222/prime-associates/assets/faqs-hero.webp",
+  "about-hero-team.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767218/prime-associates/assets/about-hero-team.jpg",
+  "contact-hero.webp": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767219/prime-associates/assets/contact-hero.webp",
+  "emi.webp": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767219/prime-associates/assets/emi.webp",
+  "enquiry-hero.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767221/prime-associates/assets/enquiry-hero.jpg",
+  "faqs-hero.webp": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767222/prime-associates/assets/faqs-hero.webp",
   "favicon.svg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767223/prime-associates/assets/favicon.svg",
-  "hero-property-finance.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767227/prime-associates/assets/hero-property-finance.jpg",
-  "home-loan.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767228/prime-associates/assets/home-loan.jpg",
-  "how-its-work.avif": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767229/prime-associates/assets/how-its-work.avif",
-  "lap-loan.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767230/prime-associates/assets/lap-loan.jpg",
+  "hero-property-finance.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767227/prime-associates/assets/hero-property-finance.jpg",
+  "home-loan.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767228/prime-associates/assets/home-loan.jpg",
+  "how-its-work.avif": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767229/prime-associates/assets/how-its-work.avif",
+  "lap-loan.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767230/prime-associates/assets/lap-loan.jpg",
   "lenders/axis.svg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767231/prime-associates/assets/lenders/axis.svg",
   "lenders/bajaj.svg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767233/prime-associates/assets/lenders/bajaj.svg",
   "lenders/bob.svg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767235/prime-associates/assets/lenders/bob.svg",
@@ -26,11 +26,34 @@ export const CLOUDINARY_ASSETS = {
   "lenders/tata.svg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767248/prime-associates/assets/lenders/tata.svg",
   "logo-dark.png": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767250/prime-associates/assets/logo-dark.png",
   "logo.png": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767251/prime-associates/assets/logo.png",
-  "privacy-hero-security.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767253/prime-associates/assets/privacy-hero-security.jpg",
-  "purchase-loan.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767254/prime-associates/assets/purchase-loan.jpg",
-  "terms-hero-governance.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767256/prime-associates/assets/terms-hero-governance.jpg",
-  "vehicle-loan.avif": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto/v1793767257/prime-associates/assets/vehicle-loan.avif"
+  "privacy-hero-security.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767253/prime-associates/assets/privacy-hero-security.jpg",
+  "purchase-loan.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767254/prime-associates/assets/purchase-loan.jpg",
+  "terms-hero-governance.jpg": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1920,c_limit/v1793767256/prime-associates/assets/terms-hero-governance.jpg",
+  "vehicle-loan.avif": "https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767257/prime-associates/assets/vehicle-loan.avif"
 } as const;
+
+/**
+ * Generates an ultra-fast Cloudinary URL with responsive dimensions and optimal perceptual compression.
+ */
+export const getOptimizedImageUrl = (
+  url: string,
+  width?: number,
+  quality: 'auto' | 'good' | 'eco' = 'good'
+): string => {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  const transform = width
+    ? `f_auto,q_auto:${quality},w_${width},c_limit`
+    : `f_auto,q_auto:${quality}`;
+  return url.replace(/\/image\/upload\/[^/]+(?=\/v\d+\/)/, `/image/upload/${transform}`);
+};
+
+/**
+ * Generates standard responsive srcSet for hero backgrounds (640w mobile, 1024w tablet, 1920w desktop).
+ */
+export const getHeroSrcSet = (url: string): string => {
+  if (!url || !url.includes('res.cloudinary.com')) return '';
+  return `${getOptimizedImageUrl(url, 640)} 640w, ${getOptimizedImageUrl(url, 1024)} 1024w, ${getOptimizedImageUrl(url, 1920)} 1920w`;
+};
 
 // Convenient typed getters with local fallback
 export const getCloudinaryUrl = (assetKey: keyof typeof CLOUDINARY_ASSETS, fallback: string): string => {

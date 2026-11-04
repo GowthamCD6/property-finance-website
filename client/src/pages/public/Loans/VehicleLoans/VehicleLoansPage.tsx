@@ -28,7 +28,7 @@ import {
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../../components/common/InteractiveDocumentVault';
 import { Service } from '../../../../types';
-import { CDN_IMAGES } from '../../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../../constants/cloudinaryImages';
 
 const vehicleHeroImage = CDN_IMAGES.vehicleLoan;
 
@@ -150,9 +150,13 @@ export const VehicleLoansPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={vehicleHeroImage}
+            srcSet={getHeroSrcSet(vehicleHeroImage)}
+            sizes="100vw"
             alt="Vehicle Loans, Automotive Fleet & Refinance Architecture"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-black/10" />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/30 to-transparent" />

@@ -22,7 +22,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { SiteContent } from '../../../types';
-import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const privacyHeroImage = CDN_IMAGES.privacyHeroSecurity;
 
@@ -125,11 +125,15 @@ export const PrivacyPolicyPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={privacyHeroImage}
+            srcSet={getHeroSrcSet(privacyHeroImage)}
+            sizes="100vw"
             alt="Institutional Privacy & Data Security Vault"
             className={`w-full h-full object-cover object-center brightness-[0.88] transition-transform duration-1000 ease-out ${
               mounted ? 'scale-100' : 'scale-105'
             }`}
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Clean overlays matching Home page pattern */}
           <div className="absolute inset-0 bg-black/28" />

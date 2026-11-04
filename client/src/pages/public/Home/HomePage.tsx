@@ -32,7 +32,7 @@ import {
   Landmark,
 } from 'lucide-react';
 import { Service, Faq, SiteContent } from '../../../types';
-import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const defaultHeroImage = CDN_IMAGES.heroPropertyFinance;
 const homeLoanImg = CDN_IMAGES.homeLoan;
@@ -311,9 +311,13 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
       <div className="absolute inset-0 z-0">
         <img
           src={heroBgImage}
+          srcSet={getHeroSrcSet(heroBgImage)}
+          sizes="100vw"
           alt="Institutional Property Finance Architecture"
           className="w-full h-full object-cover object-center scale-[1.01] brightness-[0.80] transform motion-safe:transition-transform motion-safe:duration-1000"
           loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-black/28" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/70" />

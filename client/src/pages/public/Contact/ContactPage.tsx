@@ -20,7 +20,7 @@ import {
 import { SiteContent, Service } from '../../../types';
 import { EnquiryForm } from '../../../components/EnquiryForm/EnquiryForm';
 import { useOutletContext } from 'react-router-dom';
-import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const contactHeroImage = CDN_IMAGES.contactHero;
 
@@ -150,9 +150,13 @@ export const ContactPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={contactHeroImage}
+            srcSet={getHeroSrcSet(contactHeroImage)}
+            sizes="100vw"
             alt="Direct Advisory & Office Connect"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Calibrated lightweight translucent overlays so image is clearly visible and bright while text remains crisp */}
           <div className="absolute inset-0 bg-black/10" />

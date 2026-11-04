@@ -12,7 +12,7 @@ import {
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../../components/common/InteractiveDocumentVault';
 import { Service } from '../../../../types';
-import { CDN_IMAGES } from '../../../../constants/cloudinaryImages';
+import { CDN_IMAGES, getHeroSrcSet } from '../../../../constants/cloudinaryImages';
 
 const purchaseLoanHeroImage = CDN_IMAGES.purchaseLoan;
 
@@ -133,9 +133,13 @@ export const PropertyFundingPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src={purchaseLoanHeroImage}
+            srcSet={getHeroSrcSet(purchaseLoanHeroImage)}
+            sizes="100vw"
             alt="Purchase Loans & Property Takeover Architecture"
             className="w-full h-full object-cover object-[80%_center] brightness-[1.15] contrast-[1.02]"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Softened directional gradient: Keeps left side readable for text while letting the image shine brightly */}
           <div className="absolute inset-0 bg-slate-950/20" />
