@@ -359,7 +359,7 @@ export const HowItWorksPage: React.FC = () => {
                 }}
                 className="flex flex-wrap items-center gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-white/15 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm">
                   <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
                   <span className="font-heading">
                     Institutional Lending Pipeline &amp; FOIR Engine
@@ -510,7 +510,7 @@ export const HowItWorksPage: React.FC = () => {
 
                 <a
                   href="tel:+919655566613"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-teal-300 border border-white/15 text-xs font-semibold font-heading backdrop-blur-sm transition-colors shadow-sm text-center"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-teal-300 border border-white/20 text-xs font-semibold font-heading backdrop-blur-md transition-colors shadow-sm text-center"
                 >
                   <PhoneCall className="w-3.5 h-3.5 text-teal-300" />
                   <span>+91 96555 66613</span>
@@ -536,12 +536,12 @@ export const HowItWorksPage: React.FC = () => {
 
             {/* ── RIGHT COLUMN: Interactive Live Loan Syndication Console & Simulator ── */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-white/20 p-6 sm:p-7 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)] space-y-4 font-sans text-white overflow-hidden">
+              <div className="relative rounded-3xl bg-white/[0.07] backdrop-blur-2xl border border-white/25 p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-1 ring-white/15 space-y-4 font-sans text-white overflow-hidden">
                 {/* Ambient Glassmorphic Highlights & Radiant Depth */}
                 <div className="absolute -top-24 -right-24 w-60 h-60 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-sky-500/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.08] via-transparent to-black/25 pointer-events-none" />
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.12] via-transparent to-white/[0.03] pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
 
                 {/* Console Header with Brand Heading Typography */}
                 <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/15">
