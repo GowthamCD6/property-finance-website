@@ -4,7 +4,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  publicDir: false,
+  publicDir: 'public',
   plugins: [react()],
   resolve: {
     dedupe: ['react', 'react-dom'],

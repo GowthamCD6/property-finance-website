@@ -1,13 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- Background rounded pill with deep navy -->
-  <rect width="64" height="64" rx="16" fill="#002B70"/>
-  <!-- Chimney -->
-  <path d="M16 28V16H22V22" stroke="#FF7A00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- House Roof & Outline -->
-  <path d="M10 30L32 12L54 30" stroke="#FF7A00" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M16 29V50H48V46" stroke="#FF7A00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Bold Stylized 'P' for Prime -->
-  <path d="M26 24H35C38.3 24 41 26.7 41 30C41 33.3 38.3 36 35 36H31V44H26V24Z" fill="#FFFFFF"/>
+  <!-- Background rounded square with deep brand navy -->
+  <rect width="64" height="64" rx="14" fill="#002B70"/>
+  
+  <!-- Chimney (scaled & bolder) -->
+  <path d="M12 25V11H19V17" stroke="#FF7A00" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- House Roof & Outline (enlarged to fill canvas prominently) -->
+  <path d="M5 28L32 6L59 28" stroke="#FF7A00" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 27V55H52V50" stroke="#FF7A00" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Bold Stylized 'P' for Prime (larger & centered) -->
+  <path d="M23 21H35.5C39.6 21 43 24.4 43 28.5C43 32.6 39.6 36 35.5 36H29.5V47H23V21Z" fill="#FFFFFF"/>
+  
   <!-- Orange Inner Accent inside P -->
-  <path d="M31 28H34.5C35.6 28 36.5 28.9 36.5 30C36.5 31.1 35.6 32 34.5 32H31V28Z" fill="#FF7A00"/>
+  <path d="M29.5 26.5H34.5C35.9 26.5 37 27.6 37 28.5C37 29.4 35.9 30.5 34.5 30.5H29.5V26.5Z" fill="#FF7A00"/>
 </svg>

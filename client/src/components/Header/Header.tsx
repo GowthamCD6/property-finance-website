@@ -297,7 +297,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
               }}
               className="group"
             >
-              <WealthAnchorLogo size={isScrolled ? 48 : 56} showWordmark={true} variant="dark" />
+              <WealthAnchorLogo size={isScrolled ? 52 : 62} showWordmark={true} variant="dark" />
             </Link>
 
             {/* ─── Desktop Navigation ─── */}
@@ -681,7 +681,7 @@ export const Header: React.FC<HeaderProps> = ({ content }) => {
             padding: '16px 20px',
             borderBottom: '1px solid #f1f5f4',
           }}>
-            <WealthAnchorLogo size={48} showWordmark={true} />
+            <WealthAnchorLogo size={54} showWordmark={true} />
             <button
               onClick={() => setMobileMenuOpen(false)}
               style={{
