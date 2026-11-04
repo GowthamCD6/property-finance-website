@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useOutletContext } from 'react-router-dom';
 import {
   MapPin,
   Phone,
@@ -16,10 +17,15 @@ import {
   Sparkles,
   Shield,
   Scale,
+  Copy,
+  Check,
+  MessageCircle,
+  FileText,
+  Car,
+  Compass,
+  ArrowUpRight,
 } from 'lucide-react';
 import { SiteContent, Service } from '../../../types';
-import { EnquiryForm } from '../../../components/EnquiryForm/EnquiryForm';
-import { useOutletContext } from 'react-router-dom';
 import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const contactHeroImage = CDN_IMAGES.contactHero;
@@ -27,44 +33,78 @@ const contactHeroImage = CDN_IMAGES.contactHero;
 export const ContactPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null; services?: Service[] }>();
   const content = context?.content || null;
-  const services = context?.services || [];
 
   const businessName = content?.businessName || 'Prime Associates — Loans & Constructions';
   const businessPhone = content?.businessPhone || '+91 96555 66613, +91 95144 66600';
   const businessEmail = content?.businessEmail || 'primeassociates2008@gmail.com';
-  const officeAddress = content?.officeAddress || 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
+  const officeAddress =
+    content?.officeAddress ||
+    'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
   const businessHours = content?.businessHours || 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)';
-  const [mounted, setMounted] = React.useState(false);
-  const [tilt, setTilt] = React.useState({ x: 0, y: 0 });
-  const [counterValues, setCounterValues] = React.useState({
+
+  const [mounted, setMounted] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [copiedAddress, setCopiedAddress] = useState(false);
+  const [currentTimeIST, setCurrentTimeIST] = useState<string>('');
+  const [isOfficeOpen, setIsOfficeOpen] = useState<boolean>(true);
+
+  const [counterValues, setCounterValues] = useState({
     turnaround: 2,
     lenders: 0,
     sanction: 0,
     capital: 0,
   });
 
-  React.useEffect(() => {
+  // Calculate real-time IST office status (Monday-Saturday, 9:30 AM - 6:30 PM)
+  useEffect(() => {
+    const updateOfficeStatus = () => {
+      const now = new Date();
+      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+      const istDate = new Date(utc + 3600000 * 5.5);
+      const day = istDate.getDay(); // 0 is Sunday, 1-6 is Mon-Sat
+      const hours = istDate.getHours();
+      const minutes = istDate.getMinutes();
+      const totalMinutes = hours * 60 + minutes;
+
+      // 9:30 AM is 570 mins, 6:30 PM is 1110 mins
+      const open = day >= 1 && day <= 6 && totalMinutes >= 570 && totalMinutes <= 1110;
+      setIsOfficeOpen(open);
+
+      setCurrentTimeIST(
+        istDate.toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+      );
+    };
+
+    updateOfficeStatus();
+    const timer = setInterval(updateOfficeStatus, 30000); // refresh every 30s
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(timer);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let animationFrameId: number;
     let startTime: number | null = null;
-    const duration = 1400; // 1.4s smooth easing
+    const duration = 1400;
 
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Silky Quartic ease out
       const eased = 1 - Math.pow(1 - progress, 4);
 
       setCounterValues({
         turnaround: 2,
         lenders: Math.round(40 * eased),
         sanction: Number((98.4 * eased).toFixed(1)),
-        capital: Math.round(120 * eased), // 120 Cr (one zero removed)
+        capital: Math.round(120 * eased),
       });
 
       if (progress < 1) {
@@ -82,8 +122,9 @@ export const ContactPage: React.FC = () => {
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      if (window.innerWidth < 768) return;
       const { innerWidth, innerHeight } = window;
       const x = (e.clientX / innerWidth - 0.5) * 6;
       const y = -(e.clientY / innerHeight - 0.5) * 6;
@@ -94,43 +135,61 @@ export const ContactPage: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText(
+      `${businessName}, ${officeAddress}, Landmark: Binny Compound Main St, Kumaran Road, Tirupur - 641601`
+    );
+    setCopiedAddress(true);
+    setTimeout(() => setCopiedAddress(false), 2500);
+  };
+
   const defaultRegionalDesks = [
     {
-      region: 'Tirupur Central & Head Office',
-      focus: 'Home Loans, Self-Construction, Plot Purchase & Government Subsidies',
+      region: 'Tirupur Central Head Office',
+      focus: 'Home Loans, Self-Construction, Plot Purchase & PMAY Government Subsidy',
       desk: 'P.R. Complex Headquarters',
       phone: '+91 96555 66613',
+      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
+      icon: <Building2 className="w-4 h-4 text-brand-teal" />,
     },
     {
-      region: 'Commercial & Industrial LAP Desk',
-      focus: 'Concrete Building, Tiled House, Plots (Empty Land), Commercial Buildings',
-      desk: 'Mortgage & LAP Syndicate',
+      region: 'Mortgage & Commercial LAP Desk',
+      focus: 'Loan Against Property (Residential, Commercial, Industrial, Plots & Tiled Houses)',
+      desk: 'Mortgage & Secured Credit Desk',
       phone: '+91 95144 66600',
+      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
+      icon: <ShieldCheck className="w-4 h-4 text-brand-teal" />,
     },
     {
-      region: 'Coimbatore & Regional Corridor',
-      focus: 'New & Old Home Purchase, Plot Purchase with Construction, Tiled Houses',
-      desk: 'Regional Purchase Desk',
+      region: 'Bank Takeover & Balance Transfer',
+      focus: 'Transfer high-rate private NBFC loans to low-rate PSU Banks starting from 7.25% p.a.',
+      desk: 'Takeover & Top-Up Syndicate',
       phone: '+91 96555 66613',
+      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
+      icon: <Scale className="w-4 h-4 text-brand-teal" />,
     },
     {
-      region: 'Bank Takeover & Vehicle Desk',
-      focus: 'Private Bank to Govt Bank Takeover at Lowest Rates, Car & Commercial Vehicle Loans',
-      desk: 'Takeover & Vehicle Syndicate',
+      region: 'Vehicle & Commercial Fleet Desk',
+      focus: 'New / Used Cars, Heavy Commercial Vehicles, Buses & Refinance Facilities',
+      desk: 'Automotive Syndication Desk',
       phone: '+91 95144 66600',
+      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
+      icon: <Car className="w-4 h-4 text-brand-teal" />,
     },
   ];
 
-  const regionalDesks = React.useMemo(() => {
+  const regionalDesks = useMemo(() => {
     if (content?.branchOffices) {
       try {
         const parsed = JSON.parse(content.branchOffices);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((b: any) => ({
-            region: b.name,
-            focus: b.address,
-            desk: b.timings || 'Active Regional Desk',
-            phone: b.phone,
+          return parsed.map((b: any, idx: number) => ({
+            region: b.name || defaultRegionalDesks[idx]?.region,
+            focus: b.address || defaultRegionalDesks[idx]?.focus,
+            desk: b.timings || defaultRegionalDesks[idx]?.desk,
+            phone: b.phone || defaultRegionalDesks[idx]?.phone,
+            timings: b.timings || 'Mon – Sat: 9:30 AM – 6:30 PM',
+            icon: defaultRegionalDesks[idx % defaultRegionalDesks.length].icon,
           }));
         }
       } catch (e) {
@@ -141,12 +200,11 @@ export const ContactPage: React.FC = () => {
   }, [content?.branchOffices]);
 
   return (
-    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
+    <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
       {/* ────────────────────────────────────────────────────────────
-          1. CONTENT-SPECIFIC HERO: DIRECT ADVISORY & OFFICE CONNECT
+          1. HERO SECTION: DIRECT ADVISORY & REAL-TIME CONNECT
           ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
-        {/* Background Architectural Photographic Image: Brighter, Fixed & Stable */}
         <div className="absolute inset-0 z-0">
           <img
             src={contactHeroImage}
@@ -158,12 +216,11 @@ export const ContactPage: React.FC = () => {
             fetchPriority="high"
             decoding="async"
           />
-          {/* Calibrated lightweight translucent overlays so image is clearly visible and bright while text remains crisp */}
           <div className="absolute inset-0 bg-black/10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/25 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-slate-950/50" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/35 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-slate-950/60" />
 
-          {/* Ambient atmospheric pulse glows */}
+          {/* Ambient lighting glows */}
           <div
             className="absolute -top-24 -left-20 w-80 sm:w-96 h-80 sm:h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"
             style={{ animationDuration: '6s' }}
@@ -173,41 +230,57 @@ export const ContactPage: React.FC = () => {
 
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-            
-            {/* ── LEFT COLUMN: Stays firmly in place with staggered entrance ── */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-7">
-              {/* Institutional Status Beacon - Fixed in place */}
+            {/* Left Column */}
+            <div className="lg:col-span-7 space-y-5 sm:space-y-6">
+              {/* Real-time Office Status Indicator */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(24px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s',
+                  transition:
+                    'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s',
                 }}
-                className="flex flex-wrap items-center gap-3"
+                className="flex flex-wrap items-center gap-2.5 sm:gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-white/15 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm font-heading">
-                  <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
-                  <span>Direct Advisory Desk • Mon–Sat 9:30 AM to 6:30 PM (IST)</span>
+                <div
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm font-heading border ${
+                    isOfficeOpen
+                      ? 'bg-emerald-950/80 text-emerald-200 border-emerald-500/40'
+                      : 'bg-amber-950/80 text-amber-200 border-amber-500/40'
+                  }`}
+                >
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${
+                      isOfficeOpen ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                    }`}
+                  />
+                  <span>
+                    {isOfficeOpen
+                      ? `Tirupur Office OPEN NOW • Closes 6:30 PM IST (${currentTimeIST})`
+                      : `Office Closed Now • Re-opens at 9:30 AM IST (Mon–Sat)`}
+                  </span>
                 </div>
+
                 <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-300 font-medium bg-white/5 px-3 py-1 rounded-full border border-white/10 font-sans">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Confidential Underwriting Protocol</span>
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-300" />
+                  <span>Direct Zonal Advisory • Est. 2008</span>
                 </div>
               </div>
 
-              {/* Display Headline - ONLY THIS HEADLINE TEXT RESPONDS TO CURSOR TILT */}
+              {/* Display Headline */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted
                     ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`
                     : 'translateY(28px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+                  transition:
+                    'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
                   transformStyle: 'preserve-3d',
                 }}
                 className="space-y-3 will-change-transform"
               >
-                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
                   Connect Directly with Our{' '}
                   <span className="shimmer-headline-text text-[#38bdf8]">
                     Senior Property Finance Advisors.
@@ -215,190 +288,164 @@ export const ContactPage: React.FC = () => {
                 </h1>
               </div>
 
-              {/* Description Paragraph - Stays firmly in place */}
+              {/* Description */}
               <p
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(24px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
+                  transition:
+                    'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s',
                 }}
                 className="text-xs sm:text-sm md:text-base text-slate-200 font-sans font-normal leading-relaxed max-w-2xl pt-1"
               >
-                Have a query regarding property title chain clarity, municipal plot approvals, or high-value mortgage feasibility? Reach our senior advisory desk via phone, email, or schedule an in-person meeting.
+                Have a query regarding property title regularities, layout conversion orders, or private-to-government bank takeovers? Reach our senior advisory desk directly via phone, WhatsApp, email, or visit our Tirupur central headquarters.
               </p>
 
-              {/* 4 Interactive Institutional Metrics Grid - Silky Smooth Numbers Without Glitch */}
-              <div
-                style={{
-                  opacity: mounted ? 1 : 0,
-                  transform: mounted ? 'translateY(0)' : 'translateY(28px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
-                }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
-              >
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
-                      Response
-                    </span>
-                  </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums">
-                    &lt;{counterValues.turnaround}h
-                  </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
-                    Direct Callback
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
-                    Fast-Track Priority
-                  </div>
-                </div>
-
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
-                      Zonal Panel
-                    </span>
-                  </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[50px]">
-                    {counterValues.lenders}+
-                  </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
-                    Partner Banks
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
-                    PSU, Private &amp; NBFCs
-                  </div>
-                </div>
-
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
-                      Pre-Audited
-                    </span>
-                  </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono tabular-nums min-w-[70px]">
-                    {counterValues.sanction}%
-                  </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
-                    Sanction Ratio
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
-                    30-Yr Legal Due Diligence
-                  </div>
-                </div>
-
-                <div className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/30 font-heading">
-                      Volume
-                    </span>
-                  </div>
-                  <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[70px]">
-                    ₹{counterValues.capital}+ Cr
-                  </div>
-                  <div className="text-xs font-bold text-slate-200 mt-1 font-heading">
-                    Facilitated Capital
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1 font-sans">
-                    15-Year Practice
-                  </div>
-                </div>
-              </div>
-
-              {/* Direct Buttons */}
+              {/* Real-Time Fast Action Buttons */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(24px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.5s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.5s',
+                  transition:
+                    'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s',
                 }}
-                className="pt-2 flex flex-wrap items-center gap-3.5"
+                className="pt-2 flex flex-wrap items-center gap-3"
               >
                 <a
-                  href={`tel:${businessPhone.replace(/\s+/g, '').split(',')[0]}`}
-                  className="px-6 sm:px-8 py-3.5 rounded-full bg-gradient-to-r from-teal-500 to-[#20B2AA] hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
+                  href="tel:+919655566613"
+                  className="px-5 sm:px-7 py-3 rounded-full bg-gradient-to-r from-teal-500 to-[#20B2AA] hover:from-teal-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer whitespace-nowrap"
                 >
-                  <Phone className="w-4 h-4" />
-                  <span>Call Advisory Desk: {businessPhone}</span>
+                  <Phone className="w-4 h-4 flex-shrink-0" />
+                  <span>Call: +91 96555 66613</span>
                 </a>
+
                 <a
-                  href={`mailto:${businessEmail}`}
-                  className="px-6 py-3.5 rounded-full bg-slate-900/85 hover:bg-slate-800/90 text-white font-bold text-xs sm:text-sm border border-white/20 hover:border-teal-400/50 backdrop-blur-md shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer"
+                  href="https://wa.me/919655566613?text=Hello%20Prime%20Associates,%20I%20would%20like%20to%20consult%20on%20property%20loans."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-5 sm:px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer whitespace-nowrap"
                 >
-                  <Mail className="w-4 h-4 text-brand-teal" />
-                  <span>Email Document Dossiers</span>
+                  <MessageCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>Chat on WhatsApp</span>
+                </a>
+
+                <a
+                  href={`mailto:${businessEmail}?subject=Property%20Loan%20Consultation%20Dossier`}
+                  className="px-5 sm:px-6 py-3 rounded-full bg-slate-900/85 hover:bg-slate-800/90 text-white font-bold text-xs sm:text-sm border border-white/20 hover:border-teal-400/50 backdrop-blur-md shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 font-heading cursor-pointer whitespace-nowrap"
+                >
+                  <Mail className="w-4 h-4 text-teal-300 flex-shrink-0" />
+                  <span>Email Dossier</span>
                 </a>
               </div>
 
-              {/* Bottom Safety & Compliance Indicators */}
+              {/* Trust Badges */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(24px)',
-                  transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.6s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.6s',
+                  transition:
+                    'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s',
                 }}
-                className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-300 font-sans"
+                className="pt-1 flex flex-wrap items-center gap-3 sm:gap-6 text-xs text-slate-300 font-sans"
               >
                 <div className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                   <span>RBI Fair Practice Code Compliant</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Shield className="w-4 h-4 text-teal-400" />
-                  <span>Zero Unauthorized Bureau Enquiries</span>
+                  <Shield className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                  <span>Zero Advance Processing Fees</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Scale className="w-4 h-4 text-cyan-400" />
-                  <span>Zero Cash Collection Policy</span>
+                  <Scale className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                  <span>40+ PSU &amp; Private Bank Desks</span>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Corporate Headquarters Snapshot Card */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-[#102235]/90 to-[#0a1826]/90 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-5 font-sans">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="lg:col-span-5 bg-gradient-to-br from-[#102235]/95 to-[#0a1826]/95 backdrop-blur-xl border border-white/15 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-2xl relative space-y-4 sm:space-y-5 font-sans">
+              <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
                 <div className="flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-teal-400" />
-                  <span className="text-xs uppercase font-extrabold tracking-wider text-brand-teal-light font-heading">
+                  <span className="text-xs uppercase font-extrabold tracking-wider text-teal-200 font-heading">
                     Corporate Headquarters
                   </span>
                 </div>
-                <span className="text-[11px] text-emerald-400 font-mono font-bold">Tirupur Central</span>
+                <span className="text-[11px] text-emerald-400 font-mono font-bold bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-400/30">
+                  Tirupur Central
+                </span>
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-lg font-bold text-white font-heading">{businessName}</h3>
+              <div className="space-y-1.5">
+                <h3 className="text-base sm:text-lg font-bold text-white font-heading">{businessName}</h3>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
                   {officeAddress}
                 </p>
-                <div className="text-[11px] text-teal-300 font-medium pt-1 font-sans">
+                <div className="text-[11px] text-teal-300 font-medium pt-0.5 font-sans">
                   Landmark: Binny Compound Main Street, Kumaran Road, Tirupur
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-2 text-xs border-t border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs border-t border-white/10">
                 <div className="bg-white/[0.04] p-3 rounded-xl border border-white/10">
-                  <span className="text-slate-400 block text-[11px] font-heading">Direct Phone:</span>
-                  <a href={`tel:${businessPhone.replace(/\s+/g, '').split(',')[0]}`} className="font-mono text-white font-bold hover:text-teal-300 transition-colors">
-                    {businessPhone}
+                  <span className="text-slate-400 block text-[10px] font-heading uppercase tracking-wider">
+                    Primary Phone Lines:
+                  </span>
+                  <a
+                    href="tel:+919655566613"
+                    className="font-mono text-white font-bold hover:text-teal-300 transition-colors block mt-0.5"
+                  >
+                    +91 96555 66613
+                  </a>
+                  <a
+                    href="tel:+919514466600"
+                    className="font-mono text-slate-300 text-[11px] font-semibold hover:text-teal-300 transition-colors block"
+                  >
+                    +91 95144 66600
                   </a>
                 </div>
                 <div className="bg-white/[0.04] p-3 rounded-xl border border-white/10">
-                  <span className="text-slate-400 block text-[11px] font-heading">Audit Mail:</span>
-                  <a href={`mailto:${businessEmail}`} className="font-mono text-white font-bold hover:text-teal-300 truncate block transition-colors">
+                  <span className="text-slate-400 block text-[10px] font-heading uppercase tracking-wider">
+                    Direct Email Desk:
+                  </span>
+                  <a
+                    href={`mailto:${businessEmail}`}
+                    className="font-mono text-teal-200 font-bold hover:text-white truncate block mt-0.5 transition-colors text-xs"
+                  >
                     {businessEmail}
                   </a>
+                  <span className="text-slate-400 text-[10px] block mt-0.5">Scanned files &amp; ITRs</span>
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-1 flex flex-col sm:flex-row gap-2">
                 <a
-                  href="#enquiry-form"
-                  className="w-full py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer font-heading tracking-wide"
+                  href="https://www.google.com/maps/search/?api=1&query=P.R.+Complex+Binny+Compound+Kumaran+Road+Tirupur+641601"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-3 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer font-heading tracking-wide"
                 >
-                  <span>Book In-Person Office Session</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Get Directions on Map</span>
                 </a>
+                <button
+                  type="button"
+                  onClick={handleCopyAddress}
+                  className="py-3 px-4 bg-white/10 hover:bg-white/15 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 border border-white/15 cursor-pointer font-heading"
+                >
+                  {copiedAddress ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-300">Address Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-slate-300" />
+                      <span>Copy Address</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </div>
@@ -406,48 +453,316 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          2. REGIONAL ADVISORY DESKS
+          2. REAL-TIME DIRECT CONTACT CHANNELS (4 EXECUTIVE CARDS)
           ──────────────────────────────────────────────────────────── */}
-      <section className="pt-12 sm:pt-16 pb-16 bg-[#f8f8f4]">
+      <section className="pt-12 sm:pt-16 pb-12 sm:pb-14 bg-white border-b border-brand-border/70">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
-          <div className="max-w-3xl mb-10 sm:mb-12">
+          <div className="max-w-3xl mb-8 sm:mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading border border-brand-teal/20">
-              <Navigation className="w-3.5 h-3.5" />
-              <span>Geographic Specialization</span>
+              <Phone className="w-3.5 h-3.5" />
+              <span>Direct Real-Time Communication</span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight">
-              Specialized Regional Lending Desks
+              Direct Contact &amp; Underwriting Channels
             </h2>
-            <p className="mt-2 text-brand-slate text-sm sm:text-base leading-relaxed">
-              Property regulations and layout approvals differ across micro-markets. Our senior syndication advisors specialize by zone.
+            <p className="mt-2 text-brand-slate text-xs sm:text-sm md:text-base leading-relaxed font-sans">
+              Connect directly with our authorized banking syndication officers without intermediary agents or call centers.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {/* Card 1: Direct Phone Lines */}
+            <div className="bg-slate-50/80 rounded-2xl p-5 sm:p-6 border border-slate-200/90 hover:border-teal-400/60 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/30 text-brand-teal flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Phone className="w-5 h-5 text-brand-teal" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-brand-navy font-heading">
+                  Priority Phone Lines
+                </h3>
+                <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                  Direct telephone contact with our senior loan underwriting officers during business hours.
+                </p>
+                <div className="space-y-1.5 pt-1 font-mono text-xs font-bold">
+                  <a
+                    href="tel:+919655566613"
+                    className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 text-brand-navy hover:text-brand-teal hover:border-brand-teal transition-colors"
+                  >
+                    <span>+91 96555 66613</span>
+                    <span className="text-[10px] font-sans text-emerald-600 font-bold">Home Loans</span>
+                  </a>
+                  <a
+                    href="tel:+919514466600"
+                    className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 text-brand-navy hover:text-brand-teal hover:border-brand-teal transition-colors"
+                  >
+                    <span>+91 95144 66600</span>
+                    <span className="text-[10px] font-sans text-sky-600 font-bold">Mortgage &amp; LAP</span>
+                  </a>
+                </div>
+              </div>
+              <a
+                href="tel:+919655566613"
+                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-brand-navy text-white text-xs font-bold font-heading hover:bg-slate-800 transition-colors"
+              >
+                <span>Call Primary Line</span>
+                <Phone className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            {/* Card 2: WhatsApp Advisory */}
+            <div className="bg-slate-50/80 rounded-2xl p-5 sm:p-6 border border-slate-200/90 hover:border-emerald-400/60 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <MessageCircle className="w-5 h-5 text-emerald-600" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-brand-navy font-heading">
+                  WhatsApp Direct Chat
+                </h3>
+                <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                  Send property documents, preliminary queries, or sanction letters for instant preliminary review.
+                </p>
+                <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/60 text-[11px] text-emerald-800 font-sans">
+                  <span className="font-bold block">Avg Response: Under 15 Minutes</span>
+                  <span className="text-[10px] text-emerald-700">Encrypted document verification via WhatsApp</span>
+                </div>
+              </div>
+              <a
+                href="https://wa.me/919655566613?text=Hello%20Prime%20Associates,%20I%20would%20like%20to%20consult%20on%20property%20loans."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold font-heading shadow-xs transition-colors"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Open WhatsApp Chat</span>
+              </a>
+            </div>
+
+            {/* Card 3: Email Audit & Dossier */}
+            <div className="bg-slate-50/80 rounded-2xl p-5 sm:p-6 border border-slate-200/90 hover:border-sky-400/60 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Mail className="w-5 h-5 text-sky-600" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-brand-navy font-heading">
+                  Official Audit Email
+                </h3>
+                <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                  Send complete financial dossiers, 3-year ITRs, parent deeds, and municipal layout approvals.
+                </p>
+                <div className="p-2.5 rounded-lg bg-sky-50/70 border border-sky-200/60 text-xs font-mono font-bold text-sky-950 truncate">
+                  {businessEmail}
+                </div>
+              </div>
+              <a
+                href={`mailto:${businessEmail}?subject=Loan%20Application%20Dossier`}
+                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold font-heading hover:bg-slate-800 transition-colors"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>Compose Email</span>
+              </a>
+            </div>
+
+            {/* Card 4: Operating Hours & In-Person */}
+            <div className="bg-slate-50/80 rounded-2xl p-5 sm:p-6 border border-slate-200/90 hover:border-brand-teal/60 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-brand-teal-light border border-brand-teal/30 text-brand-teal flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Clock className="w-5 h-5 text-brand-teal" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-brand-navy font-heading">
+                  Office Hours (IST)
+                </h3>
+                <div className="space-y-1.5 text-xs text-brand-slate font-sans">
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="font-semibold text-brand-navy">Monday – Friday:</span>
+                    <span className="font-mono text-emerald-700 font-bold">9:30 AM – 6:30 PM</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="font-semibold text-brand-navy">Saturday:</span>
+                    <span className="font-mono text-emerald-700 font-bold">9:30 AM – 6:30 PM</span>
+                  </div>
+                  <div className="flex justify-between py-1">
+                    <span className="font-semibold text-brand-navy">Sunday:</span>
+                    <span className="text-rose-600 font-medium">Closed (By Appointment)</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-[11px] text-center font-medium text-slate-500 font-sans">
+                Walk-in Document Review Welcome
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ────────────────────────────────────────────────────────────
+          3. CORPORATE HEADQUARTERS & INTERACTIVE LOCATION MAP
+          ──────────────────────────────────────────────────────────── */}
+      <section className="pt-12 sm:pt-16 pb-16 bg-[#f8f8f4]">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+            {/* Left Column: Physical Office Guide */}
+            <div className="lg:col-span-5 bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-brand-border/80 shadow-card flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider font-heading border border-brand-teal/20">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Head Office Location</span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-extrabold text-brand-navy font-heading">
+                  Visit Prime Associates Headquarters
+                </h3>
+
+                <p className="text-xs sm:text-sm text-brand-slate leading-relaxed font-sans">
+                  Located in the commercial heart of Tirupur at P.R. Complex on Kumaran Road, our central office houses our senior legal auditors, banking desk managers, and documentation officers.
+                </p>
+
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-brand-teal" />
+                    <span>Exact Postal Address:</span>
+                  </div>
+                  <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                    <strong>Prime Associates — Loans &amp; Constructions</strong><br />
+                    No. 48, 49, P.R. Complex, Binny Compound Main Street,<br />
+                    Kumaran Road, Tirupur - 641601, Tamil Nadu, India.
+                  </p>
+                </div>
+
+                <div className="space-y-2 text-xs font-sans text-brand-slate">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                    <span><strong>5 Minutes</strong> from Tirupur Central Railway Station</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                    <span><strong>2 Minutes</strong> from Old Bus Stand / Kumaran Road Junction</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                    <span>Dedicated two-wheeler &amp; four-wheeler parking at complex</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=P.R.+Complex+Binny+Compound+Kumaran+Road+Tirupur+641601"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hero-btn-primary flex-1 py-3.5 px-4 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2 text-center cursor-pointer tracking-wide"
+                >
+                  <Navigation className="w-4 h-4" />
+                  <span>Open in Google Maps</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={handleCopyAddress}
+                  className="py-3.5 px-4 rounded-xl border border-slate-300 hover:border-brand-teal text-brand-navy text-xs sm:text-sm font-bold font-heading bg-slate-50 hover:bg-slate-100 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {copiedAddress ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      <span className="text-emerald-700">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 text-slate-500" />
+                      <span>Copy Address</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Right Column: Google Maps Interactive Embed */}
+            <div className="lg:col-span-7 bg-white rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card overflow-hidden flex flex-col relative min-h-[380px] sm:min-h-[440px]">
+              <div className="p-3.5 sm:p-4 bg-slate-900 text-white flex items-center justify-between z-10 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-teal-400" />
+                  <span className="text-xs font-bold font-heading">
+                    P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur
+                  </span>
+                </div>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=P.R.+Complex+Binny+Compound+Kumaran+Road+Tirupur+641601"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-teal-300 hover:text-white flex items-center gap-1 font-heading font-semibold"
+                >
+                  <span>Fullscreen</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              <div className="w-full flex-1 relative bg-slate-100">
+                <iframe
+                  title="Prime Associates Office Location Map"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.887293881474!2d77.3485!3d11.1085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba907b22a07c309%3A0x6b772b8418f43058!2sKumaran%20Rd%2C%20Binny%20Compound%2C%20Tiruppur%2C%20Tamil%20Nadu%20641601!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                  className="w-full h-full min-h-[340px] sm:min-h-[400px] border-0"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ────────────────────────────────────────────────────────────
+          4. SPECIALIZED REGIONAL LENDING DESKS
+          ──────────────────────────────────────────────────────────── */}
+      <section className="pt-12 sm:pt-16 pb-16 bg-white border-t border-brand-border/70">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="max-w-3xl mb-10 sm:mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading border border-brand-teal/20">
+              <Compass className="w-3.5 h-3.5" />
+              <span>Departmental Specialization</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight">
+              Specialized Loan &amp; Advisory Desks
+            </h2>
+            <p className="mt-2 text-brand-slate text-xs sm:text-sm md:text-base leading-relaxed font-sans">
+              Connect directly with dedicated desks specialized in home financing, mortgage liquidity, bank takeovers, and fleet syndication.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             {regionalDesks.map((desk, idx) => (
               <div
                 key={idx}
-                className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 p-6 flex flex-col justify-between hover:border-teal-400 hover:shadow-xl transition-all duration-300 group space-y-4"
+                className="bg-slate-50/70 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 p-5 sm:p-6 flex flex-col justify-between hover:border-teal-400 hover:shadow-xl transition-all duration-300 group space-y-4"
               >
                 <div className="space-y-3">
-                  <div className="w-9 h-9 rounded-xl bg-brand-teal-light text-brand-teal flex items-center justify-center font-bold text-xs font-mono border border-brand-teal/20 group-hover:bg-brand-teal group-hover:text-white transition-colors">
-                    0{idx + 1}
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-brand-teal-light text-brand-teal flex items-center justify-center font-bold text-xs font-mono border border-brand-teal/20 group-hover:bg-brand-teal group-hover:text-white transition-colors">
+                      0{idx + 1}
+                    </div>
+                    {desk.icon}
                   </div>
-                  <h3 className="font-bold text-base text-brand-navy font-heading leading-snug">{desk.region}</h3>
-                  <p className="text-xs text-brand-slate leading-relaxed">{desk.focus}</p>
+                  <h3 className="font-bold text-base text-brand-navy font-heading leading-snug">
+                    {desk.region}
+                  </h3>
+                  <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                    {desk.focus}
+                  </p>
                 </div>
-                
-                <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
+
+                <div className="pt-4 border-t border-slate-200 flex flex-col gap-2">
                   <div className="text-[11px] font-bold text-slate-500 font-heading">
                     {desk.desk}
                   </div>
                   <a
-                    href={`tel:${desk.phone.replace(/\s+/g, '')}`}
+                    href={`tel:${desk.phone.replace(/\s+/g, '').split(',')[0]}`}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal group-hover:text-teal-700 transition-colors"
                   >
                     <Phone className="w-3.5 h-3.5" />
                     <span>Direct: {desk.phone}</span>
                   </a>
+                  <div className="text-[10px] text-slate-400 font-sans">
+                    {desk.timings}
+                  </div>
                 </div>
               </div>
             ))}
@@ -456,16 +771,97 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          3. ENQUIRY FORM (Header 'Schedule a Confidential Consultation' removed for Contact page)
+          5. DOCUMENT CHECKLIST BEFORE VISITING IN PERSON
           ──────────────────────────────────────────────────────────── */}
-      <div id="enquiry-form" className="bg-[#f8f8f4]">
-        <EnquiryForm
-          services={services}
-          selectedService={null}
-          onClearSelectedService={() => {}}
-          hideHeader={true}
-        />
-      </div>
+      <section className="pt-12 sm:pt-14 pb-14 sm:pb-16 bg-[#f8f8f4] border-t border-brand-border/70">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+          <div className="max-w-3xl mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading border border-brand-teal/20">
+              <FileText className="w-3.5 h-3.5" />
+              <span>Office Visit Preparation</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-navy font-heading tracking-tight">
+              Documents to Bring for In-Person Underwriting Review
+            </h2>
+            <p className="mt-2 text-brand-slate text-xs sm:text-sm leading-relaxed font-sans">
+              Carrying these initial copies ensures our senior advisors can perform an instant preliminary eligibility calculation and legal review during your visit.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
+              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>1. KYC Identity Proof</span>
+              </div>
+              <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                Aadhaar Card, PAN Card, and passport-size photographs of primary applicant and co-applicants.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
+              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>2. Income Proofs</span>
+              </div>
+              <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                Salaried: Last 3 months payslips &amp; Form 16.<br />
+                Self-Employed: Last 3 years ITR with computation &amp; 6 months bank statement.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
+              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>3. Property Title Copies</span>
+              </div>
+              <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                Sale Deed / Parent Deed copy, latest Encumbrance Certificate (EC), Patta / Chitta, and Khata extract.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
+              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>4. Civil / Plan Estimates</span>
+              </div>
+              <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                For self-construction: Licensed engineer approved building blueprint plan and construction stage estimate.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ────────────────────────────────────────────────────────────
+          6. DEDICATED STREAMLINED BANNER: TO ONLINE LOAN ENQUIRY
+          ──────────────────────────────────────────────────────────── */}
+      <section className="py-12 bg-gradient-to-r from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white border-t border-white/10">
+        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-1.5 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-300 uppercase tracking-wider font-heading">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Looking to Apply Online?</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold font-heading text-white">
+              Submit Your Complete Loan Application Dossier Online
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-2xl">
+              Use our dedicated Online Enquiry Portal to specify loan requirements, upload financial records, and get instant multi-bank evaluation from 40+ empanelled lenders.
+            </p>
+          </div>
+
+          <div className="flex-shrink-0">
+            <Link
+              to="/enquire"
+              className="hero-btn-primary py-3.5 px-7 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2 text-center cursor-pointer tracking-wide whitespace-nowrap shadow-xl"
+            >
+              <span>Go to Online Loan Enquiry</span>
+              <ArrowRight className="w-4 h-4 hero-btn-arrow" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
