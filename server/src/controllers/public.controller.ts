@@ -7,20 +7,32 @@ import { generateEnquiryReference } from '../utils/reference';
 import { notifyAdminNewEnquiry } from '../utils/notifications';
 
 export async function getPublicBootstrap(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  const fetchWithRetry = async (retries = 2): Promise<any> => {
+    try {
+      return await Promise.all([
+        prisma.siteContent.findUnique({
+          where: { id: 'default_content' },
+        }),
+        prisma.service.findMany({
+          where: { isActive: true },
+          orderBy: { displayOrder: 'asc' },
+        }),
+        prisma.faq.findMany({
+          where: { isPublished: true },
+          orderBy: { displayOrder: 'asc' },
+        }),
+      ]);
+    } catch (dbErr) {
+      if (retries > 0) {
+        await new Promise((r) => setTimeout(r, 600));
+        return fetchWithRetry(retries - 1);
+      }
+      throw dbErr;
+    }
+  };
+
   try {
-    const [content, services, faqs] = await Promise.all([
-      prisma.siteContent.findUnique({
-        where: { id: 'default_content' },
-      }),
-      prisma.service.findMany({
-        where: { isActive: true },
-        orderBy: { displayOrder: 'asc' },
-      }),
-      prisma.faq.findMany({
-        where: { isPublished: true },
-        orderBy: { displayOrder: 'asc' },
-      }),
-    ]);
+    const [content, services, faqs] = await fetchWithRetry();
     res.json({
       success: true,
       data: {

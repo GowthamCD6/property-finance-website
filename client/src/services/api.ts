@@ -83,16 +83,28 @@ export interface PublicBootstrapData {
  * to minimize round-trip latency and avoid request waterfalls.
  */
 export async function getPublicBootstrapData(): Promise<PublicBootstrapData> {
-  try {
-    const res = await fetch(`${API_BASE}/public/bootstrap`);
-    if (res.ok) {
-      const json = await res.json();
-      if (json.data && json.data.content) {
-        return json.data;
+  // Retry up to 3 times with backoff (absorbs Render free-tier cold starts & TiDB connection wake-ups)
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(`${API_BASE}/public/bootstrap`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data && json.data.content) {
+          return json.data;
+        }
       }
+      // If server returned 500/502/503 during cold-start, wait and retry
+      if (res.status >= 500 && attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1200));
+        continue;
+      }
+    } catch (err) {
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1200));
+        continue;
+      }
+      console.warn('Bootstrap API unreachable, falling back to individual endpoints', err);
     }
-  } catch (err) {
-    console.warn('Bootstrap API unreachable, falling back to individual endpoints', err);
   }
 
   // Graceful fallback to individual endpoints in parallel
