@@ -16,7 +16,9 @@ import {
 import { EnquiryForm } from '../../../components/EnquiryForm/EnquiryForm';
 import { Service } from '../../../types';
 import { useOutletContext } from 'react-router-dom';
-import enquiryHeroImg from '../../../assets/images/enquiry-hero.jpg';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+
+const enquiryHeroImg = CDN_IMAGES.enquiryHero;
 
 export const EnquiryPage: React.FC = () => {
   const context = useOutletContext<{ services?: Service[] }>();

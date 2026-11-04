@@ -20,7 +20,9 @@ import {
 import { SiteContent, Service } from '../../../types';
 import { EnquiryForm } from '../../../components/EnquiryForm/EnquiryForm';
 import { useOutletContext } from 'react-router-dom';
-import contactHeroImage from '../../../assets/images/contact-hero.webp';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+
+const contactHeroImage = CDN_IMAGES.contactHero;
 
 export const ContactPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null; services?: Service[] }>();

@@ -32,7 +32,9 @@ import {
   BadgePercent,
   ChevronRight,
 } from 'lucide-react';
-import emiHeroImage from '../../../assets/images/emi.webp';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+
+const emiHeroImage = CDN_IMAGES.emiHero;
 
 /* ────────────────────────────────────────────────────────────
    1. ANIMATED KINETIC HEADLINE (Matching Home Page Signature)

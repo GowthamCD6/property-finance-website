@@ -33,9 +33,11 @@ import {
   Percent,
 } from 'lucide-react';
 import { CHANNEL_PARTNERS, ChannelPartnersGroup } from '../../../constants/loanDocuments';
-import howItsWorkHero from '../../../assets/images/how-its-work.avif';
-import faqVisualImage from '../../../assets/images/faqs-hero.webp';
-import consultationVisualImage from '../../../assets/images/contact-hero.webp';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+
+const howItsWorkHero = CDN_IMAGES.howItsWork;
+const faqVisualImage = CDN_IMAGES.faqsHero;
+const consultationVisualImage = CDN_IMAGES.contactHero;
 
 export const HowItWorksPage: React.FC = () => {
   const [activePhase, setActivePhase] = useState<number>(1);

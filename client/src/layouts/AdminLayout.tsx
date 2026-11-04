@@ -21,8 +21,10 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserAvatar } from '../components/common/UserAvatar';
-import logoImg from '../assets/images/logo.png';
-import logoDarkImg from '../assets/images/logo-dark.png';
+import { CDN_IMAGES } from '../constants/cloudinaryImages';
+
+const logoImg = CDN_IMAGES.logo;
+const logoDarkImg = CDN_IMAGES.logoDark;
 import { getDashboardStatsApi } from '../services/api';
 
 export const AdminLayout: React.FC = () => {

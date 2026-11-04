@@ -32,22 +32,24 @@ import {
   Landmark,
 } from 'lucide-react';
 import { Service, Faq, SiteContent } from '../../../types';
-import defaultHeroImage from '../../../assets/images/hero-property-finance.jpg';
-import homeLoanImg from '../../../assets/images/home-loan.jpg';
-import lapLoanImg from '../../../assets/images/lap-loan.jpg';
-import purchaseLoanImg from '../../../assets/images/purchase-loan.jpg';
-import vehicleLoanImg from '../../../assets/images/vehicle-loan.avif';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
 
-import sbiLogo from '../../../assets/images/lenders/sbi.svg';
-import hdfcLogo from '../../../assets/images/lenders/hdfc.svg';
-import iciciLogo from '../../../assets/images/lenders/icici.svg';
-import axisLogo from '../../../assets/images/lenders/axis.svg';
-import kotakLogo from '../../../assets/images/lenders/kotak.svg';
-import bobLogo from '../../../assets/images/lenders/bob.svg';
-import bajajLogo from '../../../assets/images/lenders/bajaj.svg';
-import tataLogo from '../../../assets/images/lenders/tata.svg';
-import pnbLogo from '../../../assets/images/lenders/pnb.svg';
-import licLogo from '../../../assets/images/lenders/lic.png';
+const defaultHeroImage = CDN_IMAGES.heroPropertyFinance;
+const homeLoanImg = CDN_IMAGES.homeLoan;
+const lapLoanImg = CDN_IMAGES.lapLoan;
+const purchaseLoanImg = CDN_IMAGES.purchaseLoan;
+const vehicleLoanImg = CDN_IMAGES.vehicleLoan;
+
+const sbiLogo = CDN_IMAGES.lenders.sbi;
+const hdfcLogo = CDN_IMAGES.lenders.hdfc;
+const iciciLogo = CDN_IMAGES.lenders.icici;
+const axisLogo = CDN_IMAGES.lenders.axis;
+const kotakLogo = CDN_IMAGES.lenders.kotak;
+const bobLogo = CDN_IMAGES.lenders.bob;
+const bajajLogo = CDN_IMAGES.lenders.bajaj;
+const tataLogo = CDN_IMAGES.lenders.tata;
+const pnbLogo = CDN_IMAGES.lenders.pnb;
+const licLogo = CDN_IMAGES.lenders.lic;
 
 /* ────────────────────────────────────────────────────────────
    1. ANIMATED HEADLINE COMPONENT

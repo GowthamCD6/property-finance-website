@@ -12,7 +12,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { triggerGoogleOAuth } from '../../../utils/googleAuth';
-import logoImg from '../../../assets/images/logo.png';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+
+const logoImg = CDN_IMAGES.logo;
 
 export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();

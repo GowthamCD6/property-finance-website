@@ -1,6 +1,8 @@
-import homeLoanHeroImage from '../../../../assets/images/home-loan.jpg';
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { CDN_IMAGES } from '../../../../constants/cloudinaryImages';
+
+const homeLoanHeroImage = CDN_IMAGES.homeLoan;
 import {
   Home,
   CheckCircle2,

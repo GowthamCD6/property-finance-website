@@ -28,7 +28,9 @@ import {
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../../components/common/InteractiveDocumentVault';
 import { Service } from '../../../../types';
-import vehicleHeroImage from '../../../../assets/images/vehicle-loan.avif';
+import { CDN_IMAGES } from '../../../../constants/cloudinaryImages';
+
+const vehicleHeroImage = CDN_IMAGES.vehicleLoan;
 
 export const VehicleLoansPage: React.FC = () => {
   const context = useOutletContext<{ services?: Service[] }>();

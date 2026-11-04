@@ -27,7 +27,9 @@ import {
   Layers,
 } from 'lucide-react';
 import { Faq } from '../../../types';
-import faqsHeroImage from '../../../assets/images/faqs-hero.webp';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+
+const faqsHeroImage = CDN_IMAGES.faqsHero;
 
 export const FaqsPage: React.FC = () => {
   const context = useOutletContext<{ faqs?: Faq[] }>();

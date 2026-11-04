@@ -22,7 +22,9 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { SiteContent } from '../../../types';
-import privacyHeroImage from '../../../assets/images/privacy-hero-security.jpg';
+import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
+
+const privacyHeroImage = CDN_IMAGES.privacyHeroSecurity;
 
 export const PrivacyPolicyPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();

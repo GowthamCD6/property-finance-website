@@ -1,6 +1,8 @@
-import lapHeroImage from '../../../../assets/images/lap-loan.jpg';
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { CDN_IMAGES } from '../../../../constants/cloudinaryImages';
+
+const lapHeroImage = CDN_IMAGES.lapLoan;
 import {
   Building2,
   CheckCircle2,

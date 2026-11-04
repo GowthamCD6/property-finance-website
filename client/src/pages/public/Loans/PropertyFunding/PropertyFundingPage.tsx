@@ -12,7 +12,9 @@ import {
 import { EnquiryForm } from '../../../../components/EnquiryForm/EnquiryForm';
 import { InteractiveDocumentVault } from '../../../../components/common/InteractiveDocumentVault';
 import { Service } from '../../../../types';
-import purchaseLoanHeroImage from '../../../../assets/images/purchase-loan.jpg';
+import { CDN_IMAGES } from '../../../../constants/cloudinaryImages';
+
+const purchaseLoanHeroImage = CDN_IMAGES.purchaseLoan;
 
 export const PropertyFundingPage: React.FC = () => {
   const context = useOutletContext<{ services?: Service[] }>();
