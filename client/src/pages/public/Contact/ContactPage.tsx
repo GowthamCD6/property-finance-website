@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import {
   MapPin,
@@ -24,11 +24,29 @@ import {
   Car,
   Compass,
   ArrowUpRight,
+  Landmark,
+  BadgePercent,
+  Layers,
 } from 'lucide-react';
 import { SiteContent, Service } from '../../../types';
 import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
 const contactHeroImage = CDN_IMAGES.contactHero;
+
+interface SpecializedDesk {
+  number: string;
+  region: string;
+  badge: string;
+  tag: string;
+  focus: string;
+  bulletPoints: string[];
+  officer: string;
+  desk: string;
+  phone: string;
+  cleanPhone: string;
+  timings: string;
+  icon: React.ReactNode;
+}
 
 export const ContactPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null; services?: Service[] }>();
@@ -40,7 +58,6 @@ export const ContactPage: React.FC = () => {
   const officeAddress =
     content?.officeAddress ||
     'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
-  const businessHours = content?.businessHours || 'Monday – Saturday: 9:30 AM – 6:30 PM (IST)';
 
   const [mounted, setMounted] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -80,7 +97,7 @@ export const ContactPage: React.FC = () => {
     };
 
     updateOfficeStatus();
-    const timer = setInterval(updateOfficeStatus, 30000); // refresh every 30s
+    const timer = setInterval(updateOfficeStatus, 30000);
     return () => clearInterval(timer);
   }, []);
 
@@ -137,67 +154,87 @@ export const ContactPage: React.FC = () => {
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(
-      `${businessName}, ${officeAddress}, Landmark: Binny Compound Main St, Kumaran Road, Tirupur - 641601`
+      `${businessName}, ${officeAddress}, Landmark: Binny Compound Main St, Kumaran Road, Tirupur - 641601, Tamil Nadu`
     );
     setCopiedAddress(true);
     setTimeout(() => setCopiedAddress(false), 2500);
   };
 
-  const defaultRegionalDesks = [
+  // 4 Core Specialized Loan & Advisory Desks of Prime Associates
+  const specializedDesks: SpecializedDesk[] = [
     {
-      region: 'Tirupur Central Head Office',
-      focus: 'Home Loans, Self-Construction, Plot Purchase & PMAY Government Subsidy',
-      desk: 'P.R. Complex Headquarters',
+      number: '01',
+      region: 'Land & Home Loans Desk',
+      badge: 'From 7.25% p.a.',
+      tag: 'Core Speciality',
+      focus: 'Self-construction financing on owned plots, ready villa purchase, apartment booking, and PMAY interest subsidy syndication.',
+      bulletPoints: [
+        'Disbursements against architect stage completion certificates',
+        'Starting interest rate from 7.25% with government subsidy',
+        'Extended repayment tenure up to 30 years',
+      ],
+      officer: 'Senior Housing Syndication Lead',
+      desk: 'Tirupur HQ • Ground Floor Desk 01',
       phone: '+91 96555 66613',
-      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
-      icon: <Building2 className="w-4 h-4 text-brand-teal" />,
+      cleanPhone: '919655566613',
+      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      icon: <Building2 className="w-5 h-5 text-brand-teal" />,
     },
     {
-      region: 'Mortgage & Commercial LAP Desk',
-      focus: 'Loan Against Property (Residential, Commercial, Industrial, Plots & Tiled Houses)',
-      desk: 'Mortgage & Secured Credit Desk',
+      number: '02',
+      region: 'Mortgage (LAP) & Commercial Desk',
+      badge: 'From 8.50% p.a.',
+      tag: 'Secured Liquidity',
+      focus: 'High-value business liquidity against residential houses, industrial sheds, empty converted plots, and commercial showroom collateral.',
+      bulletPoints: [
+        'High sanction quantum up to ₹25 Crores for businesses',
+        'Acceptable against concrete buildings, tiled houses & plots',
+        'Fast in-principle sanction within 48 to 72 hours',
+      ],
+      officer: 'Commercial Mortgage Underwriting Specialist',
+      desk: 'Tirupur HQ • 1st Floor Mortgage Syndicate',
       phone: '+91 95144 66600',
-      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
-      icon: <ShieldCheck className="w-4 h-4 text-brand-teal" />,
+      cleanPhone: '919514466600',
+      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      icon: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
     },
     {
-      region: 'Bank Takeover & Balance Transfer',
-      focus: 'Transfer high-rate private NBFC loans to low-rate PSU Banks starting from 7.25% p.a.',
-      desk: 'Takeover & Top-Up Syndicate',
+      number: '03',
+      region: 'Bank Takeover & Rate Reduction',
+      badge: 'Zero Advance Fees',
+      tag: 'Debt Takeover',
+      focus: 'Transfer high-rate mortgage and home loans from private NBFCs to Government (PSU) banks, saving lakhs in monthly interest charges.',
+      bulletPoints: [
+        'Reduce interest rate down to 7.25% benchmark PSU rate',
+        'Zero advance fees with end-to-end documentation takeover',
+        'Additional high-value top-up facility sanctioned',
+      ],
+      officer: 'Portfolio Takeover & Debt Consolidation Lead',
+      desk: 'Tirupur HQ • Zonal Transfer Desk 03',
       phone: '+91 96555 66613',
-      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
-      icon: <Scale className="w-4 h-4 text-brand-teal" />,
+      cleanPhone: '919655566613',
+      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      icon: <Scale className="w-5 h-5 text-brand-teal" />,
     },
     {
+      number: '04',
       region: 'Vehicle & Commercial Fleet Desk',
-      focus: 'New / Used Cars, Heavy Commercial Vehicles, Buses & Refinance Facilities',
-      desk: 'Automotive Syndication Desk',
+      badge: 'Quick 24h Clearance',
+      tag: 'Automotive Fleet',
+      focus: 'Funding for private cars, commercial transport vehicles, school buses, JCB/construction machinery, and existing fleet refinance.',
+      bulletPoints: [
+        'Financing available for both new and used vehicles',
+        'Up to 90% on-road funding with flexible repayment',
+        'Minimal paperwork with quick 24-hour sanction',
+      ],
+      officer: 'Automotive & Commercial Fleet Manager',
+      desk: 'Tirupur HQ • Transport Finance Desk 04',
       phone: '+91 95144 66600',
-      timings: 'Mon – Sat: 9:30 AM – 6:30 PM',
-      icon: <Car className="w-4 h-4 text-brand-teal" />,
+      cleanPhone: '919514466600',
+      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      icon: <Car className="w-5 h-5 text-brand-teal" />,
     },
   ];
-
-  const regionalDesks = useMemo(() => {
-    if (content?.branchOffices) {
-      try {
-        const parsed = JSON.parse(content.branchOffices);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((b: any, idx: number) => ({
-            region: b.name || defaultRegionalDesks[idx]?.region,
-            focus: b.address || defaultRegionalDesks[idx]?.focus,
-            desk: b.timings || defaultRegionalDesks[idx]?.desk,
-            phone: b.phone || defaultRegionalDesks[idx]?.phone,
-            timings: b.timings || 'Mon – Sat: 9:30 AM – 6:30 PM',
-            icon: defaultRegionalDesks[idx % defaultRegionalDesks.length].icon,
-          }));
-        }
-      } catch (e) {
-        console.warn('Unable to parse dynamic branchOffices', e);
-      }
-    }
-    return defaultRegionalDesks;
-  }, [content?.branchOffices]);
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
@@ -573,16 +610,16 @@ export const ContactPage: React.FC = () => {
                 </h3>
                 <div className="space-y-1.5 text-xs text-brand-slate font-sans">
                   <div className="flex justify-between py-1 border-b border-slate-200">
-                    <span className="font-semibold text-brand-navy">Monday – Friday:</span>
+                    <span className="font-semibold text-brand-navy font-heading">Monday – Friday:</span>
                     <span className="font-mono text-emerald-700 font-bold">9:30 AM – 6:30 PM</span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-slate-200">
-                    <span className="font-semibold text-brand-navy">Saturday:</span>
+                    <span className="font-semibold text-brand-navy font-heading">Saturday:</span>
                     <span className="font-mono text-emerald-700 font-bold">9:30 AM – 6:30 PM</span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span className="font-semibold text-brand-navy">Sunday:</span>
-                    <span className="text-rose-600 font-medium">Closed (By Appointment)</span>
+                    <span className="font-semibold text-brand-navy font-heading">Sunday:</span>
+                    <span className="text-rose-600 font-medium font-sans">Closed (By Appointment)</span>
                   </div>
                 </div>
               </div>
@@ -608,7 +645,7 @@ export const ContactPage: React.FC = () => {
                   <span>Head Office Location</span>
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-extrabold text-brand-navy font-heading">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-brand-navy font-heading tracking-tight">
                   Visit Prime Associates Headquarters
                 </h3>
 
@@ -622,7 +659,7 @@ export const ContactPage: React.FC = () => {
                     <span>Exact Postal Address:</span>
                   </div>
                   <p className="text-xs text-brand-slate font-sans leading-relaxed">
-                    <strong>Prime Associates — Loans &amp; Constructions</strong><br />
+                    <strong className="font-heading text-brand-navy">Prime Associates — Loans &amp; Constructions</strong><br />
                     No. 48, 49, P.R. Complex, Binny Compound Main Street,<br />
                     Kumaran Road, Tirupur - 641601, Tamil Nadu, India.
                   </p>
@@ -631,11 +668,11 @@ export const ContactPage: React.FC = () => {
                 <div className="space-y-2 text-xs font-sans text-brand-slate">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                    <span><strong>5 Minutes</strong> from Tirupur Central Railway Station</span>
+                    <span><strong className="text-brand-navy font-semibold">5 Minutes</strong> from Tirupur Central Railway Station</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                    <span><strong>2 Minutes</strong> from Old Bus Stand / Kumaran Road Junction</span>
+                    <span><strong className="text-brand-navy font-semibold">2 Minutes</strong> from Old Bus Stand / Kumaran Road Junction</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
@@ -663,12 +700,12 @@ export const ContactPage: React.FC = () => {
                   {copiedAddress ? (
                     <>
                       <Check className="w-4 h-4 text-emerald-600" />
-                      <span className="text-emerald-700">Copied!</span>
+                      <span className="text-emerald-700 font-heading">Copied!</span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-4 h-4 text-slate-500" />
-                      <span>Copy Address</span>
+                      <span className="font-heading">Copy Address</span>
                     </>
                   )}
                 </button>
@@ -711,7 +748,7 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          4. SPECIALIZED REGIONAL LENDING DESKS
+          4. SPECIALIZED LOAN & ADVISORY DESKS (FULL 4-COLUMN RICH GRID)
           ──────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-16 bg-white border-t border-brand-border/70">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
@@ -729,39 +766,85 @@ export const ContactPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-            {regionalDesks.map((desk, idx) => (
+            {specializedDesks.map((desk) => (
               <div
-                key={idx}
-                className="bg-slate-50/70 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 p-5 sm:p-6 flex flex-col justify-between hover:border-teal-400 hover:shadow-xl transition-all duration-300 group space-y-4"
+                key={desk.number}
+                className="bg-[#fafaf8] rounded-2xl sm:rounded-3xl border border-brand-border hover:border-brand-teal shadow-xs hover:shadow-xl transition-all duration-300 p-5 sm:p-6 flex flex-col justify-between space-y-4 group"
               >
-                <div className="space-y-3">
+                <div className="space-y-3.5">
+                  {/* Top Bar: Desk Number + Tag + Icon */}
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-brand-teal-light text-brand-teal flex items-center justify-center font-bold text-xs font-mono border border-brand-teal/20 group-hover:bg-brand-teal group-hover:text-white transition-colors">
-                      0{idx + 1}
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-xl bg-brand-teal-light text-brand-teal flex items-center justify-center font-extrabold text-xs font-mono border border-brand-teal/20 group-hover:bg-brand-teal group-hover:text-white transition-colors">
+                        {desk.number}
+                      </span>
+                      <span className="text-[10px] uppercase font-bold font-heading px-2 py-0.5 rounded-full bg-slate-200/70 text-slate-700">
+                        {desk.tag}
+                      </span>
                     </div>
-                    {desk.icon}
+                    <div className="p-1.5 rounded-lg bg-white border border-slate-200 text-brand-teal group-hover:scale-110 transition-transform">
+                      {desk.icon}
+                    </div>
                   </div>
-                  <h3 className="font-bold text-base text-brand-navy font-heading leading-snug">
-                    {desk.region}
-                  </h3>
+
+                  {/* Title & Badge */}
+                  <div>
+                    <h3 className="font-extrabold text-base sm:text-lg text-brand-navy font-heading leading-snug group-hover:text-brand-teal transition-colors">
+                      {desk.region}
+                    </h3>
+                    <span className="inline-block mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded font-heading">
+                      {desk.badge}
+                    </span>
+                  </div>
+
+                  {/* Focus Description */}
                   <p className="text-xs text-brand-slate font-sans leading-relaxed">
                     {desk.focus}
                   </p>
+
+                  {/* Department Highlights */}
+                  <ul className="space-y-1.5 pt-1 text-[11px] text-slate-600 font-sans border-t border-slate-200/80">
+                    {desk.bulletPoints.map((point, pIdx) => (
+                      <li key={pIdx} className="flex items-start gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-brand-teal flex-shrink-0 mt-0.5" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 flex flex-col gap-2">
-                  <div className="text-[11px] font-bold text-slate-500 font-heading">
-                    {desk.desk}
+                {/* Desk Footer Details */}
+                <div className="pt-3.5 border-t border-slate-200 space-y-2.5 font-sans">
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-heading">
+                      Lead Underwriter:
+                    </span>
+                    <span className="text-xs font-bold text-brand-navy font-heading block">
+                      {desk.officer}
+                    </span>
+                    <span className="text-[11px] text-slate-500 block">
+                      {desk.desk}
+                    </span>
                   </div>
-                  <a
-                    href={`tel:${desk.phone.replace(/\s+/g, '').split(',')[0]}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal group-hover:text-teal-700 transition-colors"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>Direct: {desk.phone}</span>
-                  </a>
-                  <div className="text-[10px] text-slate-400 font-sans">
-                    {desk.timings}
+
+                  {/* Direct Contact Buttons */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <a
+                      href={`tel:${desk.phone.replace(/\s+/g, '')}`}
+                      className="flex-1 py-2 px-2.5 rounded-xl bg-brand-navy hover:bg-slate-800 text-white text-[11px] font-bold font-heading flex items-center justify-center gap-1.5 transition-colors whitespace-nowrap shadow-xs"
+                    >
+                      <Phone className="w-3 h-3 flex-shrink-0" />
+                      <span>{desk.phone}</span>
+                    </a>
+                    <a
+                      href={`https://wa.me/${desk.cleanPhone}?text=Hello%20Prime%20Associates,%20I%20would%20like%20to%20enquire%20with%20the%20${encodeURIComponent(desk.region)}.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors flex items-center justify-center shadow-xs flex-shrink-0"
+                      title="Chat on WhatsApp"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                    </a>
                   </div>
                 </div>
               </div>
@@ -834,19 +917,19 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          6. DEDICATED STREAMLINED BANNER: TO ONLINE LOAN ENQUIRY
+          6. STREAMLINED NEXT STEP: DEDICATED ONLINE ENQUIRY PORTAL
           ──────────────────────────────────────────────────────────── */}
-      <section className="py-12 bg-gradient-to-r from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white border-t border-white/10">
+      <section className="py-12 sm:py-14 bg-gradient-to-r from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white border-t border-white/10">
         <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-1.5 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-300 uppercase tracking-wider font-heading">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Looking to Apply Online?</span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold font-heading text-white">
+            <h3 className="text-xl sm:text-2xl font-bold font-heading text-white tracking-tight">
               Submit Your Complete Loan Application Dossier Online
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-2xl leading-relaxed">
               Use our dedicated Online Enquiry Portal to specify loan requirements, upload financial records, and get instant multi-bank evaluation from 40+ empanelled lenders.
             </p>
           </div>
@@ -862,6 +945,62 @@ export const ContactPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Synchronized Headline & Button Visual Effects */}
+      <style>{`
+        .shimmer-headline-text {
+          background: linear-gradient(
+            90deg,
+            #ffffff 0%,
+            #ffffff 35%,
+            #bae6fd 50%,
+            #ffffff 65%,
+            #ffffff 100%
+          );
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shimmer-text-flow 5s ease-in-out infinite;
+          display: inline-block;
+        }
+
+        @keyframes shimmer-text-flow {
+          0%, 15% { background-position: 200% center; }
+          45%, 100% { background-position: -200% center; }
+        }
+
+        .hero-btn-primary {
+          position: relative;
+          overflow: hidden;
+          border-radius: 9999px;
+          background: linear-gradient(135deg, #187C78 0%, #126763 50%, #0e524f 100%);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          border-top-color: rgba(255, 255, 255, 0.55);
+          box-shadow: 
+            0 10px 25px -4px rgba(24, 124, 120, 0.55),
+            0 4px 10px rgba(0, 0, 0, 0.35),
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.45);
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, background 0.28s ease, border-color 0.28s ease;
+        }
+
+        .hero-btn-primary:hover {
+          transform: translateY(-2px) scale(1.02);
+          background: linear-gradient(135deg, #1ea39e 0%, #187C78 50%, #126763 100%);
+          box-shadow: 
+            0 14px 28px -4px rgba(24, 124, 120, 0.65),
+            0 6px 12px rgba(0, 0, 0, 0.4),
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+        }
+
+        .hero-btn-arrow {
+          transition: transform 0.25s ease;
+        }
+
+        .hero-btn-primary:hover .hero-btn-arrow {
+          transform: translateX(4px);
+        }
+      `}</style>
     </div>
   );
 };
