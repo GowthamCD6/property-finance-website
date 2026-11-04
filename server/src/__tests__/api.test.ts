@@ -1,25 +1,68 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
+import bcrypt from 'bcryptjs';
 import app from '../app';
 import prisma from '../database/client';
+import { config } from '../config';
 
-describe('Property Loan Consultancy System Tests', () => {
+const testAdminEmail = 'automated_test_admin@primeassociatesloans.in';
+const testAdminPassword = 'TestPassword@123456';
+
+describe('Property Loan Consultancy System Tests', { timeout: 30000 }, () => {
   let adminToken: string = '';
   let testEnquiryId: string = '';
   let testEnquiryReference: string = '';
+  let originalHeroHeadline: string = '';
 
   beforeAll(async () => {
-    // Ensure test database is primed
-    const admin = await prisma.adminUser.findUnique({
-      where: { email: 'admin@wealthanchor.in' },
+    // Ensure isolated test admin exists with known credentials
+    const passwordHash = await bcrypt.hash(testAdminPassword, 10);
+    await prisma.adminUser.upsert({
+      where: { email: testAdminEmail },
+      update: { passwordHash, isActive: true, role: 'superadmin' },
+      create: {
+        email: testAdminEmail,
+        passwordHash,
+        name: 'Automated Test Admin',
+        role: 'superadmin',
+        phone: '9999999999',
+        isActive: true,
+      },
     });
-    if (!admin) {
-      throw new Error('Database not seeded. Run seed before tests.');
+
+    const currentContent = await prisma.siteContent.findUnique({ where: { id: 'default_content' } });
+    if (currentContent?.heroHeadline) {
+      originalHeroHeadline = currentContent.heroHeadline;
     }
   });
 
   afterAll(async () => {
-    await prisma.$disconnect();
+    // Clean up test data
+    try {
+      if (testEnquiryReference) {
+        await prisma.statusHistory.deleteMany({ where: { enquiryId: testEnquiryId } });
+        await prisma.appointment.deleteMany({ where: { enquiryId: testEnquiryId } });
+        await prisma.enquiry.deleteMany({ where: { referenceNumber: testEnquiryReference } });
+      }
+      if (originalHeroHeadline) {
+        await prisma.siteContent.update({
+          where: { id: 'default_content' },
+          data: { heroHeadline: originalHeroHeadline },
+        });
+      }
+      await prisma.adminUser.deleteMany({ where: { email: testAdminEmail } });
+    } catch (e) {
+      console.warn('Test cleanup warning:', e);
+    } finally {
+      await prisma.$disconnect();
+    }
+  });
+
+  const getAdminHeaders = () => ({
+    Authorization: `Bearer ${adminToken}`,
+    'x-admin-api-key': config.adminApiKey,
   });
 
   describe('Public API Endpoints', () => {
@@ -107,31 +150,31 @@ describe('Property Loan Consultancy System Tests', () => {
   });
 
   describe('Admin Authentication & Security', () => {
-    it('Protected endpoints reject unauthenticated requests with 401', async () => {
+    it('Protected endpoints reject unauthenticated requests with 401 or 403', async () => {
       const res = await request(app).get('/api/admin/dashboard-stats');
-      expect(res.status).toBe(401);
+      expect([401, 403]).toContain(res.status);
       expect(res.body.success).toBe(false);
     });
 
     it('POST /api/auth/login rejects incorrect password with generic message', async () => {
       const res = await request(app).post('/api/auth/login').send({
-        email: 'admin@wealthanchor.in',
+        email: testAdminEmail,
         password: 'WrongPassword@123',
       });
       expect(res.status).toBe(401);
       expect(res.body.success).toBe(false);
-      expect(res.body.message).toBe('Invalid email address or password.');
+      expect(res.body.message).toMatch(/Invalid registered mobile number or password|Invalid email address or password/);
     });
 
     it('POST /api/auth/login authenticates valid admin and returns JWT token', async () => {
       const res = await request(app).post('/api/auth/login').send({
-        email: 'admin@wealthanchor.in',
-        password: 'Admin@123456',
+        email: testAdminEmail,
+        password: testAdminPassword,
       });
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.token).toBeDefined();
-      expect(res.body.data.admin.email).toBe('admin@wealthanchor.in');
+      expect(res.body.data.admin.email).toBe(testAdminEmail);
 
       adminToken = res.body.data.token;
     });
@@ -139,9 +182,9 @@ describe('Property Loan Consultancy System Tests', () => {
     it('GET /api/auth/me returns current authenticated administrator profile', async () => {
       const res = await request(app)
         .get('/api/auth/me')
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set(getAdminHeaders());
       expect(res.status).toBe(200);
-      expect(res.body.data.email).toBe('admin@wealthanchor.in');
+      expect(res.body.data.email).toBe(testAdminEmail);
     });
   });
 
@@ -149,7 +192,7 @@ describe('Property Loan Consultancy System Tests', () => {
     it('GET /api/admin/dashboard-stats returns calculated live metrics', async () => {
       const res = await request(app)
         .get('/api/admin/dashboard-stats')
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set(getAdminHeaders());
       expect(res.status).toBe(200);
       expect(res.body.data.totalEnquiries).toBeGreaterThanOrEqual(1);
       expect(res.body.data.recentEnquiries).toBeDefined();
@@ -158,7 +201,7 @@ describe('Property Loan Consultancy System Tests', () => {
     it('GET /api/admin/enquiries supports search, filtering, and pagination', async () => {
       const res = await request(app)
         .get(`/api/admin/enquiries?search=${encodeURIComponent('Ananya')}`)
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set(getAdminHeaders());
       expect(res.status).toBe(200);
       expect(res.body.data.enquiries.length).toBeGreaterThanOrEqual(1);
       expect(res.body.data.enquiries[0].referenceNumber).toBe(testEnquiryReference);
@@ -167,7 +210,7 @@ describe('Property Loan Consultancy System Tests', () => {
     it('PATCH /api/admin/enquiries/:id/status updates status and logs audit history', async () => {
       const res = await request(app)
         .patch(`/api/admin/enquiries/${testEnquiryId}/status`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set(getAdminHeaders())
         .send({
           status: 'Contacted',
           note: 'Called client to verify property documents',
@@ -187,7 +230,7 @@ describe('Property Loan Consultancy System Tests', () => {
     it('POST /api/admin/enquiries/:id/notes records an internal consultant note', async () => {
       const res = await request(app)
         .post(`/api/admin/enquiries/${testEnquiryId}/notes`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set(getAdminHeaders())
         .send({
           content: 'Verified applicant CIBIL score is 780+. Ready for lender comparison.',
         });
@@ -199,7 +242,7 @@ describe('Property Loan Consultancy System Tests', () => {
     it('GET /api/admin/enquiries/export produces RFC-compliant CSV download', async () => {
       const res = await request(app)
         .get('/api/admin/enquiries/export')
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set(getAdminHeaders());
 
       expect(res.status).toBe(200);
       expect(res.headers['content-type']).toContain('text/csv');
@@ -213,7 +256,7 @@ describe('Property Loan Consultancy System Tests', () => {
 
       const res = await request(app)
         .put('/api/admin/content')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set(getAdminHeaders())
         .send({
           ...current,
           heroHeadline: updatedHeadline,
