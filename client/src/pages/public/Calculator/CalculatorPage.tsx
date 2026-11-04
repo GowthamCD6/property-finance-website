@@ -439,10 +439,10 @@ export const CalculatorPage: React.FC = () => {
                 transform: mounted ? 'translateY(0)' : 'translateY(-14px)',
                 transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
               }}
-              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm"
+              className="inline-flex items-center gap-2 px-3 xs:px-4 py-1.5 rounded-full bg-slate-900/80 border border-white/20 text-slate-100 text-[10px] xs:text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm max-w-full"
             >
-              <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
-              <span className="font-heading">Institutional Financial Engineering • RBI EBLR Linked Suite</span>
+              <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse shrink-0"></span>
+              <span className="font-heading truncate">Institutional Financial Engineering • RBI EBLR Linked</span>
             </div>
 
             {/* Kinetic Animated Headline with 3D Tilt */}
@@ -457,7 +457,7 @@ export const CalculatorPage: React.FC = () => {
                 transform: mounted ? 'translateY(0)' : 'translateY(24px)',
                 transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.45s',
               }}
-              className="text-sm xs:text-base sm:text-lg text-slate-200 font-sans font-normal leading-relaxed max-w-3xl mx-auto px-2"
+              className="text-xs xs:text-sm sm:text-base md:text-lg text-slate-200 font-sans font-normal leading-relaxed max-w-3xl mx-auto px-2"
             >
               Simulate exact monthly repayment schedules, stress-test your borrowing ceiling against banking FOIR guidelines, or model tranche-based pre-EMI interest during staged property construction across 40+ empanelled banks.
             </p>
@@ -472,24 +472,24 @@ export const CalculatorPage: React.FC = () => {
               transform: mounted ? 'translateY(0)' : 'translateY(24px)',
               transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.60s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.60s',
             }}
-            className="mt-8 sm:mt-10 grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4.5"
+            className="mt-6 sm:mt-10 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4.5"
           >
             {/* Instrument 1: Standard EMI */}
             <button
               type="button"
               onClick={() => handleSelectMode('emi')}
-              className={`p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
+              className={`p-4 xs:p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
                 calcMode === 'emi'
-                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70 scale-[1.01]'
+                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70'
                   : 'bg-slate-900/60 hover:bg-slate-900/80 border-white/15 hover:border-white/30 backdrop-blur-md'
               }`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-teal-500/20 border border-teal-400/40 flex items-center justify-center text-teal-300 group-hover:scale-105 transition-transform">
-                  <CalcIcon className="w-5 h-5 text-teal-300" />
+              <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-500/20 border border-teal-400/40 flex items-center justify-center text-teal-300 group-hover:scale-105 transition-transform">
+                  <CalcIcon className="w-4 h-4 sm:w-5 sm:h-5 text-teal-300" />
                 </div>
                 <span
-                  className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
+                  className={`text-[9px] xs:text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
                     calcMode === 'emi'
                       ? 'bg-teal-500/25 text-teal-200 border-teal-400/50'
                       : 'bg-white/5 text-slate-400 border-white/10'
@@ -499,15 +499,15 @@ export const CalculatorPage: React.FC = () => {
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold text-white font-heading group-hover:text-teal-300 transition-colors">
+              <h3 className="text-sm xs:text-base sm:text-lg font-bold text-white font-heading group-hover:text-teal-300 transition-colors">
                 Standard Monthly EMI Outflow
               </h3>
               <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
                 Model exact monthly payments, total interest amortization, and loan horizons starting from 7.25% p.a.
               </p>
 
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-                <span className="font-mono text-teal-300 font-semibold">From 7.25% p.a.</span>
+              <div className="mt-3.5 sm:mt-4 pt-2.5 sm:pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <span className="font-mono text-teal-300 font-semibold text-[11px] xs:text-xs">From 7.25% p.a.</span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-white group-hover:translate-x-1 transition-transform">
                   <span>Simulate Outflow</span>
                   <ChevronRight className="w-3.5 h-3.5 text-teal-300" />
@@ -519,18 +519,18 @@ export const CalculatorPage: React.FC = () => {
             <button
               type="button"
               onClick={() => handleSelectMode('eligibility')}
-              className={`p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
+              className={`p-4 xs:p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
                 calcMode === 'eligibility'
-                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70 scale-[1.01]'
+                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70'
                   : 'bg-slate-900/60 hover:bg-slate-900/80 border-white/15 hover:border-white/30 backdrop-blur-md'
               }`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 group-hover:scale-105 transition-transform">
-                  <UserCheck className="w-5 h-5 text-sky-300" />
+              <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 group-hover:scale-105 transition-transform">
+                  <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-sky-300" />
                 </div>
                 <span
-                  className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
+                  className={`text-[9px] xs:text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
                     calcMode === 'eligibility'
                       ? 'bg-sky-500/25 text-sky-200 border-sky-400/50'
                       : 'bg-white/5 text-slate-400 border-white/10'
@@ -540,15 +540,15 @@ export const CalculatorPage: React.FC = () => {
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold text-white font-heading group-hover:text-sky-300 transition-colors">
+              <h3 className="text-sm xs:text-base sm:text-lg font-bold text-white font-heading group-hover:text-sky-300 transition-colors">
                 Banking FOIR &amp; Max Borrowing
               </h3>
               <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
                 Stress-test net disposable income against obligations to compute maximum eligible borrowing ceiling.
               </p>
 
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-                <span className="font-mono text-sky-300 font-semibold">50% – 65% Bank FOIR</span>
+              <div className="mt-3.5 sm:mt-4 pt-2.5 sm:pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <span className="font-mono text-sky-300 font-semibold text-[11px] xs:text-xs">50% – 65% Bank FOIR</span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-white group-hover:translate-x-1 transition-transform">
                   <span>Test Debt Ceiling</span>
                   <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -560,18 +560,18 @@ export const CalculatorPage: React.FC = () => {
             <button
               type="button"
               onClick={() => handleSelectMode('composite')}
-              className={`p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
+              className={`p-4 xs:p-5 sm:p-6 rounded-2xl text-left transition-all duration-300 relative overflow-hidden group cursor-pointer border ${
                 calcMode === 'composite'
-                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70 scale-[1.01]'
+                  ? 'bg-slate-900/95 border-teal-400 ring-2 ring-teal-400/40 shadow-2xl shadow-teal-950/70'
                   : 'bg-slate-900/60 hover:bg-slate-900/80 border-white/15 hover:border-white/30 backdrop-blur-md'
               }`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform">
-                  <Building2 className="w-5 h-5 text-emerald-300" />
+              <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform">
+                  <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-300" />
                 </div>
                 <span
-                  className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
+                  className={`text-[9px] xs:text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full border ${
                     calcMode === 'composite'
                       ? 'bg-emerald-500/25 text-emerald-200 border-emerald-400/50'
                       : 'bg-white/5 text-slate-400 border-white/10'
@@ -581,15 +581,15 @@ export const CalculatorPage: React.FC = () => {
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold text-white font-heading group-hover:text-emerald-300 transition-colors">
+              <h3 className="text-sm xs:text-base sm:text-lg font-bold text-white font-heading group-hover:text-emerald-300 transition-colors">
                 Composite Plot + Villa Build
               </h3>
               <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
                 Simulate dual-tranche funding for land acquisition (70% LTV) and stage-wise civil construction (80% LTV).
               </p>
 
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-                <span className="font-mono text-emerald-400 font-semibold">70:80 Split Tranches</span>
+              <div className="mt-3.5 sm:mt-4 pt-2.5 sm:pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <span className="font-mono text-emerald-400 font-semibold text-[11px] xs:text-xs">70:80 Split Tranches</span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-heading font-bold text-white group-hover:translate-x-1 transition-transform">
                   <span>Model Pre-EMIs</span>
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-300" />
@@ -603,17 +603,17 @@ export const CalculatorPage: React.FC = () => {
       {/* ────────────────────────────────────────────────────────────
           4. INTERACTIVE SLIDER DASHBOARD (Anchored via ref)
           ──────────────────────────────────────────────────────────── */}
-      <section ref={dashboardRef} className="pt-12 sm:pt-16 pb-16 bg-[#f8f8f4]">
-        <div className="w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
+      <section ref={dashboardRef} className="pt-8 sm:pt-16 pb-12 sm:pb-16 bg-[#f8f8f4]">
+        <div className="w-[94%] xs:w-[92%] sm:w-[88%] lg:w-[85%] max-w-7xl mx-auto">
           {calcMode === 'emi' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start">
+              <div className="lg:col-span-7 bg-white p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-5 xs:space-y-6 sm:space-y-7">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
-                    <CalcIcon className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-1.5 xs:gap-2 px-2.5 xs:px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-[10px] xs:text-xs font-bold uppercase tracking-wider mb-2 font-heading">
+                    <CalcIcon className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>Mode 01 Simulation</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-brand-navy font-heading">
+                  <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-brand-navy font-heading">
                     Standard Monthly EMI Simulation
                   </h2>
                   <p className="text-xs sm:text-sm text-brand-slate font-sans mt-1">
@@ -622,12 +622,12 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Slider 1: Loan Amount */}
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="space-y-2.5 xs:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2">
                     <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
                       Loan Amount Required
                     </label>
-                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-2.5 xs:px-3 py-1 xs:py-1.5 self-end xs:self-auto focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
                       <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
                       <input
                         type="number"
@@ -639,7 +639,7 @@ export const CalculatorPage: React.FC = () => {
                           const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
                           setLoanAmount(val);
                         }}
-                        className="w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                        className="w-24 xs:w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
                       />
                     </div>
                   </div>
@@ -652,13 +652,13 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setLoanAmount(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
+                  <div className="flex justify-between text-[10px] xs:text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 5 Lakhs</span>
-                    <span className="font-bold text-brand-navy font-heading">{getVerbalAmount(loanAmount)}</span>
+                    <span className="font-bold text-brand-navy font-heading truncate mx-1">{getVerbalAmount(loanAmount)}</span>
                     <span>₹ 10 Crores</span>
                   </div>
                   {/* Quick Preset Buttons */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 pt-1">
                     {[
                       { label: '₹25L', val: 2500000 },
                       { label: '₹50L', val: 5000000 },
@@ -671,9 +671,9 @@ export const CalculatorPage: React.FC = () => {
                         key={chip.val}
                         type="button"
                         onClick={() => setLoanAmount(chip.val)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                        className={`px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-lg text-[11px] xs:text-xs font-bold font-heading transition-all cursor-pointer ${
                           loanAmount === chip.val
-                            ? 'bg-brand-teal text-white shadow-sm'
+                            ? 'bg-brand-teal text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -684,12 +684,12 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Slider 2: Interest Rate */}
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="space-y-2.5 xs:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2">
                     <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
                       Indicative Annual Interest Rate (% p.a.)
                     </label>
-                    <div className="flex items-center gap-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                    <div className="flex items-center gap-1 bg-slate-50 border border-slate-300 rounded-xl px-2.5 xs:px-3 py-1 xs:py-1.5 self-end xs:self-auto focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
                       <input
                         type="number"
                         min={5.0}
@@ -700,7 +700,7 @@ export const CalculatorPage: React.FC = () => {
                           const val = e.target.value === '' ? 0 : Number(e.target.value);
                           setInterestRate(val);
                         }}
-                        className="w-16 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                        className="w-14 xs:w-16 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
                       />
                       <span className="text-brand-teal font-black text-xs sm:text-sm">%</span>
                     </div>
@@ -714,16 +714,16 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setInterestRate(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
+                  <div className="flex justify-between text-[10px] xs:text-[11px] text-brand-slate font-sans font-medium">
                     <span>6.50% (Prime HL)</span>
                     <span className="font-bold text-brand-navy font-mono">{interestRate.toFixed(2)}% p.a.</span>
                     <span>16.00%</span>
                   </div>
                   {/* Quick Rate Presets */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 pt-1">
                     {[
                       { label: '7.25% (Prime HL)', val: 7.25 },
-                      { label: '7.75% (Standard HL)', val: 7.75 },
+                      { label: '7.75% (Std HL)', val: 7.75 },
                       { label: '8.50% (Prime LAP)', val: 8.50 },
                       { label: '9.25% (Comm. LAP)', val: 9.25 },
                       { label: '10.50% (Project)', val: 10.50 },
@@ -732,9 +732,9 @@ export const CalculatorPage: React.FC = () => {
                         key={chip.val}
                         type="button"
                         onClick={() => setInterestRate(chip.val)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                        className={`px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-lg text-[11px] xs:text-xs font-bold font-heading transition-all cursor-pointer ${
                           interestRate === chip.val
-                            ? 'bg-brand-teal text-white shadow-sm'
+                            ? 'bg-brand-teal text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -745,12 +745,12 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Slider 3: Tenure */}
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="space-y-2.5 xs:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2">
                     <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
                       Repayment Horizon (Tenure in Years)
                     </label>
-                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-2.5 xs:px-3 py-1 xs:py-1.5 self-end xs:self-auto focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
                       <input
                         type="number"
                         min={1}
@@ -761,7 +761,7 @@ export const CalculatorPage: React.FC = () => {
                           const val = e.target.value === '' ? 0 : Math.min(30, Math.max(1, Number(e.target.value)));
                           setTenureYears(val);
                         }}
-                        className="w-14 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                        className="w-12 xs:w-14 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
                       />
                       <span className="text-brand-slate font-bold text-xs font-mono">Yrs ({totalMonths}m)</span>
                     </div>
@@ -775,55 +775,63 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setTenureYears(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
+                  <div className="flex justify-between text-[10px] xs:text-[11px] text-brand-slate font-sans font-medium">
                     <span>1 Year</span>
                     <span className="font-bold text-brand-navy font-mono">{tenureYears} Years</span>
-                    <span>30 Years (Max Home Loan)</span>
+                    <span>30 Years (Max HL)</span>
                   </div>
                   {/* Quick Tenure Presets */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 pt-1">
                     {[5, 10, 15, 20, 25, 30].map((yr) => (
                       <button
                         key={yr}
                         type="button"
                         onClick={() => setTenureYears(yr)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                        className={`px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-lg text-[11px] xs:text-xs font-bold font-heading transition-all cursor-pointer ${
                           tenureYears === yr
-                            ? 'bg-brand-teal text-white shadow-sm'
+                            ? 'bg-brand-teal text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
-                        {yr} Years
+                        {yr} Yrs
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Year-1 Amortization Snapshot Box */}
-                <div className="p-4 bg-slate-50/90 rounded-2xl border border-brand-border space-y-3">
-                  <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-brand-teal" />
-                      Year 1 Repayment Distribution (12 Installments)
+                <div className="p-3.5 sm:p-4 bg-slate-50/90 rounded-2xl border border-brand-border space-y-2.5 sm:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 text-xs font-bold text-brand-navy font-heading">
+                    <span className="flex items-center gap-1.5 text-[11px] sm:text-xs">
+                      <Clock className="w-3.5 h-3.5 text-brand-teal flex-shrink-0" />
+                      <span>Year 1 Repayment Distribution</span>
                     </span>
-                    <span className="text-[11px] font-mono text-slate-500 font-medium">Annual: {formatINR(emi * 12)}</span>
+                    <span className="text-[10px] xs:text-[11px] font-mono text-slate-500 font-medium">
+                      Annual: {formatINR(emi * 12)}
+                    </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Yr 1 Principal</span>
-                      <span className="text-xs sm:text-sm font-bold text-emerald-700 font-mono block mt-0.5">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-center">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 min-w-0">
+                      <span className="text-[9px] xs:text-[10px] text-slate-500 uppercase font-bold block truncate">
+                        Yr 1 Principal
+                      </span>
+                      <span className="text-[11px] xs:text-xs sm:text-sm font-bold text-emerald-700 font-mono block mt-0.5 truncate">
                         {formatINR(year1Amortization.principal)}
                       </span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Yr 1 Interest</span>
-                      <span className="text-xs sm:text-sm font-bold text-sky-700 font-mono block mt-0.5">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 min-w-0">
+                      <span className="text-[9px] xs:text-[10px] text-slate-500 uppercase font-bold block truncate">
+                        Yr 1 Interest
+                      </span>
+                      <span className="text-[11px] xs:text-xs sm:text-sm font-bold text-sky-700 font-mono block mt-0.5 truncate">
                         {formatINR(year1Amortization.interest)}
                       </span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-white border border-slate-200">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold block">Yr 1 Balance</span>
-                      <span className="text-xs sm:text-sm font-bold text-brand-navy font-mono block mt-0.5">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 min-w-0">
+                      <span className="text-[9px] xs:text-[10px] text-slate-500 uppercase font-bold block truncate">
+                        Yr 1 Balance
+                      </span>
+                      <span className="text-[11px] xs:text-xs sm:text-sm font-bold text-brand-navy font-mono block mt-0.5 truncate">
                         {formatINR(year1Amortization.closingBalance)}
                       </span>
                     </div>
@@ -832,48 +840,50 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Right Cockpit Card: Outflow Analytics */}
-              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
+              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 space-y-5 sm:space-y-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">Estimated Monthly Outflow</span>
-                  <div className="mt-2 text-3xl sm:text-4xl font-extrabold text-white font-mono">
+                  <span className="text-[11px] xs:text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">
+                    Estimated Monthly Outflow
+                  </span>
+                  <div className="mt-1.5 xs:mt-2 text-2xl xs:text-3xl sm:text-4xl font-extrabold text-white font-mono break-words">
                     {formatINR(emi)}
                     <span className="text-xs font-normal text-slate-300 block sm:inline sm:ml-2 font-sans">/ month</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs font-semibold font-heading">
+                  <div className="flex justify-between text-[11px] xs:text-xs font-semibold font-heading">
                     <span className="text-emerald-400">Principal: {principalPercent}%</span>
                     <span className="text-sky-300">Interest: {interestPercent}%</span>
                   </div>
-                  <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden flex border border-white/10">
+                  <div className="h-2.5 xs:h-3 w-full bg-white/10 rounded-full overflow-hidden flex border border-white/10">
                     <div style={{ width: `${principalPercent}%` }} className="bg-emerald-500 h-full transition-all duration-300" />
                     <div style={{ width: `${interestPercent}%` }} className="bg-sky-400 h-full transition-all duration-300" />
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-2 text-xs sm:text-sm">
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-sans font-medium">Principal Borrowed:</span>
-                    <span className="font-bold text-white font-mono">{formatINR(loanAmount)}</span>
+                <div className="space-y-2.5 xs:space-y-3 pt-1 text-xs sm:text-sm">
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md gap-2">
+                    <span className="text-slate-300 font-sans font-medium text-xs sm:text-sm">Principal Borrowed:</span>
+                    <span className="font-bold text-white font-mono text-xs sm:text-sm truncate">{formatINR(loanAmount)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-sans font-medium">Total Interest Over Tenure:</span>
-                    <span className="font-bold text-sky-300 font-mono">{formatINR(totalInterest)}</span>
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md gap-2">
+                    <span className="text-slate-300 font-sans font-medium text-xs sm:text-sm">Total Interest:</span>
+                    <span className="font-bold text-sky-300 font-mono text-xs sm:text-sm truncate">{formatINR(totalInterest)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.08] border border-white/20 backdrop-blur-md">
-                    <span className="text-white font-bold font-heading">Total Repayment Amount:</span>
-                    <span className="font-black text-emerald-400 font-mono">{formatINR(totalPayment)}</span>
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.08] border border-white/20 backdrop-blur-md gap-2">
+                    <span className="text-white font-bold font-heading text-xs sm:text-sm">Total Repayment:</span>
+                    <span className="font-black text-emerald-400 font-mono text-xs sm:text-sm truncate">{formatINR(totalPayment)}</span>
                   </div>
                 </div>
 
                 {/* Prepayment Advantage Note */}
                 {prepaymentSavings.monthsSaved > 0 && (
-                  <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-xs text-emerald-200 space-y-1">
+                  <div className="p-3 xs:p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-xs text-emerald-200 space-y-1">
                     <div className="flex items-center gap-1.5 font-bold font-heading text-emerald-300">
-                      <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-300 flex-shrink-0" />
                       <span>Smart Prepayment Advantage</span>
                     </div>
                     <p className="text-[11px] text-emerald-100/90 leading-relaxed font-sans">
@@ -882,13 +892,13 @@ export const CalculatorPage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="pt-2">
+                <div className="pt-1 xs:pt-2">
                   <Link
                     to={`/enquire?amount=${loanAmount}&tenure=${tenureYears}&rate=${interestRate}&type=home`}
-                    className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
+                    className="hero-btn-primary w-full py-3.5 sm:py-4 px-4 sm:px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2 text-center cursor-pointer tracking-wide whitespace-nowrap"
                   >
                     <span>Apply with this Repayment Quote</span>
-                    <ArrowRight className="w-4 h-4 hero-btn-arrow" />
+                    <ArrowRight className="w-4 h-4 hero-btn-arrow flex-shrink-0" />
                   </Link>
                 </div>
               </div>
@@ -896,14 +906,14 @@ export const CalculatorPage: React.FC = () => {
           )}
 
           {calcMode === 'eligibility' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start">
+              <div className="lg:col-span-7 bg-white p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-5 xs:space-y-6 sm:space-y-7">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
-                    <UserCheck className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-1.5 xs:gap-2 px-2.5 xs:px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-[10px] xs:text-xs font-bold uppercase tracking-wider mb-2 font-heading">
+                    <UserCheck className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>Mode 02 Analysis</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-brand-navy font-heading">
+                  <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-brand-navy font-heading">
                     Maximum Borrowing Capacity &amp; Banking FOIR
                   </h2>
                   <p className="text-xs sm:text-sm text-brand-slate font-sans mt-1">
@@ -912,12 +922,12 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Net Income Control */}
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="space-y-2.5 xs:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2">
                     <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
                       Net Monthly Take-Home Income
                     </label>
-                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-2.5 xs:px-3 py-1 xs:py-1.5 self-end xs:self-auto focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
                       <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
                       <input
                         type="number"
@@ -929,7 +939,7 @@ export const CalculatorPage: React.FC = () => {
                           const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
                           setMonthlyIncome(val);
                         }}
-                        className="w-28 sm:w-32 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                        className="w-24 xs:w-28 sm:w-32 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
                       />
                     </div>
                   </div>
@@ -942,12 +952,12 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setMonthlyIncome(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
+                  <div className="flex justify-between text-[10px] xs:text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 30,000 / mo</span>
-                    <span className="font-bold text-brand-navy font-heading">{getVerbalAmount(monthlyIncome)}</span>
+                    <span className="font-bold text-brand-navy font-heading truncate mx-1">{getVerbalAmount(monthlyIncome)}</span>
                     <span>₹ 10 Lakhs / mo</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 pt-1">
                     {[
                       { label: '₹50K', val: 50000 },
                       { label: '₹1L', val: 100000 },
@@ -959,9 +969,9 @@ export const CalculatorPage: React.FC = () => {
                         key={chip.val}
                         type="button"
                         onClick={() => setMonthlyIncome(chip.val)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                        className={`px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-lg text-[11px] xs:text-xs font-bold font-heading transition-all cursor-pointer ${
                           monthlyIncome === chip.val
-                            ? 'bg-brand-teal text-white shadow-sm'
+                            ? 'bg-brand-teal text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -972,12 +982,12 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Existing Obligations Control */}
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="space-y-2.5 xs:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2">
                     <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
                       Existing Monthly Obligations (Other EMIs)
                     </label>
-                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-amber-600 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-2.5 xs:px-3 py-1 xs:py-1.5 self-end xs:self-auto focus-within:border-amber-600 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
                       <span className="text-amber-700 font-black text-xs sm:text-sm">₹</span>
                       <input
                         type="number"
@@ -989,7 +999,7 @@ export const CalculatorPage: React.FC = () => {
                           const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
                           setExistingEmis(val);
                         }}
-                        className="w-24 sm:w-28 bg-transparent text-amber-900 font-mono font-black text-xs sm:text-sm text-right outline-none"
+                        className="w-20 xs:w-24 sm:w-28 bg-transparent text-amber-900 font-mono font-black text-xs sm:text-sm text-right outline-none"
                       />
                     </div>
                   </div>
@@ -1002,12 +1012,12 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setExistingEmis(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
+                  <div className="flex justify-between text-[10px] xs:text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 0 (Debt Free)</span>
-                    <span className="font-bold text-amber-800 font-mono">{formatINR(existingEmis)}</span>
+                    <span className="font-bold text-amber-800 font-mono truncate mx-1">{formatINR(existingEmis)}</span>
                     <span>₹ 3 Lakhs / mo</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 pt-1">
                     {[
                       { label: '₹0 (Nil)', val: 0 },
                       { label: '₹15K', val: 15000 },
@@ -1019,9 +1029,9 @@ export const CalculatorPage: React.FC = () => {
                         key={chip.val}
                         type="button"
                         onClick={() => setExistingEmis(chip.val)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                        className={`px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-lg text-[11px] xs:text-xs font-bold font-heading transition-all cursor-pointer ${
                           existingEmis === chip.val
-                            ? 'bg-amber-600 text-white shadow-sm'
+                            ? 'bg-amber-600 text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -1032,9 +1042,9 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Additional Parameters: Tenure & Rate for Eligibility */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-1">
                   {/* Desired Tenure */}
-                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                  <div className="space-y-2 p-3 sm:p-3.5 bg-slate-50/70 rounded-xl sm:rounded-2xl border border-slate-200">
                     <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
                       <span>Loan Horizon:</span>
                       <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
@@ -1066,7 +1076,7 @@ export const CalculatorPage: React.FC = () => {
                   </div>
 
                   {/* Benchmark Interest Rate */}
-                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                  <div className="space-y-2 p-3 sm:p-3.5 bg-slate-50/70 rounded-xl sm:rounded-2xl border border-slate-200">
                     <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
                       <span>Indicative ROI:</span>
                       <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
@@ -1100,10 +1110,10 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* FOIR Benchmark Norm Selector */}
-                <div className="p-4 bg-slate-50 rounded-2xl border border-brand-border space-y-2.5">
-                  <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
+                <div className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-brand-border space-y-2.5">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 text-xs font-bold text-brand-navy font-heading">
                     <span>Lender FOIR Benchmark Norm:</span>
-                    <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
+                    <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5 self-start xs:self-auto">
                       <input
                         type="number"
                         min={35}
@@ -1115,19 +1125,22 @@ export const CalculatorPage: React.FC = () => {
                       <span className="text-[11px] text-brand-teal font-mono font-bold">% Net Income</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-xs font-semibold font-heading">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-xs font-semibold font-heading">
                     {[50, 55, 65].map((pct) => (
                       <button
                         key={pct}
                         type="button"
                         onClick={() => setFoirPercentage(pct)}
-                        className={`py-2 px-3 rounded-xl border text-center transition-all cursor-pointer ${
+                        className={`py-2 px-1.5 sm:px-3 rounded-xl border text-center transition-all cursor-pointer ${
                           foirPercentage === pct
-                            ? 'bg-brand-navy text-white border-brand-navy shadow-sm'
+                            ? 'bg-brand-navy text-white border-brand-navy shadow-xs'
                             : 'bg-white text-brand-slate border-slate-200 hover:border-brand-teal'
                         }`}
                       >
-                        {pct}% {pct === 50 ? '(Conservative)' : pct === 55 ? '(Standard Bank)' : '(High Income)'}
+                        <div className="font-bold text-xs sm:text-sm font-mono">{pct}%</div>
+                        <div className="text-[9px] sm:text-[10px] opacity-80 leading-tight mt-0.5 truncate">
+                          {pct === 50 ? 'Conservative' : pct === 55 ? 'Standard' : 'High Income'}
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -1135,43 +1148,43 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Right Cockpit Card: Eligibility Analytics */}
-              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
+              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 space-y-5 sm:space-y-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">
+                  <span className="text-[11px] xs:text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">
                     Estimated Maximum Loan Capacity
                   </span>
-                  <div className="mt-2 text-3xl sm:text-4xl font-extrabold text-white font-mono">
+                  <div className="mt-1.5 xs:mt-2 text-2xl xs:text-3xl sm:text-4xl font-extrabold text-white font-mono break-words">
                     {formatINR(maxLoanEligible)}
                   </div>
-                  <span className="text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
+                  <span className="text-[11px] xs:text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
                     Sanction Ceiling @ {eligibilityRate}% ROI over {eligibilityTenure} Years
                   </span>
                 </div>
 
-                <div className="space-y-3 pt-2 text-xs sm:text-sm">
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-sans font-medium">Permissible Monthly EMI:</span>
-                    <span className="font-bold text-white font-mono">{formatINR(permissibleEmi)} / mo</span>
+                <div className="space-y-2.5 xs:space-y-3 pt-1 text-xs sm:text-sm">
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md gap-2">
+                    <span className="text-slate-300 font-sans font-medium text-xs sm:text-sm">Permissible EMI:</span>
+                    <span className="font-bold text-white font-mono text-xs sm:text-sm truncate">{formatINR(permissibleEmi)} / mo</span>
                   </div>
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-sans font-medium">Current Obligation Drain:</span>
-                    <span className="font-bold text-amber-400 font-mono">
-                      {formatINR(existingEmis)} ({currentObligationRatio}% of Income)
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md gap-2">
+                    <span className="text-slate-300 font-sans font-medium text-xs sm:text-sm">Current Obligation:</span>
+                    <span className="font-bold text-amber-400 font-mono text-xs sm:text-sm truncate">
+                      {formatINR(existingEmis)} ({currentObligationRatio}%)
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.08] border border-white/20 backdrop-blur-md">
-                    <span className="text-white font-bold font-heading">Monthly Disposable Surplus:</span>
-                    <span className="font-black text-emerald-400 font-mono">{formatINR(monthlyDisposableSurplus)} / mo</span>
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.08] border border-white/20 backdrop-blur-md gap-2">
+                    <span className="text-white font-bold font-heading text-xs sm:text-sm">Disposable Surplus:</span>
+                    <span className="font-black text-emerald-400 font-mono text-xs sm:text-sm truncate">{formatINR(monthlyDisposableSurplus)} / mo</span>
                   </div>
                 </div>
 
                 {/* Risk and Clearance Rating */}
-                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
-                  <div className="flex items-center justify-between font-heading font-bold">
-                    <span className="text-slate-300">Underwriting Assessment:</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono ${
+                <div className="p-3 xs:p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
+                  <div className="flex items-center justify-between font-heading font-bold gap-2">
+                    <span className="text-slate-300 text-[11px] xs:text-xs">Underwriting Assessment:</span>
+                    <span className={`px-2 py-0.5 rounded text-[9px] xs:text-[10px] font-mono whitespace-nowrap ${
                       currentObligationRatio <= 30
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
                         : currentObligationRatio <= 50
@@ -1181,7 +1194,7 @@ export const CalculatorPage: React.FC = () => {
                       {currentObligationRatio <= 30 ? 'Low Risk • Prime Band' : currentObligationRatio <= 50 ? 'Moderate Leverage' : 'High Obligation Load'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-300 leading-relaxed font-sans pt-1">
+                  <p className="text-[10px] xs:text-[11px] text-slate-300 leading-relaxed font-sans pt-1">
                     {currentObligationRatio <= 30
                       ? 'Excellent profile. Eligible for top-tier spreads and instant in-principle sanction from our 40+ panel lenders.'
                       : currentObligationRatio <= 50
@@ -1190,13 +1203,13 @@ export const CalculatorPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1 xs:pt-2">
                   <Link
                     to={`/enquire?amount=${maxLoanEligible}&tenure=${eligibilityTenure}&rate=${eligibilityRate}&type=home`}
-                    className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
+                    className="hero-btn-primary w-full py-3.5 sm:py-4 px-4 sm:px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2 text-center cursor-pointer tracking-wide whitespace-nowrap"
                   >
                     <span>Request Full Multi-Bank Assessment</span>
-                    <ArrowRight className="w-4 h-4 hero-btn-arrow" />
+                    <ArrowRight className="w-4 h-4 hero-btn-arrow flex-shrink-0" />
                   </Link>
                 </div>
               </div>
@@ -1204,14 +1217,14 @@ export const CalculatorPage: React.FC = () => {
           )}
 
           {calcMode === 'composite' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-7">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start">
+              <div className="lg:col-span-7 bg-white p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-brand-border/80 shadow-card ring-1 ring-slate-900/5 space-y-5 xs:space-y-6 sm:space-y-7">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
-                    <Building2 className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-1.5 xs:gap-2 px-2.5 xs:px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-[10px] xs:text-xs font-bold uppercase tracking-wider mb-2 font-heading">
+                    <Building2 className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>Mode 03 Simulation</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-brand-navy font-heading">
+                  <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-brand-navy font-heading">
                     Plot Purchase + House Construction Financing
                   </h2>
                   <p className="text-xs sm:text-sm text-brand-slate font-sans mt-1">
@@ -1220,12 +1233,12 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Plot Cost Control */}
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="space-y-2.5 xs:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2">
                     <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
-                      Plot / Land Purchase Cost (A-Khata / DTCP / BDA)
+                      Plot / Land Purchase Cost (A-Khata / DTCP)
                     </label>
-                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-2.5 xs:px-3 py-1 xs:py-1.5 self-end xs:self-auto focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
                       <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
                       <input
                         type="number"
@@ -1237,7 +1250,7 @@ export const CalculatorPage: React.FC = () => {
                           const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
                           setPlotCost(val);
                         }}
-                        className="w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                        className="w-24 xs:w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
                       />
                     </div>
                   </div>
@@ -1250,20 +1263,20 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setPlotCost(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
+                  <div className="flex justify-between text-[10px] xs:text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 15 Lakhs</span>
-                    <span className="font-bold text-brand-navy font-heading">70% Max LTV: {formatINR(maxPlotLoan)}</span>
+                    <span className="font-bold text-brand-navy font-heading truncate mx-1">70% Max: {formatINR(maxPlotLoan)}</span>
                     <span>₹ 5 Crores</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 pt-1">
                     {[2500000, 4000000, 6000000, 10000000, 20000000].map((val) => (
                       <button
                         key={val}
                         type="button"
                         onClick={() => setPlotCost(val)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                        className={`px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-lg text-[11px] xs:text-xs font-bold font-heading transition-all cursor-pointer ${
                           plotCost === val
-                            ? 'bg-brand-teal text-white shadow-sm'
+                            ? 'bg-brand-teal text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -1274,12 +1287,12 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Construction Cost Control */}
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="space-y-2.5 xs:space-y-3">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 xs:gap-2">
                     <label className="text-xs sm:text-sm font-bold text-brand-navy font-heading">
                       Estimated House Construction Budget
                     </label>
-                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-xl px-2.5 xs:px-3 py-1 xs:py-1.5 self-end xs:self-auto focus-within:border-brand-teal focus-within:ring-2 focus-within:ring-brand-teal/20 transition-all">
                       <span className="text-brand-teal font-black text-xs sm:text-sm">₹</span>
                       <input
                         type="number"
@@ -1291,7 +1304,7 @@ export const CalculatorPage: React.FC = () => {
                           const val = e.target.value === '' ? 0 : Math.max(0, Number(e.target.value));
                           setConstructionCost(val);
                         }}
-                        className="w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
+                        className="w-24 xs:w-28 sm:w-36 bg-transparent text-brand-navy font-mono font-black text-xs sm:text-sm text-right outline-none"
                       />
                     </div>
                   </div>
@@ -1304,20 +1317,20 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setConstructionCost(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="flex justify-between text-[11px] text-brand-slate font-sans font-medium">
+                  <div className="flex justify-between text-[10px] xs:text-[11px] text-brand-slate font-sans font-medium">
                     <span>₹ 20 Lakhs</span>
-                    <span className="font-bold text-brand-navy font-heading">80% Max LTV: {formatINR(maxConstructionLoan)}</span>
+                    <span className="font-bold text-brand-navy font-heading truncate mx-1">80% Max: {formatINR(maxConstructionLoan)}</span>
                     <span>₹ 5 Crores</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 pt-1">
                     {[3000000, 5000000, 7500000, 10000000, 20000000].map((val) => (
                       <button
                         key={val}
                         type="button"
                         onClick={() => setConstructionCost(val)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold font-heading transition-all cursor-pointer ${
+                        className={`px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-lg text-[11px] xs:text-xs font-bold font-heading transition-all cursor-pointer ${
                           constructionCost === val
-                            ? 'bg-brand-teal text-white shadow-sm'
+                            ? 'bg-brand-teal text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -1328,8 +1341,8 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Additional Composite Controls: Tenure & ROI */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-1">
+                  <div className="space-y-2 p-3 sm:p-3.5 bg-slate-50/70 rounded-xl sm:rounded-2xl border border-slate-200">
                     <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
                       <span>Loan Tenure:</span>
                       <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
@@ -1360,7 +1373,7 @@ export const CalculatorPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2 p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200">
+                  <div className="space-y-2 p-3 sm:p-3.5 bg-slate-50/70 rounded-xl sm:rounded-2xl border border-slate-200">
                     <div className="flex items-center justify-between text-xs font-bold text-brand-navy font-heading">
                       <span>Indicative ROI:</span>
                       <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2 py-0.5">
@@ -1394,10 +1407,10 @@ export const CalculatorPage: React.FC = () => {
                 </div>
 
                 {/* Construction Tranche Drawdown Slider */}
-                <div className="space-y-3 p-4 bg-slate-50 rounded-2xl border border-brand-border">
-                  <div className="flex items-center justify-between font-heading">
+                <div className="space-y-2.5 xs:space-y-3 p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-brand-border">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 font-heading">
                     <label className="text-xs font-bold text-brand-navy">Simulated Construction Stage Drawdown:</label>
-                    <span className="text-sm font-black text-brand-teal font-mono">{disbursedTranchePercent}% Disbursed</span>
+                    <span className="text-xs sm:text-sm font-black text-brand-teal font-mono">{disbursedTranchePercent}% Disbursed</span>
                   </div>
                   <input
                     type="range"
@@ -1408,19 +1421,19 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => setDisbursedTranchePercent(Number(e.target.value))}
                     className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                   />
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-1">
+                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-1.5 pt-1">
                     {[
                       { label: '0% (Plot Only)', val: 0 },
                       { label: '25% (Foundation)', val: 25 },
-                      { label: '50% (Slab Complete)', val: 50 },
+                      { label: '50% (Slab Done)', val: 50 },
                       { label: '75% (Finishing)', val: 75 },
-                      { label: '100% (Completed)', val: 100 },
+                      { label: '100% (Complete)', val: 100 },
                     ].map((step) => (
                       <button
                         key={step.val}
                         type="button"
                         onClick={() => setDisbursedTranchePercent(step.val)}
-                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold font-mono transition-all cursor-pointer text-center ${
+                        className={`py-1.5 px-2 rounded-lg text-[10px] font-bold font-mono transition-all cursor-pointer text-center truncate ${
                           disbursedTranchePercent === step.val
                             ? 'bg-brand-teal text-white shadow-xs'
                             : 'bg-white border border-slate-200 text-slate-600 hover:border-brand-teal'
@@ -1434,57 +1447,57 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Right Cockpit Card: Composite Project Analytics */}
-              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/15 space-y-6 relative overflow-hidden">
+              <div className="lg:col-span-5 bg-gradient-to-br from-[#0c1e30] via-[#0f273d] to-[#14324f] text-white p-4 xs:p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 space-y-5 sm:space-y-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">
+                  <span className="text-[11px] xs:text-xs font-bold uppercase tracking-wider text-teal-300 font-heading block">
                     Total Project Debt Sanction
                   </span>
-                  <div className="mt-2 text-3xl sm:text-4xl font-extrabold text-white font-mono">
+                  <div className="mt-1.5 xs:mt-2 text-2xl xs:text-3xl sm:text-4xl font-extrabold text-white font-mono break-words">
                     {formatINR(totalCompositeLoan)}
                   </div>
-                  <span className="text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
+                  <span className="text-[11px] xs:text-xs font-medium font-sans text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded inline-block mt-2">
                     Total Outlay: {formatINR(totalProjectCost)} (Self-Margin: {formatINR(selfContribution)})
                   </span>
                 </div>
 
-                <div className="space-y-3 pt-2 text-xs sm:text-sm">
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-sans font-medium">Plot Loan Sanction (70%):</span>
-                    <span className="font-bold text-white font-mono">{formatINR(maxPlotLoan)}</span>
+                <div className="space-y-2.5 xs:space-y-3 pt-1 text-xs sm:text-sm">
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md gap-2">
+                    <span className="text-slate-300 font-sans font-medium text-xs sm:text-sm">Plot Loan (70%):</span>
+                    <span className="font-bold text-white font-mono text-xs sm:text-sm truncate">{formatINR(maxPlotLoan)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md">
-                    <span className="text-slate-300 font-sans font-medium">Construction Sanction (80%):</span>
-                    <span className="font-bold text-white font-mono">{formatINR(maxConstructionLoan)}</span>
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.05] border border-white/10 backdrop-blur-md gap-2">
+                    <span className="text-slate-300 font-sans font-medium text-xs sm:text-sm">Construction (80%):</span>
+                    <span className="font-bold text-white font-mono text-xs sm:text-sm truncate">{formatINR(maxConstructionLoan)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                    <div>
-                      <span className="text-amber-300 font-bold font-heading block">Active Pre-EMI (Interest Only):</span>
-                      <span className="text-[10px] text-slate-300 font-sans">
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 gap-2">
+                    <div className="min-w-0">
+                      <span className="text-amber-300 font-bold font-heading block text-xs sm:text-sm truncate">Active Pre-EMI (Interest Only):</span>
+                      <span className="text-[10px] text-slate-300 font-sans truncate block">
                         At {disbursedTranchePercent}% stage ({formatINR(activeDrawdown)} drawn)
                       </span>
                     </div>
-                    <span className="font-black text-amber-300 font-mono text-base">{formatINR(preEmiInterestOnly)} / mo</span>
+                    <span className="font-black text-amber-300 font-mono text-sm sm:text-base flex-shrink-0">{formatINR(preEmiInterestOnly)} / mo</span>
                   </div>
-                  <div className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.08] border border-white/20">
-                    <div>
-                      <span className="text-white font-bold font-heading block">Full Regular EMI (Post-Handover):</span>
-                      <span className="text-[10px] text-emerald-300 font-sans">
-                        Saves {formatINR(preEmiMonthlySavings)}/mo during construction
+                  <div className="flex justify-between items-center p-3 xs:p-3.5 rounded-xl bg-white/[0.08] border border-white/20 gap-2">
+                    <div className="min-w-0">
+                      <span className="text-white font-bold font-heading block text-xs sm:text-sm truncate">Full Regular EMI:</span>
+                      <span className="text-[10px] text-emerald-300 font-sans truncate block">
+                        Saves {formatINR(preEmiMonthlySavings)}/mo during build
                       </span>
                     </div>
-                    <span className="font-black text-emerald-400 font-mono text-base">{formatINR(fullCompositeEmi)} / mo</span>
+                    <span className="font-black text-emerald-400 font-mono text-sm sm:text-base flex-shrink-0">{formatINR(fullCompositeEmi)} / mo</span>
                   </div>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1 xs:pt-2">
                   <Link
                     to={`/enquire?amount=${totalCompositeLoan}&tenure=${compositeTenure}&rate=${compositeRate}&type=project`}
-                    className="hero-btn-primary w-full py-4 px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2.5 text-center cursor-pointer tracking-wide"
+                    className="hero-btn-primary w-full py-3.5 sm:py-4 px-4 sm:px-6 text-xs sm:text-sm font-bold font-heading text-white flex items-center justify-center gap-2 text-center cursor-pointer tracking-wide whitespace-nowrap"
                   >
                     <span>Consult on Composite Plot Loan</span>
-                    <ArrowRight className="w-4 h-4 hero-btn-arrow" />
+                    <ArrowRight className="w-4 h-4 hero-btn-arrow flex-shrink-0" />
                   </Link>
                 </div>
               </div>
@@ -1492,27 +1505,27 @@ export const CalculatorPage: React.FC = () => {
           )}
 
           {/* Institutional EMI Breakdown & Amortization Architecture Section */}
-          <div className="mt-14 pt-12 border-t border-brand-border/70">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          <div className="mt-10 sm:mt-14 pt-8 sm:pt-12 border-t border-brand-border/70">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-center">
               {/* Left Column: Visual EMI Card */}
               <div className="lg:col-span-5">
-                <div className="relative rounded-3xl overflow-hidden border border-brand-border/80 shadow-card bg-slate-900 group">
+                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-brand-border/80 shadow-card bg-slate-900 group">
                   <img
                     src={emiHeroImage}
                     alt="EMI Financial Planning & Calculation"
-                    className="w-full h-72 sm:h-80 object-cover object-center group-hover:scale-105 transition-transform duration-700 brightness-110 contrast-[1.02]"
+                    className="w-full h-56 xs:h-64 sm:h-72 lg:h-80 object-cover object-center group-hover:scale-105 transition-transform duration-700 brightness-110 contrast-[1.02]"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
-                  <div className="absolute bottom-5 left-5 right-5 space-y-1.5">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-200 text-[10px] font-bold uppercase tracking-wider">
-                      <Sparkles className="w-3 h-3 text-teal-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent" />
+                  <div className="absolute bottom-4 xs:bottom-5 left-4 xs:left-5 right-4 xs:right-5 space-y-1 xs:space-y-1.5">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-200 text-[10px] font-bold uppercase tracking-wider">
+                      <Sparkles className="w-3 h-3 text-teal-300 flex-shrink-0" />
                       <span>Financial Planning Desk</span>
                     </div>
-                    <div className="text-white text-base sm:text-lg font-bold font-heading">
+                    <div className="text-white text-sm xs:text-base sm:text-lg font-bold font-heading">
                       Smart EMI Optimization &amp; Prepayment Planning
                     </div>
-                    <p className="text-slate-300 text-xs font-sans leading-relaxed">
+                    <p className="text-slate-300 text-[11px] xs:text-xs font-sans leading-relaxed">
                       Our institutional advisors help structure step-down EMI models and scheduled prepayments to save up to 40% on total interest outflow.
                     </p>
                   </div>
@@ -1520,13 +1533,13 @@ export const CalculatorPage: React.FC = () => {
               </div>
 
               {/* Right Column: 4 Key EMI Repayment Principles */}
-              <div className="lg:col-span-7 space-y-5">
+              <div className="lg:col-span-7 space-y-4 sm:space-y-5">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-xs font-bold uppercase tracking-wider mb-2 font-heading">
-                    <ShieldCheck className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-1.5 xs:gap-2 px-2.5 xs:px-3 py-1 rounded-full bg-brand-teal-light text-brand-teal text-[10px] xs:text-xs font-bold uppercase tracking-wider mb-2 font-heading">
+                    <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>Lender Economics &amp; Amortization</span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-navy font-heading">
+                  <h3 className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-brand-navy font-heading">
                     Mastering Your Repayment Dynamics
                   </h3>
                   <p className="text-brand-slate text-xs sm:text-sm leading-relaxed mt-1 font-sans">
@@ -1534,8 +1547,8 @@ export const CalculatorPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+                  <div className="p-3.5 xs:p-4 bg-white rounded-xl sm:rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
                     <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
                       <BadgePercent className="w-4 h-4 text-brand-teal flex-shrink-0" />
                       <span>EBLR Rate Reset Benefits</span>
@@ -1545,7 +1558,7 @@ export const CalculatorPage: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                  <div className="p-3.5 xs:p-4 bg-white rounded-xl sm:rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
                     <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
                       <Scale className="w-4 h-4 text-brand-teal flex-shrink-0" />
                       <span>Zero Prepayment Penalty</span>
@@ -1555,7 +1568,7 @@ export const CalculatorPage: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                  <div className="p-3.5 xs:p-4 bg-white rounded-xl sm:rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
                     <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
                       <Wallet className="w-4 h-4 text-brand-teal flex-shrink-0" />
                       <span>Annual 1-EMI Prepayment</span>
@@ -1565,7 +1578,7 @@ export const CalculatorPage: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 bg-white rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
+                  <div className="p-3.5 xs:p-4 bg-white rounded-xl sm:rounded-2xl border border-brand-border/80 shadow-xs space-y-1.5">
                     <div className="flex items-center gap-2 text-brand-navy font-bold text-xs sm:text-sm font-heading">
                       <FileCheck2 className="w-4 h-4 text-brand-teal flex-shrink-0" />
                       <span>Tax Deductions Under 80C &amp; 24(b)</span>
@@ -1580,23 +1593,23 @@ export const CalculatorPage: React.FC = () => {
           </div>
 
           {/* Institutional Banking Benchmark Strip */}
-          <div className="mt-12 p-4 sm:px-8 rounded-2xl bg-white border border-brand-border/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600">
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-center sm:justify-start">
-              <div className="flex items-center gap-2">
+          <div className="mt-8 sm:mt-12 p-3.5 xs:p-4 sm:px-8 rounded-xl sm:rounded-2xl bg-white border border-brand-border/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm text-slate-600">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 justify-center md:justify-start">
+              <div className="flex items-center gap-1.5 xs:gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span className="font-semibold text-brand-navy font-heading">RBI EBLR Benchmark Pegged</span>
+                <span className="font-semibold text-brand-navy font-heading text-[11px] xs:text-xs sm:text-sm">RBI EBLR Benchmark Pegged</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 xs:gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span className="font-semibold text-brand-navy font-heading">Zero Prepayment Penalty on Floating Rates</span>
+                <span className="font-semibold text-brand-navy font-heading text-[11px] xs:text-xs sm:text-sm">Zero Prepayment Penalty on Floating Rates</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 xs:gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span className="font-semibold text-brand-navy font-heading">Direct Zonal Processing Desk</span>
+                <span className="font-semibold text-brand-navy font-heading text-[11px] xs:text-xs sm:text-sm">Direct Zonal Processing Desk</span>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-slate-500 text-xs justify-center mx-auto sm:mx-0">
-              <ShieldCheck className="w-4 h-4 text-brand-teal" />
+            <div className="flex items-center gap-1.5 xs:gap-2 text-slate-500 text-[11px] xs:text-xs justify-center mx-auto md:mx-0 flex-shrink-0">
+              <ShieldCheck className="w-4 h-4 text-brand-teal flex-shrink-0" />
               <span className="font-sans">Certified Multi-Bank Loan Syndication Desk</span>
             </div>
           </div>
