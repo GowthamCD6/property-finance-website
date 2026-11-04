@@ -441,9 +441,9 @@ export const AboutPage: React.FC = () => {
                   transform: mounted ? 'translateY(0)' : 'translateY(24px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s',
                 }}
-                className="flex flex-wrap items-center gap-3"
+                className="flex flex-wrap items-center gap-2 sm:gap-3"
               >
-                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/70 border border-white/20 text-slate-100 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm font-heading">
+                <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-slate-950/70 border border-white/20 text-slate-100 text-[11px] sm:text-xs md:text-sm font-semibold tracking-wide backdrop-blur-md shadow-sm font-heading">
                   <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse"></span>
                   <span>Institutional Property Advisory Desk</span>
                 </div>
@@ -493,56 +493,56 @@ export const AboutPage: React.FC = () => {
                   transform: mounted ? 'translateY(0)' : 'translateY(28px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s',
                 }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1"
+                className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3.5 pt-1"
               >
                 {kpis.map((kpi, idx) => (
                   <div
                     key={idx}
-                    className="relative group p-3 sm:p-4 rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-default"
+                    className="relative group p-2.5 xs:p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-teal-400/50 hover:bg-white/[0.14] shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-default"
                   >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded border border-teal-400/30">
+                    <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                      <span className="text-[8.5px] xs:text-[9px] font-bold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-1.5 xs:px-2 py-0.5 rounded border border-teal-400/30 truncate">
                         {kpi.badge}
                       </span>
                     </div>
-                    <div className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums min-w-[70px]">
+                    <div className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums">
                       {kpi.value}
                     </div>
-                    <div className="text-xs font-bold text-slate-200 mt-1">
+                    <div className="text-[11px] sm:text-xs font-bold text-slate-200 mt-0.5 sm:mt-1 truncate">
                       {kpi.label}
                     </div>
-                    <div className="text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
+                    <div className="text-[9.5px] sm:text-[10px] text-slate-400 mt-0.5 leading-snug line-clamp-1">
                       {kpi.subtext}
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Call-to-Action Group */}
+              {/* Call-to-Action Group - Single row on mobile, full size on desktop */}
               <div
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(28px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.58s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.58s',
                 }}
-                className="pt-1 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3"
+                className="pt-1 flex flex-row items-center justify-center sm:justify-start gap-2 xs:gap-3 sm:gap-4 w-full sm:w-auto"
               >
                 <Link
                   to="/enquire"
-                  className="hero-btn-primary inline-flex items-center justify-center gap-2.5 px-6 sm:px-9 py-3.5 sm:py-4 text-xs sm:text-sm font-bold text-white text-center cursor-pointer tracking-wide"
+                  className="hero-btn-primary flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 px-3 xs:px-5 sm:px-9 py-2.5 xs:py-3 sm:py-4 text-xs xs:text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide whitespace-nowrap shadow-md"
                 >
-                  <Sparkles className="w-4 h-4 text-teal-100" />
-                  <span>Initiate Confidential Advisory</span>
-                  <ArrowRight className="w-4 h-4 hero-btn-arrow" />
+                  <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-100 shrink-0" />
+                  <span>Confidential Advisory</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 hero-btn-arrow shrink-0" />
                 </Link>
 
                 <a
                   href="#diligence-matrix"
-                  className="hero-btn-secondary inline-flex items-center justify-center gap-2.5 px-6 sm:px-8.5 py-3.5 sm:py-4 text-xs sm:text-sm font-bold text-white text-center cursor-pointer tracking-wide"
+                  className="hero-btn-secondary flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 px-3 xs:px-5 sm:px-8.5 py-2.5 xs:py-3 sm:py-4 text-xs xs:text-sm sm:text-base font-bold text-white text-center cursor-pointer tracking-wide whitespace-nowrap shadow-md"
                 >
-                  <FileSearch className="w-4 h-4 text-teal-300" />
-                  <span>Explore Diligence Protocol</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                  <FileSearch className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300 shrink-0" />
+                  <span>Diligence Protocol</span>
+                  <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 shrink-0 hidden xs:inline-block" />
                 </a>
 
               </div>
@@ -554,18 +554,18 @@ export const AboutPage: React.FC = () => {
                   transform: mounted ? 'translateY(0)' : 'translateY(24px)',
                   transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.72s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.72s',
                 }}
-                className="pt-2 border-t border-white/10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-medium"
+                className="pt-2 border-t border-white/10 flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-1.5 text-[11px] sm:text-xs text-slate-300 font-medium"
               >
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-teal-400" />
-                  <span>RBI Fair Practice Code Compliant</span>
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                  <span>RBI Fair Practice Compliant</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-teal-400" />
-                  <span>Zero Unauthorized Bureau Enquiries</span>
+                <div className="flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                  <span>Zero Bureau Enquiries</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Scale className="w-4 h-4 text-teal-400" />
+                <div className="flex items-center gap-1.5">
+                  <Scale className="w-3.5 h-3.5 text-teal-400 shrink-0" />
                   <span>Zero Cash Collection Policy</span>
                 </div>
               </div>
@@ -579,11 +579,11 @@ export const AboutPage: React.FC = () => {
                 transform: mounted ? 'translateY(0)' : 'translateY(20px)',
                 transition: 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s',
               }}
-              className="lg:col-span-5 relative"
+              className="lg:col-span-5 relative mt-2 lg:mt-0"
             >
-              <div className="relative rounded-3xl overflow-hidden border border-white/20 bg-slate-900/60 shadow-2xl backdrop-blur-sm ring-1 ring-white/10">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/20 bg-slate-900/60 shadow-2xl backdrop-blur-sm ring-1 ring-white/10">
                 {/* 3D Canvas Area */}
-                <div className="w-full h-[340px] xs:h-[400px] sm:h-[480px] lg:h-[600px] relative">
+                <div className="w-full h-[280px] xs:h-[340px] sm:h-[460px] lg:h-[580px] relative">
                   <AboutHero3D onModeChange={(mode) => setHeroSceneMode(mode)} />
                 </div>
               </div>
@@ -612,14 +612,14 @@ export const AboutPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Loan Selector Tabs */}
-            <div className="flex flex-wrap gap-2 p-1.5 bg-white rounded-xl border border-brand-border/80 shadow-2xs">
+            {/* Loan Selector Tabs - Clean 2x2 grid on phones, horizontal pill on desktop */}
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 sm:gap-2 p-1.5 bg-white rounded-xl border border-brand-border/80 shadow-2xs w-full sm:w-auto">
               {(['home', 'lap', 'lrd', 'construction'] as const).map((type) => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => setSelectedLoanType(type)}
-                  className={`flex-1 sm:flex-initial text-center px-2.5 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                  className={`text-center px-2.5 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                     selectedLoanType === type
                       ? 'bg-brand-teal text-white shadow-sm scale-[1.02]'
                       : 'text-brand-slate hover:text-brand-navy hover:bg-slate-50'
@@ -660,7 +660,7 @@ export const AboutPage: React.FC = () => {
                 </p>
 
                 {/* Key Metrics Strip */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-1">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pt-1">
                   <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-brand-border/70 shadow-2xs">
                     <div className="text-[11px] font-semibold text-brand-slate uppercase">Interest Benchmark</div>
                     <div className="text-lg font-bold text-brand-teal mt-0.5">
@@ -698,15 +698,15 @@ export const AboutPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <div className="pt-2 flex flex-col xs:flex-row items-stretch xs:items-center gap-2.5 sm:gap-4">
                   <Link
                     to="/enquire"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-md transition-all hover:scale-[1.02] text-center"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-corporate bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs sm:text-sm shadow-md transition-all hover:scale-[1.02] text-center whitespace-nowrap"
                   >
-                    <span>Request Eligibility Evaluation</span>
+                    <span>Request Evaluation</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <span className="text-xs text-brand-slate">
+                  <span className="text-[11px] sm:text-xs text-brand-slate text-center xs:text-left">
                     *Terms subject to lender policy &amp; title appraisal.
                   </span>
                 </div>
@@ -785,13 +785,13 @@ export const AboutPage: React.FC = () => {
 
               {/* Interactive Vision / Mission / Governance / Methodology Tabs */}
               <div className="pt-2">
-                <div className="flex overflow-x-auto scrollbar-none border-b border-brand-border/80 gap-3 sm:gap-6">
+                <div className="flex overflow-x-auto scrollbar-none border-b border-brand-border/80 gap-3 sm:gap-6 pb-0.5">
                   {(['mission', 'vision', 'governance', 'methodology'] as const).map((tab) => (
                     <button
                       key={tab}
                       type="button"
                       onClick={() => setActiveTab(tab)}
-                      className={`whitespace-nowrap pb-2.5 sm:pb-3 text-xs sm:text-sm font-semibold capitalize transition-all relative cursor-pointer ${
+                      className={`whitespace-nowrap shrink-0 pb-2.5 sm:pb-3 text-xs sm:text-sm font-semibold capitalize transition-all relative cursor-pointer ${
                         activeTab === tab
                           ? 'text-brand-teal border-b-2 border-brand-teal -mb-[2px] font-bold'
                           : 'text-brand-slate hover:text-brand-navy'
@@ -892,15 +892,15 @@ export const AboutPage: React.FC = () => {
                   />
 
                   {/* Floating Metric Card Overlay */}
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-brand-border/80 shadow-lg space-y-2">
-                    <div className="flex items-center justify-between">
+                  <div className="absolute bottom-2.5 xs:bottom-4 left-2.5 xs:left-4 right-2.5 xs:right-4 bg-white/95 backdrop-blur-md p-3 xs:p-4 rounded-2xl border border-brand-border/80 shadow-lg space-y-1.5 xs:space-y-2">
+                    <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
                         <span className="text-xs font-bold text-brand-navy">Institutional Quality Standard</span>
                       </div>
-                      <span className="text-xs font-bold text-brand-teal">Home Loans 7.25%* • LAP 8.50%*</span>
+                      <span className="text-[11px] xs:text-xs font-bold text-brand-teal whitespace-nowrap">Home Loans 7.25%* • LAP 8.50%*</span>
                     </div>
-                    <p className="text-xs text-brand-slate leading-normal">
+                    <p className="text-[11px] xs:text-xs text-brand-slate leading-normal">
                       Every application is structured according to internal risk metrics accepted by State Bank of India, HDFC Bank, ICICI Bank, Axis, and Kotak Mahindra.
                     </p>
                   </div>
@@ -1328,14 +1328,14 @@ export const AboutPage: React.FC = () => {
           </div>
 
           {/* Interactive Milestone Selector Grid */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 relative">
             {milestones.map((ms, idx) => (
               <div
                 key={idx}
                 onClick={() => setActiveMilestoneIndex(idx)}
-                className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+                className={`p-4 sm:p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
                   activeMilestoneIndex === idx
-                    ? 'bg-gradient-to-br from-[#12263a] to-[#183247] text-white border-teal-500 shadow-xl scale-[1.03]'
+                    ? 'bg-gradient-to-br from-[#12263a] to-[#183247] text-white border-teal-500 shadow-xl scale-[1.02]'
                     : 'bg-white hover:bg-white border-brand-border/80 hover:border-brand-teal/40 shadow-2xs hover:shadow-card'
                 }`}
               >
@@ -1360,7 +1360,7 @@ export const AboutPage: React.FC = () => {
                   </div>
 
                   <h4
-                    className={`text-sm font-bold mt-3 mb-2 font-heading ${
+                    className={`text-sm font-bold mt-2.5 mb-1.5 font-heading ${
                       activeMilestoneIndex === idx ? 'text-white' : 'text-brand-navy'
                     }`}
                   >
@@ -1377,7 +1377,7 @@ export const AboutPage: React.FC = () => {
                 </div>
 
                 <div
-                  className={`mt-4 pt-3 border-t text-[11px] font-semibold ${
+                  className={`mt-3.5 pt-2.5 border-t text-[11px] font-semibold ${
                     activeMilestoneIndex === idx
                       ? 'border-white/10 text-teal-300'
                       : 'border-brand-border/60 text-brand-slate'
@@ -1446,20 +1446,20 @@ export const AboutPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-3.5 w-full sm:w-auto z-10 shrink-0">
+            <div className="flex flex-row lg:flex-col gap-2.5 xs:gap-3.5 sm:gap-4 w-full sm:w-auto z-10 shrink-0">
               <Link
                 to="/enquire"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-sm rounded-corporate shadow-md transition-all hover:scale-[1.02] text-center group"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 px-3.5 xs:px-6 sm:px-9 lg:px-10 py-2.5 xs:py-3 sm:py-4 md:py-4.5 bg-brand-teal hover:bg-brand-teal-hover text-white font-bold text-xs xs:text-sm sm:text-base rounded-corporate shadow-md transition-all hover:scale-[1.02] text-center whitespace-nowrap group"
               >
-                <span>Book Confidential Advisory Call</span>
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                <span>Book Advisory Call</span>
+                <ArrowRight className="w-3.5 h-3.5 xs:w-4 xs:h-4 transition-transform duration-200 group-hover:translate-x-1 shrink-0" />
               </Link>
               <a
                 href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-corporate border border-white/15 transition-colors text-center"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 xs:gap-2 px-3.5 xs:px-6 sm:px-9 lg:px-10 py-2.5 xs:py-3 sm:py-4 md:py-4.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs xs:text-sm sm:text-base rounded-corporate border border-white/15 transition-colors text-center whitespace-nowrap"
               >
-                <PhoneCall className="w-4 h-4 text-brand-teal" />
-                <span>Direct Hotline: {businessPhone.split(',')[0]}</span>
+                <PhoneCall className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-brand-teal shrink-0" />
+                <span>Direct Hotline</span>
               </a>
             </div>
           </div>
