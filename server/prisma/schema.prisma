@@ -114,6 +114,8 @@ model SiteContent {
   contactHeroTitle     String?  @default("Connect with Our Advisory Team")
   contactHeroSubtitle  String?  @db.Text
   contactHeroImageUrl  String?  @db.Text
+  contactAdvisoryDesks String?  @db.LongText // JSON array of AdvisoryDesk
+  contactVisitDocs     String?  @db.LongText // JSON array of string checklist items
   branchOffices        String?  @db.LongText // JSON array of { name, address, phone, email, timings, mapEmbedUrl }
 
   // Calculator Parameters

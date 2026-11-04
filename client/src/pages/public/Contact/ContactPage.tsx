@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import {
   MapPin,
@@ -31,8 +31,6 @@ import {
 import { SiteContent, Service } from '../../../types';
 import { CDN_IMAGES, getHeroSrcSet } from '../../../constants/cloudinaryImages';
 
-const contactHeroImage = CDN_IMAGES.contactHero;
-
 interface SpecializedDesk {
   number: string;
   region: string;
@@ -58,6 +56,7 @@ export const ContactPage: React.FC = () => {
   const officeAddress =
     content?.officeAddress ||
     'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
+  const contactHeroImage = content?.contactHeroImageUrl || CDN_IMAGES.contactHero;
 
   const [mounted, setMounted] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -160,81 +159,160 @@ export const ContactPage: React.FC = () => {
     setTimeout(() => setCopiedAddress(false), 2500);
   };
 
-  // 4 Core Specialized Loan & Advisory Desks of Prime Associates
-  const specializedDesks: SpecializedDesk[] = [
-    {
-      number: '01',
-      region: 'Land & Home Loans Desk',
-      badge: 'From 7.25% p.a.',
-      tag: 'Core Speciality',
-      focus: 'Self-construction financing on owned plots, ready villa purchase, apartment booking, and PMAY interest subsidy syndication.',
-      bulletPoints: [
-        'Disbursements against architect stage completion certificates',
-        'Starting interest rate from 7.25% with government subsidy',
-        'Extended repayment tenure up to 30 years',
-      ],
-      officer: 'Senior Housing Syndication Lead',
-      desk: 'Tirupur HQ • Ground Floor Desk 01',
-      phone: '+91 96555 66613',
-      cleanPhone: '919655566613',
-      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
-      icon: <Building2 className="w-5 h-5 text-brand-teal" />,
-    },
-    {
-      number: '02',
-      region: 'Mortgage (LAP) & Commercial Desk',
-      badge: 'From 8.50% p.a.',
-      tag: 'Secured Liquidity',
-      focus: 'High-value business liquidity against residential houses, industrial sheds, empty converted plots, and commercial showroom collateral.',
-      bulletPoints: [
-        'High sanction quantum up to ₹25 Crores for businesses',
-        'Acceptable against concrete buildings, tiled houses & plots',
-        'Fast in-principle sanction within 48 to 72 hours',
-      ],
-      officer: 'Commercial Mortgage Underwriting Specialist',
-      desk: 'Tirupur HQ • 1st Floor Mortgage Syndicate',
-      phone: '+91 95144 66600',
-      cleanPhone: '919514466600',
-      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
-      icon: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
-    },
-    {
-      number: '03',
-      region: 'Bank Takeover & Rate Reduction',
-      badge: 'Zero Advance Fees',
-      tag: 'Debt Takeover',
-      focus: 'Transfer high-rate mortgage and home loans from private NBFCs to Government (PSU) banks, saving lakhs in monthly interest charges.',
-      bulletPoints: [
-        'Reduce interest rate down to 7.25% benchmark PSU rate',
-        'Zero advance fees with end-to-end documentation takeover',
-        'Additional high-value top-up facility sanctioned',
-      ],
-      officer: 'Portfolio Takeover & Debt Consolidation Lead',
-      desk: 'Tirupur HQ • Zonal Transfer Desk 03',
-      phone: '+91 96555 66613',
-      cleanPhone: '919655566613',
-      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
-      icon: <Scale className="w-5 h-5 text-brand-teal" />,
-    },
-    {
-      number: '04',
-      region: 'Vehicle & Commercial Fleet Desk',
-      badge: 'Quick 24h Clearance',
-      tag: 'Automotive Fleet',
-      focus: 'Funding for private cars, commercial transport vehicles, school buses, JCB/construction machinery, and existing fleet refinance.',
-      bulletPoints: [
-        'Financing available for both new and used vehicles',
-        'Up to 90% on-road funding with flexible repayment',
-        'Minimal paperwork with quick 24-hour sanction',
-      ],
-      officer: 'Automotive & Commercial Fleet Manager',
-      desk: 'Tirupur HQ • Transport Finance Desk 04',
-      phone: '+91 95144 66600',
-      cleanPhone: '919514466600',
-      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
-      icon: <Car className="w-5 h-5 text-brand-teal" />,
-    },
-  ];
+  // Dynamic Specialized Loan & Advisory Desks (Admin-manageable with default fallback)
+  const specializedDesks: SpecializedDesk[] = useMemo(() => {
+    if (content?.contactAdvisoryDesks) {
+      try {
+        const parsed = JSON.parse(content.contactAdvisoryDesks);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const iconMap: Record<string, React.ReactNode> = {
+            Home: <Building2 className="w-5 h-5 text-brand-teal" />,
+            Building2: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
+            ArrowLeftRight: <Scale className="w-5 h-5 text-brand-teal" />,
+            Truck: <Car className="w-5 h-5 text-brand-teal" />,
+            ShieldCheck: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
+            Scale: <Scale className="w-5 h-5 text-brand-teal" />,
+          };
+
+          return parsed.map((item: any, idx: number) => {
+            const rawPhone = item.whatsappNumber || item.phone || '919655566613';
+            const cleanPhone = rawPhone.replace(/\D/g, '');
+            const icon =
+              iconMap[item.iconName] ||
+              (idx === 0 ? (
+                <Building2 className="w-5 h-5 text-brand-teal" />
+              ) : idx === 1 ? (
+                <ShieldCheck className="w-5 h-5 text-brand-teal" />
+              ) : idx === 2 ? (
+                <Scale className="w-5 h-5 text-brand-teal" />
+              ) : (
+                <Car className="w-5 h-5 text-brand-teal" />
+              ));
+
+            return {
+              number: item.index || (idx + 1).toString().padStart(2, '0'),
+              region: item.title,
+              badge: item.subtitle || 'Direct Advisory',
+              tag: item.officer ? item.officer.split(' ')[0] : 'Consultation',
+              focus: item.subtitle || item.title,
+              bulletPoints:
+                Array.isArray(item.scope) && item.scope.length > 0
+                  ? item.scope
+                  : [item.subtitle || 'Direct borrower consultation'],
+              officer: item.officer || 'Senior Loan Advisor',
+              desk: item.location || 'Tirupur Main Office',
+              phone: item.phone || '+91 96555 66613',
+              cleanPhone,
+              timings: item.timings || 'Monday – Saturday: 9:30 AM – 6:30 PM',
+              icon,
+            };
+          });
+        }
+      } catch (e) {
+        console.error('Failed to parse contactAdvisoryDesks from backend', e);
+      }
+    }
+
+    return [
+      {
+        number: '01',
+        region: 'Land & Home Loans Desk',
+        badge: 'From 7.25% p.a.',
+        tag: 'Core Speciality',
+        focus:
+          'Self-construction financing on owned plots, ready villa purchase, apartment booking, and PMAY interest subsidy syndication.',
+        bulletPoints: [
+          'Disbursements against architect stage completion certificates',
+          'Starting interest rate from 7.25% with government subsidy',
+          'Extended repayment tenure up to 30 years',
+        ],
+        officer: 'Senior Housing Syndication Lead',
+        desk: 'Tirupur HQ • Ground Floor Desk 01',
+        phone: '+91 96555 66613',
+        cleanPhone: '919655566613',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+        icon: <Building2 className="w-5 h-5 text-brand-teal" />,
+      },
+      {
+        number: '02',
+        region: 'Mortgage (LAP) & Commercial Desk',
+        badge: 'From 8.50% p.a.',
+        tag: 'Secured Liquidity',
+        focus:
+          'High-value business liquidity against residential houses, industrial sheds, empty converted plots, and commercial showroom collateral.',
+        bulletPoints: [
+          'High sanction quantum up to ₹25 Crores for businesses',
+          'Acceptable against concrete buildings, tiled houses & plots',
+          'Fast in-principle sanction within 48 to 72 hours',
+        ],
+        officer: 'Commercial Mortgage Underwriting Specialist',
+        desk: 'Tirupur HQ • 1st Floor Mortgage Syndicate',
+        phone: '+91 95144 66600',
+        cleanPhone: '919514466600',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+        icon: <ShieldCheck className="w-5 h-5 text-brand-teal" />,
+      },
+      {
+        number: '03',
+        region: 'Bank Takeover & Rate Reduction',
+        badge: 'Zero Advance Fees',
+        tag: 'Debt Takeover',
+        focus:
+          'Transfer high-rate mortgage and home loans from private NBFCs to Government (PSU) banks, saving lakhs in monthly interest charges.',
+        bulletPoints: [
+          'Reduce interest rate down to 7.25% benchmark PSU rate',
+          'Zero advance fees with end-to-end documentation takeover',
+          'Additional high-value top-up facility sanctioned',
+        ],
+        officer: 'Portfolio Takeover & Debt Consolidation Lead',
+        desk: 'Tirupur HQ • Zonal Transfer Desk 03',
+        phone: '+91 96555 66613',
+        cleanPhone: '919655566613',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+        icon: <Scale className="w-5 h-5 text-brand-teal" />,
+      },
+      {
+        number: '04',
+        region: 'Vehicle & Commercial Fleet Desk',
+        badge: 'Quick 24h Clearance',
+        tag: 'Automotive Fleet',
+        focus:
+          'Funding for private cars, commercial transport vehicles, school buses, JCB/construction machinery, and existing fleet refinance.',
+        bulletPoints: [
+          'Financing available for both new and used vehicles',
+          'Up to 90% on-road funding with flexible repayment',
+          'Minimal paperwork with quick 24-hour sanction',
+        ],
+        officer: 'Automotive & Commercial Fleet Manager',
+        desk: 'Tirupur HQ • Transport Finance Desk 04',
+        phone: '+91 95144 66600',
+        cleanPhone: '919514466600',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+        icon: <Car className="w-5 h-5 text-brand-teal" />,
+      },
+    ];
+  }, [content?.contactAdvisoryDesks]);
+
+  // In-Person Consultation Required Documents Checklist
+  const visitChecklist = useMemo(() => {
+    if (content?.contactVisitDocs) {
+      try {
+        const parsed = JSON.parse(content.contactVisitDocs);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse contactVisitDocs from backend', e);
+      }
+    }
+
+    return [
+      '1. KYC Identity Proof: Aadhaar Card, PAN Card, and passport-size photographs of primary applicant and co-applicants.',
+      '2. Income Proofs: Last 3 months payslips & Form 16 (Salaried) or 3 years ITR with computation & bank statements (Self-Employed).',
+      '3. Property Title Copies: Sale Deed / Parent Deed copy, latest Encumbrance Certificate (EC), Patta / Chitta, and Revenue records.',
+      '4. Civil / Plan Estimates: Licensed engineer approved building blueprint plan and construction stage estimate.',
+    ];
+  }, [content?.contactVisitDocs]);
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
@@ -318,10 +396,16 @@ export const ContactPage: React.FC = () => {
                 className="space-y-3 will-change-transform"
               >
                 <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-extrabold text-white tracking-tight leading-[1.18] sm:leading-[1.14] font-heading drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
-                  Connect Directly with Our{' '}
-                  <span className="shimmer-headline-text text-[#38bdf8]">
-                    Senior Property Finance Advisors.
-                  </span>
+                  {content?.contactHeroTitle ? (
+                    content.contactHeroTitle
+                  ) : (
+                    <>
+                      Connect Directly with Our{' '}
+                      <span className="shimmer-headline-text text-[#38bdf8]">
+                        Senior Property Finance Advisors.
+                      </span>
+                    </>
+                  )}
                 </h1>
               </div>
 
@@ -335,7 +419,8 @@ export const ContactPage: React.FC = () => {
                 }}
                 className="text-xs sm:text-sm md:text-base text-slate-200 font-sans font-normal leading-relaxed max-w-2xl pt-1"
               >
-                Have a query regarding property title regularities, layout conversion orders, or private-to-government bank takeovers? Reach our senior advisory desk directly via phone, WhatsApp, email, or visit our Tirupur central headquarters.
+                {content?.contactHeroSubtitle ||
+                  'Have a query regarding property title regularities, layout conversion orders, or private-to-government bank takeovers? Reach our senior advisory desk directly via phone, WhatsApp, email, or visit our Tirupur central headquarters.'}
               </p>
 
               {/* Real-Time Fast Action Buttons */}
@@ -872,46 +957,23 @@ export const ContactPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
-              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>1. KYC Identity Proof</span>
-              </div>
-              <p className="text-xs text-brand-slate font-sans leading-relaxed">
-                Aadhaar Card, PAN Card, and passport-size photographs of primary applicant and co-applicants.
-              </p>
-            </div>
+            {visitChecklist.map((item, idx) => {
+              const colonIdx = item.indexOf(':');
+              const title = colonIdx > -1 ? item.substring(0, colonIdx).trim() : `${idx + 1}. Required Item`;
+              const desc = colonIdx > -1 ? item.substring(colonIdx + 1).trim() : item;
 
-            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
-              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>2. Income Proofs</span>
-              </div>
-              <p className="text-xs text-brand-slate font-sans leading-relaxed">
-                Salaried: Last 3 months payslips &amp; Form 16.<br />
-                Self-Employed: Last 3 years ITR with computation &amp; 6 months bank statement.
-              </p>
-            </div>
-
-            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
-              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>3. Property Title Copies</span>
-              </div>
-              <p className="text-xs text-brand-slate font-sans leading-relaxed">
-                Sale Deed / Parent Deed copy, latest Encumbrance Certificate (EC), Patta / Chitta, and Khata extract.
-              </p>
-            </div>
-
-            <div className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
-              <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>4. Civil / Plan Estimates</span>
-              </div>
-              <p className="text-xs text-brand-slate font-sans leading-relaxed">
-                For self-construction: Licensed engineer approved building blueprint plan and construction stage estimate.
-              </p>
-            </div>
+              return (
+                <div key={idx} className="p-4 bg-white rounded-2xl border border-brand-border space-y-2">
+                  <div className="text-xs font-bold text-brand-navy font-heading flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                    <span>{title}</span>
+                  </div>
+                  <p className="text-xs text-brand-slate font-sans leading-relaxed">
+                    {desc}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

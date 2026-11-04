@@ -43,6 +43,12 @@ import {
   FileCheck,
   User,
   RotateCcw,
+  Briefcase,
+  MessageSquare,
+  Send,
+  Building2,
+  ArrowLeftRight,
+  Truck,
 } from 'lucide-react';
 import {
   SiteContent,
@@ -54,6 +60,7 @@ import {
   AboutTeamMember,
   AboutPillar,
   BranchOffice,
+  AdvisoryDesk,
   SocialLinks,
 } from '../../../types';
 import { getPublicSiteContent, updateSiteContentApi } from '../../../services/api';
@@ -114,6 +121,15 @@ export const AdminContentPage: React.FC = () => {
   const [branchOfficesList, setBranchOfficesList] = useState<BranchOffice[]>([]);
   const [branchModalOpen, setBranchModalOpen] = useState<boolean>(false);
   const [editingBranch, setEditingBranch] = useState<BranchOffice | null>(null);
+
+  // Specialized Advisory Desks & Contact Page Checklist
+  const [advisoryDesksList, setAdvisoryDesksList] = useState<AdvisoryDesk[]>([]);
+  const [deskModalOpen, setDeskModalOpen] = useState<boolean>(false);
+  const [editingDesk, setEditingDesk] = useState<AdvisoryDesk | null>(null);
+  const [deskScopeInput, setDeskScopeInput] = useState<string>('');
+
+  const [contactVisitDocsList, setContactVisitDocsList] = useState<string[]>([]);
+  const [newVisitDoc, setNewVisitDoc] = useState<string>('');
 
   const [whyChooseUsPillars, setWhyChooseUsPillars] = useState<WhyChooseUsPillar[]>([]);
   const [processStepsList, setProcessStepsList] = useState<ProcessStep[]>([]);
@@ -254,6 +270,102 @@ export const AdminContentPage: React.FC = () => {
               timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
               mapEmbedUrl: 'https://maps.google.com/?q=Prime+Associates+Tirupur',
             },
+          ])
+        );
+
+        // Parse Specialized Advisory Desks
+        setAdvisoryDesksList(
+          parseSafeJson<AdvisoryDesk[]>(data.contactAdvisoryDesks, [
+            {
+              id: 'desk-1',
+              index: '01',
+              title: 'Land & Home Loans Desk',
+              subtitle: 'Independent Houses, Flats & Construction',
+              iconName: 'Home',
+              scope: [
+                'New Plot Purchase & Construction',
+                'DTCP / RERA Approved Layouts',
+                'PMAY Government Interest Subsidy',
+                'NRI Home Loans & Co-applicant Funding',
+              ],
+              officer: 'Senior Home Loan Specialist',
+              location: 'Tirupur Main Office · Desk 1',
+              phone: '+91 96555 66613',
+              whatsappNumber: '+919655566613',
+              whatsappMessage:
+                "Hello Prime Associates, I would like to consult with the Land & Home Loans Desk regarding a new loan / construction facility.",
+              timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+            },
+            {
+              id: 'desk-2',
+              index: '02',
+              title: 'Mortgage (LAP) & Commercial Desk',
+              subtitle: 'High-Ticket Capital for Business & Property',
+              iconName: 'Building2',
+              scope: [
+                'Industrial Shed & Factory Funding',
+                'Commercial Complex & Office Space',
+                'High LTV Loan Against Property (LAP)',
+                'MSME Working Capital Enhancement',
+              ],
+              officer: 'Commercial Syndication Desk',
+              location: 'Tirupur Main Office · Desk 2',
+              phone: '+91 95144 66600',
+              whatsappNumber: '+919514466600',
+              whatsappMessage:
+                'Hello Prime Associates, I would like to discuss a Mortgage (LAP) or Commercial Property Loan.',
+              timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+            },
+            {
+              id: 'desk-3',
+              index: '03',
+              title: 'Bank Takeover & Balance Transfer',
+              subtitle: 'Rate Reduction & Emergency Debt Restructuring',
+              iconName: 'ArrowLeftRight',
+              scope: [
+                'NBFC / Private to Nationalized Bank',
+                'Interest Rate Reduction (Up to 3.5% save)',
+                'Immediate Top-Up Equity Release',
+                'Collateral Document Release Support',
+              ],
+              officer: 'Portfolio Transfer Lead',
+              location: 'Tirupur Main Office · Desk 3',
+              phone: '+91 96555 66613',
+              whatsappNumber: '+919655566613',
+              whatsappMessage:
+                'Hello Prime Associates, I want to transfer my existing high-interest loan to a nationalized bank with top-up.',
+              timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+            },
+            {
+              id: 'desk-4',
+              index: '04',
+              title: 'Vehicle & Commercial Fleet Desk',
+              subtitle: 'Automotive, Commercial Fleet & Heavy Machinery',
+              iconName: 'Truck',
+              scope: [
+                'New & Used Commercial Vehicles (HCV/LCV)',
+                'Textile & Industrial Machinery Term Loans',
+                'Used Car Refinancing & Top-Up',
+                'Multi-vehicle Fleet Funding',
+              ],
+              officer: 'Asset Finance Lead',
+              location: 'Tirupur Main Office · Desk 4',
+              phone: '+91 95144 66600',
+              whatsappNumber: '+919514466600',
+              whatsappMessage:
+                'Hello Prime Associates, I need assistance with Commercial Vehicle / Machinery financing.',
+              timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+            },
+          ])
+        );
+
+        // Parse In-Person Visit Checklist
+        setContactVisitDocsList(
+          parseSafeJson<string[]>(data.contactVisitDocs, [
+            'Identity & Address Proof (Aadhaar Card, PAN Card, Voter ID)',
+            'Income Proof: Last 6 Months Bank Statements & 3 Months Payslips (Salaried) or 3-Year ITR with Balance Sheet (Self-Employed)',
+            'Property Documents: Parent Documents, Registered Sale Deed, Patta, Chitta, FMB Sketch, EC (30 Years), Approved Building Plan',
+            'For Bank Takeovers: Existing Sanction Letter, Foreclosure Statement & List of Documents (LOD) from current lender',
           ])
         );
 
@@ -417,6 +529,8 @@ export const AdminContentPage: React.FC = () => {
       aboutTeam: JSON.stringify(teamMembers),
       aboutMilestones: JSON.stringify(milestonesList),
       branchOffices: JSON.stringify(branchOfficesList),
+      contactAdvisoryDesks: JSON.stringify(advisoryDesksList),
+      contactVisitDocs: JSON.stringify(contactVisitDocsList),
       whyChooseUsPillars: JSON.stringify(whyChooseUsPillars),
       processSteps: JSON.stringify(processStepsList),
       socialLinks: JSON.stringify(socialLinksState),
@@ -533,6 +647,133 @@ export const AdminContentPage: React.FC = () => {
 
   const deleteBranch = (id: string) => {
     setBranchOfficesList(branchOfficesList.filter((b) => b.id !== id));
+  };
+
+  // Specialized Advisory Desks Handlers
+  const saveDesk = (desk: AdvisoryDesk) => {
+    if (editingDesk && editingDesk.id) {
+      setAdvisoryDesksList(advisoryDesksList.map((d) => (d.id === desk.id ? desk : d)));
+    } else {
+      setAdvisoryDesksList([
+        ...advisoryDesksList,
+        {
+          ...desk,
+          id: `desk-${Date.now()}`,
+          index: (advisoryDesksList.length + 1).toString().padStart(2, '0'),
+        },
+      ]);
+    }
+    setDeskModalOpen(false);
+    setEditingDesk(null);
+  };
+
+  const deleteDesk = (id: string) => {
+    setAdvisoryDesksList(advisoryDesksList.filter((d) => d.id !== id));
+  };
+
+  const resetDesksToDefault = () => {
+    setAdvisoryDesksList([
+      {
+        id: 'desk-1',
+        index: '01',
+        title: 'Land & Home Loans Desk',
+        subtitle: 'Independent Houses, Flats & Construction',
+        iconName: 'Home',
+        scope: [
+          'New Plot Purchase & Construction',
+          'DTCP / RERA Approved Layouts',
+          'PMAY Government Interest Subsidy',
+          'NRI Home Loans & Co-applicant Funding',
+        ],
+        officer: 'Senior Home Loan Specialist',
+        location: 'Tirupur Main Office · Desk 1',
+        phone: '+91 96555 66613',
+        whatsappNumber: '+919655566613',
+        whatsappMessage:
+          "Hello Prime Associates, I would like to consult with the Land & Home Loans Desk regarding a new loan / construction facility.",
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      },
+      {
+        id: 'desk-2',
+        index: '02',
+        title: 'Mortgage (LAP) & Commercial Desk',
+        subtitle: 'High-Ticket Capital for Business & Property',
+        iconName: 'Building2',
+        scope: [
+          'Industrial Shed & Factory Funding',
+          'Commercial Complex & Office Space',
+          'High LTV Loan Against Property (LAP)',
+          'MSME Working Capital Enhancement',
+        ],
+        officer: 'Commercial Syndication Desk',
+        location: 'Tirupur Main Office · Desk 2',
+        phone: '+91 95144 66600',
+        whatsappNumber: '+919514466600',
+        whatsappMessage:
+          'Hello Prime Associates, I would like to discuss a Mortgage (LAP) or Commercial Property Loan.',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      },
+      {
+        id: 'desk-3',
+        index: '03',
+        title: 'Bank Takeover & Balance Transfer',
+        subtitle: 'Rate Reduction & Emergency Debt Restructuring',
+        iconName: 'ArrowLeftRight',
+        scope: [
+          'NBFC / Private to Nationalized Bank',
+          'Interest Rate Reduction (Up to 3.5% save)',
+          'Immediate Top-Up Equity Release',
+          'Collateral Document Release Support',
+        ],
+        officer: 'Portfolio Transfer Lead',
+        location: 'Tirupur Main Office · Desk 3',
+        phone: '+91 96555 66613',
+        whatsappNumber: '+919655566613',
+        whatsappMessage:
+          'Hello Prime Associates, I want to transfer my existing high-interest loan to a nationalized bank with top-up.',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      },
+      {
+        id: 'desk-4',
+        index: '04',
+        title: 'Vehicle & Commercial Fleet Desk',
+        subtitle: 'Automotive, Commercial Fleet & Heavy Machinery',
+        iconName: 'Truck',
+        scope: [
+          'New & Used Commercial Vehicles (HCV/LCV)',
+          'Textile & Industrial Machinery Term Loans',
+          'Used Car Refinancing & Top-Up',
+          'Multi-vehicle Fleet Funding',
+        ],
+        officer: 'Asset Finance Lead',
+        location: 'Tirupur Main Office · Desk 4',
+        phone: '+91 95144 66600',
+        whatsappNumber: '+919514466600',
+        whatsappMessage:
+          'Hello Prime Associates, I need assistance with Commercial Vehicle / Machinery financing.',
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+      },
+    ]);
+  };
+
+  // In-Person Visit Checklist Handlers
+  const addVisitDoc = () => {
+    if (!newVisitDoc.trim()) return;
+    setContactVisitDocsList([...contactVisitDocsList, newVisitDoc.trim()]);
+    setNewVisitDoc('');
+  };
+
+  const removeVisitDoc = (index: number) => {
+    setContactVisitDocsList(contactVisitDocsList.filter((_, i) => i !== index));
+  };
+
+  const resetVisitDocsToDefault = () => {
+    setContactVisitDocsList([
+      'Identity & Address Proof (Aadhaar Card, PAN Card, Voter ID)',
+      'Income Proof: Last 6 Months Bank Statements & 3 Months Payslips (Salaried) or 3-Year ITR with Balance Sheet (Self-Employed)',
+      'Property Documents: Parent Documents, Registered Sale Deed, Patta, Chitta, FMB Sketch, EC (30 Years), Approved Building Plan',
+      'For Bank Takeovers: Existing Sanction Letter, Foreclosure Statement & List of Documents (LOD) from current lender',
+    ]);
   };
 
   // Loan Document Checklist Handlers
@@ -875,7 +1116,7 @@ export const AdminContentPage: React.FC = () => {
     {
       id: 'branches' as TabType,
       number: '08',
-      title: 'Office Branches & Advisory Desks',
+      title: 'Contact Page, Specialized Desks & Branches',
       category: 'Contact & Branches',
       publicRoute: '/contact',
       previewUrl: '/contact',
@@ -885,9 +1126,14 @@ export const AdminContentPage: React.FC = () => {
         text: 'text-rose-700',
         border: 'border-rose-200',
       },
-      shortDesc: 'Physical advisory office locations (Tirupur HQ, Coimbatore, Erode), full postal addresses, direct desks, timings, and map navigation.',
-      keyFeatures: ['Physical Branch Directory', 'Direct Desk Phones', 'Consultation Hours', 'Google Maps Links'],
-      summary: `${branchOfficesList.length} physical office branches listed`,
+      shortDesc: 'Complete management of the Contact Page: Hero headline & photo, hotline & WhatsApp, 4 specialized loan desks (Home Loans, LAP, Takeovers, Fleet), in-person consultation checklist, and physical office branches.',
+      keyFeatures: [
+        '4 Specialized Loan Desks',
+        'Direct Hotline & WhatsApp Desk',
+        'In-Person Visit Checklist',
+        'Physical Branches & Maps',
+      ],
+      summary: `${advisoryDesksList.length} specialized desks • ${branchOfficesList.length} physical branches`,
     },
     {
       id: 'loan-docs' as TabType,
@@ -2813,13 +3059,47 @@ export const AdminContentPage: React.FC = () => {
           </div>
         )}
 
-        {/* 8. CONTACT & BRANCH OFFICES */}
+        {/* 8. CONTACT PAGE, SPECIALIZED LOAN DESKS & BRANCHES */}
         {activeTab === 'branches' && (
           <div className="space-y-6 animate-in fade-in duration-200">
-            {/* Contact Hero */}
+            {/* Header / Intro Card */}
+            <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center border border-rose-200 shrink-0">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-[#0c1a26] font-heading">
+                    Contact Page, Specialized Loan Desks &amp; Branch Management
+                  </h3>
+                  <p className="text-xs text-brand-slate font-sans mt-0.5">
+                    Maintain real-time operational parameters, the 4 specialized loan desks, direct hotlines, walk-in consultation checklist, and corporate headquarters.
+                  </p>
+                </div>
+              </div>
+
+              <a
+                href="/contact"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors shrink-0 self-start sm:self-auto font-heading"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Preview Contact Page</span>
+                <ExternalLink className="w-3 h-3 text-rose-500" />
+              </a>
+            </div>
+
+            {/* 1. Contact Hero & Photography */}
             <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-4">
-              <div className="pb-3 border-b border-brand-border text-brand-navy">
-                <h3 className="text-base font-bold">Contact Page Hero &amp; Photography</h3>
+              <div className="pb-3 border-b border-brand-border text-brand-navy flex items-center justify-between">
+                <div>
+                  <h3 className="text-base font-bold font-heading">1. Contact Hero &amp; Photography</h3>
+                  <p className="text-xs text-brand-slate">Main banner headline, welcoming narrative and background image</p>
+                </div>
+                <span className="text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
+                  Top of /contact
+                </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
@@ -2832,6 +3112,7 @@ export const AdminContentPage: React.FC = () => {
                     name="contactHeroTitle"
                     value={content.contactHeroTitle || ''}
                     onChange={handleChange}
+                    placeholder="e.g. Connect with Our Senior Loan Advisory Specialists"
                     className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy font-semibold focus:bg-white"
                   />
                 </div>
@@ -2845,6 +3126,7 @@ export const AdminContentPage: React.FC = () => {
                     name="contactHeroSubtitle"
                     value={content.contactHeroSubtitle || ''}
                     onChange={handleChange}
+                    placeholder="e.g. Direct phone consultation, institutional escalation lines, or private desk visits at our Tirupur headquarters."
                     className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
                   />
                 </div>
@@ -2858,23 +3140,384 @@ export const AdminContentPage: React.FC = () => {
                     name="contactHeroImageUrl"
                     value={content.contactHeroImageUrl || ''}
                     onChange={handleChange}
+                    placeholder="https://..."
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white text-xs"
+                  />
+                  {content.contactHeroImageUrl && (
+                    <div className="mt-2 flex items-center gap-3 p-2 bg-slate-50 rounded-lg border border-slate-200 text-xs">
+                      <img
+                        src={content.contactHeroImageUrl}
+                        alt="Hero Preview"
+                        className="w-16 h-10 object-cover rounded border border-slate-300"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                      <span className="text-slate-600 truncate">Live Image Preview</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Core Direct Contact Channels */}
+            <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-4">
+              <div className="pb-3 border-b border-brand-border text-brand-navy flex items-center justify-between">
+                <div>
+                  <h3 className="text-base font-bold font-heading">2. Core Direct Channels &amp; Working Timings</h3>
+                  <p className="text-xs text-brand-slate">Hotline phone numbers, WhatsApp, official email, and working hours</p>
+                </div>
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                  Global Channels
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1.5 flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-brand-teal" />
+                    <span>Advisory Hotline Number(s)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="businessPhone"
+                    value={content.businessPhone || ''}
+                    onChange={handleChange}
+                    placeholder="+91 96555 66613, +91 95144 66600"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy font-semibold focus:bg-white font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1.5 flex items-center gap-1.5">
+                    <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Official WhatsApp Number</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="whatsappNumber"
+                    value={content.whatsappNumber || ''}
+                    onChange={handleChange}
+                    placeholder="+919655566613"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy font-semibold focus:bg-white font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1.5 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Official Business Email</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="businessEmail"
+                    value={content.businessEmail || ''}
+                    onChange={handleChange}
+                    placeholder="primeassociates2008@gmail.com"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1.5 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Business Operating Timings</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="businessHours"
+                    value={content.businessHours || ''}
+                    onChange={handleChange}
+                    placeholder="Monday – Saturday: 9:30 AM – 6:30 PM (IST)"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1.5 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-rose-600" />
+                    <span>City &amp; State</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="cityState"
+                    value={content.cityState || ''}
+                    onChange={handleChange}
+                    placeholder="Tirupur, Tamil Nadu, India"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1.5 flex items-center gap-1.5">
+                    <Building className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Official Business / Firm Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={content.businessName || ''}
+                    onChange={handleChange}
+                    placeholder="Prime Associates — Loans &amp; Constructions"
+                    className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy font-bold focus:bg-white"
+                  />
+                </div>
+
+                <div className="md:col-span-2 lg:col-span-3">
+                  <label className="block font-bold text-brand-navy mb-1.5">
+                    Corporate Headquarters Physical Address
+                  </label>
+                  <textarea
+                    rows={2}
+                    name="officeAddress"
+                    value={content.officeAddress || ''}
+                    onChange={handleChange}
+                    placeholder="No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601"
                     className="w-full p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-brand-navy focus:bg-white text-xs"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Branch Offices */}
+            {/* 3. Specialized Loan & Advisory Desks (The 4+ Departments) */}
+            <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-brand-border">
+                <div className="flex items-center gap-2.5 text-brand-navy">
+                  <Briefcase className="w-5 h-5 text-brand-teal" />
+                  <div>
+                    <h3 className="text-base font-bold font-heading">
+                      3. Specialized Loan &amp; Advisory Desks ({advisoryDesksList.length})
+                    </h3>
+                    <p className="text-xs text-brand-slate">
+                      The dedicated departmental units shown on the contact page with direct lead officers and scopes.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={resetDesksToDefault}
+                    className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1 transition-colors"
+                    title="Reset to 4 Standard Desks"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Reset 4 Desks</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newDesk: AdvisoryDesk = {
+                        id: '',
+                        index: (advisoryDesksList.length + 1).toString().padStart(2, '0'),
+                        title: '',
+                        subtitle: '',
+                        iconName: 'Home',
+                        scope: [],
+                        officer: '',
+                        location: 'Tirupur Main Office',
+                        phone: '+91 96555 66613',
+                        whatsappNumber: '+919655566613',
+                        whatsappMessage: 'Hello Prime Associates, I would like to consult with this advisory desk.',
+                        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+                      };
+                      setEditingDesk(newDesk);
+                      setDeskScopeInput('');
+                      setDeskModalOpen(true);
+                    }}
+                    className="px-3.5 py-1.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-lg flex items-center gap-1.5"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Specialized Desk</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {advisoryDesksList.map((desk, idx) => (
+                  <div
+                    key={desk.id || idx}
+                    className="p-5 bg-[#fafcfb] rounded-xl border border-brand-border/80 flex flex-col justify-between space-y-4 shadow-xs hover:border-brand-teal/40 transition-colors"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-7 h-7 rounded-lg bg-teal-50 border border-teal-200 text-teal-800 text-xs font-mono font-bold flex items-center justify-center">
+                            {desk.index || (idx + 1).toString().padStart(2, '0')}
+                          </span>
+                          <div>
+                            <h4 className="font-extrabold text-brand-navy text-sm font-heading">
+                              {desk.title}
+                            </h4>
+                            {desk.subtitle && (
+                              <p className="text-[11px] text-teal-700 font-semibold">{desk.subtitle}</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          Active Desk
+                        </span>
+                      </div>
+
+                      {desk.scope && desk.scope.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {desk.scope.map((item, i) => (
+                            <span
+                              key={i}
+                              className="text-[10px] bg-white border border-slate-200 text-slate-700 px-2 py-0.5 rounded-md"
+                            >
+                              • {item}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="pt-2 border-t border-slate-100 space-y-1.5 text-xs text-brand-slate">
+                        <p className="flex items-center gap-1.5">
+                          <User className="w-3.5 h-3.5 text-brand-teal shrink-0" />
+                          <span className="font-semibold text-brand-navy">{desk.officer || 'Desk In-Charge'}</span>
+                        </p>
+                        <p className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-brand-teal shrink-0" />
+                          <span>{desk.location}</span>
+                        </p>
+                        <p className="flex items-center gap-1.5">
+                          <Phone className="w-3.5 h-3.5 text-brand-teal shrink-0" />
+                          <span className="font-mono font-bold text-[#0c1a26]">{desk.phone}</span>
+                        </p>
+                        {desk.whatsappNumber && (
+                          <p className="flex items-center gap-1.5">
+                            <MessageSquare className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                            <span className="font-mono text-emerald-700">{desk.whatsappNumber}</span>
+                          </p>
+                        )}
+                        {desk.timings && (
+                          <p className="flex items-center gap-1.5 text-[11px]">
+                            <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                            <span>{desk.timings}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-brand-border/60">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingDesk(desk);
+                          setDeskScopeInput((desk.scope || []).join('\n'));
+                          setDeskModalOpen(true);
+                        }}
+                        className="px-2.5 py-1 text-brand-navy hover:bg-slate-100 border border-slate-200 rounded text-xs font-semibold flex items-center gap-1"
+                        title="Edit Desk"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteDesk(desk.id)}
+                        className="px-2.5 py-1 text-red-600 hover:bg-red-50 border border-red-200 rounded text-xs font-semibold flex items-center gap-1"
+                        title="Delete Desk"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 4. In-Person Consultation / Walk-in Visit Checklist */}
+            <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-brand-border">
+                <div className="flex items-center gap-2.5 text-brand-navy">
+                  <FileCheck className="w-5 h-5 text-emerald-600" />
+                  <div>
+                    <h3 className="text-base font-bold font-heading">
+                      4. In-Person Visit Checklist &amp; Guidelines ({contactVisitDocsList.length})
+                    </h3>
+                    <p className="text-xs text-brand-slate">
+                      Items displayed in the "What to Bring for Your Desk Consultation" section on the contact page.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={resetVisitDocsToDefault}
+                  className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1 self-start sm:self-auto transition-colors"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reset Checklist</span>
+                </button>
+              </div>
+
+              {/* Add Checklist Item */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newVisitDoc}
+                  onChange={(e) => setNewVisitDoc(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addVisitDoc();
+                    }
+                  }}
+                  placeholder="e.g. Electricity bill / Property tax receipt (past 2 assessment years)"
+                  className="flex-1 p-2.5 bg-brand-ivory/50 border border-brand-border rounded-lg text-xs text-brand-navy focus:bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={addVisitDoc}
+                  className="px-4 py-2.5 bg-brand-teal text-white rounded-lg text-xs font-bold hover:bg-brand-teal-hover flex items-center gap-1.5 shrink-0"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Item</span>
+                </button>
+              </div>
+
+              {/* Checklist Items List */}
+              <div className="space-y-2 pt-1">
+                {contactVisitDocsList.map((doc, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start justify-between gap-3 p-3 bg-slate-50 border border-slate-200/80 rounded-xl text-xs text-slate-800"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                        {index + 1}
+                      </span>
+                      <span className="leading-relaxed">{doc}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeVisitDoc(index)}
+                      className="p-1 text-slate-400 hover:text-red-600 rounded transition-colors shrink-0"
+                      title="Remove Item"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 5. Physical Branch Offices */}
             <div className="bg-white rounded-2xl p-6 border border-brand-border shadow-subtle space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-brand-border">
                 <div className="flex items-center gap-2 text-brand-navy">
                   <MapPin className="w-5 h-5 text-brand-teal" />
                   <div>
-                    <h3 className="text-base font-bold">
-                      Physical Branch &amp; Regional Offices ({branchOfficesList.length})
+                    <h3 className="text-base font-bold font-heading">
+                      5. Physical Branch &amp; Regional Offices ({branchOfficesList.length})
                     </h3>
                     <p className="text-xs text-brand-slate">
-                      Users can view addresses, book in-person visits, or tap for directions.
+                      Official physical branches, addresses, direct desks, and Google Maps directions.
                     </p>
                   </div>
                 </div>
@@ -2908,7 +3551,7 @@ export const AdminContentPage: React.FC = () => {
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-brand-navy text-sm">{branch.name}</h4>
+                        <h4 className="font-bold text-brand-navy text-sm font-heading">{branch.name}</h4>
                         <span className="text-[10px] font-bold text-brand-teal bg-brand-teal-light px-2 py-0.5 rounded">
                           Active Branch
                         </span>
@@ -4421,6 +5064,192 @@ export const AdminContentPage: React.FC = () => {
                 className="px-4 py-2 bg-brand-teal text-white rounded text-xs font-bold hover:bg-brand-teal-hover"
               >
                 Save Branch
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── MODAL: SPECIALIZED ADVISORY DESK ─── */}
+      {deskModalOpen && editingDesk && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 border border-brand-border shadow-2xl space-y-4 animate-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div className="flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-brand-teal" />
+                <h3 className="font-bold text-brand-navy text-sm sm:text-base font-heading">
+                  {editingDesk.id ? `Edit Desk ${editingDesk.index || ''}: ${editingDesk.title}` : 'Add Specialized Advisory Desk'}
+                </h3>
+              </div>
+              <button
+                onClick={() => setDeskModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">Desk Code / Number</label>
+                  <input
+                    type="text"
+                    value={editingDesk.index || ''}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, index: e.target.value })}
+                    placeholder="e.g. 01"
+                    className="w-full p-2 border border-brand-border rounded font-bold font-mono"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block font-bold text-brand-navy mb-1">Department / Desk Title</label>
+                  <input
+                    type="text"
+                    value={editingDesk.title || ''}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, title: e.target.value })}
+                    placeholder="e.g. Land &amp; Home Loans Desk"
+                    className="w-full p-2 border border-brand-border rounded font-bold"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">Focus Tagline / Subtitle</label>
+                  <input
+                    type="text"
+                    value={editingDesk.subtitle || ''}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, subtitle: e.target.value })}
+                    placeholder="e.g. Independent Houses, Flats &amp; Construction"
+                    className="w-full p-2 border border-brand-border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">Department Icon</label>
+                  <select
+                    value={editingDesk.iconName || 'Home'}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, iconName: e.target.value })}
+                    className="w-full p-2 border border-brand-border rounded bg-white"
+                  >
+                    <option value="Home">Home (Home &amp; Construction Loans)</option>
+                    <option value="Building2">Building2 (Commercial &amp; LAP)</option>
+                    <option value="ArrowLeftRight">ArrowLeftRight (Bank Takeover &amp; Transfers)</option>
+                    <option value="Truck">Truck (Vehicles &amp; Commercial Fleet)</option>
+                    <option value="ShieldCheck">ShieldCheck (Mortgage &amp; Secured Assets)</option>
+                    <option value="Scale">Scale (Debt Consolidation)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">Lead Officer In-Charge</label>
+                  <input
+                    type="text"
+                    value={editingDesk.officer || ''}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, officer: e.target.value })}
+                    placeholder="e.g. Senior Home Loan Specialist"
+                    className="w-full p-2 border border-brand-border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">Desk Room / Location</label>
+                  <input
+                    type="text"
+                    value={editingDesk.location || ''}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, location: e.target.value })}
+                    placeholder="e.g. Tirupur Main Office · Desk 1"
+                    className="w-full p-2 border border-brand-border rounded"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">Direct Phone Number</label>
+                  <input
+                    type="text"
+                    value={editingDesk.phone || ''}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, phone: e.target.value })}
+                    placeholder="+91 96555 66613"
+                    className="w-full p-2 border border-brand-border rounded font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-brand-navy mb-1">WhatsApp Direct Number</label>
+                  <input
+                    type="text"
+                    value={editingDesk.whatsappNumber || ''}
+                    onChange={(e) => setEditingDesk({ ...editingDesk, whatsappNumber: e.target.value })}
+                    placeholder="+919655566613"
+                    className="w-full p-2 border border-brand-border rounded font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-brand-navy mb-1">Consultation Timings</label>
+                <input
+                  type="text"
+                  value={editingDesk.timings || ''}
+                  onChange={(e) => setEditingDesk({ ...editingDesk, timings: e.target.value })}
+                  placeholder="Monday – Saturday: 9:30 AM – 6:30 PM"
+                  className="w-full p-2 border border-brand-border rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-brand-navy mb-1">
+                  Key Scope / Specializations (Enter one item per line)
+                </label>
+                <textarea
+                  rows={4}
+                  value={deskScopeInput}
+                  onChange={(e) => {
+                    const text = e.target.value;
+                    setDeskScopeInput(text);
+                    setEditingDesk({
+                      ...editingDesk,
+                      scope: text
+                        .split('\n')
+                        .map((s) => s.trim())
+                        .filter(Boolean),
+                    });
+                  }}
+                  placeholder={"New Plot Purchase & Construction\nDTCP / RERA Approved Layouts\nPMAY Government Interest Subsidy\nNRI Home Loans & Co-applicant Funding"}
+                  className="w-full p-2.5 border border-brand-border rounded font-mono text-xs leading-relaxed"
+                />
+                <p className="text-[11px] text-brand-slate mt-1">
+                  Each line appears as a distinct scope bullet point on the public contact card.
+                </p>
+              </div>
+
+              <div>
+                <label className="block font-bold text-brand-navy mb-1">Pre-filled WhatsApp Greeting Message</label>
+                <textarea
+                  rows={2}
+                  value={editingDesk.whatsappMessage || ''}
+                  onChange={(e) => setEditingDesk({ ...editingDesk, whatsappMessage: e.target.value })}
+                  placeholder="Hello Prime Associates, I would like to consult with the Land & Home Loans Desk."
+                  className="w-full p-2 border border-brand-border rounded"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-brand-border">
+              <button
+                type="button"
+                onClick={() => setDeskModalOpen(false)}
+                className="px-4 py-2 border border-brand-border rounded text-xs font-semibold hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => saveDesk(editingDesk)}
+                className="px-4 py-2 bg-brand-teal text-white rounded text-xs font-bold hover:bg-brand-teal-hover"
+              >
+                Save Desk
               </button>
             </div>
           </div>

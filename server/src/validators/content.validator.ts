@@ -77,6 +77,8 @@ export const updateSiteContentSchema = z.object({
   contactHeroTitle: z.string().trim().optional().nullable(),
   contactHeroSubtitle: z.string().trim().optional().nullable(),
   contactHeroImageUrl: z.string().trim().optional().nullable(),
+  contactAdvisoryDesks: z.string().trim().optional().nullable(),
+  contactVisitDocs: z.string().trim().optional().nullable(),
   branchOffices: z.string().trim().optional().nullable(),
 
   // Calculator Parameters

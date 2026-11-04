@@ -73,6 +73,21 @@ export interface BranchOffice {
   mapEmbedUrl?: string;
 }
 
+export interface AdvisoryDesk {
+  id: string;
+  index: string;
+  title: string;
+  subtitle?: string;
+  iconName?: string;
+  scope: string[];
+  officer: string;
+  location: string;
+  phone: string;
+  whatsappNumber?: string;
+  whatsappMessage?: string;
+  timings?: string;
+}
+
 export interface SocialLinks {
   facebook?: string;
   instagram?: string;
@@ -160,6 +175,8 @@ export interface SiteContent {
   contactHeroTitle?: string | null;
   contactHeroSubtitle?: string | null;
   contactHeroImageUrl?: string | null;
+  contactAdvisoryDesks?: string | null;
+  contactVisitDocs?: string | null;
   branchOffices?: string | null;
 
   // Calculator Parameters

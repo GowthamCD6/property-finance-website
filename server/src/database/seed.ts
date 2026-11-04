@@ -206,6 +206,90 @@ async function main() {
     contactHeroTitle: 'Connect with Our Advisory Team',
     contactHeroSubtitle: 'Schedule a confidential one-on-one consultation at our Tirupur office or request an instant phone evaluation.',
     contactHeroImageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+    contactAdvisoryDesks: JSON.stringify([
+      {
+        id: 'desk-1',
+        index: '01',
+        title: 'Land & Home Loans Desk',
+        subtitle: 'Independent Houses, Flats & Construction',
+        iconName: 'Home',
+        scope: [
+          'New Plot Purchase & Construction',
+          'DTCP / RERA Approved Layouts',
+          'PMAY Government Interest Subsidy',
+          'NRI Home Loans & Co-applicant Funding'
+        ],
+        officer: 'Senior Home Loan Specialist',
+        location: 'Tirupur Main Office · Desk 1',
+        phone: '+91 96555 66613',
+        whatsappNumber: '+919655566613',
+        whatsappMessage: "Hello Prime Associates, I would like to consult with the Land & Home Loans Desk regarding a new loan / construction facility.",
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM'
+      },
+      {
+        id: 'desk-2',
+        index: '02',
+        title: 'Mortgage (LAP) & Commercial Desk',
+        subtitle: 'High-Ticket Capital for Business & Property',
+        iconName: 'Building2',
+        scope: [
+          'Industrial Shed & Factory Funding',
+          'Commercial Complex & Office Space',
+          'High LTV Loan Against Property (LAP)',
+          'MSME Working Capital Enhancement'
+        ],
+        officer: 'Commercial Syndication Desk',
+        location: 'Tirupur Main Office · Desk 2',
+        phone: '+91 95144 66600',
+        whatsappNumber: '+919514466600',
+        whatsappMessage: "Hello Prime Associates, I would like to discuss a Mortgage (LAP) or Commercial Property Loan.",
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM'
+      },
+      {
+        id: 'desk-3',
+        index: '03',
+        title: 'Bank Takeover & Balance Transfer',
+        subtitle: 'Rate Reduction & Emergency Debt Restructuring',
+        iconName: 'ArrowLeftRight',
+        scope: [
+          'NBFC / Private to Nationalized Bank',
+          'Interest Rate Reduction (Up to 3.5% save)',
+          'Immediate Top-Up Equity Release',
+          'Collateral Document Release Support'
+        ],
+        officer: 'Portfolio Transfer Lead',
+        location: 'Tirupur Main Office · Desk 3',
+        phone: '+91 96555 66613',
+        whatsappNumber: '+919655566613',
+        whatsappMessage: "Hello Prime Associates, I want to transfer my existing high-interest loan to a nationalized bank with top-up.",
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM'
+      },
+      {
+        id: 'desk-4',
+        index: '04',
+        title: 'Vehicle & Commercial Fleet Desk',
+        subtitle: 'Automotive, Commercial Fleet & Heavy Machinery',
+        iconName: 'Truck',
+        scope: [
+          'New & Used Commercial Vehicles (HCV/LCV)',
+          'Textile & Industrial Machinery Term Loans',
+          'Used Car Refinancing & Top-Up',
+          'Multi-vehicle Fleet Funding'
+        ],
+        officer: 'Asset Finance Lead',
+        location: 'Tirupur Main Office · Desk 4',
+        phone: '+91 95144 66600',
+        whatsappNumber: '+919514466600',
+        whatsappMessage: "Hello Prime Associates, I need assistance with Commercial Vehicle / Machinery financing.",
+        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM'
+      }
+    ]),
+    contactVisitDocs: JSON.stringify([
+      'Identity & Address Proof (Aadhaar Card, PAN Card, Voter ID)',
+      'Income Proof: Last 6 Months Bank Statements & 3 Months Payslips (Salaried) or 3-Year ITR with Balance Sheet (Self-Employed)',
+      'Property Documents: Parent Documents, Registered Sale Deed, Patta, Chitta, FMB Sketch, EC (30 Years), Approved Building Plan',
+      'For Bank Takeovers: Existing Sanction Letter, Foreclosure Statement & List of Documents (LOD) from current lender'
+    ]),
     branchOffices: JSON.stringify([
       {
         id: '1',
