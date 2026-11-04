@@ -544,7 +544,6 @@ export const HowItWorksPage: React.FC = () => {
                 <div className="absolute -top-24 -right-24 w-60 h-60 bg-teal-400/20 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.15] via-white/[0.04] to-transparent pointer-events-none" />
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
 
                 {/* Console Header with Brand Heading Typography */}
                 <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/20">
