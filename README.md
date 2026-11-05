@@ -1,59 +1,37 @@
-# WealthAnchor Property Finance Advisory — Production Website & Admin Portal
+# Prime Associates — Property Finance & Banking Syndication Platform
 
-A full-stack, production-oriented property-backed loan assistance and advisory web application tailored for the Indian financial services landscape.
+An enterprise-grade, full-stack digital property finance advisory and loan syndication platform engineered for the Indian financial services landscape.
 
-Built with strict visual identity guidelines (editorial corporate warm-white/ivory palette, muted teal accents, deep navy typography, and genuine licensed property photography), complete relational database persistence, full client and server validation, rate limiting, and a secure operations admin portal.
+Tailored for **Prime Associates — Loans & Constructions (Tirupur, Tamil Nadu)**, this platform automates the entire borrower intake lifecycle: from public rate comparisons and financial eligibility calculations to multi-bank underwriting pipelines, secure legal document previews, real-time GPS location discovery, and constant-time cryptographic API protection.
 
 ---
 
-## 🌟 Key Highlights
+## 🌟 Executive Capabilities & Features
 
-### A. Public Customer Website (`/`)
-- **Direct Access**: First-time visitors land directly on the public homepage without any registration or login barrier.
-- **Editorial Design System**:
-  - Warm White (`#FFFFFF`) & Ivory (`#F7F7F2`) backgrounds.
-  - Deep Navy typography (`#183247`).
-  - Muted Teal (`#187C78`) & Darker Teal (`#126763`) action buttons.
-  - Slate Grey (`#667085`) secondary copy & subtle borders (`#E5E7EB`).
-  - High-resolution authentic property photography with fallbacks.
-  - Zero emojis as icons, zero dark-mode landing pages, zero purple gradients.
-- **Dynamic Services Showcase**:
-  - Home Loans (purchase, self-construction, balance transfers).
-  - Loans Against Property (LAP for residential & commercial property).
-  - Property-Backed Funding (collateralized funding structures).
-  - Loan Consultation & Eligibility Reviews.
-  - "Enquire Now" links that preselect the chosen service in the form.
-- **Interactive Loan Enquiry & Consultation Scheduler**:
-  - Live formatted INR amount preview (e.g., `₹ 75,00,000` / `75 Lakhs`).
-  - Dynamic slot availability check against backend calendar rules.
-  - Future date verification and double-booking prevention.
-  - Explicit privacy consent checkbox (never preselected).
-  - Generates unique reference numbers (e.g. `VPF-2026-100496`).
-- **Dynamic FAQ Accordion**: Category tabs, expandable panels, and clear advisory statements.
-- **Ethical Compliance & Disclaimers**: Clear disclosure that the business is an independent advisory firm and not a bank/NBFC; no false approval or interest rate promises.
+### 1. Public Customer Portal (`/`)
+- **Editorial Banking Aesthetic:** Built on an editorial warm-white (`#ffffff`) and ivory (`#f8f8f4`) palette, deep navy headings (`#0c1a26`), and banking teal accents (`#187C78`).
+- **Dynamic Services Showcase:** Dedicated underwriting tracks for *Home Loans*, *Loans Against Property (LAP)*, *Bank Takeover / Balance Transfers*, and *Commercial Property Syndication*.
+- **Comprehensive Financial Calculators:**
+  - **EMI Amortization Engine:** Interactive principal vs. interest breakdown charts.
+  - **Loan Eligibility Forecaster:** Instant affordability calculations factoring in monthly income and FOIR.
+  - **Balance Transfer Savings Calculator:** Compares existing high-interest loans against nationalized bank rates with net rupee savings.
+- **Office Location & Direct Advisory Desks:**
+  - Real-time IST office status indicator (*Open Now* vs *Closed Now*).
+  - 4 Specialized Advisory Desks with direct underwriter telephone lines and 1-click WhatsApp document submission.
+  - Interactive Google Maps navigation synchronized dynamically with admin device GPS coordinates.
 
-### B. Admin Operations Portal (`/admin/*`)
-- **Protected Dedicated Route**: `/admin/login` guarded by bcrypt password hashing and JWT authentication.
-- **Calculated Dashboard KPIs**: Live metrics computed from real database records (total enquiries, new submissions, follow-ups needed, upcoming meetings, confirmed slots).
-- **Comprehensive Pipeline Management**:
-  - Search by applicant name, phone, reference number, or city.
-  - Filter by status, loan type, and date range.
-  - Detail drawer with full application specifications.
-  - Status updates (`New` &rarr; `Contacted` &rarr; `Follow-up Required` &rarr; `Appointment Confirmed` &rarr; `In Review` &rarr; `Converted` &rarr; `Closed`).
-  - Internal case notes timeline.
-  - Complete status transition audit trail.
-  - RFC 4180-compliant CSV Export.
-- **Appointment Management**:
-  - Confirm requested slots.
-  - Reschedule slots with automated double-booking conflict checks.
-  - Cancel with mandatory reason logging.
-- **Live Website Content Management**:
-  - Live editable business name, phone, email, address, working hours.
-  - Hero headline, subtitle, primary/secondary CTA text, hero image URL.
-  - About Us narrative, photography, and regulatory notices.
-  - Changes persist directly to the database and reflect immediately on the public website.
-- **Services & FAQs CRUD**: Add, edit, reorder, toggle visibility, and delete services and FAQs.
-- **Availability & Blackout Calendar Settings**: Weekly hours configuration and holiday blackout dates.
+### 2. Customer Application Tracker (`/track`)
+- **Self-Service Status Inquiry:** Borrowers track their loan dossier using their Application Reference Number (`VPF-YYYY-XXXXXX`) and verified mobile number.
+- **6-Stage Visual Timeline:** Live progression tracking (*Submission* &rarr; *Document Verification* &rarr; *Bank Underwriting* &rarr; *Legal & Valuation* &rarr; *Sanction Letter* &rarr; *Disbursal*).
+- **Document Lightbox Previewer:** Fullscreen zoom in/out (up to 300%), 90-degree rotation, and panning controls for inspecting uploaded property sale deeds and income statements.
+- **Anti-Scraping Protection:** Strict IP rate limiting (15 lookups per 15 mins) and cryptographic signatures to prevent phone and reference scraping.
+
+### 3. Administrative Operations Command Portal (`/admin/*`)
+- **Dual-Tier Authentication:** Google OAuth 2.0 verification paired with an administrative email allowlist and signed JWT bearer sessions.
+- **Full Website Content Management (CMS):** Real-time editing of business hours, contact numbers, hero headlines, rotating keywords, bank rate matrices, and regional branch offices.
+- **1-Click GPS Office Location Capture:** Admin captures high-precision device GPS location via browser Geolocation (`navigator.geolocation`) with automatic OpenStreetMap Nominatim reverse geocoding to resolve street addresses and Google Maps directions links.
+- **Loan Pipeline & Kanban Desk:** Search, filter, inspect applicant dossiers, update underwriting statuses, log internal case notes, and export RFC 4180-compliant CSV reports.
+- **API Protection & Cryptographic Security Keys:** Executive cyber command deck featuring timing-safe SHA-256 memory comparisons (`crypto.timingSafeEqual`), anti-replay millisecond drift windows, live latency verification pings, and 1-click secret key rotation.
 
 ---
 
@@ -61,100 +39,75 @@ Built with strict visual identity guidelines (editorial corporate warm-white/ivo
 
 | Layer | Technologies |
 |---|---|
-| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS (custom brand tokens), Lucide React, React Router v6 |
-| **Backend** | Node.js, Express, TypeScript, REST API, Zod Runtime Validation |
-| **Database** | TiDB Cloud Serverless (MySQL compatible) with TLS/SSL CA certificate, Prisma ORM |
-| **Security** | bcryptjs (salt rounds 10), JSON Web Tokens, Helmet security headers, Express Rate Limit, Cookie-parser |
-| **Testing** | Vitest, Supertest (16 comprehensive integration tests) |
+| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, Lucide React, React Router v6 |
+| **Backend** | Node.js, Express.js, TypeScript, REST API, Zod Runtime Validation |
+| **Database & ORM** | TiDB Cloud Serverless / MySQL / PostgreSQL with TLS CA Verification, Prisma ORM |
+| **Storage & Media** | Cloudinary CDN with automatic WebP/AVIF formatting & signed document uploads |
+| **Security Suite** | SHA-256 HMAC, Constant-Time Buffer Comparison, Anti-Replay Drift Window, Rate Limiting |
+| **Authentication** | Google OAuth 2.0 Web Client, Signed JWT Bearer Tokens, Email Allowlist |
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Quickstart Guide
 
-### 1. Install Dependencies
+### 1. Prerequisites
+- **Node.js:** v18.0.0 or higher
+- **npm:** v9.0.0 or higher
+- **Database:** TiDB Cloud Serverless, MySQL 8+, or PostgreSQL cluster with TLS SSL enabled
+
+### 2. Installation
+Clone the repository and install root and package dependencies:
 ```bash
+# Install root dependencies
 npm install
-```
 
-### 2. Initialize Database & Seed
-```bash
-cd server
-npx prisma db push
-npx tsx src/database/seed.ts
+# Install client dependencies
+cd client && npm install
+
+# Install server dependencies
+cd ../server && npm install
 cd ..
 ```
 
-### 3. Run Development Servers
+### 3. Environment & Database Setup
+Configure environment variables using the provided templates:
+- `client/.env`: Set `VITE_API_URL`, `VITE_GOOGLE_CLIENT_ID`, and `VITE_ADMIN_API_KEY`.
+- `server/.env`: Set `DATABASE_URL`, `JWT_SECRET`, `ADMIN_API_KEY`, and Cloudinary credentials.
+*(See detailed guide in [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md))*
+
+Push Prisma schema to the database:
 ```bash
-npm run dev
+cd server
+npx prisma db push
+cd ..
 ```
-- **Public Website**: `http://localhost:5174/` (or `5173`)
-- **Admin Portal**: `http://localhost:5174/admin/login`
-- **Backend API**: `http://localhost:5000/api/public`
 
----
-
-## 🔐 Default Admin Credentials
-
-| Key | Value |
-|---|---|
-| **Portal URL** | `http://localhost:5174/admin/login` |
-| **Email** | `admin@wealthanchor.in` |
-| **Password** | `Admin@123456` |
-| **Role** | Super Administrator |
-
----
-
-## 🧪 Automated Test Suite
-
-Run all 16 integration tests:
+### 4. Running the Development Environment
+Run both client and server concurrently from the project root:
 ```bash
-npm test
+# Terminal 1: Start Backend Server (Port 5000)
+cd server && npm run dev
+
+# Terminal 2: Start Vite Frontend (Port 5174 or 5173)
+cd client && npm run dev
 ```
+
+- **Public Website:** `http://localhost:5174/`
+- **Application Tracker:** `http://localhost:5174/track`
+- **Admin Command Portal:** `http://localhost:5174/admin/login`
+- **Backend Health Check:** `http://localhost:5000/api/public/health`
 
 ---
 
-## 📁 Repository Structure
+## 📚 Complete Project Documentation
 
-```
-├── client/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── common/       # Header, Footer, PrivacyModal
-│   │   │   └── public/       # Hero, ServicesSection, WhyWorkWithUs, HowItWorks, EnquiryForm, FaqSection
-│   │   ├── context/          # AuthContext (JWT session management)
-│   │   ├── layouts/          # PublicLayout, AdminLayout (sidebar + auth guards)
-│   │   ├── pages/
-│   │   │   ├── public/       # HomePage
-│   │   │   └── admin/        # Dashboard, Enquiries, Appointments, Content, Services, FAQs, Settings
-│   │   ├── services/         # Typed API client
-│   │   ├── types/            # TypeScript data contracts
-│   │   ├── index.css         # Brand design tokens & resets
-│   │   └── App.tsx           # Route definitions
-│   └── tailwind.config.js    # Strict brand palette colors
-│
-├── server/
-│   ├── src/
-│   │   ├── __tests__/        # Vitest & Supertest integration suite
-│   │   ├── config/           # Typed environment configuration
-│   │   ├── controllers/      # Public, Auth, and Admin controllers
-│   │   ├── database/         # Prisma client & seed script
-│   │   ├── middleware/       # Auth guard, rate limiters, error handler
-│   │   ├── routes/           # Public, Auth, Admin routers
-│   │   ├── utils/            # Reference generator, notifications
-│   │   ├── validators/       # Zod schemas (enquiry, auth, content)
-│   │   ├── app.ts            # Express application instance
-│   │   └── index.ts          # Server listener entrypoint
-│   └── prisma/
-│       └── schema.prisma     # Relational schema (8 models)
-│
-└── docs/
-    ├── SETUP.md              # Local setup guide
-    ├── API.md                # Comprehensive REST API specifications
-    └── DEPLOYMENT.md         # Production deployment guide (PostgreSQL, Nginx, PM2, SSL)
-```
+For in-depth architectural and deployment guides, refer to the documentation suite in `docs/`:
+
+- 🎨 **[Frontend Architecture & Styling Guide](docs/FRONTEND.md)** — Design tokens, color palette, typography hierarchy, component breakdown, calculators, and responsive image pipeline.
+- ⚙️ **[Backend Server & API Specifications](docs/SERVER.md)** — Express architecture, Prisma schema, REST endpoints, timing-safe SHA-256 HMAC, anti-replay protection, and Cloudinary storage.
+- 🔐 **[Environment & PEM Certificate Guide](docs/ENVIRONMENT.md)** — Exhaustive client/server `.env` variables, TLS Root CA (`isrgrootx1.pem`), and container deployment instructions.
 
 ---
 
-## 📄 License
-Commercial proprietary license for WealthAnchor Property Finance Advisory.
+## 📄 License & Proprietary Rights
+Commercial proprietary application developed for **Prime Associates — Loans & Constructions**. All rights reserved.
