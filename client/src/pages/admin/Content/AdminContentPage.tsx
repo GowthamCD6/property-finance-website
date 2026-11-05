@@ -49,6 +49,9 @@ import {
   Building2,
   ArrowLeftRight,
   Truck,
+  Navigation,
+  Crosshair,
+  LocateFixed,
 } from 'lucide-react';
 import {
   SiteContent,
@@ -121,6 +124,16 @@ export const AdminContentPage: React.FC = () => {
   const [branchOfficesList, setBranchOfficesList] = useState<BranchOffice[]>([]);
   const [branchModalOpen, setBranchModalOpen] = useState<boolean>(false);
   const [editingBranch, setEditingBranch] = useState<BranchOffice | null>(null);
+
+  // GPS Location Capture States
+  const [capturingLocation, setCapturingLocation] = useState<boolean>(false);
+  const [capturingBranchId, setCapturingBranchId] = useState<string | null>(null);
+  const [capturedLocationInfo, setCapturedLocationInfo] = useState<{
+    lat: number;
+    lng: number;
+    address: string;
+    accuracy?: number;
+  } | null>(null);
 
   // Specialized Advisory Desks & Contact Page Checklist
   const [advisoryDesksList, setAdvisoryDesksList] = useState<AdvisoryDesk[]>([]);
@@ -647,6 +660,171 @@ export const AdminContentPage: React.FC = () => {
 
   const deleteBranch = (id: string) => {
     setBranchOfficesList(branchOfficesList.filter((b) => b.id !== id));
+  };
+
+  // Helper to fetch high-precision coordinates from browser
+  const getCurrentLocationCoords = (): Promise<GeolocationPosition> => {
+    return new Promise((resolve, reject) => {
+      if (typeof window === 'undefined' || !navigator.geolocation) {
+        reject(new Error('Geolocation is not supported by your browser. Please enter the coordinates manually.'));
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => resolve(position),
+        (err) => {
+          let msg = 'Unable to retrieve location.';
+          if (err.code === 1) {
+            msg = 'Location permission was denied. Please allow location access in your browser to capture your office location.';
+          } else if (err.code === 2) {
+            msg = 'GPS location is unavailable. Please check your device location settings.';
+          } else if (err.code === 3) {
+            msg = 'Location request timed out. Please try again.';
+          }
+          reject(new Error(msg));
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      );
+    });
+  };
+
+  // Helper to reverse geocode lat/lng to clean street address
+  const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const addr = data.address || {};
+        const parts = [
+          addr.building || addr.amenity || addr.office,
+          addr.house_number ? `No. ${addr.house_number}` : '',
+          addr.road || addr.street,
+          addr.suburb || addr.neighbourhood,
+          addr.city || addr.town || addr.village || addr.county,
+          addr.state,
+          addr.postcode ? `- ${addr.postcode}` : '',
+        ].filter(Boolean);
+
+        if (parts.length > 0) {
+          return parts.join(', ');
+        }
+        if (data.display_name) {
+          return data.display_name;
+        }
+      }
+    } catch (e) {
+      console.warn('Reverse geocoding error:', e);
+    }
+    return '';
+  };
+
+  // Capture location inside the Branch Modal
+  const handleCaptureModalLocation = async () => {
+    if (!editingBranch) return;
+    setCapturingLocation(true);
+    setError(null);
+    try {
+      const position = await getCurrentLocationCoords();
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const accuracy = position.coords.accuracy;
+      const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+      const resolvedAddress = await reverseGeocode(lat, lng);
+
+      setEditingBranch((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          mapEmbedUrl: mapUrl,
+          address: resolvedAddress || prev.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          name: prev.name || (resolvedAddress ? `${resolvedAddress.split(',')[0]} Branch` : 'Main Office Branch'),
+        };
+      });
+
+      setCapturedLocationInfo({
+        lat,
+        lng,
+        address: resolvedAddress,
+        accuracy,
+      });
+
+      setSuccessMessage(
+        `✓ Captured GPS coordinates: ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E (±${Math.round(accuracy)}m). Office address and Google Maps link updated.`
+      );
+      setTimeout(() => setSuccessMessage(null), 5000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to capture GPS location.');
+    } finally {
+      setCapturingLocation(false);
+    }
+  };
+
+  // 1-Click capture directly on Branch Card in Section 5
+  const handleQuickCaptureBranchLocation = async (branch: BranchOffice) => {
+    setCapturingBranchId(branch.id);
+    setError(null);
+    try {
+      const position = await getCurrentLocationCoords();
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+      const resolvedAddress = await reverseGeocode(lat, lng);
+
+      const updatedBranch: BranchOffice = {
+        ...branch,
+        mapEmbedUrl: mapUrl,
+        address: resolvedAddress || branch.address,
+      };
+
+      setBranchOfficesList((prev) =>
+        prev.map((b) => (b.id === branch.id ? updatedBranch : b))
+      );
+
+      setSuccessMessage(
+        `✓ Successfully captured current GPS location for "${branch.name}"! Updated coordinates: ${lat.toFixed(5)}, ${lng.toFixed(5)}.`
+      );
+      setTimeout(() => setSuccessMessage(null), 6000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to capture current location.');
+    } finally {
+      setCapturingBranchId(null);
+    }
+  };
+
+  // 1-Click capture for Headquarters in Section 1
+  const handleCaptureHQLocation = async () => {
+    setCapturingLocation(true);
+    setError(null);
+    try {
+      const position = await getCurrentLocationCoords();
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+      const resolvedAddress = await reverseGeocode(lat, lng);
+
+      setContent((prev) => ({
+        ...prev,
+        officeAddress: resolvedAddress || prev.officeAddress || `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+      }));
+
+      setSocialLinksState((prev) => ({
+        ...prev,
+        mapUrl: mapUrl,
+      }));
+
+      setSuccessMessage(
+        `✓ Headquarters address & Google Maps link updated from your current GPS location: ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E. Click "Save Changes" to apply live.`
+      );
+      setTimeout(() => setSuccessMessage(null), 5000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to capture headquarters location.');
+    } finally {
+      setCapturingLocation(false);
+    }
   };
 
   // Specialized Advisory Desks Handlers
@@ -3264,9 +3442,30 @@ export const AdminContentPage: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2 lg:col-span-3">
-                  <label className="block font-bold text-brand-navy mb-1.5">
-                    Corporate Headquarters Physical Address
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                    <label className="block font-bold text-brand-navy">
+                      Corporate Headquarters Physical Address
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleCaptureHQLocation}
+                      disabled={capturingLocation}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-md text-[11px] font-bold transition-colors cursor-pointer disabled:opacity-50"
+                      title="Auto-detect and fill current address via GPS"
+                    >
+                      {capturingLocation ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin text-emerald-700" />
+                          <span>Detecting GPS...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Navigation className="w-3 h-3 text-emerald-700" />
+                          <span>Detect Current Location (GPS)</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   <textarea
                     rows={2}
                     name="officeAddress"
@@ -3522,25 +3721,52 @@ export const AdminContentPage: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingBranch({
-                      id: '',
-                      name: '',
-                      address: '',
-                      phone: '+91 96555 66613',
-                      email: 'primeassociates2008@gmail.com',
-                      timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
-                      mapEmbedUrl: 'https://maps.google.com/?q=Prime+Associates+Tirupur',
-                    });
-                    setBranchModalOpen(true);
-                  }}
-                  className="px-3.5 py-2 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-lg flex items-center gap-1.5 self-start"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Branch Office</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2 self-start">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const newBranch: BranchOffice = {
+                        id: '',
+                        name: '',
+                        address: '',
+                        phone: '+91 96555 66613',
+                        email: 'primeassociates2008@gmail.com',
+                        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+                        mapEmbedUrl: '',
+                      };
+                      setEditingBranch(newBranch);
+                      setBranchModalOpen(true);
+                      setTimeout(() => {
+                        handleCaptureModalLocation();
+                      }, 250);
+                    }}
+                    className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                    title="Capture your device GPS location and add a new branch office"
+                  >
+                    <LocateFixed className="w-4 h-4" />
+                    <span>Add Branch via GPS</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingBranch({
+                        id: '',
+                        name: '',
+                        address: '',
+                        phone: '+91 96555 66613',
+                        email: 'primeassociates2008@gmail.com',
+                        timings: 'Monday – Saturday: 9:30 AM – 6:30 PM',
+                        mapEmbedUrl: 'https://maps.google.com/?q=Prime+Associates+Tirupur',
+                      });
+                      setBranchModalOpen(true);
+                    }}
+                    className="px-3.5 py-2 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-lg flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Branch Office</span>
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -3576,20 +3802,41 @@ export const AdminContentPage: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-brand-border/60">
-                      {branch.mapEmbedUrl ? (
-                        <a
-                          href={branch.mapEmbedUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-[11px] text-brand-teal hover:underline flex items-center gap-1 font-semibold"
+                    <div className="flex items-center justify-between pt-2 border-t border-brand-border/60 flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        {branch.mapEmbedUrl ? (
+                          <a
+                            href={branch.mapEmbedUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[11px] text-brand-teal hover:underline flex items-center gap-1 font-semibold"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            <span>View on Map</span>
+                          </a>
+                        ) : null}
+
+                        <button
+                          type="button"
+                          onClick={() => handleQuickCaptureBranchLocation(branch)}
+                          disabled={capturingBranchId === branch.id}
+                          className="px-2 py-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-md flex items-center gap-1 transition-colors disabled:opacity-50 cursor-pointer"
+                          title="Capture admin device location via GPS and set as this branch's office location & Google Maps pin"
                         >
-                          <ExternalLink className="w-3 h-3" />
-                          <span>View on Map</span>
-                        </a>
-                      ) : (
-                        <span />
-                      )}
+                          {capturingBranchId === branch.id ? (
+                            <>
+                              <Loader2 className="w-3 h-3 animate-spin text-emerald-700" />
+                              <span>Detecting GPS...</span>
+                            </>
+                          ) : (
+                            <>
+                              <LocateFixed className="w-3 h-3 text-emerald-700" />
+                              <span>Set Current Location</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
                       <div className="flex gap-2">
                         <button
                           type="button"
@@ -4982,6 +5229,61 @@ export const AdminContentPage: React.FC = () => {
             </div>
 
             <div className="space-y-3 text-xs">
+              {/* GPS Auto-detect Card */}
+              <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3.5 space-y-2.5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-1.5 bg-emerald-100 text-emerald-700 rounded-lg shrink-0 mt-0.5">
+                      <LocateFixed className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-emerald-950 text-xs">Auto-Detect Office Location via GPS</p>
+                      <p className="text-[11px] text-emerald-800 leading-snug">
+                        Capture your device's exact location to automatically resolve the street address and generate the Google Maps directions link.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCaptureModalLocation}
+                    disabled={capturingLocation}
+                    className="shrink-0 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1.5 shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {capturingLocation ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Detecting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Crosshair className="w-3.5 h-3.5" />
+                        <span>Capture GPS</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {capturedLocationInfo && (
+                  <div className="bg-white/90 rounded-lg p-2.5 border border-emerald-200 text-[11px] text-emerald-900 space-y-1">
+                    <div className="flex items-center justify-between font-mono text-[11px]">
+                      <span>
+                        GPS: <strong>{capturedLocationInfo.lat.toFixed(5)}° N, {capturedLocationInfo.lng.toFixed(5)}° E</strong>
+                      </span>
+                      {capturedLocationInfo.accuracy && (
+                        <span className="text-[10px] text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded font-sans font-semibold">
+                          ±{Math.round(capturedLocationInfo.accuracy)}m accuracy
+                        </span>
+                      )}
+                    </div>
+                    {capturedLocationInfo.address && (
+                      <p className="text-slate-600 font-sans text-[11px]">
+                        📍 {capturedLocationInfo.address}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="block font-bold text-brand-navy mb-1">Branch / Office Name</label>
                 <input
@@ -4994,11 +5296,15 @@ export const AdminContentPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-bold text-brand-navy mb-1">Physical Address</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-bold text-brand-navy">Physical Address</label>
+                  <span className="text-[10px] text-slate-500 font-medium">Auto-filled from GPS reverse geocode</span>
+                </div>
                 <textarea
                   rows={2}
                   value={editingBranch.address}
                   onChange={(e) => setEditingBranch({ ...editingBranch, address: e.target.value })}
+                  placeholder="e.g. No. 48, 49, Kumaran Road, Tirupur - 641601"
                   className="w-full p-2 border border-brand-border rounded"
                 />
               </div>
@@ -5036,15 +5342,29 @@ export const AdminContentPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-bold text-brand-navy mb-1">
-                  Google Maps Link or Coordinates URL
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-bold text-brand-navy">
+                    Google Maps Link or Coordinates URL
+                  </label>
+                  {editingBranch.mapEmbedUrl && (
+                    <a
+                      href={editingBranch.mapEmbedUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[11px] text-brand-teal hover:underline flex items-center gap-1 font-semibold"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>Test on Maps</span>
+                    </a>
+                  )}
+                </div>
                 <input
                   type="url"
                   value={editingBranch.mapEmbedUrl || ''}
                   onChange={(e) =>
                     setEditingBranch({ ...editingBranch, mapEmbedUrl: e.target.value })
                   }
+                  placeholder="https://www.google.com/maps?q=11.1085,77.3411"
                   className="w-full p-2 border border-brand-border rounded"
                 />
               </div>

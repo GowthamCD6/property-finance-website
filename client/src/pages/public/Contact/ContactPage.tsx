@@ -58,6 +58,18 @@ export const ContactPage: React.FC = () => {
     'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
   const contactHeroImage = content?.contactHeroImageUrl || CDN_IMAGES.contactHero;
 
+  const mapDirectionsUrl = useMemo(() => {
+    try {
+      if (content?.socialLinks) {
+        const parsed = typeof content.socialLinks === 'string' ? JSON.parse(content.socialLinks) : content.socialLinks;
+        if (parsed?.mapUrl) return parsed.mapUrl;
+      }
+    } catch {
+      // fallback
+    }
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(officeAddress)}`;
+  }, [content?.socialLinks, officeAddress]);
+
   const [mounted, setMounted] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -543,7 +555,7 @@ export const ContactPage: React.FC = () => {
 
               <div className="pt-1 flex flex-col sm:flex-row gap-2">
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=P.R.+Complex+Binny+Compound+Kumaran+Road+Tirupur+641601"
+                  href={mapDirectionsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-3 px-4 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center gap-1.5 shadow-md cursor-pointer font-heading tracking-wide"
