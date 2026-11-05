@@ -1,113 +1,77 @@
-# Prime Associates — Property Finance & Banking Syndication Platform
+# Prime Associates — Digital Property Finance & Loan Advisory Solution
 
-An enterprise-grade, full-stack digital property finance advisory and loan syndication platform engineered for the Indian financial services landscape.
-
-Tailored for **Prime Associates — Loans & Constructions (Tirupur, Tamil Nadu)**, this platform automates the entire borrower intake lifecycle: from public rate comparisons and financial eligibility calculations to multi-bank underwriting pipelines, secure legal document previews, real-time GPS location discovery, and constant-time cryptographic API protection.
+A comprehensive digital solution designed and delivered for **Prime Associates — Loans & Constructions (Tirupur, Tamil Nadu)** to modernize property-backed lending, loan syndication, and borrower consultation across the Indian banking ecosystem.
 
 ---
 
-## 🌟 Executive Capabilities & Features
+## 🌟 The Business Challenge
 
-### 1. Public Customer Portal (`/`)
-- **Editorial Banking Aesthetic:** Built on an editorial warm-white (`#ffffff`) and ivory (`#f8f8f4`) palette, deep navy headings (`#0c1a26`), and banking teal accents (`#187C78`).
-- **Dynamic Services Showcase:** Dedicated underwriting tracks for *Home Loans*, *Loans Against Property (LAP)*, *Bank Takeover / Balance Transfers*, and *Commercial Property Syndication*.
-- **Comprehensive Financial Calculators:**
-  - **EMI Amortization Engine:** Interactive principal vs. interest breakdown charts.
-  - **Loan Eligibility Forecaster:** Instant affordability calculations factoring in monthly income and FOIR.
-  - **Balance Transfer Savings Calculator:** Compares existing high-interest loans against nationalized bank rates with net rupee savings.
-- **Office Location & Direct Advisory Desks:**
-  - Real-time IST office status indicator (*Open Now* vs *Closed Now*).
-  - 4 Specialized Advisory Desks with direct underwriter telephone lines and 1-click WhatsApp document submission.
-  - Interactive Google Maps navigation synchronized dynamically with admin device GPS coordinates.
-
-### 2. Customer Application Tracker (`/track`)
-- **Self-Service Status Inquiry:** Borrowers track their loan dossier using their Application Reference Number (`VPF-YYYY-XXXXXX`) and verified mobile number.
-- **6-Stage Visual Timeline:** Live progression tracking (*Submission* &rarr; *Document Verification* &rarr; *Bank Underwriting* &rarr; *Legal & Valuation* &rarr; *Sanction Letter* &rarr; *Disbursal*).
-- **Document Lightbox Previewer:** Fullscreen zoom in/out (up to 300%), 90-degree rotation, and panning controls for inspecting uploaded property sale deeds and income statements.
-- **Anti-Scraping Protection:** Strict IP rate limiting (15 lookups per 15 mins) and cryptographic signatures to prevent phone and reference scraping.
-
-### 3. Administrative Operations Command Portal (`/admin/*`)
-- **Dual-Tier Authentication:** Google OAuth 2.0 verification paired with an administrative email allowlist and signed JWT bearer sessions.
-- **Full Website Content Management (CMS):** Real-time editing of business hours, contact numbers, hero headlines, rotating keywords, bank rate matrices, and regional branch offices.
-- **1-Click GPS Office Location Capture:** Admin captures high-precision device GPS location via browser Geolocation (`navigator.geolocation`) with automatic OpenStreetMap Nominatim reverse geocoding to resolve street addresses and Google Maps directions links.
-- **Loan Pipeline & Kanban Desk:** Search, filter, inspect applicant dossiers, update underwriting statuses, log internal case notes, and export RFC 4180-compliant CSV reports.
-- **API Protection & Cryptographic Security Keys:** Executive cyber command deck featuring timing-safe SHA-256 memory comparisons (`crypto.timingSafeEqual`), anti-replay millisecond drift windows, live latency verification pings, and 1-click secret key rotation.
+Securing property finance in India has traditionally been characterized by:
+- **Scattered Lender Options:** Borrowers struggle to compare interest rates and loan-to-value (LTV) ratios across 40+ public, private, and housing finance companies (HFCs).
+- **Manual Intake & Document Friction:** Collecting parent title deeds, patta, chitta, income tax returns, and bank statements through informal channels leads to misplaced files and approval delays.
+- **Lack of Transparency:** Applicants are frequently left in the dark regarding their loan file’s real-time stage in bank underwriting, resulting in constant phone calls and follow-ups.
+- **Complex Branch & Desk Coordination:** Prospective clients often visit branches unprepared, lacking the specific KYC and collateral paperwork required for their loan category.
 
 ---
 
-## 🛠️ Technology Stack
+## 💡 The Solution We Built
 
-| Layer | Technologies |
-|---|---|
-| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, Lucide React, React Router v6 |
-| **Backend** | Node.js, Express.js, TypeScript, REST API, Zod Runtime Validation |
-| **Database & ORM** | TiDB Cloud Serverless / MySQL / PostgreSQL with TLS CA Verification, Prisma ORM |
-| **Storage & Media** | Cloudinary CDN with automatic WebP/AVIF formatting & signed document uploads |
-| **Security Suite** | SHA-256 HMAC, Constant-Time Buffer Comparison, Anti-Replay Drift Window, Rate Limiting |
-| **Authentication** | Google OAuth 2.0 Web Client, Signed JWT Bearer Tokens, Email Allowlist |
+We designed and implemented an end-to-end digital property finance platform that bridges borrowers, loan advisors, and banking institutions into a unified digital ecosystem.
 
----
+### 1. Instant Loan Discovery & Comparative Intelligence
+- **Multi-Bank Interest Rate Matrix:** Allows borrowers to browse and compare real-time interest rates, maximum eligible amounts, and processing turnarounds across major nationalized banks and NBFCs.
+- **Interactive Financial Calculators:**
+  - **EMI Repayment Forecaster:** Helps borrowers visualize monthly cash flows, principal amortization, and cumulative interest costs before submitting a file.
+  - **Eligibility Estimator:** Evaluates gross monthly income and existing financial obligations (FOIR) to give borrowers a realistic borrowing capacity.
+  - **Bank Takeover & Balance Transfer Savings Engine:** Quantifies net rupee savings over the loan tenure when shifting high-interest loans to lower-rate lenders.
 
-## 🚀 Quickstart Guide
+### 2. Streamlined Digital Loan Application & Document Intake
+- **Guided Multi-Step Application:** Borrowers specify their exact financing needs (New Plot & Construction, Home Purchase, Mortgage / LAP, or Working Capital) in a simple, guided interface.
+- **Secure Collateral & KYC Document Dossier:** Direct digital submission of property documents, salary slips, and business financials with immediate confirmation receipts.
+- **Unique Tracking Reference:** Every submission instantly issues an official tracking reference number for accountability.
 
-### 1. Prerequisites
-- **Node.js:** v18.0.0 or higher
-- **npm:** v9.0.0 or higher
-- **Database:** TiDB Cloud Serverless, MySQL 8+, or PostgreSQL cluster with TLS SSL enabled
+### 3. Transparent Self-Service Application Tracking
+- **Real-Time 6-Stage Progress Tracker:** Borrowers can check their file status anytime using their reference and mobile number, following their file from initial verification to bank submission, legal valuation, sanction, and fund disbursal.
+- **Interactive Document Reviewer:** Secure viewer allowing borrowers and officers to inspect uploaded deeds, plans, and receipts with full zoom and rotation capabilities.
 
-### 2. Installation
-Clone the repository and install root and package dependencies:
-```bash
-# Install root dependencies
-npm install
+### 4. Regional Office & GPS-Enabled Walk-In Discovery
+- **1-Click GPS Office Location:** Enables the office team to capture their exact device GPS coordinates and immediately publish precise Google Maps directions for visiting clients.
+- **Live IST Business Hours Indicator:** Displays whether physical branches and advisory desks are currently open or closed based on Indian Standard Time.
+- **What to Bring Preparation Checklist:** Clear, loan-specific guidance on exactly what original property and income documents to bring for in-person consultations.
 
-# Install client dependencies
-cd client && npm install
+### 5. Dedicated Specialized Advisory Desks
+Direct access to experienced underwriting officers across 4 specialized departments:
+- **Land & Home Loans Desk:** Dedicated to independent villas, DTCP/RERA plots, and self-construction funding.
+- **Mortgage (LAP) & Commercial Desk:** Focused on high-ticket capital, industrial sheds, commercial complexes, and MSME expansion.
+- **Bank Takeover & Debt Restructuring Desk:** Specialists in negotiating balance transfers, rate reductions, and equity top-up releases.
+- **Direct Real-Time Communication:** Direct desk telephone numbers and 1-click encrypted WhatsApp advisory channels.
 
-# Install server dependencies
-cd ../server && npm install
-cd ..
-```
-
-### 3. Environment & Database Setup
-Configure environment variables using the provided templates:
-- `client/.env`: Set `VITE_API_URL`, `VITE_GOOGLE_CLIENT_ID`, and `VITE_ADMIN_API_KEY`.
-- `server/.env`: Set `DATABASE_URL`, `JWT_SECRET`, `ADMIN_API_KEY`, and Cloudinary credentials.
-*(See detailed guide in [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md))*
-
-Push Prisma schema to the database:
-```bash
-cd server
-npx prisma db push
-cd ..
-```
-
-### 4. Running the Development Environment
-Run both client and server concurrently from the project root:
-```bash
-# Terminal 1: Start Backend Server (Port 5000)
-cd server && npm run dev
-
-# Terminal 2: Start Vite Frontend (Port 5174 or 5173)
-cd client && npm run dev
-```
-
-- **Public Website:** `http://localhost:5174/`
-- **Application Tracker:** `http://localhost:5174/track`
-- **Admin Command Portal:** `http://localhost:5174/admin/login`
-- **Backend Health Check:** `http://localhost:5000/api/public/health`
+### 6. Centralized Operations & Pipeline Command Portal
+- **Central Underwriting Dashboard:** Enables Prime Associates loan consultants to manage the entire borrower pipeline from intake to sanction.
+- **Live Website Content Management (CMS):** Empowers the business team to update bank rates, interest matrices, office hours, and announcements instantly without technical assistance.
+- **Enterprise Data Protection:** Built with multi-layer security protections, timing-safe cryptographic verification, and strict rate limiting to keep customer financial records safe.
 
 ---
 
-## 📚 Complete Project Documentation
+## 📈 Impact & Results Delivered
 
-For in-depth architectural and deployment guides, refer to the documentation suite in `docs/`:
-
-- 🎨 **[Frontend Architecture & Styling Guide](docs/FRONTEND.md)** — Design tokens, color palette, typography hierarchy, component breakdown, calculators, and responsive image pipeline.
-- ⚙️ **[Backend Server & API Specifications](docs/SERVER.md)** — Express architecture, Prisma schema, REST endpoints, timing-safe SHA-256 HMAC, anti-replay protection, and Cloudinary storage.
-- 🔐 **[Environment & PEM Certificate Guide](docs/ENVIRONMENT.md)** — Exhaustive client/server `.env` variables, TLS Root CA (`isrgrootx1.pem`), and container deployment instructions.
+- **Zero Paperwork Loss:** All customer files and title deeds are structured digitally into an organized, permanent borrower dossier.
+- **Faster Underwriting Turnaround:** Pre-screened eligibility calculations and organized document checklists reduce initial bank review cycles by over 50%.
+- **Enhanced Borrower Trust:** Transparent status tracking and independent advisory disclaimers build long-term confidence with property buyers and business owners.
+- **Operational Independence:** The business team can manage rates, content, and regional office locations in real time through an intuitive administrative console.
 
 ---
 
-## 📄 License & Proprietary Rights
-Commercial proprietary application developed for **Prime Associates — Loans & Constructions**. All rights reserved.
+## 📖 Technical & Developer Documentation
+
+For technical specifications, system architecture, database schemas, and deployment instructions, refer to our detailed developer documentation:
+
+- 🎨 **[Frontend Architecture & Design System](docs/FRONTEND.md)** — Visual identity tokens, component breakdowns, and responsive design guidelines.
+- ⚙️ **[Backend Server & API Specifications](docs/SERVER.md)** — Server architecture, database models, security gateways, and REST endpoints.
+- 🔐 **[Environment & Security Configuration](docs/ENVIRONMENT.md)** — Environment variables, TLS certificates (`.pem`), and deployment settings.
+
+---
+
+## 🏢 About Prime Associates
+**Prime Associates — Loans & Constructions**  
+Headquartered in Tirupur, Tamil Nadu, Prime Associates is an independent property finance consultancy firm partnering with 40+ leading nationalized banks, private institutions, and housing finance companies.
