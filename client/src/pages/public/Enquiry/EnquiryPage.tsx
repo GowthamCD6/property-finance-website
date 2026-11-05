@@ -98,7 +98,7 @@ export const EnquiryPage: React.FC = () => {
             alt="Property Loan Consultation & Dossier Intake"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           {/* Calibrated lightweight translucent overlays so image is visible while foreground text remains crisp */}

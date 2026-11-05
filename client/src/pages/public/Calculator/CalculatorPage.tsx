@@ -416,7 +416,7 @@ export const CalculatorPage: React.FC = () => {
             alt="Institutional Mortgage & EMI Financial Analytics"
             className="w-full h-full object-cover object-center brightness-[1.12] contrast-[1.02]"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           {/* Calibrated lightweight translucent overlays so image is vividly visible and bright while text remains crisp */}

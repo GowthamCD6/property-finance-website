@@ -356,8 +356,13 @@ export async function loginAdminWithGoogleApi(credential: string): Promise<{ tok
     credentials: 'include',
     body: JSON.stringify({ credential }),
   });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Google Administrator authentication failed');
+  const json = await res.json().catch(() => ({ message: 'Authentication server error' }));
+  if (!res.ok) {
+    const error: any = new Error(json.message || 'Google Administrator authentication failed');
+    error.status = res.status;
+    error.code = json.code;
+    throw error;
+  }
   return json.data;
 }
 

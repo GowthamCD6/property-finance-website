@@ -9,12 +9,19 @@ import {
   EyeOff,
   ShieldCheck,
   KeyRound,
+  ShieldAlert,
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { triggerGoogleOAuth } from '../../../utils/googleAuth';
 import { CDN_IMAGES } from '../../../constants/cloudinaryImages';
 
 const logoImg = CDN_IMAGES.logo;
+
+interface LoginErrorState {
+  type: 'unauthorized_google' | 'database_unavailable' | 'general';
+  title?: string;
+  message: string;
+}
 
 export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -24,7 +31,7 @@ export const AdminLoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<LoginErrorState | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
@@ -40,7 +47,10 @@ export const AdminLoginPage: React.FC = () => {
     const cleanPhone = phone.trim();
 
     if (!cleanPhone || !password) {
-      setError('Please enter your registered mobile number and password.');
+      setError({
+        type: 'general',
+        message: 'Please enter your registered mobile number and password.',
+      });
       return;
     }
 
@@ -51,9 +61,26 @@ export const AdminLoginPage: React.FC = () => {
       await login(cleanPhone, password);
       navigate('/admin/dashboard', { replace: true });
     } catch (err: any) {
-      setError(
-        err.message || 'Invalid credentials. Please verify your mobile number and password.'
-      );
+      const rawMsg = String(err?.message || '');
+      if (
+        rawMsg.toLowerCase().includes('database') ||
+        rawMsg.toLowerCase().includes('invocation') ||
+        rawMsg.toLowerCase().includes('tidb') ||
+        rawMsg.toLowerCase().includes('gateway01') ||
+        rawMsg.toLowerCase().includes('prisma')
+      ) {
+        setError({
+          type: 'database_unavailable',
+          title: 'Database Temporarily Unavailable',
+          message:
+            'The database is momentarily taking longer to respond. Please try again in a few moments or retry with your credentials.',
+        });
+      } else {
+        setError({
+          type: 'general',
+          message: rawMsg.replace(/^Error:\s*/i, '') || 'Invalid credentials. Please verify your mobile number and password.',
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +96,43 @@ export const AdminLoginPage: React.FC = () => {
       navigate('/admin/dashboard', { replace: true });
     } catch (err: any) {
       console.warn('Google Sign-In error:', err);
-      setError(err.message || 'Google Administrator authentication failed.');
+      const rawMsg = String(err?.message || '');
+      const code = err?.code || '';
+
+      if (
+        code === 'UNAUTHORIZED_ADMIN_ACCOUNT' ||
+        rawMsg.toLowerCase().includes('unauthorized') ||
+        rawMsg.toLowerCase().includes('access denied') ||
+        rawMsg.toLowerCase().includes('not registered') ||
+        rawMsg.toLowerCase().includes('not enrolled')
+      ) {
+        setError({
+          type: 'unauthorized_google',
+          title: 'Unauthorized Google Account',
+          message:
+            rawMsg.replace(/^Error:\s*/i, '') ||
+            'This Google account is not registered as an authorized administrator. Please sign in with an authorized email.',
+        });
+      } else if (
+        code === 'DATABASE_UNAVAILABLE' ||
+        rawMsg.toLowerCase().includes('database') ||
+        rawMsg.toLowerCase().includes('invocation') ||
+        rawMsg.toLowerCase().includes('tidb') ||
+        rawMsg.toLowerCase().includes('gateway01') ||
+        rawMsg.toLowerCase().includes('prisma')
+      ) {
+        setError({
+          type: 'database_unavailable',
+          title: 'Authentication Service Busy',
+          message:
+            'The database connection is momentarily unavailable. Please wait a few seconds and try again, or sign in using your mobile number and password below.',
+        });
+      } else {
+        setError({
+          type: 'general',
+          message: rawMsg.replace(/^Error:\s*/i, '') || 'Google Administrator authentication failed.',
+        });
+      }
     } finally {
       setIsGoogleLoading(false);
     }
@@ -101,10 +164,50 @@ export const AdminLoginPage: React.FC = () => {
         </div>
 
         {/* Error Notification */}
-        {error && (
+        {error && error.type === 'unauthorized_google' && (
+          <div className="p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl space-y-2.5 text-xs">
+            <div className="flex items-start gap-2.5">
+              <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-bold text-amber-900 leading-tight">
+                  {error.title || 'Unauthorized Google Account'}
+                </p>
+                <p className="text-amber-800 font-normal leading-relaxed mt-1">
+                  {error.message}
+                </p>
+              </div>
+            </div>
+            <div className="pt-1 flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => triggerGoogleAdminLogin()}
+                disabled={isGoogleLoading}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg text-xs shadow-xs transition-colors cursor-pointer"
+              >
+                <span>Switch Google Account</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {error && error.type === 'database_unavailable' && (
+          <div className="p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl flex items-start gap-2.5 text-amber-800 text-xs">
+            <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="font-bold text-amber-900 leading-tight">
+                {error.title || 'Service Temporarily Busy'}
+              </p>
+              <p className="text-amber-800 font-normal leading-relaxed mt-1">
+                {error.message}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {error && error.type === 'general' && (
           <div className="p-3 bg-red-50 border border-red-200/80 rounded-xl flex items-start gap-2.5 text-red-800 text-xs">
             <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-            <span className="font-medium font-sans leading-tight">{error}</span>
+            <span className="font-medium font-sans leading-tight">{error.message}</span>
           </div>
         )}
 

@@ -203,24 +203,49 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
     if (!googleToken) {
       res.status(400).json({
         success: false,
+        code: 'MISSING_CREDENTIAL',
         message: 'Google authentication credential is required.',
       });
       return;
     }
 
-    const payload = await verifyGoogleToken(googleToken);
+    let payload;
+    try {
+      payload = await verifyGoogleToken(googleToken);
+    } catch (tokenErr: any) {
+      console.warn('[AUTH] Google token verification failed:', tokenErr?.message);
+      res.status(401).json({
+        success: false,
+        code: 'INVALID_GOOGLE_TOKEN',
+        message: 'Google authentication token could not be verified or has expired. Please try signing in again.',
+      });
+      return;
+    }
+
     const googleEmail = payload.email.toLowerCase().trim();
 
     // CRITICAL SECURITY ENFORCEMENT:
     // Only allow authentication if this Gmail / email is ALREADY enrolled in the database (AdminUser table)
-    const admin = await prisma.adminUser.findUnique({
-      where: { email: googleEmail },
-    });
+    let admin;
+    try {
+      admin = await prisma.adminUser.findUnique({
+        where: { email: googleEmail },
+      });
+    } catch (dbErr: any) {
+      console.error('[AUTH] Database error during admin lookup:', dbErr);
+      res.status(503).json({
+        success: false,
+        code: 'DATABASE_UNAVAILABLE',
+        message: 'Authentication service is temporarily unable to reach the database server. Please try again shortly or use your registered mobile number and password.',
+      });
+      return;
+    }
 
     if (!admin) {
       res.status(403).json({
         success: false,
-        message: `Access Denied: The Google account (${googleEmail}) is not registered in our database as an authorized administrator. Please ask your primary administrator to enroll your email address first.`,
+        code: 'UNAUTHORIZED_ADMIN_ACCOUNT',
+        message: `Unauthorized Account: The Google account (${googleEmail}) is not enrolled as an authorized administrator. Please sign in with an authorized administrator account or ask your primary administrator to grant access.`,
       });
       return;
     }
@@ -228,19 +253,25 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
     if (!admin.isActive) {
       res.status(403).json({
         success: false,
-        message: `Access Denied: The administrator account (${googleEmail}) has been deactivated. Please contact your primary administrator.`,
+        code: 'ACCOUNT_DEACTIVATED',
+        message: `Account Deactivated: The administrator account (${googleEmail}) has been deactivated. Please contact your system administrator.`,
       });
       return;
     }
 
     // Update lastLoginAt and avatar from Google
-    const updatedAdmin = await prisma.adminUser.update({
-      where: { id: admin.id },
-      data: {
-        lastLoginAt: new Date(),
-        avatar: payload.picture || admin.avatar,
-      },
-    });
+    let updatedAdmin = admin;
+    try {
+      updatedAdmin = await prisma.adminUser.update({
+        where: { id: admin.id },
+        data: {
+          lastLoginAt: new Date(),
+          avatar: payload.picture || admin.avatar,
+        },
+      });
+    } catch (updateErr: any) {
+      console.warn('[AUTH] Could not update admin lastLoginAt/avatar:', updateErr?.message);
+    }
 
     const token = jwt.sign(
       {
@@ -275,9 +306,11 @@ export async function googleAdminLogin(req: Request, res: Response, next: NextFu
       },
     });
   } catch (err: any) {
-    res.status(401).json({
+    console.error('[AUTH] Unhandled error in googleAdminLogin:', err?.message || err);
+    res.status(500).json({
       success: false,
-      message: err.message || 'Google administrator authentication failed.',
+      code: 'AUTH_SERVER_ERROR',
+      message: 'An unexpected authentication error occurred. Please try again or use your registered mobile number and password.',
     });
   }
 }
@@ -329,34 +362,57 @@ export async function googleUserLogin(req: Request, res: Response, next: NextFun
       return;
     }
 
-    const payload = await verifyGoogleToken(googleToken);
+    let payload;
+    try {
+      payload = await verifyGoogleToken(googleToken);
+    } catch (tokenErr: any) {
+      console.warn('[AUTH] Customer Google token verification failed:', tokenErr?.message);
+      res.status(401).json({
+        success: false,
+        code: 'INVALID_GOOGLE_TOKEN',
+        message: 'Google sign-in token could not be verified or has expired. Please try signing in again.',
+      });
+      return;
+    }
+
     const email = payload.email.toLowerCase();
 
     // Find or create customer
-    let customer = await prisma.customerUser.findUnique({
-      where: { email },
-    });
+    let customer;
+    try {
+      customer = await prisma.customerUser.findUnique({
+        where: { email },
+      });
 
-    if (!customer) {
-      customer = await prisma.customerUser.create({
-        data: {
-          email,
-          googleId: payload.sub,
-          name: payload.name || 'Valued Client',
-          picture: payload.picture,
-          lastLoginAt: new Date(),
-        },
+      if (!customer) {
+        customer = await prisma.customerUser.create({
+          data: {
+            email,
+            googleId: payload.sub,
+            name: payload.name || 'Valued Client',
+            picture: payload.picture,
+            lastLoginAt: new Date(),
+          },
+        });
+      } else {
+        customer = await prisma.customerUser.update({
+          where: { id: customer.id },
+          data: {
+            name: payload.name || customer.name,
+            picture: payload.picture || customer.picture,
+            googleId: payload.sub || customer.googleId,
+            lastLoginAt: new Date(),
+          },
+        });
+      }
+    } catch (dbErr: any) {
+      console.error('[AUTH] Database error in googleUserLogin:', dbErr);
+      res.status(503).json({
+        success: false,
+        code: 'DATABASE_UNAVAILABLE',
+        message: 'Customer authentication service is temporarily unable to reach the database. Please try again in a few moments.',
       });
-    } else {
-      customer = await prisma.customerUser.update({
-        where: { id: customer.id },
-        data: {
-          name: payload.name || customer.name,
-          picture: payload.picture || customer.picture,
-          googleId: payload.sub || customer.googleId,
-          lastLoginAt: new Date(),
-        },
-      });
+      return;
     }
 
     // Automatically link any orphan enquiries submitted with this email
@@ -410,9 +466,11 @@ export async function googleUserLogin(req: Request, res: Response, next: NextFun
       },
     });
   } catch (err: any) {
-    res.status(401).json({
+    console.error('[AUTH] Unhandled error in googleUserLogin:', err?.message || err);
+    res.status(500).json({
       success: false,
-      message: err.message || 'Google user authentication failed.',
+      code: 'AUTH_SERVER_ERROR',
+      message: 'An unexpected authentication error occurred. Please try again.',
     });
   }
 }

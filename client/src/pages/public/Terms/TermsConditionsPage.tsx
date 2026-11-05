@@ -133,7 +133,7 @@ export const TermsConditionsPage: React.FC = () => {
               mounted ? 'scale-100' : 'scale-105'
             }`}
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           {/* Clean overlays matching Home page pattern */}

@@ -335,7 +335,7 @@ export const HowItWorksPage: React.FC = () => {
             alt="Institutional Property Finance Architecture & Workflow"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           {/* Calibrated lightweight translucent overlays so image is clearly visible and bright while text remains crisp */}

@@ -138,7 +138,7 @@ export const PropertyFundingPage: React.FC = () => {
             alt="Purchase Loans & Property Takeover Architecture"
             className="w-full h-full object-cover object-[80%_center] brightness-[1.15] contrast-[1.02]"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           {/* Softened directional gradient: Keeps left side readable for text while letting the image shine brightly */}

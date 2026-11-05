@@ -328,7 +328,7 @@ export const ContactPage: React.FC = () => {
             alt="Direct Advisory & Office Connect"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           <div className="absolute inset-0 bg-black/10" />

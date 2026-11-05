@@ -418,7 +418,7 @@ export const AboutPage: React.FC = () => {
             alt="Prime Associates Advisory Team"
             className="w-full h-full object-cover object-left md:object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           {/* Calibrated lightweight translucent overlays to maximize image visibility while keeping text crisp */}

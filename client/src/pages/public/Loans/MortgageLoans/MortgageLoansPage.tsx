@@ -159,7 +159,7 @@ export const MortgageLoansPage: React.FC = () => {
             alt="Secured Mortgage Equity & Loan Against Property Desk"
             className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.02]"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
           />
           {/* Calibrated lightweight translucent overlays */}

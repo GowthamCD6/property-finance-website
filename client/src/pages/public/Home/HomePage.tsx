@@ -316,7 +316,7 @@ const Hero: React.FC<HeroProps> = ({ content }) => {
           alt="Institutional Property Finance Architecture"
           className="w-full h-full object-cover object-center scale-[1.01] brightness-[0.80] transform motion-safe:transition-transform motion-safe:duration-1000"
           loading="eager"
-          fetchPriority="high"
+          fetchpriority="high"
           decoding="async"
         />
         <div className="absolute inset-0 bg-black/28" />
