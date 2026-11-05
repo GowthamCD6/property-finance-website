@@ -37,6 +37,9 @@ import {
   FileText,
   Info,
   Trash2,
+  RotateCw,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { Enquiry, UploadedDocument } from '../../../types';
 import { UserAvatar } from '../../../components/common/UserAvatar';
@@ -69,17 +72,17 @@ export function parseEnquiryData(enquiry?: Enquiry | null): ParsedEnquiryData {
     return { documents: [] };
   }
 
-  let documents: UploadedDocument[] = Array.isArray(enquiry.documents) ? [...enquiry.documents] : [];
+  let rawDocs: any[] = Array.isArray(enquiry.documents) ? [...enquiry.documents] : [];
   let notes = enquiry.additionalNotes || '';
 
   // 1. Extract documents if not already populated or if DOCUMENTS_JSON is embedded
   if (notes.includes('<!--DOCUMENTS_JSON:')) {
     const match = notes.match(/<!--DOCUMENTS_JSON:(.*?)-->/s);
-    if (match && match[1] && (!documents || documents.length === 0)) {
+    if (match && match[1] && (!rawDocs || rawDocs.length === 0)) {
       try {
         const parsed = JSON.parse(match[1]);
         if (Array.isArray(parsed)) {
-          documents = parsed;
+          rawDocs = parsed;
         }
       } catch (e) {
         console.error('Failed to parse DOCUMENTS_JSON from notes', e);
@@ -87,6 +90,29 @@ export function parseEnquiryData(enquiry?: Enquiry | null): ParsedEnquiryData {
     }
     notes = notes.replace(/<!--DOCUMENTS_JSON:.*?-->/s, '').trim();
   }
+
+  // Robust document normalization: ensure name, documentName, format, type, and size are safe and never undefined
+  const documents: UploadedDocument[] = rawDocs.map((doc: any, index: number) => {
+    const docName = String(doc.documentName || doc.originalFilename || doc.name || `Document ${index + 1}`).trim();
+    const filename = String(doc.originalFilename || doc.name || doc.documentName || `document_${index + 1}`).trim();
+    const format = String(doc.fileFormat || (filename.includes('.') ? filename.split('.').pop() : '') || '').toLowerCase();
+    const size = typeof doc.size === 'number' ? doc.size : (typeof doc.fileSize === 'number' ? doc.fileSize : 0);
+    const mimeType = doc.type || (format === 'pdf' ? 'application/pdf' : format ? `image/${format}` : (doc.resourceType === 'image' ? 'image/jpeg' : ''));
+
+    return {
+      ...doc,
+      id: doc.id || `doc-${index}-${Date.now()}`,
+      name: filename,
+      documentName: docName,
+      originalFilename: filename,
+      size,
+      fileSize: size,
+      type: mimeType,
+      fileFormat: format,
+      category: doc.category || 'KYC',
+      previewUrl: doc.previewUrl || '',
+    };
+  });
 
   // 2. Extract Preferred Bank / Channel Partner
   let preferredBank = enquiry.preferredBank;
@@ -171,6 +197,26 @@ export const AdminEnquiriesPage: React.FC = () => {
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
   const [detailTab, setDetailTab] = useState<'overview' | 'documents' | 'activity'>('overview');
   const [adminPreviewDoc, setAdminPreviewDoc] = useState<UploadedDocument | null>(null);
+  const [docZoom, setDocZoom] = useState<boolean>(false);
+  const [docRotation, setDocRotation] = useState<number>(0);
+  const [docImageLoading, setDocImageLoading] = useState<boolean>(true);
+  const [docImageError, setDocImageError] = useState<boolean>(false);
+
+  const openAdminDocPreview = (doc: UploadedDocument) => {
+    setDocZoom(false);
+    setDocRotation(0);
+    setDocImageLoading(true);
+    setDocImageError(false);
+    setAdminPreviewDoc(doc);
+  };
+
+  const closeAdminDocPreview = () => {
+    setAdminPreviewDoc(null);
+    setDocZoom(false);
+    setDocRotation(0);
+    setDocImageLoading(true);
+    setDocImageError(false);
+  };
   const [docCategoryFilter, setDocCategoryFilter] = useState<string>('ALL');
 
   // Status Change State
@@ -1501,7 +1547,13 @@ export const AdminEnquiriesPage: React.FC = () => {
                         {displayedDocs.length > 0 ? (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                             {displayedDocs.map((doc) => {
-                              const isImage = doc.type?.includes('image') || (doc.previewUrl && doc.previewUrl.startsWith('data:image'));
+                              const docFormat = (doc.fileFormat || '').toLowerCase();
+                              const isImage =
+                                doc.resourceType === 'image' ||
+                                doc.type?.includes('image') ||
+                                ['jpg', 'jpeg', 'png', 'webp', 'avif', 'heic', 'svg', 'gif'].includes(docFormat) ||
+                                (doc.previewUrl && (doc.previewUrl.startsWith('data:image') || /\.(jpg|jpeg|png|webp|avif|heic|gif)($|\?)/i.test(doc.previewUrl)));
+
                               return (
                                 <div
                                   key={doc.id}
@@ -1509,7 +1561,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                                 >
                                   {isImage ? (
                                     <div
-                                      onClick={() => setAdminPreviewDoc(doc)}
+                                      onClick={() => openAdminDocPreview(doc)}
                                       className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 cursor-pointer shrink-0 shadow-2xs group/img bg-slate-100 flex items-center justify-center"
                                       title="Click to view full document"
                                     >
@@ -1524,7 +1576,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                                     </div>
                                   ) : (
                                     <div
-                                      onClick={() => setAdminPreviewDoc(doc)}
+                                      onClick={() => openAdminDocPreview(doc)}
                                       className="w-16 h-16 rounded-xl bg-red-50 border border-red-200 flex flex-col items-center justify-center text-red-700 shrink-0 font-bold text-xs shadow-2xs cursor-pointer hover:bg-red-100 transition-colors"
                                       title="Click to view PDF document"
                                     >
@@ -1552,7 +1604,7 @@ export const AdminEnquiriesPage: React.FC = () => {
                                       <div className="flex items-center gap-2">
                                         <button
                                           type="button"
-                                          onClick={() => setAdminPreviewDoc(doc)}
+                                          onClick={() => openAdminDocPreview(doc)}
                                           className="text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 font-heading hover:underline cursor-pointer"
                                         >
                                           <Eye className="w-3 h-3" />
@@ -1997,75 +2049,195 @@ export const AdminEnquiriesPage: React.FC = () => {
 
       {/* ADMIN DOCUMENT IMAGE LIGHTBOX MODAL (Z-INDEX ABOVE DRAWER) */}
       {adminPreviewDoc && typeof document !== 'undefined' && createPortal(
-        <div
-          className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[9999] bg-[#0c1a26]/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
-          style={{ zIndex: 9999 }}
-          onClick={() => setAdminPreviewDoc(null)}
-        >
-          <div
-            className="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200/90 animate-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-              <div>
-                <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block font-heading">
-                  Reference Document Verification
-                </span>
-                <h4 className="text-base font-bold text-[#0c1a26] flex items-center gap-2 font-heading">
-                  <FileCheck className="w-4 h-4 text-teal-700" />
-                  <span>{adminPreviewDoc.documentName || adminPreviewDoc.name}</span>
-                </h4>
-              </div>
-              <button
-                type="button"
-                onClick={() => setAdminPreviewDoc(null)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
-                title="Close Preview (Esc)"
+        (() => {
+          const docName = String(adminPreviewDoc.documentName || adminPreviewDoc.originalFilename || adminPreviewDoc.name || 'Document Verification').trim();
+          const docFilename = String(adminPreviewDoc.originalFilename || adminPreviewDoc.name || adminPreviewDoc.documentName || 'document').trim();
+          const docFormat = String(adminPreviewDoc.fileFormat || (docFilename.includes('.') ? docFilename.split('.').pop() : '') || '').toLowerCase();
+          const rawSize = typeof adminPreviewDoc.size === 'number' && adminPreviewDoc.size > 0 
+            ? adminPreviewDoc.size 
+            : (typeof (adminPreviewDoc as any).fileSize === 'number' ? (adminPreviewDoc as any).fileSize : 0);
+          const sizeFormatted = rawSize > 0 ? `${(rawSize / 1024).toFixed(0)} KB` : 'Verified';
+          const previewUrl = adminPreviewDoc.previewUrl || '';
+
+          const isPdf = 
+            docFormat === 'pdf' ||
+            adminPreviewDoc.type === 'application/pdf' ||
+            docFilename.toLowerCase().endsWith('.pdf') ||
+            previewUrl.toLowerCase().includes('.pdf');
+
+          return (
+            <div
+              className="fixed inset-0 z-[9999] bg-[#0c1a26]/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+              style={{ zIndex: 9999 }}
+              onClick={closeAdminDocPreview}
+            >
+              <div
+                className="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200/90 animate-in zoom-in-95 duration-200"
+                onClick={(e) => e.stopPropagation()}
               >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950 min-h-[480px]">
-              {adminPreviewDoc.fileFormat === 'pdf' ||
-              adminPreviewDoc.type === 'application/pdf' ||
-              adminPreviewDoc.name.toLowerCase().endsWith('.pdf') ? (
-                <iframe
-                  src={adminPreviewDoc.previewUrl}
-                  title={adminPreviewDoc.name}
-                  className="w-full h-[72vh] rounded-lg shadow-lg bg-white border border-slate-700"
-                />
-              ) : (
-                <img
-                  src={adminPreviewDoc.previewUrl}
-                  alt={adminPreviewDoc.name}
-                  className="max-h-[72vh] max-w-full object-contain rounded-lg shadow-lg"
-                />
-              )}
-            </div>
-            <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-white">
-              <span className="font-mono text-slate-600">
-                {adminPreviewDoc.name} ({adminPreviewDoc.size ? `${(adminPreviewDoc.size / 1024).toFixed(0)} KB` : 'Verified'})
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setAdminPreviewDoc(null)}
-                  className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold text-xs font-heading shadow-2xs transition-colors cursor-pointer"
-                >
-                  Close
-                </button>
-                <a
-                  href={adminPreviewDoc.previewUrl}
-                  download={adminPreviewDoc.name}
-                  className="px-4 py-2 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl font-bold text-xs font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Download Document</span>
-                </a>
+                {/* Header */}
+                <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-[10px] uppercase font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded tracking-wider font-heading">
+                        {adminPreviewDoc.category || 'Reference'}
+                      </span>
+                      <span className="text-[10px] uppercase font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded tracking-wider font-mono">
+                        {docFormat ? docFormat.toUpperCase() : (isPdf ? 'PDF' : 'IMAGE')}
+                      </span>
+                      <span className="text-[11px] text-slate-500 font-sans tabular-nums">
+                        {sizeFormatted}
+                      </span>
+                    </div>
+                    <h4 className="text-base font-bold text-[#0c1a26] flex items-center gap-2 font-heading truncate" title={docName}>
+                      <FileCheck className="w-4 h-4 text-teal-700 shrink-0" />
+                      <span className="truncate">{docName}</span>
+                    </h4>
+                  </div>
+
+                  {/* Header Controls */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {!isPdf && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setDocRotation((prev) => (prev + 90) % 360)}
+                          className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-colors cursor-pointer"
+                          title="Rotate 90°"
+                        >
+                          <RotateCw className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDocZoom((prev) => !prev)}
+                          className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                            docZoom ? 'bg-teal-100 text-teal-800' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                          }`}
+                          title={docZoom ? 'Zoom Out' : 'Zoom In'}
+                        >
+                          {docZoom ? <ZoomOut className="w-4 h-4" /> : <ZoomIn className="w-4 h-4" />}
+                        </button>
+                      </>
+                    )}
+
+                    {previewUrl && (
+                      <a
+                        href={previewUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-colors"
+                        title="Open in New Tab"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={closeAdminDocPreview}
+                      className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+                      title="Close Preview (Esc)"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Viewport Content */}
+                <div className="flex-1 overflow-auto p-4 sm:p-6 flex items-center justify-center bg-slate-950 min-h-[500px] relative select-none">
+                  {isPdf ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center">
+                      <iframe
+                        src={previewUrl}
+                        title={docName}
+                        className="w-full h-[72vh] rounded-lg shadow-lg bg-white border border-slate-700"
+                      />
+                    </div>
+                  ) : (
+                    <div className="relative flex items-center justify-center w-full h-full min-h-[480px]">
+                      {docImageLoading && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2">
+                          <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
+                          <span className="text-xs font-sans">Loading high-resolution document...</span>
+                        </div>
+                      )}
+
+                      {docImageError ? (
+                        <div className="text-center p-6 bg-slate-900 border border-slate-800 rounded-2xl max-w-md space-y-3">
+                          <AlertCircle className="w-10 h-10 text-amber-400 mx-auto" />
+                          <p className="text-sm font-semibold text-white">Preview unavailable in viewer</p>
+                          <p className="text-xs text-slate-400">The browser cannot display this image directly or the link has expired.</p>
+                          {previewUrl && (
+                            <a
+                              href={previewUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                              <span>Open in Browser Tab</span>
+                            </a>
+                          )}
+                        </div>
+                      ) : (
+                        <img
+                          src={previewUrl}
+                          alt={docName}
+                          onLoad={() => setDocImageLoading(false)}
+                          onError={() => {
+                            setDocImageLoading(false);
+                            setDocImageError(true);
+                          }}
+                          onClick={() => setDocZoom((prev) => !prev)}
+                          style={{
+                            transform: `rotate(${docRotation}deg) scale(${docZoom ? 1.6 : 1})`,
+                            transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                          }}
+                          className={`max-h-[74vh] max-w-full object-contain rounded-lg shadow-2xl transition-opacity duration-300 ${
+                            docZoom ? 'cursor-zoom-out' : 'cursor-zoom-in'
+                          } ${docImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                          title="Click to toggle Zoom"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer Controls */}
+                <div className="p-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 bg-white">
+                  <div className="flex items-center gap-2 truncate max-w-md">
+                    <span className="font-mono text-slate-600 truncate" title={docFilename}>
+                      {docFilename}
+                    </span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-slate-500 font-sans tabular-nums shrink-0">
+                      {sizeFormatted}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={closeAdminDocPreview}
+                      className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold text-xs font-heading shadow-2xs transition-colors cursor-pointer"
+                    >
+                      Close
+                    </button>
+                    {previewUrl && (
+                      <a
+                        href={previewUrl}
+                        download={docFilename}
+                        className="px-4 py-2 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl font-bold text-xs font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download Document</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>,
+          );
+        })(),
         document.body
       )}
     </div>

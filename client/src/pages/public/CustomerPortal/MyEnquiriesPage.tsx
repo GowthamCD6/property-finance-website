@@ -1972,26 +1972,36 @@ export const MyEnquiriesPage: React.FC = () => {
             </div>
 
             <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-950 min-h-[450px]">
-              {customerPreviewDoc.fileFormat === 'pdf' ||
-              customerPreviewDoc.type === 'application/pdf' ||
-              customerPreviewDoc.name.toLowerCase().endsWith('.pdf') ? (
-                <iframe
-                  src={customerPreviewDoc.previewUrl}
-                  title={customerPreviewDoc.name}
-                  className="w-full h-[68vh] rounded-lg shadow-lg bg-white border border-slate-700"
-                />
-              ) : (
-                <img
-                  src={customerPreviewDoc.previewUrl}
-                  alt={customerPreviewDoc.name}
-                  className="max-h-[70vh] max-w-full object-contain rounded-lg shadow-lg"
-                />
-              )}
+              {(() => {
+                const docName = String(customerPreviewDoc.documentName || customerPreviewDoc.originalFilename || customerPreviewDoc.name || 'Document').trim();
+                const docFilename = String(customerPreviewDoc.originalFilename || customerPreviewDoc.name || customerPreviewDoc.documentName || 'document').trim();
+                const docFormat = String(customerPreviewDoc.fileFormat || (docFilename.includes('.') ? docFilename.split('.').pop() : '') || '').toLowerCase();
+                const previewUrl = customerPreviewDoc.previewUrl || '';
+                const isPdf =
+                  docFormat === 'pdf' ||
+                  customerPreviewDoc.type === 'application/pdf' ||
+                  docFilename.toLowerCase().endsWith('.pdf') ||
+                  previewUrl.toLowerCase().includes('.pdf');
+
+                return isPdf ? (
+                  <iframe
+                    src={previewUrl}
+                    title={docName}
+                    className="w-full h-[68vh] rounded-lg shadow-lg bg-white border border-slate-700"
+                  />
+                ) : (
+                  <img
+                    src={previewUrl}
+                    alt={docName}
+                    className="max-h-[70vh] max-w-full object-contain rounded-lg shadow-lg"
+                  />
+                );
+              })()}
             </div>
 
             <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-white">
               <span className="font-mono text-slate-600">
-                {customerPreviewDoc.name} ({customerPreviewDoc.size ? `${(customerPreviewDoc.size / 1024).toFixed(0)} KB` : 'Verified'})
+                {customerPreviewDoc.documentName || customerPreviewDoc.originalFilename || customerPreviewDoc.name || 'Document'} ({customerPreviewDoc.size ? `${(customerPreviewDoc.size / 1024).toFixed(0)} KB` : 'Verified'})
               </span>
               <div className="flex items-center gap-2">
                 <button
@@ -2003,7 +2013,7 @@ export const MyEnquiriesPage: React.FC = () => {
                 </button>
                 <a
                   href={customerPreviewDoc.previewUrl}
-                  download={customerPreviewDoc.name}
+                  download={customerPreviewDoc.originalFilename || customerPreviewDoc.name || customerPreviewDoc.documentName || 'document'}
                   className="px-4 py-2 bg-[#0c1a26] hover:bg-teal-700 text-white rounded-xl font-bold text-xs font-heading shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
