@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../../seo';
 import { CDN_IMAGES, getHeroSrcSet } from '../../../../constants/cloudinaryImages';
 
 const lapHeroImage = CDN_IMAGES.lapLoan;
@@ -146,6 +147,7 @@ export const MortgageLoansPage: React.FC = () => {
 
   return (
     <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
+      <SEO {...seoConfig['/services/loan-against-property']} />
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: SECURED MORTGAGE & LIQUIDITY DESK
           ──────────────────────────────────────────────────────────── */}

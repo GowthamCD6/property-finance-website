@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../../seo';
 import {
   FileCheck2,
   CheckCircle2,
@@ -146,6 +147,7 @@ export const VehicleLoansPage: React.FC = () => {
 
   return (
     <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
+      <SEO {...seoConfig['/services/vehicle-loans']} />
       <section className="relative overflow-hidden bg-slate-950 text-white pt-10 sm:pt-14 lg:pt-16 pb-12 sm:pb-16 lg:pb-20 border-b border-white/10">
         <div className="absolute inset-0 z-0">
           <img

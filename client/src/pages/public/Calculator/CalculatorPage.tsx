@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../seo';
 import { SiteContent } from '../../../types';
 import {
   Calculator as CalcIcon,
@@ -403,6 +404,7 @@ export const CalculatorPage: React.FC = () => {
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
+      <SEO {...seoConfig['/calculator']} />
       {/* ────────────────────────────────────────────────────────────
           1. DISTINCTIVE HERO: CENTERED KINETIC LAUNCHPAD WITH 3-INSTRUMENT DECK
           ──────────────────────────────────────────────────────────── */}

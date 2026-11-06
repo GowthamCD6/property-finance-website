@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../../seo';
 import {
   Building2,
   CheckCircle2,
@@ -125,6 +126,7 @@ export const PropertyFundingPage: React.FC = () => {
 
   return (
     <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
+      <SEO {...seoConfig['/services/purchase-loans']} />
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: COMMERCIAL REAL ESTATE & LRD DESK
           ──────────────────────────────────────────────────────────── */}

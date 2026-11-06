@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../seo';
 import {
   MapPin,
   Phone,
@@ -328,6 +329,7 @@ export const ContactPage: React.FC = () => {
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
+      <SEO {...seoConfig['/contact']} />
       {/* ────────────────────────────────────────────────────────────
           1. HERO SECTION: DIRECT ADVISORY & REAL-TIME CONNECT
           ──────────────────────────────────────────────────────────── */}

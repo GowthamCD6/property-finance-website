@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../seo';
 import {
   HelpCircle,
   Search,
@@ -337,6 +338,7 @@ export const FaqsPage: React.FC = () => {
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy">
+      <SEO {...seoConfig['/faqs']} />
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: SEARCHABLE KNOWLEDGE REPOSITORY
           ──────────────────────────────────────────────────────────── */}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../../seo';
 import { CDN_IMAGES, getHeroSrcSet } from '../../../../constants/cloudinaryImages';
 
 const homeLoanHeroImage = CDN_IMAGES.homeLoan;
@@ -215,6 +216,7 @@ export const HomeLoansPage: React.FC = () => {
 
   return (
     <div className="bg-[#f7f7f3] min-h-screen text-brand-navy">
+      <SEO {...seoConfig['/services/home-loans']} />
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: LAND & HOME LOAN ARCHITECTURE
           ──────────────────────────────────────────────────────────── */}

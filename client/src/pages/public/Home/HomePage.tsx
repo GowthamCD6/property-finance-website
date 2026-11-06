@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../seo';
 import {
   CheckCircle2,
   ArrowRight,
@@ -2350,6 +2351,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+      <SEO {...seoConfig['/']} />
       {/* 1. Hero with Instant Loan Estimator Card */}
       <Hero content={content} />
 

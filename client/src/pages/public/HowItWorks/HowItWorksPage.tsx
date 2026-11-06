@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../seo';
 import {
   Clock,
   ShieldCheck,
@@ -322,6 +323,7 @@ export const HowItWorksPage: React.FC = () => {
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans">
+      <SEO {...seoConfig['/how-it-works']} />
       {/* ────────────────────────────────────────────────────────────
           1. HERO SECTION: THE 4-STAGE LENDING ARCHITECTURE (Matching Calculator Suite Palette)
           ──────────────────────────────────────────────────────────── */}

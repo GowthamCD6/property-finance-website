@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../seo';
 import {
   Building2,
   ShieldCheck,
@@ -405,6 +406,7 @@ export const AboutPage: React.FC = () => {
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
+      <SEO {...seoConfig['/about']} />
       {/* ────────────────────────────────────────────────────────────
           1. 3D HERO SECTION — THE ARCHITECTURE OF CAPITAL (Brighter & Fixed Image, Home-Page Animation)
           ──────────────────────────────────────────────────────────── */}

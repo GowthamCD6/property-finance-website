@@ -1,4 +1,5 @@
 import React from 'react';
+import { SEO, seoConfig } from '../../../seo';
 import {
   ShieldCheck,
   Calendar,
@@ -85,6 +86,7 @@ export const EnquiryPage: React.FC = () => {
 
   return (
     <div className="bg-brand-bg min-h-screen text-brand-navy">
+      <SEO {...seoConfig['/enquire']} />
       {/* ────────────────────────────────────────────────────────────
           1. CONTENT-SPECIFIC HERO: FULL-BLEED PHOTOGRAPHIC BACKGROUND
           ──────────────────────────────────────────────────────────── */}

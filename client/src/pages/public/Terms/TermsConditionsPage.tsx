@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
+import { SEO, seoConfig } from '../../../seo';
 import {
   Scale,
   ShieldCheck,
@@ -118,6 +119,7 @@ export const TermsConditionsPage: React.FC = () => {
 
   return (
     <div className="bg-[#f8f8f4] min-h-screen text-brand-navy font-sans antialiased selection:bg-brand-teal selection:text-white">
+      <SEO {...seoConfig['/terms-and-conditions']} />
       {/* ────────────────────────────────────────────────────────────
           1. HERO SECTION — INSTITUTIONAL GOVERNANCE & LEGAL COUNCIL
           ──────────────────────────────────────────────────────────── */}

@@ -51,9 +51,6 @@ export const PublicLayout: React.FC = () => {
       
       if (data.content) {
         setContent(data.content);
-        if (data.content.businessName) {
-          document.title = `${data.content.businessName} — Your Loan Advisory Partner`;
-        }
       }
       if (Array.isArray(data.services)) {
         setServices(data.services);
