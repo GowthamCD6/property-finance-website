@@ -30,7 +30,7 @@ const privacyHeroImage = CDN_IMAGES.privacyHeroSecurity;
 export const PrivacyPolicyPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null }>();
   const content = context?.content || null;
-  const businessName = content?.businessName || 'Prime Associates — Loans & Constructions';
+  const businessName = content?.businessName || 'Prime Associates Loans';
   const businessPhone = content?.businessPhone || '+91 96555 66613, +91 95144 66600';
   const businessEmail = content?.businessEmail || 'primeassociates2008@gmail.com';
   const officeAddress =

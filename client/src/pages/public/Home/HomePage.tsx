@@ -2128,7 +2128,7 @@ interface WhyWorkWithUsProps {
 
 const WhyWorkWithUs: React.FC<WhyWorkWithUsProps> = ({ content }) => {
   const aboutHeading =
-    content?.aboutHeading || 'Prime Associates — Loans & Constructions';
+    content?.aboutHeading || 'Prime Associates Loans';
   const aboutText =
     content?.aboutText ||
     'Get your home loans and mortgage loans at the lowest interest rates with government subsidy across government and private banks. We provide complete advisory and syndication for self-construction, new/old home purchase, tiled houses, empty plots, commercial buildings, vehicle loans, and low-interest bank takeovers.';

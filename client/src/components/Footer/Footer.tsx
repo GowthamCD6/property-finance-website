@@ -12,7 +12,7 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ content }) => {
   const [modalType, setModalType] = useState<'privacy' | 'terms' | null>(null);
 
-  const businessName = content?.businessName || 'Prime Associates — Loans & Constructions';
+  const businessName = content?.businessName || 'Prime Associates Loans';
   const businessPhone = content?.businessPhone || '+91 96555 66613, +91 95144 66600';
   const businessEmail = content?.businessEmail || 'primeassociates2008@gmail.com';
   const officeAddress = content?.officeAddress || 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road, Tirupur - 641601';
@@ -20,7 +20,7 @@ export const Footer: React.FC<FooterProps> = ({ content }) => {
   const disclaimerText = content?.disclaimerText || 'Prime Associates (Prime Associates Loans) is an independent property finance consultancy firm. We do not disburse funds or grant loan approvals ourselves. Loan sanctions and terms are subject to lender underwriting criteria.';
   const privacyPolicy = content?.privacyPolicy || 'We respect your confidentiality. Personal and financial details shared are solely used for eligibility assessment and arranging consultations.';
   const termsConditions = content?.termsConditions || 'Information provided on this website is for advisory and consultation scheduling purposes only and does not constitute a formal financial commitment or binding loan offer.';
-  const copyrightText = content?.copyrightText || 'Prime Associates — Loans & Constructions. All rights reserved.';
+  const copyrightText = content?.copyrightText || 'Prime Associates Loans. All rights reserved.';
 
   const currentYear = new Date().getFullYear();
 

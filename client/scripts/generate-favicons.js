@@ -104,7 +104,7 @@ console.log('Copied logo.png and logo-dark.png to public/');
 
 // Create site.webmanifest for PWA & mobile app bookmarking
 const webManifest = {
-  name: "Prime Associates — Loans & Constructions",
+  name: "Prime Associates Loans",
   short_name: "Prime Associates",
   description: "Institutional Property Finance Advisory & Lowest Interest Rate Mortgage Solutions",
   start_url: "/",

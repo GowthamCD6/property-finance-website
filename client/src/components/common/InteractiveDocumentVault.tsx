@@ -814,7 +814,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
       current.docs
         .map((d, i) => `${checkedDocs[d.name] ? '✅' : '⬜'} ${i + 1}. ${d.name} [${d.tag}]\n   ${d.desc}`)
         .join('\n\n') +
-      `\n\n📌 Prepared for Prime Associates — Loans & Constructions Consultation.\n📞 Helpline: +91 96555 66613 | 🌐 www.primeassociates.in`;
+      `\n\n📌 Prepared for Prime Associates Loans Consultation.\n📞 Helpline: +91 96555 66613 | 🌐 www.primeassociatesloans.in`;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -825,7 +825,7 @@ export const InteractiveDocumentVault: React.FC<InteractiveDocumentVaultProps> =
       .map((d, i) => `${checkedDocs[d.name] ? '✅' : '⬜'} ${i + 1}. *${d.name}* (${d.tag})`)
       .join('\n');
     const message = encodeURIComponent(
-      `*📋 ${config.sectionTitle}*\n_Category: ${current.title}_\n_Status: ${readyDocsCount} of ${totalDocsCount} documents ready (${progressPercent}%)_\n\n*Required Documents:*\n${readyList}\n\n*Consultation Desk:* Prime Associates Loans & Constructions\n📞 Contact: +91 96555 66613\n📍 Tirupur, Tamil Nadu`
+      `*📋 ${config.sectionTitle}*\n_Category: ${current.title}_\n_Status: ${readyDocsCount} of ${totalDocsCount} documents ready (${progressPercent}%)_\n\n*Required Documents:*\n${readyList}\n\n*Consultation Desk:* Prime Associates Loans\n📞 Contact: +91 96555 66613\n📍 Tirupur, Tamil Nadu`
     );
     window.open(`https://wa.me/919655566613?text=${message}`, '_blank');
   };

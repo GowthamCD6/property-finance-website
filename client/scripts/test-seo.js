@@ -84,6 +84,51 @@ for (const r of routes) {
   }
 }
 
+// Validate Organization Schema on root index.html
+console.log('=== AUDITING ORGANIZATION & BUSINESS CONTACT DATA ===\n');
+const rootHtml = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
+const orgMatch = rootHtml.match(/<script type="application\/ld\+json" id="jsonld-route">([\s\S]*?)<\/script>/i);
+if (!orgMatch) {
+  console.error('[FAIL] Missing #jsonld-route in dist/index.html');
+  allPassed = false;
+} else {
+  try {
+    const schemas = JSON.parse(orgMatch[1].trim());
+    const org = Array.isArray(schemas) ? schemas.find(s => s['@type'] === 'FinancialService') : (schemas['@type'] === 'FinancialService' ? schemas : null);
+    if (!org) {
+      console.error('[FAIL] FinancialService Organization schema not found');
+      allPassed = false;
+    } else {
+      console.log('✓ Business Name: ', org.name);
+      console.log('✓ Telephones:   ', JSON.stringify(org.telephone));
+      console.log('✓ Email:        ', org.email);
+      console.log('✓ Address:      ', `${org.address.streetAddress}, ${org.address.addressLocality} - ${org.address.postalCode}`);
+      console.log('✓ ContactPoints:', org.contactPoint?.length, 'contact point(s) configured');
+
+      if (org.name !== 'Prime Associates Loans') {
+        console.error('[FAIL] Expected name: Prime Associates Loans, got:', org.name);
+        allPassed = false;
+      }
+      if (!JSON.stringify(org.telephone).includes('96555') || !JSON.stringify(org.telephone).includes('95144')) {
+        console.error('[FAIL] Missing required official telephone numbers');
+        allPassed = false;
+      }
+      if (org.email !== 'primeassociates2008@gmail.com') {
+        console.error('[FAIL] Expected email primeassociates2008@gmail.com, got:', org.email);
+        allPassed = false;
+      }
+      if (org.address.postalCode !== '641601') {
+        console.error('[FAIL] Expected postalCode 641601, got:', org.address.postalCode);
+        allPassed = false;
+      }
+    }
+  } catch (err) {
+    console.error('[FAIL] Error parsing root JSON-LD schema:', err);
+    allPassed = false;
+  }
+}
+console.log('');
+
 if (allPassed) {
   console.log('>>> ALL 12 CANONICAL PAGES FULLY VERIFIED IN RAW HTML OUTPUT! <<<');
 } else {

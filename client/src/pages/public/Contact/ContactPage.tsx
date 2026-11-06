@@ -51,7 +51,7 @@ export const ContactPage: React.FC = () => {
   const context = useOutletContext<{ content?: SiteContent | null; services?: Service[] }>();
   const content = context?.content || null;
 
-  const businessName = content?.businessName || 'Prime Associates — Loans & Constructions';
+  const businessName = content?.businessName || 'Prime Associates Loans';
   const businessPhone = content?.businessPhone || '+91 96555 66613, +91 95144 66600';
   const businessEmail = content?.businessEmail || 'primeassociates2008@gmail.com';
   const officeAddress =
@@ -875,7 +875,7 @@ export const ContactPage: React.FC = () => {
                     <span>Exact Postal Address:</span>
                   </div>
                   <p className="text-xs text-brand-slate font-sans leading-relaxed">
-                    <strong className="font-heading text-brand-navy">Prime Associates — Loans &amp; Constructions</strong><br />
+                    <strong className="font-heading text-brand-navy">Prime Associates Loans</strong><br />
                     No. 48, 49, P.R. Complex, Binny Compound Main Street,<br />
                     Kumaran Road, Tirupur - 641601, Tamil Nadu, India.
                   </p>

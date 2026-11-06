@@ -4587,7 +4587,7 @@ export const AdminContentPage: React.FC = () => {
                 {/* Column 1 */}
                 <div className="space-y-3">
                   <div className="font-heading font-black text-white text-base tracking-tight">
-                    {content.businessName || 'Prime Associates — Loans & Constructions'}
+                    {content.businessName || 'Prime Associates Loans'}
                   </div>
                   <p className="leading-relaxed line-clamp-4">
                     {content.tagline ||
@@ -4656,7 +4656,7 @@ export const AdminContentPage: React.FC = () => {
               </div>
 
               <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 gap-2">
-                <div>&copy; {new Date().getFullYear()} {content.copyrightText || 'Prime Associates — Loans & Constructions. All rights reserved.'}</div>
+                <div>&copy; {new Date().getFullYear()} {content.copyrightText || 'Prime Associates Loans. All rights reserved.'}</div>
                 <div className="flex gap-4">
                   <span>Privacy Policy</span>
                   <span>Terms &amp; Disclaimers</span>
