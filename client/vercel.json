@@ -1,12 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/:path*",
       "destination": "https://api.primeassociatesloans.in/api/:path*"
     },
     {
-      "source": "/((?!api/|assets/|.*\\.[a-zA-Z0-9]+$).*)",
+      "source": "/((?!api/|assets/|services/|about|how-it-works|calculator|faqs|contact|privacy-policy|terms-and-conditions|sitemap\\.xml|robots\\.txt|.*\\.[a-zA-Z0-9]+$).*)",
       "destination": "/index.html"
     }
   ],

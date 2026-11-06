@@ -33,9 +33,10 @@ export const ORGANIZATION_SCHEMA = {
   logo: `${BASE_URL}/logo.png`,
   image: DEFAULT_OG_IMAGE,
   description:
-    'Prime Associates is a loan advisory and property finance facilitation consultancy founded in 2008 in Tirupur, Tamil Nadu. Specializing in home loans, mortgage loans (LAP), plot purchases, bank takeovers, and vehicle loans.',
+    'Prime Associates is a loan advisory and property financing facilitation consultancy in Tirupur, Tamil Nadu. Established in 2008, the firm assists clients with loan eligibility evaluation, documentation guidance, and syndication across partner banks for home loans, mortgage loans (LAP), plot purchases, bank takeovers, and vehicle loans.',
   telephone: '+91-9655566613',
   email: 'primeassociates2008@gmail.com',
+  foundingDate: '2008',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'No. 48, 49, P.R. Complex, Binny Compound Main Street, Kumaran Road',
@@ -52,7 +53,6 @@ export const ORGANIZATION_SCHEMA = {
       closes: '18:30',
     },
   ],
-  priceRange: '₹₹',
 };
 
 export const WEBSITE_SCHEMA = {
@@ -115,18 +115,17 @@ export const seoConfig: Record<string, SEORouteConfig> = {
       'https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767228/prime-associates/assets/home-loan.jpg',
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'Services', url: `${BASE_URL}/services/home-loans` },
       { name: 'Home Loans', url: `${BASE_URL}/services/home-loans` },
     ],
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      name: 'Home Loans & Self Construction Advisory',
-      serviceType: 'Mortgage and Home Financing Advisory',
+      name: 'Home Loans & Self-Construction Advisory',
+      serviceType: 'Home Financing & Subsidy Guidance',
       provider: { '@id': `${BASE_URL}/#organization` },
       areaServed: { '@type': 'AdministrativeArea', name: 'Tamil Nadu, India' },
       description:
-        'Professional advisory for self-construction funding, plot purchase with construction, and residential property loans across premier banking partners.',
+        'Advisory and documentation guidance for residential self-construction, plot purchase with construction, and home loans, including assistance with government housing subsidy schemes where eligible.',
     },
   },
 
@@ -148,18 +147,17 @@ export const seoConfig: Record<string, SEORouteConfig> = {
       'https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767230/prime-associates/assets/lap-loan.jpg',
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'Services', url: `${BASE_URL}/services/loan-against-property` },
       { name: 'Loan Against Property', url: `${BASE_URL}/services/loan-against-property` },
     ],
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
       name: 'Loan Against Property (LAP) Advisory',
-      serviceType: 'Property Mortgage Financing Advisory',
+      serviceType: 'Mortgage Financing Advisory',
       provider: { '@id': `${BASE_URL}/#organization` },
       areaServed: { '@type': 'AdministrativeArea', name: 'Tamil Nadu, India' },
       description:
-        'Syndication and consultation for secured mortgage loans backed by registered concrete buildings, tiled houses, commercial properties, and empty plots.',
+        'Consultation and file syndication guidance for secured mortgage loans against registered residential, commercial, or plot property collateral.',
     },
   },
 
@@ -181,18 +179,17 @@ export const seoConfig: Record<string, SEORouteConfig> = {
       'https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767254/prime-associates/assets/purchase-loan.jpg',
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'Services', url: `${BASE_URL}/services/purchase-loans` },
-      { name: 'Purchase Loans & Takeover', url: `${BASE_URL}/services/purchase-loans` },
+      { name: 'Property Purchase Loans', url: `${BASE_URL}/services/purchase-loans` },
     ],
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
       name: 'Property Purchase Loans & Bank Takeover Advisory',
-      serviceType: 'Property Acquisition and Debt Syndication Advisory',
+      serviceType: 'Property Purchase & Takeover Advisory',
       provider: { '@id': `${BASE_URL}/#organization` },
       areaServed: { '@type': 'AdministrativeArea', name: 'Tamil Nadu, India' },
       description:
-        'Consultancy for residential plot acquisition, commercial property purchase, and balance transfers from private NBFCs to nationalized banks.',
+        'Advisory for plot or property acquisition and consultation for transferring existing loans from private lenders to nationalized banks.',
     },
   },
 
@@ -214,18 +211,17 @@ export const seoConfig: Record<string, SEORouteConfig> = {
       'https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767257/prime-associates/assets/vehicle-loan.avif',
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'Services', url: `${BASE_URL}/services/vehicle-loans` },
       { name: 'Vehicle Loans', url: `${BASE_URL}/services/vehicle-loans` },
     ],
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
       name: 'Vehicle Loans & Auto Refinancing Advisory',
-      serviceType: 'Automotive Financing Advisory',
+      serviceType: 'Vehicle Finance Advisory',
       provider: { '@id': `${BASE_URL}/#organization` },
       areaServed: { '@type': 'AdministrativeArea', name: 'Tamil Nadu, India' },
       description:
-        'Structured automotive loan advisory for private passenger cars, pre-owned car refinancing, and commercial transport vehicles.',
+        'Guidance and documentation facilitation for new car loans, used car purchase loans, refinancing, and commercial vehicle finance.',
     },
   },
 
@@ -291,7 +287,7 @@ export const seoConfig: Record<string, SEORouteConfig> = {
       'https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767219/prime-associates/assets/emi.webp',
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'EMI Calculator', url: `${BASE_URL}/calculator` },
+      { name: 'Loan EMI Calculator', url: `${BASE_URL}/calculator` },
     ],
   },
 
@@ -313,7 +309,7 @@ export const seoConfig: Record<string, SEORouteConfig> = {
       'https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767222/prime-associates/assets/faqs-hero.webp',
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'FAQs', url: `${BASE_URL}/faqs` },
+      { name: 'Loan FAQs', url: `${BASE_URL}/faqs` },
     ],
   },
 
@@ -335,7 +331,7 @@ export const seoConfig: Record<string, SEORouteConfig> = {
       'https://res.cloudinary.com/wtwmxi1p/image/upload/f_auto,q_auto:good,w_1200,c_limit/v1793767219/prime-associates/assets/contact-hero.webp',
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'Contact', url: `${BASE_URL}/contact` },
+      { name: 'Contact Us', url: `${BASE_URL}/contact` },
     ],
   },
 
@@ -380,60 +376,6 @@ export const seoConfig: Record<string, SEORouteConfig> = {
     breadcrumbs: [
       { name: 'Home', url: `${BASE_URL}/` },
       { name: 'Terms and Conditions', url: `${BASE_URL}/terms-and-conditions` },
-    ],
-  },
-
-  // Canonical Alias Fallbacks (pointing directly to their preferred canonical URL)
-  '/services/mortgage-loans': {
-    title: 'Loan Against Property – Prime Associates Loans',
-    description:
-      'Unlock liquidity from registered residential, commercial, or vacant property. Professional loan against property advisory with structured repayments.',
-    canonical: `${BASE_URL}/services/loan-against-property`,
-    robots: 'noindex, follow',
-    ogImage: DEFAULT_OG_IMAGE,
-  },
-  '/services/property-backed-funding': {
-    title: 'Property Purchase Loans – Prime Associates Loans',
-    description:
-      'Guidance on property purchase loans and loan takeover from private lenders to nationalized banks for lower interest burdens and manageable monthly EMIs.',
-    canonical: `${BASE_URL}/services/purchase-loans`,
-    robots: 'noindex, follow',
-    ogImage: DEFAULT_OG_IMAGE,
-  },
-  '/services/loan-consultation': {
-    title: 'Vehicle Loans – Prime Associates Loans',
-    description:
-      'End-to-end auto financing advisory covering new cars, used cars, refinancing, and commercial fleet vehicle funding with transparent documentation.',
-    canonical: `${BASE_URL}/services/vehicle-loans`,
-    robots: 'noindex, follow',
-    ogImage: DEFAULT_OG_IMAGE,
-  },
-  '/privacy': {
-    title: 'Privacy Policy – Prime Associates Loans',
-    description:
-      'Read how Prime Associates collects, uses, and safeguards your personal and financial information in strict accordance with data privacy standards.',
-    canonical: `${BASE_URL}/privacy-policy`,
-    robots: 'noindex, follow',
-    ogImage: DEFAULT_OG_IMAGE,
-  },
-  '/terms': {
-    title: 'Terms and Conditions – Prime Associates Loans',
-    description:
-      'Review terms of use, advisory service disclaimers, and website governance policies for Prime Associates Loans consultation and facilitation services.',
-    canonical: `${BASE_URL}/terms-and-conditions`,
-    robots: 'noindex, follow',
-    ogImage: DEFAULT_OG_IMAGE,
-  },
-  '/enquire': {
-    title: 'Loan Eligibility & Consultation Desk – Prime Associates Loans',
-    description:
-      'Submit your preliminary loan details for advisory evaluation, government subsidy checks, and multi-bank loan comparison in Tirupur, Tamil Nadu.',
-    canonical: `${BASE_URL}/enquire`,
-    robots: 'index, follow',
-    ogImage: DEFAULT_OG_IMAGE,
-    breadcrumbs: [
-      { name: 'Home', url: `${BASE_URL}/` },
-      { name: 'Enquire', url: `${BASE_URL}/enquire` },
     ],
   },
 };
