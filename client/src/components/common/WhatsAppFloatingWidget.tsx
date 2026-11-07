@@ -8,34 +8,52 @@ interface WhatsAppFloatingWidgetProps {
 
 export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ content }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const rawPhone = content?.whatsappNumber || content?.businessPhone || '+91 96555 66613';
-  const cleanPhone = rawPhone.split(',')[0].replace(/[^0-9]/g, '') || '919655566613';
 
-  const defaultMessage = encodeURIComponent(
+  const defaultMsg1 = encodeURIComponent(
     content?.whatsappMessage ||
-      'Hello Prime Associates, I would like to consult with an advisor regarding a Home Loan / Mortgage Loan / Subsidy requirement.'
+      'Hello Prime Associates, I would like to consult with an advisor regarding Home Loan / New Property Loan requirement.'
+  );
+  const defaultMsg2 = encodeURIComponent(
+    'Hello Prime Associates, I would like to consult with an advisor regarding Mortgage (LAP) / Commercial Property requirement.'
   );
 
-  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${defaultMessage}`;
+  const chatLines = [
+    {
+      desk: 'Home Loans & Prime Desk',
+      displayNumber: '+91 96555 66613',
+      phone: '919655566613',
+      badge: 'Home Loans',
+      badgeClass: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      message: defaultMsg1,
+    },
+    {
+      desk: 'Mortgage & LAP Desk',
+      displayNumber: '+91 95144 66600',
+      phone: '919514466600',
+      badge: 'Mortgage & LAP',
+      badgeClass: 'text-sky-700 bg-sky-50 border-sky-200',
+      message: defaultMsg2,
+    },
+  ];
 
   return (
     <aside aria-label="Direct WhatsApp Advisory" className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 select-none">
       {/* Expanded Quick Advisory Card */}
       {isOpen && (
-        <div className="mb-3 w-[calc(100vw-2.5rem)] max-w-xs sm:w-88 bg-white rounded-2xl shadow-modal border border-brand-border p-4 animate-in slide-in-from-bottom-3 duration-200">
+        <div className="mb-3 w-[calc(100vw-2.5rem)] max-w-xs sm:w-90 bg-white rounded-2xl shadow-modal border border-brand-border p-4 animate-in slide-in-from-bottom-3 duration-200">
           <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+              <div className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center font-bold text-sm shadow-sm">
                 WA
               </div>
               <div>
                 <div className="flex items-center gap-1">
-                  <span className="font-bold text-xs text-brand-navy">Advisory Desk</span>
+                  <span className="font-bold text-xs text-brand-navy">WhatsApp Advisory Desks</span>
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 </div>
                 <span className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Advisors Active Now (IST)
+                  Officers Active Now (IST)
                 </span>
               </div>
             </div>
@@ -50,18 +68,37 @@ export const WhatsAppFloatingWidget: React.FC<WhatsAppFloatingWidgetProps> = ({ 
 
           <div className="bg-brand-ivory p-3 rounded-xl border border-brand-border/60 text-xs text-brand-slate mb-3 leading-relaxed">
             <p className="text-brand-navy font-semibold mb-0.5">Need quick loan assistance?</p>
-            Connect directly on WhatsApp with our property loan advisors for initial eligibility checks and document guidance.
+            Connect directly on WhatsApp with our authorized loan officers for eligibility review &amp; document clearance.
           </div>
 
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-corporate text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Chat on WhatsApp ({rawPhone.split(',')[0].trim()})</span>
-          </a>
+          <div className="space-y-2 mb-3">
+            {chatLines.map((line, idx) => (
+              <a
+                key={idx}
+                href={`https://wa.me/${line.phone}?text=${line.message}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full p-2.5 rounded-xl bg-white hover:bg-emerald-50/70 border border-slate-200 hover:border-emerald-500 flex items-center justify-between group/line transition-all shadow-xs"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#25D366]/15 text-[#25D366] group-hover/line:bg-[#25D366] group-hover/line:text-white flex items-center justify-center transition-colors">
+                    <Send className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-mono text-xs font-bold text-brand-navy group-hover/line:text-emerald-700">
+                      {line.displayNumber}
+                    </div>
+                    <div className="text-[10px] text-brand-slate font-medium">
+                      {line.desk}
+                    </div>
+                  </div>
+                </div>
+                <span className={`text-[10px] font-sans font-bold px-2 py-0.5 rounded-md border ${line.badgeClass}`}>
+                  {line.badge}
+                </span>
+              </a>
+            ))}
+          </div>
 
           <div className="mt-2 text-center text-[10px] text-brand-slate">
             <span className="inline-flex items-center gap-1.5"><Lock className="w-3 h-3 text-emerald-400" /> Confidential &bull; Zero Spam &bull; No Upfront Fees</span>
