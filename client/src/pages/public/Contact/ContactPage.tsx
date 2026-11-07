@@ -550,11 +550,18 @@ export const ContactPage: React.FC = () => {
               >
                 <a
                   href="tel:+919655566613"
-                  className="hero-btn-primary px-5 sm:px-6 py-3 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/40 flex items-center gap-2 font-heading cursor-pointer whitespace-nowrap"
+                  className="hero-btn-primary px-4 sm:px-5 py-3 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/40 flex items-center gap-2 font-heading cursor-pointer whitespace-nowrap"
                 >
                   <Phone className="w-4 h-4 flex-shrink-0" />
                   <span>Call: +91 96555 66613</span>
-                  <ArrowRight className="w-3.5 h-3.5 hero-btn-arrow shrink-0 hidden sm:inline" />
+                </a>
+
+                <a
+                  href="tel:+919514466600"
+                  className="hero-btn-primary px-4 sm:px-5 py-3 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-teal-950/40 flex items-center gap-2 font-heading cursor-pointer whitespace-nowrap"
+                >
+                  <Phone className="w-4 h-4 flex-shrink-0" />
+                  <span>Call: +91 95144 66600</span>
                 </a>
 
                 <a
@@ -636,18 +643,20 @@ export const ContactPage: React.FC = () => {
                     <span className="text-slate-300 block text-[10px] font-heading font-semibold uppercase tracking-wider">
                       Primary Phone Lines:
                     </span>
-                    <a
-                      href="tel:+919655566613"
-                      className="font-mono text-white font-bold hover:text-teal-300 transition-colors block mt-1 text-xs sm:text-[13px]"
-                    >
-                      +91 96555 66613
-                    </a>
-                    <a
-                      href="tel:+919514466600"
-                      className="font-mono text-slate-300 text-[11px] font-semibold hover:text-teal-300 transition-colors block"
-                    >
-                      +91 95144 66600
-                    </a>
+                    <div className="mt-1 space-y-1">
+                      <a
+                        href="tel:+919655566613"
+                        className="font-mono text-white font-bold hover:text-teal-300 transition-colors block text-xs sm:text-[13px]"
+                      >
+                        +91 96555 66613
+                      </a>
+                      <a
+                        href="tel:+919514466600"
+                        className="font-mono text-white font-bold hover:text-teal-300 transition-colors block text-xs sm:text-[13px]"
+                      >
+                        +91 95144 66600
+                      </a>
+                    </div>
                   </div>
                   <div className="bg-white/[0.08] hover:bg-white/[0.12] p-3 rounded-xl border border-white/15 transition-colors">
                     <span className="text-slate-300 block text-[10px] font-heading font-semibold uppercase tracking-wider">
@@ -753,13 +762,22 @@ export const ContactPage: React.FC = () => {
                   </a>
                 </div>
               </div>
-              <a
-                href="tel:+919655566613"
-                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-brand-navy text-white text-xs font-bold font-heading hover:bg-slate-800 transition-colors"
-              >
-                <span>Call Primary Line</span>
-                <Phone className="w-3.5 h-3.5" />
-              </a>
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href="tel:+919655566613"
+                  className="inline-flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-brand-navy text-white text-[11px] font-bold font-heading hover:bg-slate-800 transition-colors shadow-xs"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>Call Line 1</span>
+                </a>
+                <a
+                  href="tel:+919514466600"
+                  className="inline-flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-brand-navy text-white text-[11px] font-bold font-heading hover:bg-slate-800 transition-colors shadow-xs"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>Call Line 2</span>
+                </a>
+              </div>
             </div>
 
             {/* Card 2: WhatsApp Advisory */}

@@ -4627,7 +4627,7 @@ export const AdminContentPage: React.FC = () => {
                     </li>
                     <li className="flex items-start gap-1.5">
                       <Phone className="w-3.5 h-3.5 text-brand-teal mt-0.5 shrink-0" />
-                      <span>{content.businessPhone || '+91 96555 66613'}</span>
+                      <span>{content.businessPhone || '+91 96555 66613, +91 95144 66600'}</span>
                     </li>
                     <li className="flex items-start gap-1.5">
                       <Mail className="w-3.5 h-3.5 text-brand-teal mt-0.5 shrink-0" />

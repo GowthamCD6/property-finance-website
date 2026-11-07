@@ -323,13 +323,16 @@ export const TermsConditionsPage: React.FC = () => {
                     <Mail className="w-3.5 h-3.5 text-teal-400 shrink-0" />
                     <span className="truncate">{businessEmail}</span>
                   </a>
-                  <a
-                    href={`tel:${businessPhone.split(',')[0].replace(/\s+/g, '')}`}
-                    className="flex items-center gap-2 text-slate-200 hover:text-teal-300 transition-colors"
-                  >
-                    <PhoneCall className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                    <span>{businessPhone.split(',')[0]}</span>
-                  </a>
+                  {businessPhone.split(',').map((phoneNum, pIdx) => (
+                    <a
+                      key={pIdx}
+                      href={`tel:${phoneNum.replace(/[^0-9+]/g, '')}`}
+                      className="flex items-center gap-2 text-slate-200 hover:text-teal-300 transition-colors"
+                    >
+                      <PhoneCall className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                      <span>{phoneNum.trim()}</span>
+                    </a>
+                  ))}
                 </div>
                 <div className="pt-2 border-t border-white/10 text-[11px] text-slate-400">
                   Principal Seat: <strong>Tirupur, Tamil Nadu, India</strong>
