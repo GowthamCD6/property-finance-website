@@ -7,7 +7,27 @@
       "destination": "https://api.primeassociatesloans.in/api/:path*"
     },
     {
-      "source": "/((?!api/|assets/|services/|about|how-it-works|calculator|faqs|contact|privacy-policy|terms-and-conditions|sitemap\\.xml|robots\\.txt|.*\\.[a-zA-Z0-9]+$).*)",
+      "source": "/admin/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/enquire",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/my-enquiries",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portal",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!api/|assets/|.*\\.[a-zA-Z0-9]+$).*)",
       "destination": "/index.html"
     }
   ],

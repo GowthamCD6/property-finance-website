@@ -388,7 +388,41 @@ const prerender = () => {
     }
   });
 
-  console.log('[prerender] Successfully prerendered all 12 canonical routes with complete raw HTML metadata & JSON-LD!');
+  // 9. Generate static entry points for dynamic SPA client routes (Admin portal, Enquiry, Borrower portal, 404 fallback)
+  const spaFallbackRoutes = [
+    'admin/login',
+    'admin',
+    'admin/dashboard',
+    'admin/enquiries',
+    'admin/customers',
+    'admin/appointments',
+    'admin/services',
+    'admin/content',
+    'admin/faqs',
+    'admin/settings',
+    'admin/team',
+    'admin/security',
+    'enquire',
+    'my-enquiries',
+    'portal',
+  ];
+
+  const baseSpaHtml = fs.readFileSync(TEMPLATE_PATH, 'utf8');
+
+  spaFallbackRoutes.forEach((spaRoute) => {
+    const targetDir = path.join(DIST_DIR, spaRoute);
+    fs.mkdirSync(targetDir, { recursive: true });
+    fs.writeFileSync(path.join(targetDir, 'index.html'), baseSpaHtml, 'utf8');
+
+    const targetHtmlFile = path.join(DIST_DIR, `${spaRoute}.html`);
+    fs.mkdirSync(path.dirname(targetHtmlFile), { recursive: true });
+    fs.writeFileSync(targetHtmlFile, baseSpaHtml, 'utf8');
+  });
+
+  // Universal 404 fallback for any hosting provider
+  fs.writeFileSync(path.join(DIST_DIR, '404.html'), baseSpaHtml, 'utf8');
+
+  console.log('[prerender] Successfully prerendered canonical routes and generated SPA endpoints for admin & 404 fallback!');
 };
 
 prerender();
